@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// HOME PAGE
 class BudgetHomePage extends StatelessWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -65,9 +66,10 @@ class BudgetHomePage extends StatelessWidget {
 }
 
 class SpendingPage extends StatelessWidget {
+  const SpendingPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return const CupertinoPageScaffold(
       child: Center(
         child: Text('Welcome to your Spending page!',
             style: TextStyle(fontSize: 20)),
@@ -77,9 +79,10 @@ class SpendingPage extends StatelessWidget {
 }
 
 class TransactionPage extends StatelessWidget {
+  const TransactionPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return const CupertinoPageScaffold(
       child: Center(
         child: Text('Welcome to your Transaction page!',
             style: TextStyle(fontSize: 20)),
