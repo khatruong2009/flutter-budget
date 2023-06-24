@@ -21,34 +21,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class BudgetHomePage extends StatelessWidget {
-//   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
-
-//   final String title;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CupertinoPageScaffold(
-//       navigationBar: CupertinoNavigationBar(
-//         middle: Text(title),
-//       ),
-//       child: const Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             Text(
-//               'Welcome to your Budgeting App!',
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class BudgetHomePage extends StatelessWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
-
   final String title;
   @override
   Widget build(BuildContext context) {
@@ -63,6 +37,10 @@ class BudgetHomePage extends StatelessWidget {
             icon: Icon(CupertinoIcons.list_bullet),
             label: 'Transaction',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.gear),
+            label: 'Settings',
+          ),
         ],
       ),
       tabBuilder: (BuildContext context, int index) {
@@ -73,6 +51,8 @@ class BudgetHomePage extends StatelessWidget {
                 return SpendingPage();
               case 1:
                 return TransactionPage();
+              case 2:
+                return SettingsPage();
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
@@ -102,6 +82,18 @@ class TransactionPage extends StatelessWidget {
     return CupertinoPageScaffold(
       child: Center(
         child: Text('Welcome to your Transaction page!',
+            style: TextStyle(fontSize: 20)),
+      ),
+    );
+  }
+}
+
+class SettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      child: Center(
+        child: Text('Welcome to your Settings page!',
             style: TextStyle(fontSize: 20)),
       ),
     );
