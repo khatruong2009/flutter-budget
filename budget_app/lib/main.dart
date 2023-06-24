@@ -69,11 +69,37 @@ class SpendingPage extends StatelessWidget {
   const SpendingPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
+    return CupertinoPageScaffold(
       child: Center(
-        child: Text('Welcome to your Spending page!',
-            style: TextStyle(fontSize: 20)),
-      ),
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(10.0),
+            child: CupertinoButton(
+              color: Colors.red,
+              minSize: 50,
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              onPressed: () {
+                // handle expense button press
+              },
+              child: const Text('Add Expense', style: TextStyle(fontSize: 20)),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10.0),
+            child: CupertinoButton(
+              color: Colors.green,
+              minSize: 50,
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              onPressed: () {
+                // handle income button press
+              },
+              child: const Text('Add Income', style: TextStyle(fontSize: 20)),
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
@@ -92,9 +118,10 @@ class TransactionPage extends StatelessWidget {
 }
 
 class SettingsPage extends StatelessWidget {
+  const SettingsPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return const CupertinoPageScaffold(
       child: Center(
         child: Text('Welcome to your Settings page!',
             style: TextStyle(fontSize: 20)),
