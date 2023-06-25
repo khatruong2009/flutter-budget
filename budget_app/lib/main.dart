@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -85,13 +87,31 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     return prefs.getDouble('total') ?? 0.0;
   }
 
-  void addTransaction(
-      TransactionType type, description, double amount, String category) {
-    setState(() {
-      transactions.add(Transaction(type, description, amount, category));
-      total += amount;
-    });
+  // save transactions to local storage
+  Future<void> saveTransactions(List<Transaction> transactions) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonTransactions = transactions.map((t) => t.toJson()).toList();
+    await prefs.setString('transactions', jsonEncode(jsonTransactions));
   }
+
+  // get transactions from local storage
+  Future<List<Transaction>> getTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('transactions');
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
+    final jsonList = jsonDecode(jsonString) as List;
+    return jsonList.map((e) => Transaction.fromJson(e)).toList();
+  }
+
+  // void addTransaction(
+  //     TransactionType type, description, double amount, String category) {
+  //   setState(() {
+  //     transactions.add(Transaction(type, description, amount, category));
+  //     total += amount;
+  //   });
+  // }
 }
 
 class SpendingPage extends StatelessWidget {
@@ -166,7 +186,31 @@ class Transaction {
   String category;
   TransactionType type;
 
-  Transaction(this.type, this.description, this.amount, this.category);
+  Transaction(
+      {required this.type,
+      required this.description,
+      required this.amount,
+      required this.category});
+
+  // convert transaction object into a map
+  Map<String, dynamic> toJson() => {
+        'type': type == TransactionType.EXPENSE ? 'expense' : 'income',
+        'description': description,
+        'amount': amount,
+        'category': category,
+      };
+
+  // convert map into a transaction object
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      type: json['type'] == 'expense'
+          ? TransactionType.EXPENSE
+          : TransactionType.INCOME,
+      description: json['description'],
+      amount: json['amount'],
+      category: json['category'],
+    );
+  }
 }
 
 enum TransactionType { EXPENSE, INCOME }
