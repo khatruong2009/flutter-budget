@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
-// import 'amplifyconfiguration.dart';
-// import 'models/ModelProvider.dart';
-
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // initialize Amplify
-  // Future<void> _configureAmplify() async {
-  //   final datastorePlugin =
-  //       AmplifyDataStore(modelProvider: ModelProvider.instance);
-  //   await Amplify.addPlugins([datastorePlugin]);
-
-  //   try {
-  //     await Amplify.configure(amplifyconfig);
-  //   } on AmplifyAlreadyConfiguredException {
-  //     print("Amplify was already configured. Was the app restarted?");
-  //   }
-  // }
-
   // This widget is the root of your application.
   const MyApp({super.key});
   @override
@@ -89,9 +71,10 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     );
   }
 
-  void addTransaction(String description, double amount, String category) {
+  void addTransaction(
+      TransactionType type, description, double amount, String category) {
     setState(() {
-      transactions.add(Transaction(description, amount, category));
+      transactions.add(Transaction(type, description, amount, category));
       total += amount;
     });
   }
