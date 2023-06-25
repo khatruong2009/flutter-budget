@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+// import 'amplifyconfiguration.dart';
+// import 'models/ModelProvider.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  // initialize Amplify
+  // Future<void> _configureAmplify() async {
+  //   final datastorePlugin =
+  //       AmplifyDataStore(modelProvider: ModelProvider.instance);
+  //   await Amplify.addPlugins([datastorePlugin]);
+
+  //   try {
+  //     await Amplify.configure(amplifyconfig);
+  //   } on AmplifyAlreadyConfiguredException {
+  //     print("Amplify was already configured. Was the app restarted?");
+  //   }
+  // }
+
   // This widget is the root of your application.
   const MyApp({super.key});
   @override
@@ -22,9 +39,17 @@ class MyApp extends StatelessWidget {
 }
 
 // HOME PAGE
-class BudgetHomePage extends StatelessWidget {
+class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
+  @override
+  State<BudgetHomePage> createState() => _BudgetHomePageState();
+}
+
+class _BudgetHomePageState extends State<BudgetHomePage> {
+  double total = 0.0;
+  List<Transaction> transactions = [];
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
@@ -49,11 +74,11 @@ class BudgetHomePage extends StatelessWidget {
           builder: (BuildContext context) {
             switch (index) {
               case 0:
-                return SpendingPage();
+                return const SpendingPage();
               case 1:
-                return TransactionPage();
+                return const TransactionPage();
               case 2:
-                return SettingsPage();
+                return const SettingsPage();
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
@@ -62,6 +87,13 @@ class BudgetHomePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  void addTransaction(String description, double amount, String category) {
+    setState(() {
+      transactions.add(Transaction(description, amount, category));
+      total += amount;
+    });
   }
 }
 
@@ -75,11 +107,11 @@ class SpendingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.all(10.0),
+            margin: const EdgeInsets.all(10.0),
             child: CupertinoButton(
               color: Colors.red,
               minSize: 50,
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
               onPressed: () {
                 // handle expense button press
               },
@@ -87,11 +119,11 @@ class SpendingPage extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(10.0),
+            margin: const EdgeInsets.all(10.0),
             child: CupertinoButton(
               color: Colors.green,
               minSize: 50,
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
               onPressed: () {
                 // handle income button press
               },
@@ -129,3 +161,15 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
+
+// TRANSACTION CLASS
+class Transaction {
+  String description;
+  double amount;
+  String category;
+  TransactionType type;
+
+  Transaction(this.type, this.description, this.amount, this.category);
+}
+
+enum TransactionType { EXPENSE, INCOME }
