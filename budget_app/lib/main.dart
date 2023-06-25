@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -69,6 +71,18 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         );
       },
     );
+  }
+
+  // save total to local storage
+  Future<void> saveTotal(double total) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('total', total);
+  }
+
+  // get total from local storage
+  Future<double> getTotal() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble('total') ?? 0.0;
   }
 
   void addTransaction(
