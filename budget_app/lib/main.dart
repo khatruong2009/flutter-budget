@@ -114,9 +114,26 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   // }
 }
 
+// SPENDING PAGE
 class SpendingPage extends StatelessWidget {
   const SpendingPage({Key? key}) : super(key: key);
   @override
+
+  // calculate total income
+  double calculateTotalIncome(List<Transaction> transactions) {
+    return transactions
+        .where((transaction) => transaction.type == 'INCOME')
+        .map((transaction) => transaction.amount)
+        .fold(0, (previousValue, amount) => previousValue + amount);
+  }
+
+  double calculateTotalExpenses(List<Transaction> transactions) {
+    return transactions
+        .where((transaction) => transaction.type == 'EXPENSE')
+        .map((transaction) => transaction.amount)
+        .fold(0, (previousValue, amount) => previousValue + amount);
+  }
+
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Center(
@@ -153,6 +170,7 @@ class SpendingPage extends StatelessWidget {
   }
 }
 
+// TRANSACTION PAGE
 class TransactionPage extends StatelessWidget {
   const TransactionPage({Key? key}) : super(key: key);
   @override
