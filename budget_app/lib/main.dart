@@ -60,7 +60,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           builder: (BuildContext context) {
             switch (index) {
               case 0:
-                return const SpendingPage();
+                return SpendingPage();
               case 1:
                 return const TransactionPage();
               case 2:
@@ -116,7 +116,9 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
 
 // SPENDING PAGE
 class SpendingPage extends StatelessWidget {
-  const SpendingPage({Key? key}) : super(key: key);
+  final List<Transaction> transactions = [];
+
+  SpendingPage({Key? key}) : super(key: key);
   @override
 
   // calculate total income
@@ -134,38 +136,69 @@ class SpendingPage extends StatelessWidget {
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
 
+  @override
   Widget build(BuildContext context) {
+    double totalIncome = calculateTotalIncome(transactions);
+    double totalExpenses = calculateTotalExpenses(transactions);
+    double netDifference = totalIncome - totalExpenses;
+
     return CupertinoPageScaffold(
-      child: Center(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(10.0),
-            child: CupertinoButton(
-              color: Colors.red,
-              minSize: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-              onPressed: () {
-                // handle expense button press
-              },
-              child: const Text('Add Expense', style: TextStyle(fontSize: 20)),
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: <Widget>[
+                  Text('Net Difference: \$${netDifference.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  Text(
+                      'Total Income - Total Expenses: \$${(totalIncome - totalExpenses).toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                ],
+              ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(10.0),
-            child: CupertinoButton(
-              color: Colors.green,
-              minSize: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-              onPressed: () {
-                // handle income button press
-              },
-              child: const Text('Add Income', style: TextStyle(fontSize: 20)),
-            ),
-          ),
-        ],
-      )),
+            Center(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.all(10.0),
+                  child: CupertinoButton(
+                    color: Colors.red,
+                    minSize: 50,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 10),
+                    onPressed: () {
+                      // handle expense button press
+                    },
+                    child: const Text('Add Expense',
+                        style: TextStyle(fontSize: 20)),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10.0),
+                  child: CupertinoButton(
+                    color: Colors.green,
+                    minSize: 50,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 10),
+                    onPressed: () {
+                      // handle income button press
+                    },
+                    child: const Text('Add Income',
+                        style: TextStyle(fontSize: 20)),
+                  ),
+                ),
+              ],
+            )),
+          ],
+        ),
+      ),
     );
   }
 }
