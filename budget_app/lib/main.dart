@@ -167,12 +167,32 @@ class SpendingPage extends StatelessWidget {
                         color: Colors.red,
                         decoration: TextDecoration.none),
                   ),
-                  Text('Cash Flow: \$${netDifference.toStringAsFixed(2)}',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: netDifference < 0 ? Colors.red : Colors.green,
-                          decoration: TextDecoration.none)),
+                  // make only the number red or green depending on the value and make the text black
+                  RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: 'Cash Flow: ',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '\$${netDifference.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                netDifference < 0 ? Colors.red : Colors.green,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
               ),
