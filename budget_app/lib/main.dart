@@ -151,14 +151,29 @@ class SpendingPage extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: <Widget>[
-                  Text('Net Difference: \$${netDifference.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
                   Text(
-                      'Total Income - Total Expenses: \$${(totalIncome - totalExpenses).toStringAsFixed(2)}',
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
+                    'Income: \$${totalIncome.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                        decoration: TextDecoration.none),
+                  ),
+                  Text(
+                    'Expenses: \$${totalExpenses.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        decoration: TextDecoration.none),
+                  ),
+                  Text('Cash Flow: \$${netDifference.toStringAsFixed(2)}',
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: netDifference < 0 ? Colors.red : Colors.green,
+                          decoration: TextDecoration.none)),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
