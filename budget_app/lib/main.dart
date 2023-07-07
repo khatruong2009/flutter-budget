@@ -147,54 +147,53 @@ class SpendingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'Income: \$${totalIncome.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                        decoration: TextDecoration.none),
-                  ),
-                  Text(
-                    'Expenses: \$${totalExpenses.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                        decoration: TextDecoration.none),
-                  ),
-                  // make only the number red or green depending on the value and make the text black
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Cash Flow: ',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '\$${netDifference.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                netDifference < 0 ? Colors.red : Colors.green,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Income: \$${totalIncome.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                          decoration: TextDecoration.none),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                    Text(
+                      'Expenses: \$${totalExpenses.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          decoration: TextDecoration.none),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Cash Flow:",
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none)),
+                          Text(
+                            '\$${netDifference.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: netDifference < 0
+                                    ? Colors.red
+                                    : Colors.green,
+                                decoration: TextDecoration.none),
+                          ),
+                        ],
+                      ),
+                    )
+                    // const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
             Center(
