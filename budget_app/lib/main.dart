@@ -24,6 +24,67 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Future<void> showTransactionForm(
+    BuildContext context, TransactionType type) async {
+  final _formKey = GlobalKey<FormState>();
+  String description = '';
+  String category = '';
+  double amount = 0.0;
+
+  await showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return CupertinoAlertDialog(
+        title: Text(
+            type == TransactionType.EXPENSE ? 'Add Expense' : 'Add Income'),
+        content: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              CupertinoTextField(
+                placeholder: 'Description',
+                onChanged: (value) {
+                  description = value;
+                },
+              ),
+              CupertinoTextField(
+                placeholder: 'Category',
+                onChanged: (value) {
+                  category = value;
+                },
+              ),
+              CupertinoTextField(
+                placeholder: 'Amount',
+                onChanged: (value) {
+                  amount = double.parse(value);
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text('Add'),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                // add transaction
+                // addTransaction(type, description, amount, category);
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 // HOME PAGE
 class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
@@ -208,7 +269,7 @@ class SpendingPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 25, vertical: 10),
                     onPressed: () {
-                      // handle expense button press
+                      showTransactionForm(context, TransactionType.EXPENSE);
                     },
                     child: const Text('Add Expense',
                         style: TextStyle(fontSize: 20)),
@@ -222,7 +283,7 @@ class SpendingPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 25, vertical: 10),
                     onPressed: () {
-                      // handle income button press
+                      showTransactionForm(context, TransactionType.INCOME);
                     },
                     child: const Text('Add Income',
                         style: TextStyle(fontSize: 20)),
