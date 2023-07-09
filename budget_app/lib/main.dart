@@ -26,61 +26,106 @@ class MyApp extends StatelessWidget {
 
 Future<void> showTransactionForm(
     BuildContext context, TransactionType type) async {
+  // categories and their icons
+  final Map<String, IconData> expenseCategories = {
+    'General': CupertinoIcons.square_grid_2x2,
+    'Eating Out': CupertinoIcons.drop_triangle,
+    'Groceries': CupertinoIcons.cart,
+    'Housing': CupertinoIcons.house,
+    'Transportation': CupertinoIcons.car_detailed,
+    'Travel': CupertinoIcons.airplane,
+    'Clothing': CupertinoIcons.bag,
+    'Gift': CupertinoIcons.gift,
+    'Health': CupertinoIcons.heart,
+    'Entertainment': CupertinoIcons.film,
+  };
+
+  final Map<String, IconData> incomeCategories = {
+    'Salary': CupertinoIcons.money_dollar,
+    'Investment': CupertinoIcons.chart_bar,
+    'Gift': CupertinoIcons.gift,
+    'Other': CupertinoIcons.square_grid_2x2,
+  };
+
   final _formKey = GlobalKey<FormState>();
   String description = '';
-  String category = '';
+  String category = type == TransactionType.EXPENSE
+      ? expenseCategories.keys.first
+      : incomeCategories.keys.first;
   double amount = 0.0;
 
+  // show transaction form
   await showCupertinoDialog(
     context: context,
     builder: (BuildContext context) {
-      return CupertinoAlertDialog(
-        title: Text(
-            type == TransactionType.EXPENSE ? 'Add Expense' : 'Add Income'),
-        content: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              CupertinoTextField(
-                placeholder: 'Description',
-                onChanged: (value) {
-                  description = value;
-                },
-              ),
-              CupertinoTextField(
-                placeholder: 'Category',
-                onChanged: (value) {
-                  category = value;
-                },
-              ),
-              CupertinoTextField(
-                placeholder: 'Amount',
-                onChanged: (value) {
-                  amount = double.parse(value);
-                },
-              ),
-            ],
+      return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        final categoryMap = type == TransactionType.EXPENSE
+            ? expenseCategories
+            : incomeCategories;
+
+        return CupertinoAlertDialog(
+          title: Text(
+              type == TransactionType.EXPENSE ? 'Add Expense' : 'Add Income'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                CupertinoTextField(
+                  placeholder: 'Description',
+                  onChanged: (value) {
+                    description = value;
+                  },
+                ),
+                Container(
+                  height: 150,
+                  child: CupertinoPicker(
+                    itemExtent: 30,
+                    onSelectedItemChanged: (index) {
+                      setState(() {
+                        category = categoryMap.keys.elementAt(index);
+                      });
+                    },
+                    children: categoryMap.entries.map((entry) {
+                      return Row(
+                        children: <Widget>[
+                          Icon(entry.value, size: 25),
+                          SizedBox(width: 10),
+                          Text(entry.key),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+                CupertinoTextField(
+                  placeholder: 'Amount',
+                  onChanged: (value) {
+                    amount = double.parse(value);
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Add'),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // add transaction
-                // addTransaction(type, description, amount, category);
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('Cancel'),
+              onPressed: () {
                 Navigator.of(context).pop();
-              }
-            },
-          ),
-        ],
-      );
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text('Add'),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  // add transaction
+                  // addTransaction(type, description, amount, category);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      });
     },
   );
 }
@@ -190,6 +235,7 @@ class SpendingPage extends StatelessWidget {
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
 
+  // calculate total expenses
   double calculateTotalExpenses(List<Transaction> transactions) {
     return transactions
         .where((transaction) => transaction.type == 'EXPENSE')
