@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 Future<void> showTransactionForm(
-    BuildContext context, TransactionType type) async {
+    BuildContext context, TransactionType type, Function addTransaction) async {
   // categories and their icons
   final Map<String, IconData> expenseCategories = {
     'General': CupertinoIcons.square_grid_2x2,
@@ -133,7 +133,7 @@ Future<void> showTransactionForm(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   // add transaction
-                  // addTransaction(type, description, amount, category);
+                  addTransaction(type, description, amount, category);
                   Navigator.of(context).pop();
                 }
               },
@@ -156,6 +156,47 @@ class BudgetHomePage extends StatefulWidget {
 class _BudgetHomePageState extends State<BudgetHomePage> {
   double total = 0.0;
   List<Transaction> transactions = [];
+
+  double totalIncome = 0.0;
+  double totalExpenses = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    getTransactions().then((loadedTransactions) {
+      setState(() {
+        transactions = loadedTransactions;
+        totalIncome = transactions
+            .where((transaction) => transaction.type == TransactionType.INCOME)
+            .map((transaction) => transaction.amount)
+            .fold(0, (previousValue, amount) => previousValue + amount);
+        totalExpenses = transactions
+            .where((transaction) => transaction.type == TransactionType.EXPENSE)
+            .map((transaction) => transaction.amount)
+            .fold(0, (previousValue, amount) => previousValue + amount);
+      });
+    });
+  }
+
+  void addTransaction(TransactionType type, String description, double amount,
+      String category) {
+    setState(() {
+      transactions.add(Transaction(
+          type: type,
+          description: description,
+          amount: amount,
+          category: category));
+      if (type == TransactionType.EXPENSE) {
+        totalExpenses += amount;
+      } else {
+        totalIncome += amount;
+      }
+    });
+    saveTransactions(transactions);
+    saveTotal(type == TransactionType.EXPENSE
+        ? totalExpenses
+        : totalIncome - totalExpenses);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +222,10 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           builder: (BuildContext context) {
             switch (index) {
               case 0:
-                return SpendingPage();
+                return SpendingPage(
+                    totalIncome: totalIncome,
+                    totalExpenses: totalExpenses,
+                    addTransaction: addTransaction);
               case 1:
                 return const TransactionPage();
               case 2:
@@ -238,8 +282,16 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
 // SPENDING PAGE
 class SpendingPage extends StatelessWidget {
   final List<Transaction> transactions = [];
+  final double totalIncome;
+  final double totalExpenses;
+  final Function addTransaction;
 
-  SpendingPage({Key? key}) : super(key: key);
+  SpendingPage({
+    Key? key,
+    required this.totalIncome,
+    required this.totalExpenses,
+    required this.addTransaction,
+  }) : super(key: key);
   @override
 
   // calculate total income
@@ -330,7 +382,8 @@ class SpendingPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 25, vertical: 10),
                     onPressed: () {
-                      showTransactionForm(context, TransactionType.EXPENSE);
+                      showTransactionForm(
+                          context, TransactionType.EXPENSE, addTransaction);
                     },
                     child: const Text('Add Expense',
                         style: TextStyle(fontSize: 20)),
@@ -344,7 +397,8 @@ class SpendingPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 25, vertical: 10),
                     onPressed: () {
-                      showTransactionForm(context, TransactionType.INCOME);
+                      showTransactionForm(
+                          context, TransactionType.INCOME, addTransaction);
                     },
                     child: const Text('Add Income',
                         style: TextStyle(fontSize: 20)),
