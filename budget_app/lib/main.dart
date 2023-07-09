@@ -71,11 +71,20 @@ Future<void> showTransactionForm(
             key: _formKey,
             child: Column(
               children: [
-                CupertinoTextField(
-                  placeholder: 'Description',
-                  onChanged: (value) {
-                    description = value;
-                  },
+                Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: CupertinoTextField(
+                    placeholder: 'Description',
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    onChanged: (value) {
+                      description = value;
+                    },
+                  ),
                 ),
                 Container(
                   height: 150,
@@ -99,6 +108,12 @@ Future<void> showTransactionForm(
                 ),
                 CupertinoTextField(
                   placeholder: 'Amount',
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                   onChanged: (value) {
                     amount = double.parse(value);
                   },
