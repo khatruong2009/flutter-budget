@@ -31,8 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  amplify_flutter: ^1.0.0
-  amplify_datastore: ^1.0.0-supports-only-mobile
   shared_preferences: ^2.1.2
   provider: ^6.0.1
 

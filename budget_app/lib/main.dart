@@ -193,9 +193,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
       }
     });
     saveTransactions(transactions);
-    saveTotal(type == TransactionType.EXPENSE
-        ? totalExpenses
-        : totalIncome - totalExpenses);
+    saveTotal(totalIncome - totalExpenses);
   }
 
   @override
@@ -252,10 +250,22 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     return prefs.getDouble('total') ?? 0.0;
   }
 
+  void saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('key', 'value');
+  }
+
+  void retrieveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString('key');
+    print(value);
+  }
+
   // save transactions to local storage
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
+    print("Saving transactions: $jsonTransactions");
     await prefs.setString('transactions', jsonEncode(jsonTransactions));
   }
 
@@ -267,16 +277,9 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
       return [];
     }
     final jsonList = jsonDecode(jsonString) as List;
+    print("Retrieving transactions: $jsonList");
     return jsonList.map((e) => Transaction.fromJson(e)).toList();
   }
-
-  // void addTransaction(
-  //     TransactionType type, description, double amount, String category) {
-  //   setState(() {
-  //     transactions.add(Transaction(type, description, amount, category));
-  //     total += amount;
-  //   });
-  // }
 }
 
 // SPENDING PAGE
