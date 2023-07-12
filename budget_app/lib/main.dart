@@ -660,32 +660,35 @@ class CategoryPage extends StatelessWidget {
             // legend
             Expanded(
               flex: 2,
-              child: ListView.builder(
-                itemCount: sections.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return DefaultTextStyle(
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          sections[index].iconData,
-                          color: sections[index].color,
-                          size: 24,
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                            '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}%'),
-                      ],
-                    ),
-                  );
-                },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: ListView.builder(
+                  itemCount: sections.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return DefaultTextStyle(
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            sections[index].iconData,
+                            color: sections[index].color,
+                            size: 24,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                              '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}'),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
