@@ -16,7 +16,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const BudgetHomePage(title: 'Home'),
+      home: FutureBuilder(
+        future: context.read<TransactionModel>().getTransactions(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const BudgetHomePage(title: 'Home');
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
@@ -37,17 +45,43 @@ class TransactionModel extends ChangeNotifier {
 
   void addTransaction(TransactionType type, String description, double amount,
       String category) {
-    transactions.add(Transaction(
+    Transaction newTransaction = Transaction(
         type: type,
         description: description,
         amount: amount,
-        category: category));
+        category: category);
+    transactions.add(newTransaction);
     if (type == TransactionType.EXPENSE) {
       totalExpenses += amount;
     } else {
       totalIncome += amount;
     }
+    saveTransactions(transactions);
     notifyListeners();
+  }
+
+  Future<void> saveTransactions(List<Transaction> transactions) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonTransactions = transactions.map((t) => t.toJson()).toList();
+    print("Saving transactions: $jsonTransactions");
+    await prefs.setString('transactions', jsonEncode(jsonTransactions));
+  }
+
+  Future<void> getTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('transactions');
+    if (jsonString != null && jsonString.isNotEmpty) {
+      final jsonList = jsonDecode(jsonString) as List;
+      transactions = jsonList.map((e) => Transaction.fromJson(e)).toList();
+      totalIncome = transactions
+          .where((transaction) => transaction.type == TransactionType.INCOME)
+          .map((transaction) => transaction.amount)
+          .fold(0, (previousValue, amount) => previousValue + amount);
+      totalExpenses = transactions
+          .where((transaction) => transaction.type == TransactionType.EXPENSE)
+          .map((transaction) => transaction.amount)
+          .fold(0, (previousValue, amount) => previousValue + amount);
+    }
   }
 }
 
@@ -444,102 +478,6 @@ class _SpendingPageState extends State<SpendingPage> {
         );
       },
     );
-
-    //   return CupertinoPageScaffold(
-    //     child: SafeArea(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: <Widget>[
-    //           Expanded(
-    //             child: Padding(
-    //               padding: const EdgeInsets.all(20.0),
-    //               child: Column(
-    //                 children: <Widget>[
-    //                   Text(
-    //                     'Income: \$${totalIncome.toStringAsFixed(2)}',
-    //                     style: const TextStyle(
-    //                         fontSize: 24,
-    //                         fontWeight: FontWeight.bold,
-    //                         color: Colors.green,
-    //                         decoration: TextDecoration.none),
-    //                   ),
-    //                   Text(
-    //                     'Expenses: \$${totalExpenses.toStringAsFixed(2)}',
-    //                     style: const TextStyle(
-    //                         fontSize: 24,
-    //                         fontWeight: FontWeight.bold,
-    //                         color: Colors.red,
-    //                         decoration: TextDecoration.none),
-    //                   ),
-    //                   Expanded(
-    //                     child: Column(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         const Text("Cash Flow:",
-    //                             style: TextStyle(
-    //                                 fontSize: 24,
-    //                                 fontWeight: FontWeight.bold,
-    //                                 color: Colors.black,
-    //                                 decoration: TextDecoration.none)),
-    //                         Text(
-    //                           '\$${netDifference.toStringAsFixed(2)}',
-    //                           style: TextStyle(
-    //                               fontSize: 48,
-    //                               fontWeight: FontWeight.bold,
-    //                               color: netDifference < 0
-    //                                   ? Colors.red
-    //                                   : Colors.green,
-    //                               decoration: TextDecoration.none),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   )
-    //                   // const SizedBox(height: 16),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //           Center(
-    //               child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: <Widget>[
-    //               Container(
-    //                 margin: const EdgeInsets.all(10.0),
-    //                 child: CupertinoButton(
-    //                   color: Colors.red,
-    //                   minSize: 50,
-    //                   padding: const EdgeInsets.symmetric(
-    //                       horizontal: 25, vertical: 10),
-    //                   onPressed: () {
-    //                     showTransactionForm(
-    //                         context, TransactionType.EXPENSE, addTransaction);
-    //                   },
-    //                   child: const Text('Add Expense',
-    //                       style: TextStyle(fontSize: 20)),
-    //                 ),
-    //               ),
-    //               Container(
-    //                 margin: const EdgeInsets.all(10.0),
-    //                 child: CupertinoButton(
-    //                   color: Colors.green,
-    //                   minSize: 50,
-    //                   padding: const EdgeInsets.symmetric(
-    //                       horizontal: 25, vertical: 10),
-    //                   onPressed: () {
-    //                     showTransactionForm(
-    //                         context, TransactionType.INCOME, addTransaction);
-    //                   },
-    //                   child: const Text('Add Income',
-    //                       style: TextStyle(fontSize: 20)),
-    //                 ),
-    //               ),
-    //             ],
-    //           )),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
   }
 }
 
