@@ -183,6 +183,7 @@ Future<void> showTransactionForm(
                 ),
                 CupertinoTextField(
                   placeholder: 'Amount',
+                  keyboardType: TextInputType.number,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
