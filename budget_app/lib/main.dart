@@ -286,7 +286,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
                     // totalExpenses: totalExpenses,
                     addTransaction: addTransaction);
               case 1:
-                return const TransactionPage();
+                return TransactionPage();
               case 2:
                 return const SettingsPage();
             }
@@ -483,14 +483,30 @@ class _SpendingPageState extends State<SpendingPage> {
 
 // TRANSACTION PAGE
 class TransactionPage extends StatelessWidget {
-  const TransactionPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
-      child: Center(
-        child: Text('Welcome to your Transaction page!',
-            style: TextStyle(fontSize: 20)),
-      ),
+    return Consumer<TransactionModel>(
+      builder: (context, TransactionModel, child) {
+        return Material(
+          child: ListView.builder(
+            itemCount: TransactionModel.transactions.length,
+            itemBuilder: (context, index) {
+              final transaction = TransactionModel.transactions[index];
+              return ListTile(
+                title: Text(transaction.description),
+                subtitle: Text(transaction.category),
+                trailing: Text('\$${transaction.amount.toStringAsFixed(2)}'),
+                leading: Icon(transaction.type == TransactionType.EXPENSE
+                    ? CupertinoIcons.money_dollar_circle
+                    : CupertinoIcons.money_dollar_circle_fill),
+                iconColor: transaction.type == TransactionType.EXPENSE
+                    ? Colors.red
+                    : Colors.green,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
