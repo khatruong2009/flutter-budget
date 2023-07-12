@@ -488,6 +488,7 @@ class _SpendingPageState extends State<SpendingPage> {
 
 // TRANSACTION PAGE
 class TransactionPage extends StatelessWidget {
+  const TransactionPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
