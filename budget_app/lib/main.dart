@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(
@@ -46,10 +47,12 @@ class TransactionModel extends ChangeNotifier {
   void addTransaction(TransactionType type, String description, double amount,
       String category) {
     Transaction newTransaction = Transaction(
-        type: type,
-        description: description,
-        amount: amount,
-        category: category);
+      type: type,
+      description: description,
+      amount: amount,
+      category: category,
+      date: DateTime.now(),
+    );
     transactions.add(newTransaction);
     if (type == TransactionType.EXPENSE) {
       totalExpenses += amount;
@@ -243,10 +246,12 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
       String category) {
     setState(() {
       transactions.add(Transaction(
-          type: type,
-          description: description,
-          amount: amount,
-          category: category));
+        type: type,
+        description: description,
+        amount: amount,
+        category: category,
+        date: DateTime.now(),
+      ));
       if (type == TransactionType.EXPENSE) {
         totalExpenses += amount;
       } else {
@@ -494,7 +499,8 @@ class TransactionPage extends StatelessWidget {
               final transaction = TransactionModel.transactions[index];
               return ListTile(
                 title: Text(transaction.description),
-                subtitle: Text(transaction.category),
+                subtitle: Text(
+                    'Category: ${transaction.category}\nDate: ${DateFormat.yMMMd().format(transaction.date)}'),
                 trailing: Text('\$${transaction.amount.toStringAsFixed(2)}'),
                 leading: Icon(transaction.type == TransactionType.EXPENSE
                     ? CupertinoIcons.money_dollar_circle
@@ -530,12 +536,14 @@ class Transaction {
   double amount;
   String category;
   TransactionType type;
+  DateTime date;
 
   Transaction(
       {required this.type,
       required this.description,
       required this.amount,
-      required this.category});
+      required this.category,
+      required this.date});
 
   // convert transaction object into a map
   Map<String, dynamic> toJson() => {
@@ -543,6 +551,7 @@ class Transaction {
         'description': description,
         'amount': amount,
         'category': category,
+        'date': date.toIso8601String(),
       };
 
   // convert map into a transaction object
@@ -554,6 +563,7 @@ class Transaction {
       description: json['description'],
       amount: json['amount'],
       category: json['category'],
+      date: DateTime.parse(json['date']),
     );
   }
 }
