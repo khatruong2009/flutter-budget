@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -165,7 +164,7 @@ Future<void> showTransactionForm(
                     },
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 150,
                   child: CupertinoPicker(
                     itemExtent: 30,
@@ -178,7 +177,7 @@ Future<void> showTransactionForm(
                       return Row(
                         children: <Widget>[
                           Icon(entry.value, size: 25),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(entry.key),
                         ],
                       );
@@ -613,7 +612,7 @@ class CategoryPage extends StatelessWidget {
         double totalAmount = expensesPerCategory.values.reduce((a, b) => a + b);
 
         final List<CategoryPieChartSectionData> sections = [];
-        final random = Random();
+
         int index = 0;
         expensesPerCategory.forEach((key, value) {
           final color = colors[index % colors.length];
