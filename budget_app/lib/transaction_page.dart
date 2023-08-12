@@ -11,12 +11,13 @@ class TransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
-      builder: (context, TransactionModel, child) {
+      builder: (context, transactionModel, child) {
         return Material(
           child: ListView.builder(
-            itemCount: TransactionModel.transactions.length,
+            itemCount: transactionModel.currentMonthTransactions.length,
             itemBuilder: (context, index) {
-              final transaction = TransactionModel.transactions[index];
+              final transaction =
+                  transactionModel.currentMonthTransactions[index];
               return Dismissible(
                 key: UniqueKey(),
                 direction: DismissDirection.endToStart,
@@ -39,7 +40,7 @@ class TransactionPage extends StatelessWidget {
                   ),
                 ),
                 onDismissed: (direction) {
-                  TransactionModel.deleteTransaction(index);
+                  transactionModel.deleteTransaction(index);
                 },
                 background: Container(
                   color: Colors.red,

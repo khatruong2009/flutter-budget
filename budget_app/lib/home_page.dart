@@ -89,10 +89,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           builder: (BuildContext context) {
             switch (index) {
               case 0:
-                return SpendingPage(
-                    // totalIncome: totalIncome,
-                    // totalExpenses: totalExpenses,
-                    addTransaction: addTransaction);
+                return SpendingPage(addTransaction: addTransaction);
               case 1:
                 return TransactionPage();
               case 2:

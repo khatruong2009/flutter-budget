@@ -10,7 +10,15 @@ class TransactionModel extends ChangeNotifier {
   List<Transaction> transactions = [];
   double totalIncome = 0.0;
   double totalExpenses = 0.0;
+  DateTime selectedMonth = DateTime.now();
 
+  // method to change selected month
+  void selectMonth(DateTime date) {
+    selectedMonth = DateTime(date.year, date.month);
+    notifyListeners();
+  }
+
+  // add transaction
   void addTransaction(
       TransactionTyp type, String description, double amount, String category) {
     Transaction newTransaction = Transaction(
@@ -30,6 +38,7 @@ class TransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // save transactions
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
@@ -37,6 +46,7 @@ class TransactionModel extends ChangeNotifier {
     await prefs.setString('transactions', jsonEncode(jsonTransactions));
   }
 
+  // load transactions
   Future<void> getTransactions() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('transactions');
@@ -52,6 +62,15 @@ class TransactionModel extends ChangeNotifier {
           .map((transaction) => transaction.amount)
           .fold(0, (previousValue, amount) => previousValue + amount);
     }
+  }
+
+  // get the current month's transactions
+  List<Transaction> get currentMonthTransactions {
+    return transactions
+        .where((transaction) =>
+            transaction.date.year == selectedMonth.year &&
+            transaction.date.month == selectedMonth.month)
+        .toList();
   }
 
   void deleteTransaction(int index) {

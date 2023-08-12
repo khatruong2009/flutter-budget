@@ -37,7 +37,7 @@ class CategoryPage extends StatelessWidget {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
         final Map<String, double> expensesPerCategory = {};
-        for (final transaction in transactionModel.transactions
+        for (final transaction in transactionModel.currentMonthTransactions
             .where((t) => t.type == TransactionTyp.EXPENSE)) {
           expensesPerCategory.update(
             transaction.category,
@@ -46,7 +46,21 @@ class CategoryPage extends StatelessWidget {
           );
         }
 
-        double totalAmount = expensesPerCategory.values.reduce((a, b) => a + b);
+        double totalAmount = expensesPerCategory.values.isNotEmpty
+            ? expensesPerCategory.values.reduce((a, b) => a + b)
+            : 0.0;
+
+        if (totalAmount == 0.0) {
+          return const Center(
+            child: Text(
+              'No expenses',
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  decoration: TextDecoration.none),
+            ),
+          );
+        }
 
         final List<CategoryPieChartSectionData> sections = [];
 

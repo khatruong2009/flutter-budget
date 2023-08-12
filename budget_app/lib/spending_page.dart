@@ -20,6 +20,32 @@ class SpendingPage extends StatefulWidget {
 }
 
 class SpendingPageState extends State<SpendingPage> {
+  List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  // current month
+  int currentMonthIndex = DateTime.now().month - 1;
+  late FixedExtentScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController =
+        FixedExtentScrollController(initialItem: currentMonthIndex);
+  }
+
   // calculate total income
   double calculateTotalIncome(List<Transaction> transactions) {
     return transactions
@@ -40,8 +66,10 @@ class SpendingPageState extends State<SpendingPage> {
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
-        double totalIncome = transactionModel.totalIncome;
-        double totalExpenses = transactionModel.totalExpenses;
+        double totalIncome =
+            calculateTotalIncome(transactionModel.currentMonthTransactions);
+        double totalExpenses =
+            calculateTotalExpenses(transactionModel.currentMonthTransactions);
         double netDifference = totalIncome - totalExpenses;
 
         return CupertinoPageScaffold(
@@ -69,6 +97,18 @@ class SpendingPageState extends State<SpendingPage> {
                               fontWeight: FontWeight.bold,
                               color: Colors.red,
                               decoration: TextDecoration.none),
+                        ),
+                        // toggle to select the month
+                        CupertinoPicker(
+                          scrollController: scrollController,
+                          itemExtent: 32,
+                          onSelectedItemChanged: (int index) {
+                            transactionModel.selectMonth(
+                                DateTime(DateTime.now().year, index + 1));
+                          },
+                          children: months.map((String month) {
+                            return Text(month);
+                          }).toList(),
                         ),
                         Expanded(
                           child: Column(
