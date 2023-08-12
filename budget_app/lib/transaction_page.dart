@@ -20,6 +20,24 @@ class TransactionPage extends StatelessWidget {
               return Dismissible(
                 key: UniqueKey(),
                 direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) => showDialog(
+                  context: context,
+                  builder: (context) => CupertinoAlertDialog(
+                    title: const Text('Delete Transaction'),
+                    content: const Text(
+                        'Are you sure you want to delete this transaction?'),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.of(context).pop(false),
+                      ),
+                      CupertinoDialogAction(
+                        child: const Text('Delete'),
+                        onPressed: () => Navigator.of(context).pop(true),
+                      ),
+                    ],
+                  ),
+                ),
                 onDismissed: (direction) {
                   TransactionModel.deleteTransaction(index);
                 },
