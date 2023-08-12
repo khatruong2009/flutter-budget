@@ -82,6 +82,7 @@ class SpendingPageState extends State<SpendingPage> {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: <Widget>[
+                        // top text with income and expenses
                         Text(
                           'Income: \$${totalIncome.toStringAsFixed(2)}',
                           style: const TextStyle(
@@ -110,6 +111,7 @@ class SpendingPageState extends State<SpendingPage> {
                             return Text(month);
                           }).toList(),
                         ),
+                        // hero text with cash flow
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -138,6 +140,7 @@ class SpendingPageState extends State<SpendingPage> {
                     ),
                   ),
                 ),
+                // bottom buttons
                 Center(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
