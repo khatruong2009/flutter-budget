@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'Transaction.dart';
+import 'transaction.dart';
 import 'transaction_model.dart';
 import 'transaction_form.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +23,7 @@ class SpendingPageState extends State<SpendingPage> {
   // calculate total income
   double calculateTotalIncome(List<Transaction> transactions) {
     return transactions
-        .where((transaction) => transaction.type == TransactionType.INCOME)
+        .where((transaction) => transaction.type == TransactionTyp.INCOME)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -31,7 +31,7 @@ class SpendingPageState extends State<SpendingPage> {
   // calculate total expenses
   double calculateTotalExpenses(List<Transaction> transactions) {
     return transactions
-        .where((transaction) => transaction.type == TransactionType.EXPENSE)
+        .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -110,7 +110,7 @@ class SpendingPageState extends State<SpendingPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         onPressed: () {
-                          showTransactionForm(context, TransactionType.EXPENSE,
+                          showTransactionForm(context, TransactionTyp.EXPENSE,
                               transactionModel.addTransaction);
                         },
                         child: const Text('Add Expense',
@@ -125,7 +125,7 @@ class SpendingPageState extends State<SpendingPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         onPressed: () {
-                          showTransactionForm(context, TransactionType.INCOME,
+                          showTransactionForm(context, TransactionTyp.INCOME,
                               transactionModel.addTransaction);
                         },
                         child: const Text('Add Income',

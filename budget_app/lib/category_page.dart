@@ -38,7 +38,7 @@ class CategoryPage extends StatelessWidget {
       builder: (context, transactionModel, child) {
         final Map<String, double> expensesPerCategory = {};
         for (final transaction in transactionModel.transactions
-            .where((t) => t.type == TransactionType.EXPENSE)) {
+            .where((t) => t.type == TransactionTyp.EXPENSE)) {
           expensesPerCategory.update(
             transaction.category,
             (existingValue) => existingValue + transaction.amount,

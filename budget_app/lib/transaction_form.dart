@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'Transaction.dart';
+import 'transaction.dart';
 
 Future<void> showTransactionForm(
-    BuildContext context, TransactionType type, Function addTransaction) async {
+    BuildContext context, TransactionTyp type, Function addTransaction) async {
   // categories and their icons
   final Map<String, IconData> expenseCategories = {
     'General': CupertinoIcons.square_grid_2x2,
@@ -27,7 +27,7 @@ Future<void> showTransactionForm(
 
   final _formKey = GlobalKey<FormState>();
   String description = '';
-  String category = type == TransactionType.EXPENSE
+  String category = type == TransactionTyp.EXPENSE
       ? expenseCategories.keys.first
       : incomeCategories.keys.first;
   double amount = 0.0;
@@ -38,13 +38,13 @@ Future<void> showTransactionForm(
     builder: (BuildContext context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-        final categoryMap = type == TransactionType.EXPENSE
+        final categoryMap = type == TransactionTyp.EXPENSE
             ? expenseCategories
             : incomeCategories;
 
         return CupertinoAlertDialog(
           title: Text(
-              type == TransactionType.EXPENSE ? 'Add Expense' : 'Add Income'),
+              type == TransactionTyp.EXPENSE ? 'Add Expense' : 'Add Income'),
           content: Form(
             key: _formKey,
             child: Column(

@@ -11,8 +11,8 @@ class TransactionModel extends ChangeNotifier {
   double totalIncome = 0.0;
   double totalExpenses = 0.0;
 
-  void addTransaction(TransactionType type, String description, double amount,
-      String category) {
+  void addTransaction(
+      TransactionTyp type, String description, double amount, String category) {
     Transaction newTransaction = Transaction(
       type: type,
       description: description,
@@ -21,7 +21,7 @@ class TransactionModel extends ChangeNotifier {
       date: DateTime.now(),
     );
     transactions.add(newTransaction);
-    if (type == TransactionType.EXPENSE) {
+    if (type == TransactionTyp.EXPENSE) {
       totalExpenses += amount;
     } else {
       totalIncome += amount;
@@ -44,11 +44,11 @@ class TransactionModel extends ChangeNotifier {
       final jsonList = jsonDecode(jsonString) as List;
       transactions = jsonList.map((e) => Transaction.fromJson(e)).toList();
       totalIncome = transactions
-          .where((transaction) => transaction.type == TransactionType.INCOME)
+          .where((transaction) => transaction.type == TransactionTyp.INCOME)
           .map((transaction) => transaction.amount)
           .fold(0, (previousValue, amount) => previousValue + amount);
       totalExpenses = transactions
-          .where((transaction) => transaction.type == TransactionType.EXPENSE)
+          .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
           .map((transaction) => transaction.amount)
           .fold(0, (previousValue, amount) => previousValue + amount);
     }
@@ -56,7 +56,7 @@ class TransactionModel extends ChangeNotifier {
 
   void deleteTransaction(int index) {
     Transaction deletedTransaction = transactions.removeAt(index);
-    if (deletedTransaction.type == TransactionType.EXPENSE) {
+    if (deletedTransaction.type == TransactionTyp.EXPENSE) {
       totalExpenses -= deletedTransaction.amount;
     } else {
       totalIncome -= deletedTransaction.amount;

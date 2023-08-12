@@ -30,19 +30,19 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
       setState(() {
         transactions = loadedTransactions;
         totalIncome = transactions
-            .where((transaction) => transaction.type == TransactionType.INCOME)
+            .where((transaction) => transaction.type == TransactionTyp.INCOME)
             .map((transaction) => transaction.amount)
             .fold(0, (previousValue, amount) => previousValue + amount);
         totalExpenses = transactions
-            .where((transaction) => transaction.type == TransactionType.EXPENSE)
+            .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
             .map((transaction) => transaction.amount)
             .fold(0, (previousValue, amount) => previousValue + amount);
       });
     });
   }
 
-  void addTransaction(TransactionType type, String description, double amount,
-      String category) {
+  void addTransaction(
+      TransactionTyp type, String description, double amount, String category) {
     setState(() {
       transactions.add(Transaction(
         type: type,
@@ -51,7 +51,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         category: category,
         date: DateTime.now(),
       ));
-      if (type == TransactionType.EXPENSE) {
+      if (type == TransactionTyp.EXPENSE) {
         totalExpenses += amount;
       } else {
         totalIncome += amount;

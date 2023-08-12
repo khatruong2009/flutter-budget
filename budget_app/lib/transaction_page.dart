@@ -37,10 +37,10 @@ class TransactionPage extends StatelessWidget {
                   subtitle: Text(
                       'Category: ${transaction.category}\nDate: ${DateFormat.yMMMd().format(transaction.date)}'),
                   trailing: Text('\$${transaction.amount.toStringAsFixed(2)}'),
-                  leading: Icon(transaction.type == TransactionType.EXPENSE
+                  leading: Icon(transaction.type == TransactionTyp.EXPENSE
                       ? CupertinoIcons.money_dollar_circle
                       : CupertinoIcons.money_dollar_circle_fill),
-                  iconColor: transaction.type == TransactionType.EXPENSE
+                  iconColor: transaction.type == TransactionTyp.EXPENSE
                       ? Colors.red
                       : Colors.green,
                 ),
