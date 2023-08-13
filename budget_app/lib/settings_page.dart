@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -21,17 +23,21 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('Appearance'),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: _themeMode == ThemeMode.light,
-                title: Text(
-                    _themeMode == ThemeMode.light ? 'Light Mode' : 'Dark Mode'),
-                leading: Icon(_themeMode == ThemeMode.light
+                initialValue: Provider.of<ThemeProvider>(context, listen: false)
+                        .themeMode ==
+                    ThemeMode.light,
+                title: Text(Provider.of<ThemeProvider>(context).themeMode ==
+                        ThemeMode.light
+                    ? 'Light Mode'
+                    : 'Dark Mode'),
+                leading: Icon(Provider.of<ThemeProvider>(context).themeMode ==
+                        ThemeMode.light
                     ? Icons.wb_sunny
                     : Icons.nights_stay),
                 onToggle: (bool value) {
-                  setState(() {
-                    _themeMode = value ? ThemeMode.light : ThemeMode.dark;
-                    // Update the theme in your app & save to shared_preferences
-                  });
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme();
+                  // Save to shared_preferences if needed
                 },
               ),
             ],
