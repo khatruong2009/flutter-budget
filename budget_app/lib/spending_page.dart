@@ -121,24 +121,6 @@ class SpendingPageState extends State<SpendingPage> {
 
                   // Month Selector
                   const SizedBox(height: 10),
-                  // Container(
-                  //   height: 150,
-                  //   decoration: BoxDecoration(
-                  //     border: Border.all(color: Colors.grey.shade300),
-                  //     borderRadius: BorderRadius.circular(8),
-                  //   ),
-                  //   child: CupertinoPicker(
-                  //     scrollController: scrollController,
-                  //     itemExtent: 32,
-                  //     onSelectedItemChanged: (int index) {
-                  //       transactionModel.selectMonth(
-                  //           DateTime(DateTime.now().year, index + 1));
-                  //     },
-                  //     children: months.map((String month) {
-                  //       return Text(month);
-                  //     }).toList(),
-                  //   ),
-                  // ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
