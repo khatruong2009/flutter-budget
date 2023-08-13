@@ -95,7 +95,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
               case 2:
                 return CategoryPage();
               case 3:
-                return const SettingsPage();
+                return SettingsPage();
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
