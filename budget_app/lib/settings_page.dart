@@ -21,23 +21,15 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('Appearance'),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: true,
-                title: const Text('Light Mode'),
-                leading: const Icon(Icons.wb_sunny),
+                initialValue: _themeMode == ThemeMode.light,
+                title: Text(
+                    _themeMode == ThemeMode.light ? 'Light Mode' : 'Dark Mode'),
+                leading: Icon(_themeMode == ThemeMode.light
+                    ? Icons.wb_sunny
+                    : Icons.nights_stay),
                 onToggle: (bool value) {
                   setState(() {
-                    _themeMode = value ? ThemeMode.light : _themeMode;
-                    // Update the theme in your app & save to shared_preferences
-                  });
-                },
-              ),
-              SettingsTile.switchTile(
-                initialValue: false,
-                title: const Text('Dark Mode'),
-                leading: const Icon(Icons.nights_stay),
-                onToggle: (bool value) {
-                  setState(() {
-                    _themeMode = value ? ThemeMode.dark : _themeMode;
+                    _themeMode = value ? ThemeMode.light : ThemeMode.dark;
                     // Update the theme in your app & save to shared_preferences
                   });
                 },
