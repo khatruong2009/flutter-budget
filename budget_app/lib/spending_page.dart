@@ -147,8 +147,8 @@ class SpendingPageState extends State<SpendingPage> {
                     },
                     child: AnimatedContainer(
                       height: isExpanded
-                          ? 150
-                          : 32, // 150 when expanded, 32 when collapsed
+                          ? 100
+                          : 38, // 100 when expanded, 38 when collapsed
                       duration: const Duration(
                           milliseconds:
                               300), // Duration for the height animation
