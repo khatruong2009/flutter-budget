@@ -9,7 +9,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  ThemeMode _themeMode = ThemeMode.system; // Default value
+// Default value
 
   @override
   Widget build(BuildContext context) {

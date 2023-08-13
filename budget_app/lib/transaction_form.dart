@@ -56,7 +56,9 @@ Future<void> showTransactionForm(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.grey[900],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     onChanged: (value) {
@@ -90,7 +92,9 @@ Future<void> showTransactionForm(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Colors.grey[900],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   onChanged: (value) {
