@@ -31,6 +31,7 @@ Future<void> showTransactionForm(
       ? expenseCategories.keys.first
       : incomeCategories.keys.first;
   double amount = 0.0;
+  DateTime selectedDate = DateTime.now();
 
   // show transaction form
   await showCupertinoDialog(
@@ -60,6 +61,12 @@ Future<void> showTransactionForm(
                           ? Colors.white
                           : Colors.grey[900],
                       borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                     ),
                     onChanged: (value) {
                       description = value;
@@ -97,10 +104,32 @@ Future<void> showTransactionForm(
                         : Colors.grey[900],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                  ),
                   onChanged: (value) {
                     amount = double.parse(value);
                   },
                 ),
+                // IMPLEMENT LATER
+                // CHOOSE DATE
+                // SizedBox(
+                //   height: 150,
+                //   child: CupertinoDatePicker(
+                //     mode: CupertinoDatePickerMode.date,
+                //     minimumYear: DateTime.now().year,
+                //     maximumYear: DateTime.now().year,
+                //     initialDateTime: DateTime.now(),
+                //     onDateTimeChanged: (DateTime newDate) {
+                //       setState(() {
+                //         selectedDate = newDate;
+                //       });
+                //     },
+                //   ),
+                // )
               ],
             ),
           ),
@@ -116,7 +145,8 @@ Future<void> showTransactionForm(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   // add transaction
-                  addTransaction(type, description, amount, category);
+                  addTransaction(
+                      type, description, amount, category, selectedDate);
                   Navigator.of(context).pop();
                 }
               },

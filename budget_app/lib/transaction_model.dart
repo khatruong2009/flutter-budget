@@ -19,14 +19,14 @@ class TransactionModel extends ChangeNotifier {
   }
 
   // add transaction
-  void addTransaction(
-      TransactionTyp type, String description, double amount, String category) {
+  void addTransaction(TransactionTyp type, String description, double amount,
+      String category, DateTime date) {
     Transaction newTransaction = Transaction(
       type: type,
       description: description,
       amount: amount,
       category: category,
-      date: DateTime.now(),
+      date: date,
     );
     transactions.add(newTransaction);
     if (type == TransactionTyp.EXPENSE) {
