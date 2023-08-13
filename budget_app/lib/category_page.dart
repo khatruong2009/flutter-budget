@@ -51,12 +51,14 @@ class CategoryPage extends StatelessWidget {
             : 0.0;
 
         if (totalAmount == 0.0) {
-          return const Center(
+          return Center(
             child: Text(
               'No expenses',
               style: TextStyle(
                   fontSize: 24,
-                  color: Colors.black,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                   decoration: TextDecoration.none),
             ),
           );
@@ -116,10 +118,12 @@ class CategoryPage extends StatelessWidget {
                   itemCount: sections.length,
                   itemBuilder: (BuildContext context, int index) {
                     return DefaultTextStyle(
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         decoration: TextDecoration.none,
                       ),
                       child: Row(

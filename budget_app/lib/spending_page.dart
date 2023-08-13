@@ -116,11 +116,14 @@ class SpendingPageState extends State<SpendingPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Cash Flow:",
+                              Text("Cash Flow:",
                                   style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
                                       decoration: TextDecoration.none)),
                               Text(
                                 '\$${netDifference.toStringAsFixed(2)}',
