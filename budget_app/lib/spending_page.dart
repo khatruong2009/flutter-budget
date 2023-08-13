@@ -38,6 +38,7 @@ class SpendingPageState extends State<SpendingPage> {
   // current month
   int currentMonthIndex = DateTime.now().month - 1;
   late FixedExtentScrollController scrollController;
+  bool isExpanded = false;
 
   @override
   void initState() {
@@ -74,83 +75,129 @@ class SpendingPageState extends State<SpendingPage> {
 
         return CupertinoPageScaffold(
           child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: <Widget>[
-                        // top text with income and expenses
-                        Text(
-                          'Income: \$${totalIncome.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                              decoration: TextDecoration.none),
-                        ),
-                        Text(
-                          'Expenses: \$${totalExpenses.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                              decoration: TextDecoration.none),
-                        ),
-                        // toggle to select the month
-                        CupertinoPicker(
-                          scrollController: scrollController,
-                          itemExtent: 32,
-                          onSelectedItemChanged: (int index) {
-                            transactionModel.selectMonth(
-                                DateTime(DateTime.now().year, index + 1));
-                          },
-                          children: months.map((String month) {
-                            return Text(month);
-                          }).toList(),
-                        ),
-                        // hero text with cash flow
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: <Widget>[
+                  // Display for Income and Expenses
+                  Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Cash Flow:",
+                              const Text('Income',
                                   style: TextStyle(
-                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      decoration: TextDecoration.none)),
-                              Text(
-                                '\$${netDifference.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    fontSize: 48,
-                                    fontWeight: FontWeight.bold,
-                                    color: netDifference < 0
-                                        ? Colors.red
-                                        : Colors.green,
-                                    decoration: TextDecoration.none),
-                              ),
+                                      fontSize: 16)),
+                              const SizedBox(height: 4),
+                              Text('\$${totalIncome.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.green)),
                             ],
                           ),
-                        )
-                        // const SizedBox(height: 16),
-                      ],
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Expenses',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
+                              const SizedBox(height: 4),
+                              Text('\$${totalExpenses.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.red)),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                // bottom buttons
-                Center(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.all(10.0),
-                      child: CupertinoButton(
+                  const SizedBox(height: 20),
+
+                  // Month Selector
+                  const SizedBox(height: 10),
+                  // Container(
+                  //   height: 150,
+                  //   decoration: BoxDecoration(
+                  //     border: Border.all(color: Colors.grey.shade300),
+                  //     borderRadius: BorderRadius.circular(8),
+                  //   ),
+                  //   child: CupertinoPicker(
+                  //     scrollController: scrollController,
+                  //     itemExtent: 32,
+                  //     onSelectedItemChanged: (int index) {
+                  //       transactionModel.selectMonth(
+                  //           DateTime(DateTime.now().year, index + 1));
+                  //     },
+                  //     children: months.map((String month) {
+                  //       return Text(month);
+                  //     }).toList(),
+                  //   ),
+                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isExpanded = !isExpanded; // Toggle the isExpanded state
+                      });
+                    },
+                    child: AnimatedContainer(
+                      height: isExpanded
+                          ? 150
+                          : 32, // 150 when expanded, 32 when collapsed
+                      duration: const Duration(
+                          milliseconds:
+                              300), // Duration for the height animation
+                      curve: Curves.easeInOut,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: CupertinoPicker(
+                        scrollController: scrollController,
+                        itemExtent: 32,
+                        onSelectedItemChanged: (int index) {
+                          transactionModel.selectMonth(
+                              DateTime(DateTime.now().year, index + 1));
+                        },
+                        children: months.map((String month) {
+                          return Text(month);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Cash Flow Display
+                  Text("Cash Flow:",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          decoration: TextDecoration.none)),
+                  const SizedBox(height: 10),
+                  Text(
+                    '\$${netDifference.toStringAsFixed(2)}',
+                    style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: netDifference < 0 ? Colors.red : Colors.green,
+                        decoration: TextDecoration.none),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Add Expense and Add Income Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      CupertinoButton(
                         color: Colors.red,
                         minSize: 50,
                         padding: const EdgeInsets.symmetric(
@@ -162,10 +209,7 @@ class SpendingPageState extends State<SpendingPage> {
                         child: const Text('Add Expense',
                             style: TextStyle(fontSize: 20)),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(10.0),
-                      child: CupertinoButton(
+                      CupertinoButton(
                         color: Colors.green,
                         minSize: 50,
                         padding: const EdgeInsets.symmetric(
@@ -177,10 +221,10 @@ class SpendingPageState extends State<SpendingPage> {
                         child: const Text('Add Income',
                             style: TextStyle(fontSize: 20)),
                       ),
-                    ),
-                  ],
-                )),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
