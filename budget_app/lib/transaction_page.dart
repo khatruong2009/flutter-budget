@@ -48,7 +48,7 @@ class TransactionPage extends StatelessWidget {
                     transactionModel.deleteTransaction(index);
                     ScaffoldMessenger.of(context).showSnackBar(
                       // Provide feedback
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Transaction deleted'),
                       ),
                     );
@@ -61,21 +61,21 @@ class TransactionPage extends StatelessWidget {
                         color: Colors.white), // Use intuitive icon
                   ),
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                         vertical: 10.0,
                         horizontal: 15.0), // Added padding for each list item
                     title: Text(transaction.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight:
                                 FontWeight.bold)), // Make description prominent
                     subtitle: Text(
                       'Category: ${transaction.category}\nDate: ${DateFormat.yMMMd().format(transaction.date)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize:
                               12), // Decreased font size for secondary info
                     ),
                     trailing: Text('\$${transaction.amount.toStringAsFixed(2)}',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16)), // Make the amount prominent
                     leading: Icon(
                       transaction.type == TransactionTyp.EXPENSE
