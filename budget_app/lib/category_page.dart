@@ -123,39 +123,61 @@ class CategoryPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
                     itemCount: sections.length,
+                    // Inside the ListView.builder...
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
                         child: DefaultTextStyle(
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
                             color:
                                 Theme.of(context).brightness == Brightness.light
                                     ? Colors.black
                                     : Colors.white,
-                            decoration: TextDecoration.none,
                           ),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 24,
-                                height: 24,
-                                color: sections[index].color, // Color box
-                                child: Icon(
-                                  sections[index].iconData,
-                                  color: Colors.white,
-                                  size: 16,
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: sections[index].color,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    sections[index].iconData,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(
-                                width: 16,
-                              ),
+                              const SizedBox(width: 16),
                               Expanded(
-                                child: Text(
-                                  '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${sections[index].category}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Colors.grey[700]
+                                            : Colors.grey[300],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
