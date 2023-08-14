@@ -96,7 +96,8 @@ class CategoryPage extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.more_vert), // Example for additional actions
+                icon: const Icon(
+                    Icons.more_vert), // Example for additional actions
                 onPressed: () {
                   // Placeholder for more actions
                 },
