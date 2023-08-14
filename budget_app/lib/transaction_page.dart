@@ -5,6 +5,7 @@ import 'transaction.dart';
 import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'package:intl/intl.dart';
+import 'common.dart';
 
 class TransactionPage extends StatelessWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -93,8 +94,10 @@ class TransactionPage extends StatelessWidget {
                               fontSize: 16)), // Make the amount prominent
                       leading: Icon(
                         transaction.type == TransactionTyp.EXPENSE
-                            ? CupertinoIcons.down_arrow
-                            : CupertinoIcons.up_arrow, // Use arrow icons
+                            ? expenseCategories[transaction.category] ??
+                                CupertinoIcons.down_arrow
+                            : incomeCategories[transaction.category] ??
+                                CupertinoIcons.up_arrow, // Use arrow icons
                         color: transaction.type == TransactionTyp.EXPENSE
                             ? Colors.red
                             : Colors.green,

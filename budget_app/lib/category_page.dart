@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'transaction.dart';
+import 'common.dart';
 
 class CategoryPage extends StatelessWidget {
   CategoryPage({Key? key}) : super(key: key);
