@@ -74,7 +74,6 @@ class TransactionModel extends ChangeNotifier {
   }
 
   void deleteTransaction(Transaction transactionToDelete) {
-    print("Trying to delete transaction: $transactionToDelete");
     transactions.remove(transactionToDelete);
     if (transactionToDelete.type == TransactionTyp.EXPENSE) {
       totalExpenses -= transactionToDelete.amount;
@@ -82,7 +81,6 @@ class TransactionModel extends ChangeNotifier {
       totalIncome -= transactionToDelete.amount;
     }
     saveTransactions(transactions);
-    print("Transactions after deletion: $transactions");
     notifyListeners();
   }
 }

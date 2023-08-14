@@ -46,14 +46,12 @@ class TransactionPage extends StatelessWidget {
                             child: const Text('Cancel'),
                             onPressed: () {
                               Navigator.of(context).pop(false);
-                              print("Cancel");
                             },
                           ),
                           CupertinoDialogAction(
                             child: const Text('Delete'),
                             onPressed: () {
                               Navigator.of(context).pop(true);
-                              print("Delete");
                             },
                           ),
                         ],
