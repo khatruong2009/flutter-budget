@@ -33,6 +33,8 @@ Future<void> showTransactionForm(
   double amount = 0.0;
   DateTime selectedDate = DateTime.now();
 
+  final amountController = TextEditingController();
+
   // show transaction form
   await showCupertinoDialog(
     context: context,
@@ -94,6 +96,7 @@ Future<void> showTransactionForm(
                   ),
                 ),
                 CupertinoTextField(
+                  controller: amountController,
                   placeholder: 'Amount',
                   keyboardType: TextInputType.number,
                   padding:
@@ -111,9 +114,10 @@ Future<void> showTransactionForm(
                         : Colors.white,
                   ),
                   onChanged: (value) {
-                    amount = double.parse(value);
+                    amount = double.tryParse(value) ?? 0.0;
                   },
                 ),
+
                 // IMPLEMENT LATER
                 // CHOOSE DATE
                 // SizedBox(
@@ -143,11 +147,17 @@ Future<void> showTransactionForm(
             CupertinoDialogAction(
               child: const Text('Add'),
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (amount > 0) {
                   // add transaction
                   addTransaction(
                       type, description, amount, category, selectedDate);
                   Navigator.of(context).pop();
+                } else {
+                  // Show an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter a valid amount!')),
+                  );
                 }
               },
             ),
