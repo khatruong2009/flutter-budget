@@ -96,15 +96,15 @@ class CategoryPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Categories'),
             centerTitle: true,
-            actions: [
-              IconButton(
-                icon: const Icon(
-                    Icons.more_vert), // Example for additional actions
-                onPressed: () {
-                  // Placeholder for more actions
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(
+            //         Icons.more_vert), // Example for additional actions
+            //     onPressed: () {
+            //       // Placeholder for more actions
+            //     },
+            //   ),
+            // ],
           ),
           body: Column(
             children: <Widget>[
