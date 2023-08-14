@@ -90,62 +90,69 @@ class CategoryPage extends StatelessWidget {
           index++;
         });
 
-        return Column(
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * .7,
-                height: MediaQuery.of(context).size.height * .7,
-                child: PieChart(
-                  PieChartData(
-                    sections: sections,
-                    sectionsSpace: 0,
-                    centerSpaceRadius: 0,
-                    pieTouchData: PieTouchData(
-                      enabled: false,
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Categories'),
+            centerTitle: true,
+          ),
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * .7,
+                  height: MediaQuery.of(context).size.height * .7,
+                  child: PieChart(
+                    PieChartData(
+                      sections: sections,
+                      sectionsSpace: 0,
+                      centerSpaceRadius: 0,
+                      pieTouchData: PieTouchData(
+                        enabled: false,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // legend
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: ListView.builder(
-                  itemCount: sections.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DefaultTextStyle(
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
-                        decoration: TextDecoration.none,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            sections[index].iconData,
-                            color: sections[index].color,
-                            size: 24,
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                              '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                    );
-                  },
+              // legend
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: ListView.builder(
+                    itemCount: sections.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return DefaultTextStyle(
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                          decoration: TextDecoration.none,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              sections[index].iconData,
+                              color: sections[index].color,
+                              size: 24,
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                                '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}'),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
