@@ -93,8 +93,14 @@ class TransactionPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           color: transaction.type == TransactionTyp.EXPENSE
-                              ? Colors.red
-                              : Colors.green,
+                              ? (Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.red
+                                  : Colors.red[300])
+                              : (Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.green
+                                  : Colors.green[300]),
                         ),
                       ), // Make the amount prominent
                       leading: Icon(
