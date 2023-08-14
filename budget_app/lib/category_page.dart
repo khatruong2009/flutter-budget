@@ -94,6 +94,14 @@ class CategoryPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Categories'),
             centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.more_vert), // Example for additional actions
+                onPressed: () {
+                  // Placeholder for more actions
+                },
+              ),
+            ],
           ),
           body: Column(
             children: <Widget>[
@@ -105,10 +113,14 @@ class CategoryPage extends StatelessWidget {
                   child: PieChart(
                     PieChartData(
                       sections: sections,
-                      sectionsSpace: 0,
-                      centerSpaceRadius: 0,
+                      sectionsSpace: 2, // Slight space for clarity
+                      centerSpaceRadius: 30,
                       pieTouchData: PieTouchData(
-                        enabled: false,
+                        enabled: true, // Allow touch interactions
+                        touchCallback:
+                            (FlTouchEvent event, PieTouchResponse? response) {
+                          // Placeholder for touch interactions
+                        },
                       ),
                     ),
                   ),
@@ -118,33 +130,46 @@ class CategoryPage extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
                     itemCount: sections.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return DefaultTextStyle(
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
-                          decoration: TextDecoration.none,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              sections[index].iconData,
-                              color: sections[index].color,
-                              size: 24,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                                '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}'),
-                          ],
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: DefaultTextStyle(
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white,
+                            decoration: TextDecoration.none,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 24,
+                                height: 24,
+                                color: sections[index].color, // Color box
+                                child: Icon(
+                                  sections[index].iconData,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  '${sections[index].category}: ${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
