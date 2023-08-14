@@ -90,6 +90,8 @@ class CategoryPage extends StatelessWidget {
           index++;
         });
 
+        sections.sort((a, b) => b.value.compareTo(a.value));
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Categories'),
