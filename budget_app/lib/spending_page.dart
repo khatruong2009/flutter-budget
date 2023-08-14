@@ -73,8 +73,15 @@ class SpendingPageState extends State<SpendingPage> {
             calculateTotalExpenses(transactionModel.currentMonthTransactions);
         double netDifference = totalIncome - totalExpenses;
 
-        return CupertinoPageScaffold(
-          child: SafeArea(
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Spending',
+              textAlign: TextAlign.center,
+            ),
+            centerTitle: true,
+          ),
+          body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
