@@ -9,19 +9,6 @@ import 'common.dart';
 class CategoryPage extends StatelessWidget {
   CategoryPage({Key? key}) : super(key: key);
 
-  final Map<String, IconData> expenseCategories = {
-    'General': CupertinoIcons.square_grid_2x2,
-    'Eating Out': CupertinoIcons.drop_triangle,
-    'Groceries': CupertinoIcons.cart,
-    'Housing': CupertinoIcons.house,
-    'Transportation': CupertinoIcons.car_detailed,
-    'Travel': CupertinoIcons.airplane,
-    'Clothing': CupertinoIcons.bag,
-    'Gift': CupertinoIcons.gift,
-    'Health': CupertinoIcons.heart,
-    'Entertainment': CupertinoIcons.film,
-  };
-
   final List<Color> colors = [
     Colors.blue,
     Colors.red,

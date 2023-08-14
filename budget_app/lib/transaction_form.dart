@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'transaction.dart';
+import 'common.dart';
 
 Future<void> showTransactionForm(
     BuildContext context, TransactionTyp type, Function addTransaction) async {
@@ -16,13 +17,6 @@ Future<void> showTransactionForm(
     'Gift': CupertinoIcons.gift,
     'Health': CupertinoIcons.heart,
     'Entertainment': CupertinoIcons.film,
-  };
-
-  final Map<String, IconData> incomeCategories = {
-    'Salary': CupertinoIcons.money_dollar,
-    'Investment': CupertinoIcons.chart_bar,
-    'Gift': CupertinoIcons.gift,
-    'Other': CupertinoIcons.square_grid_2x2,
   };
 
   final _formKey = GlobalKey<FormState>();
