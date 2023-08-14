@@ -32,7 +32,8 @@ class TransactionPage extends StatelessWidget {
                   final transaction =
                       transactionModel.currentMonthTransactions[index];
                   return Dismissible(
-                    key: UniqueKey(),
+                    key: ValueKey(
+                        transaction.description + transaction.date.toString()),
                     direction: DismissDirection.endToStart,
                     confirmDismiss: (direction) => showDialog(
                       context: context,
@@ -43,17 +44,23 @@ class TransactionPage extends StatelessWidget {
                         actions: <Widget>[
                           CupertinoDialogAction(
                             child: const Text('Cancel'),
-                            onPressed: () => Navigator.of(context).pop(false),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                              print("Cancel");
+                            },
                           ),
                           CupertinoDialogAction(
                             child: const Text('Delete'),
-                            onPressed: () => Navigator.of(context).pop(true),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                              print("Delete");
+                            },
                           ),
                         ],
                       ),
                     ),
                     onDismissed: (direction) {
-                      transactionModel.deleteTransaction(index);
+                      transactionModel.deleteTransaction(transaction);
                       ScaffoldMessenger.of(context).showSnackBar(
                         // Provide feedback
                         const SnackBar(

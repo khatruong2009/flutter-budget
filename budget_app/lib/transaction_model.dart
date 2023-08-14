@@ -73,14 +73,16 @@ class TransactionModel extends ChangeNotifier {
         .toList();
   }
 
-  void deleteTransaction(int index) {
-    Transaction deletedTransaction = transactions.removeAt(index);
-    if (deletedTransaction.type == TransactionTyp.EXPENSE) {
-      totalExpenses -= deletedTransaction.amount;
+  void deleteTransaction(Transaction transactionToDelete) {
+    print("Trying to delete transaction: $transactionToDelete");
+    transactions.remove(transactionToDelete);
+    if (transactionToDelete.type == TransactionTyp.EXPENSE) {
+      totalExpenses -= transactionToDelete.amount;
     } else {
-      totalIncome -= deletedTransaction.amount;
+      totalIncome -= transactionToDelete.amount;
     }
     saveTransactions(transactions);
+    print("Transactions after deletion: $transactions");
     notifyListeners();
   }
 }
