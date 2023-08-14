@@ -89,9 +89,14 @@ class TransactionPage extends StatelessWidget {
                                 12), // Decreased font size for secondary info
                       ),
                       trailing: Text(
-                          '\$${transaction.amount.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              fontSize: 16)), // Make the amount prominent
+                        '\$${transaction.amount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: transaction.type == TransactionTyp.EXPENSE
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                      ), // Make the amount prominent
                       leading: Icon(
                         transaction.type == TransactionTyp.EXPENSE
                             ? expenseCategories[transaction.category] ??
