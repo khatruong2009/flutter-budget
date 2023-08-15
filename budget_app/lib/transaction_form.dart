@@ -55,7 +55,7 @@ Future<void> showTransactionForm(
                     decoration: BoxDecoration(
                       color: Theme.of(context).brightness == Brightness.light
                           ? Colors.white
-                          : Colors.grey[900],
+                          : Colors.grey[800],
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     style: TextStyle(
@@ -98,7 +98,7 @@ Future<void> showTransactionForm(
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
                         ? Colors.white
-                        : Colors.grey[900],
+                        : Colors.grey[800],
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   style: TextStyle(
