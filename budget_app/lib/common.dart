@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 final Map<String, IconData> expenseCategories = {
   'General': CupertinoIcons.square_grid_2x2,
-  'Eating Out': CupertinoIcons.drop_triangle,
+  'Eating Out': CupertinoIcons.asterisk_circle_fill,
   'Groceries': CupertinoIcons.cart,
   'Housing': CupertinoIcons.house,
   'Transportation': CupertinoIcons.car_detailed,
