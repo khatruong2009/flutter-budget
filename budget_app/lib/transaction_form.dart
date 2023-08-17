@@ -92,7 +92,8 @@ Future<void> showTransactionForm(
                 CupertinoTextField(
                   controller: amountController,
                   placeholder: 'Amount',
-                  keyboardType: TextInputType.number,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
