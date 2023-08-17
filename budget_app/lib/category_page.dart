@@ -4,6 +4,7 @@ import 'transaction_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'transaction.dart';
 import 'common.dart';
+import 'package:intl/intl.dart';
 
 class CategoryPage extends StatelessWidget {
   CategoryPage({Key? key}) : super(key: key);
@@ -167,7 +168,7 @@ class CategoryPage extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '${sections[index].percentage?.toStringAsFixed(2)}% - \$${expensesPerCategory[sections[index].category]?.toStringAsFixed(2)}',
+                                      '${sections[index].percentage?.toStringAsFixed(2)}% - \$${NumberFormat("#,##0.00", "en_US").format(expensesPerCategory[sections[index].category] ?? 0)}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
