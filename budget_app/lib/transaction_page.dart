@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'transaction.dart';
-
 import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'package:intl/intl.dart';
@@ -89,7 +88,7 @@ class TransactionPage extends StatelessWidget {
                                 12), // Decreased font size for secondary info
                       ),
                       trailing: Text(
-                        '\$${transaction.amount.toStringAsFixed(2)}',
+                        '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
                         style: TextStyle(
                           fontSize: 16,
                           color: transaction.type == TransactionTyp.EXPENSE
