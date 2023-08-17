@@ -20,8 +20,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SettingsList(
-        lightTheme: SettingsThemeData(tileHighlightColor: Colors.blue[50]),
         darkTheme: SettingsThemeData(tileHighlightColor: Colors.grey[800]),
+        lightTheme: SettingsThemeData(tileHighlightColor: Colors.blue[50]),
         sections: [
           SettingsSection(
             title: const Text('Appearance'),
@@ -29,11 +29,8 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile.switchTile(
                 initialValue: Provider.of<ThemeProvider>(context, listen: false)
                         .themeMode ==
-                    ThemeMode.light,
-                title: Text(Provider.of<ThemeProvider>(context).themeMode ==
-                        ThemeMode.light
-                    ? 'Light Mode'
-                    : 'Dark Mode'),
+                    ThemeMode.dark,
+                title: Text('Dark Mode'),
                 leading: Icon(Provider.of<ThemeProvider>(context).themeMode ==
                         ThemeMode.light
                     ? Icons.wb_sunny
