@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import 'transaction.dart';
 import 'transaction_model.dart';
@@ -102,7 +103,8 @@ class SpendingPageState extends State<SpendingPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16)),
                               const SizedBox(height: 4),
-                              Text('\$${totalIncome.toStringAsFixed(2)}',
+                              Text(
+                                  '\$${NumberFormat("#,##0.00", "en_US").format(totalIncome)}',
                                   style: const TextStyle(
                                       fontSize: 20, color: Colors.green)),
                             ],
@@ -115,7 +117,8 @@ class SpendingPageState extends State<SpendingPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16)),
                               const SizedBox(height: 4),
-                              Text('\$${totalExpenses.toStringAsFixed(2)}',
+                              Text(
+                                  '\$${NumberFormat("#,##0.00", "en_US").format(totalExpenses)}',
                                   style: const TextStyle(
                                       fontSize: 20, color: Colors.red)),
                             ],
@@ -173,13 +176,14 @@ class SpendingPageState extends State<SpendingPage> {
                           decoration: TextDecoration.none)),
                   const SizedBox(height: 10),
                   Text(
-                    '\$${netDifference.toStringAsFixed(2)}',
+                    '\$${NumberFormat("#,##0.00", "en_US").format(netDifference)}',
                     style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
                         color: netDifference < 0 ? Colors.red : Colors.green,
                         decoration: TextDecoration.none),
                   ),
+
                   const SizedBox(height: 30),
 
                   // Add Expense and Add Income Buttons
