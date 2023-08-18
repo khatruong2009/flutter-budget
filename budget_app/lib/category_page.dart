@@ -13,7 +13,6 @@ class CategoryPage extends StatelessWidget {
     Colors.blue,
     Colors.red,
     Colors.green,
-    Colors.red,
     Colors.orange,
     Colors.brown,
     Colors.purple,
