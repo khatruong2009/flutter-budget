@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-
+import 'package:animated_digit/animated_digit.dart';
 import 'transaction.dart';
 import 'transaction_model.dart';
 import 'transaction_form.dart';
@@ -72,7 +72,8 @@ class SpendingPageState extends State<SpendingPage> {
             calculateTotalIncome(transactionModel.currentMonthTransactions);
         double totalExpenses =
             calculateTotalExpenses(transactionModel.currentMonthTransactions);
-        double netDifference = totalIncome - totalExpenses;
+        ValueNotifier<double> netDifference = ValueNotifier<double>(0.0);
+        netDifference.value = totalIncome - totalExpenses;
 
         return Scaffold(
           appBar: AppBar(
@@ -175,13 +176,20 @@ class SpendingPageState extends State<SpendingPage> {
                               : Colors.black,
                           decoration: TextDecoration.none)),
                   const SizedBox(height: 10),
-                  Text(
-                    '\$${NumberFormat("#,##0.00", "en_US").format(netDifference)}',
-                    style: TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        color: netDifference < 0 ? Colors.red : Colors.green,
-                        decoration: TextDecoration.none),
+                  ValueListenableBuilder<double>(
+                    valueListenable: netDifference,
+                    builder: (context, value, child) {
+                      return AnimatedDigitWidget(
+                        fractionDigits: 2,
+                        value: value,
+                        textStyle: TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          color: value < 0 ? Colors.red : Colors.green,
+                          decoration: TextDecoration.none,
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 30),
