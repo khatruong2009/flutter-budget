@@ -13,6 +13,9 @@ class TransactionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
+        final sortedTransactions =
+            List.from(transactionModel.currentMonthTransactions)
+              ..sort((a, b) => b.date.compareTo(a.date));
         return Scaffold(
           appBar: AppBar(
             title: const Text(
@@ -27,10 +30,10 @@ class TransactionPage extends StatelessWidget {
               child: ListView.separated(
                 separatorBuilder: (context, index) =>
                     Divider(color: Colors.grey.shade300),
-                itemCount: transactionModel.currentMonthTransactions.length,
+                itemCount: sortedTransactions.length,
                 itemBuilder: (context, index) {
                   final transaction =
-                      transactionModel.currentMonthTransactions[index];
+                      sortedTransactions[index]; // Get transaction
                   return Dismissible(
                     key: ValueKey(
                         transaction.description + transaction.date.toString()),
