@@ -65,11 +65,13 @@ class CategoryPage extends StatelessWidget {
               title: '',
               radius: 100,
               percentage: percentage,
-              badgeWidget: Icon(
-                expenseCategories[key],
-                color: color,
-                size: 24,
-              ),
+              badgeWidget: percentage >= 4.0
+                  ? Icon(
+                      expenseCategories[key],
+                      color: color,
+                      size: 24,
+                    )
+                  : null,
               badgePositionPercentageOffset: 1.2,
               iconData: expenseCategories[key],
               category: key,
