@@ -8,7 +8,7 @@ Future<void> showTransactionForm(
   // categories and their icons
   final Map<String, IconData> expenseCategories = {
     'General': CupertinoIcons.square_grid_2x2,
-    'Eating Out': CupertinoIcons.drop_triangle,
+    'Eating Out': CupertinoIcons.asterisk_circle,
     'Groceries': CupertinoIcons.cart,
     'Housing': CupertinoIcons.house,
     'Transportation': CupertinoIcons.car_detailed,
@@ -17,6 +17,8 @@ Future<void> showTransactionForm(
     'Gift': CupertinoIcons.gift,
     'Health': CupertinoIcons.heart,
     'Entertainment': CupertinoIcons.film,
+    'Pets': CupertinoIcons.paw,
+    'Family': CupertinoIcons.person_2,
   };
 
   final _formKey = GlobalKey<FormState>();
