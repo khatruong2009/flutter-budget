@@ -2,27 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'transaction.dart';
 import 'common.dart';
+import 'package:provider/provider.dart'; // Import to access the model
+import 'transaction_model.dart';
 
 Future<void> showTransactionForm(
-    BuildContext context, TransactionTyp type, Function addTransaction) async {
-  // categories and their icons
-  final Map<String, IconData> expenseCategories = {
-    'General': CupertinoIcons.square_grid_2x2,
-    'Eating Out': CupertinoIcons.asterisk_circle,
-    'Groceries': CupertinoIcons.cart,
-    'Housing': CupertinoIcons.house,
-    'Transportation': CupertinoIcons.car_detailed,
-    'Travel': CupertinoIcons.airplane,
-    'Clothing': CupertinoIcons.bag,
-    'Gift': CupertinoIcons.gift,
-    'Health': CupertinoIcons.heart,
-    'Entertainment': CupertinoIcons.film,
-    'Pets': CupertinoIcons.paw,
-    'Family': CupertinoIcons.person_2,
-  };
+    BuildContext context, TransactionTyp type, Function addTransaction,
+    [Transaction? transactionToEdit]) async {
+  final transactionModel =
+      Provider.of<TransactionModel>(context, listen: false);
 
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   String description = '';
+  final descriptionController = TextEditingController();
   String category = type == TransactionTyp.EXPENSE
       ? expenseCategories.keys.first
       : incomeCategories.keys.first;
@@ -30,6 +21,16 @@ Future<void> showTransactionForm(
   DateTime selectedDate = DateTime.now();
 
   final amountController = TextEditingController();
+
+  // Check if we are editing an existing transaction
+  if (transactionToEdit != null) {
+    description = transactionToEdit.description;
+    category = transactionToEdit.category;
+    amount = transactionToEdit.amount;
+    selectedDate = transactionToEdit.date;
+    amountController.text = amount.toString();
+    descriptionController.text = description;
+  }
 
   // show transaction form
   await showCupertinoDialog(
@@ -41,16 +42,21 @@ Future<void> showTransactionForm(
             ? expenseCategories
             : incomeCategories;
 
+        int initialCategoryIndex = categoryMap.keys.toList().indexOf(category);
+        final categoryScrollController =
+            FixedExtentScrollController(initialItem: initialCategoryIndex);
+
         return CupertinoAlertDialog(
           title: Text(
               type == TransactionTyp.EXPENSE ? 'Add Expense' : 'Add Income'),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 10.0),
                   child: CupertinoTextField(
+                    controller: descriptionController,
                     placeholder: 'Description',
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
@@ -74,6 +80,7 @@ Future<void> showTransactionForm(
                 SizedBox(
                   height: 150,
                   child: CupertinoPicker(
+                    scrollController: categoryScrollController,
                     itemExtent: 30,
                     onSelectedItemChanged: (index) {
                       setState(() {
@@ -114,7 +121,6 @@ Future<void> showTransactionForm(
                     amount = double.tryParse(value) ?? 0.0;
                   },
                 ),
-
                 // IMPLEMENT LATER
                 // CHOOSE DATE
                 // SizedBox(
@@ -145,9 +151,16 @@ Future<void> showTransactionForm(
               child: const Text('Add'),
               onPressed: () {
                 if (amount > 0) {
-                  // add transaction
-                  addTransaction(
-                      type, description, amount, category, selectedDate);
+                  if (transactionToEdit != null) {
+                    // Update the existing transaction
+                    transactionModel.deleteTransaction(transactionToEdit);
+                    transactionModel.addTransaction(
+                        type, description, amount, category, selectedDate);
+                  } else {
+                    // Add a new transaction
+                    transactionModel.addTransaction(
+                        type, description, amount, category, selectedDate);
+                  }
                   Navigator.of(context).pop();
                 } else {
                   // Show an error message

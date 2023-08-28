@@ -1,3 +1,4 @@
+import 'package:budget_app/transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'transaction.dart';
@@ -77,6 +78,10 @@ class TransactionPage extends StatelessWidget {
                           color: Colors.white), // Use intuitive icon
                     ),
                     child: ListTile(
+                      onTap: () {
+                        showTransactionForm(context, transaction.type,
+                            transactionModel.addTransaction, transaction);
+                      },
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0,
                           horizontal: 15.0), // Added padding for each list item
