@@ -180,6 +180,7 @@ class SpendingPageState extends State<SpendingPage> {
                     valueListenable: netDifference,
                     builder: (context, value, child) {
                       return AnimatedDigitWidget(
+                        key: ValueKey<int>(value.sign.toInt()),
                         fractionDigits: 2,
                         value: value,
                         textStyle: TextStyle(

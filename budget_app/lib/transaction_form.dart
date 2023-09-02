@@ -148,7 +148,8 @@ Future<void> showTransactionForm(
               },
             ),
             CupertinoDialogAction(
-              child: const Text('Add'),
+              child: const Text('Add',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
                 if (amount > 0) {
                   if (transactionToEdit != null) {
