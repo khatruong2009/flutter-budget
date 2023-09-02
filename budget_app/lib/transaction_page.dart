@@ -53,7 +53,8 @@ class TransactionPage extends StatelessWidget {
                             },
                           ),
                           CupertinoDialogAction(
-                            child: const Text('Delete'),
+                            child: const Text('Delete',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             onPressed: () {
                               Navigator.of(context).pop(true);
                             },
