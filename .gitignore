@@ -18,4 +18,5 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 **.sample
+cert_key
 #amplify-do-not-edit-end
