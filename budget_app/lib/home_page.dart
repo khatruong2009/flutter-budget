@@ -124,8 +124,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   }
 
   void retrieveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getString('key');
+    await SharedPreferences.getInstance();
   }
 
   // save transactions to local storage
