@@ -91,11 +91,11 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
               case 0:
                 return SpendingPage(addTransaction: addTransaction);
               case 1:
-                return TransactionPage();
+                return const TransactionPage();
               case 2:
                 return CategoryPage();
               case 3:
-                return SettingsPage();
+                return const SettingsPage();
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
@@ -126,14 +126,12 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   void retrieveData() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('key');
-    print(value);
   }
 
   // save transactions to local storage
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    print("Saving transactions: $jsonTransactions");
     await prefs.setString('transactions', jsonEncode(jsonTransactions));
   }
 
@@ -145,7 +143,6 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
       return [];
     }
     final jsonList = jsonDecode(jsonString) as List;
-    print("Retrieving transactions: $jsonList");
     return jsonList.map((e) => Transaction.fromJson(e)).toList();
   }
 }

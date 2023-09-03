@@ -11,7 +11,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => TransactionModel()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
-      child: AppContainer(child: const MyApp()),
+      child: const AppContainer(child: MyApp()),
     ),
   );
 }
@@ -19,7 +19,7 @@ void main() {
 class AppContainer extends StatelessWidget {
   final Widget child;
 
-  AppContainer({required this.child});
+  const AppContainer({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

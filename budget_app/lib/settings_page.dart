@@ -9,10 +9,10 @@ class SettingsPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class SettingsPageState extends State<SettingsPage> {
 // Default value
 
   @override
@@ -30,7 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 initialValue: Provider.of<ThemeProvider>(context, listen: false)
                         .themeMode ==
                     ThemeMode.dark,
-                title: Text('Dark Mode'),
+                title: const Text('Dark Mode'),
                 leading: Icon(Provider.of<ThemeProvider>(context).themeMode ==
                         ThemeMode.light
                     ? Icons.wb_sunny

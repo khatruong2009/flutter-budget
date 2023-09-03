@@ -42,7 +42,6 @@ class TransactionModel extends ChangeNotifier {
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    print("Saving transactions: $jsonTransactions");
     await prefs.setString('transactions', jsonEncode(jsonTransactions));
   }
 
