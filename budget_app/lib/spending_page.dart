@@ -9,11 +9,9 @@ import 'package:provider/provider.dart';
 
 class SpendingPage extends StatefulWidget {
   final List<Transaction> transactions = [];
-  final Function addTransaction;
 
   SpendingPage({
     Key? key,
-    required this.addTransaction,
   }) : super(key: key);
 
   @override

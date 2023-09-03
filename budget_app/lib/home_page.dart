@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'transaction.dart';
 import 'spending_page.dart';
 import 'transaction_page.dart';
@@ -26,39 +24,6 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   @override
   void initState() {
     super.initState();
-    getTransactions().then((loadedTransactions) {
-      setState(() {
-        transactions = loadedTransactions;
-        totalIncome = transactions
-            .where((transaction) => transaction.type == TransactionTyp.INCOME)
-            .map((transaction) => transaction.amount)
-            .fold(0, (previousValue, amount) => previousValue + amount);
-        totalExpenses = transactions
-            .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
-            .map((transaction) => transaction.amount)
-            .fold(0, (previousValue, amount) => previousValue + amount);
-      });
-    });
-  }
-
-  void addTransaction(
-      TransactionTyp type, String description, double amount, String category) {
-    setState(() {
-      transactions.add(Transaction(
-        type: type,
-        description: description,
-        amount: amount,
-        category: category,
-        date: DateTime.now(),
-      ));
-      if (type == TransactionTyp.EXPENSE) {
-        totalExpenses += amount;
-      } else {
-        totalIncome += amount;
-      }
-    });
-    saveTransactions(transactions);
-    saveTotal(totalIncome - totalExpenses);
   }
 
   @override
@@ -89,7 +54,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           builder: (BuildContext context) {
             switch (index) {
               case 0:
-                return SpendingPage(addTransaction: addTransaction);
+                return SpendingPage();
               case 1:
                 return const TransactionPage();
               case 2:
@@ -104,44 +69,5 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         );
       },
     );
-  }
-
-  // save total to local storage
-  Future<void> saveTotal(double total) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('total', total);
-  }
-
-  // get total from local storage
-  Future<double> getTotal() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble('total') ?? 0.0;
-  }
-
-  void saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('key', 'value');
-  }
-
-  void retrieveData() async {
-    await SharedPreferences.getInstance();
-  }
-
-  // save transactions to local storage
-  Future<void> saveTransactions(List<Transaction> transactions) async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    await prefs.setString('transactions', jsonEncode(jsonTransactions));
-  }
-
-  // get transactions from local storage
-  Future<List<Transaction>> getTransactions() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('transactions');
-    if (jsonString == null || jsonString.isEmpty) {
-      return [];
-    }
-    final jsonList = jsonDecode(jsonString) as List;
-    return jsonList.map((e) => Transaction.fromJson(e)).toList();
   }
 }
