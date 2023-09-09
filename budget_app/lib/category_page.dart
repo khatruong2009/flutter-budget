@@ -22,6 +22,7 @@ class CategoryPage extends StatelessWidget {
     Colors.grey,
     Colors.green.shade900,
     Colors.yellow,
+    Colors.lightBlue,
   ];
 
   @override

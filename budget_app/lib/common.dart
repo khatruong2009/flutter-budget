@@ -13,6 +13,7 @@ final Map<String, IconData> expenseCategories = {
   'Entertainment': CupertinoIcons.film,
   'Pets': CupertinoIcons.paw,
   'Family': CupertinoIcons.person_2,
+  'Loan Payment': CupertinoIcons.money_dollar,
 };
 
 final Map<String, IconData> incomeCategories = {
