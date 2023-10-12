@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'transaction.dart'; // Ensure this import is correct
+import 'transaction.dart';
 
 class ChatHelper {
   Future<String> generateText(

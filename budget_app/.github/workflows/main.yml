@@ -1,0 +1,32 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main # Trigger CI/CD on push to main branch
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable # use stable channel
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: echo "OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}" > .env
+
+      - name: Build app
+        run: flutter build apk # Build your app
+
+
+    # Additional steps to test, and deploy your app could be added here.
