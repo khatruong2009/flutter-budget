@@ -20,3 +20,4 @@ amplifytools.xcconfig
 **.sample
 cert_key
 #amplify-do-not-edit-end
+budget_app/lib/.env

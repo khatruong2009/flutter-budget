@@ -6,6 +6,7 @@ import 'spending_page.dart';
 import 'transaction_page.dart';
 import 'category_page.dart';
 import 'settings_page.dart';
+import 'insights_page.dart';
 
 class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
@@ -43,6 +44,11 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
             icon: Icon(Icons.pie_chart),
             label: 'Categories',
           ),
+          // add a page for Insights
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lightbulb),
+            label: 'Insights',
+          ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.gear),
             label: 'Settings',
@@ -60,6 +66,8 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
               case 2:
                 return CategoryPage();
               case 3:
+                return const InsightsPage();
+              case 4:
                 return const SettingsPage();
             }
             return const CupertinoPageScaffold(
