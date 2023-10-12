@@ -1,40 +1,32 @@
-name: CI/CD
+name: Flutter CI/CD
 
 on:
   push:
     branches:
-      - main # Trigger CI/CD on push to main branch
+      - main  # Trigger the action on push to main branch
 
 jobs:
   build:
-    name: Build and Deploy
+    name: Build App
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Go into app directory
-        run: cd budget_app
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable # use stable channel
+    - name: Install Dependencies
+      run: flutter pub get
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Create .env file
-        run: echo "OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}" > .env
-
-      - name: Build app
-        run: flutter build ipa # Build your app
-
-      - name: Upload Artifact
+    - name: Build IPA
+      run: flutter build ipa
+      
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: myApp
         path: build/ios/ipa/myApp.ipa
-
-    # Additional steps to test, and deploy your app could be added here.
