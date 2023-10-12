@@ -19,6 +19,9 @@ jobs:
         with:
           channel: stable # use stable channel
 
+      - name: Go into app directory
+        run: cd budget_app
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -26,7 +29,7 @@ jobs:
         run: echo "OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}" > .env
 
       - name: Build app
-        run: flutter build apk # Build your app
+        run: flutter build ipa # Build your app
 
 
     # Additional steps to test, and deploy your app could be added here.
