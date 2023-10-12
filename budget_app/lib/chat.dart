@@ -9,7 +9,7 @@ class ChatHelper {
     final apiKey = dotenv.env['OPEN_AI_API_KEY'];
     OpenAI.apiKey = apiKey!;
 
-    // print("Starting chat now...");
+    print("Starting chat now...");
 
     // Convert transactions into a suitable format (e.g., a String) for API request.
     String transactionsData = convertTransactionsToString(transactions);
