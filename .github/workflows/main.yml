@@ -21,12 +21,14 @@ jobs:
 
     - name: Install Dependencies
       run: flutter pub get
+      working-directory: budget_app  # Navigate into budget_app directory
 
     - name: Build IPA
       run: flutter build ipa
+      working-directory: budget_app  # Navigate into budget_app directory
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: myApp
-        path: build/ios/ipa/myApp.ipa
+        path: budget_app/build/ios/ipa/myApp.ipa  # Adjusted path
