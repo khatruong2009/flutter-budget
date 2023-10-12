@@ -31,8 +31,8 @@ jobs:
       run: flutter build ipa
       working-directory: budget_app
       
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: myApp
-        path: budget_app/build/ios/ipa/myApp.ipa
+    # Example of using GitHub secret in a Flutter app as an environment variable
+    - name: Use Secret as Environment Variable
+      run: |
+        echo "OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}" > .env
+        flutter run
