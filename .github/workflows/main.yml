@@ -14,13 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Go into app directory
+        run: cd budget_app
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable # use stable channel
-
-      - name: Go into app directory
-        run: cd budget_app
 
       - name: Install dependencies
         run: flutter pub get
@@ -31,5 +31,10 @@ jobs:
       - name: Build app
         run: flutter build ipa # Build your app
 
+      - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: myApp
+        path: build/ios/ipa/myApp.ipa
 
     # Additional steps to test, and deploy your app could be added here.
