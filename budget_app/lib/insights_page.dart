@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:settings_ui/settings_ui.dart';
-import 'theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'chat.dart';
 import 'transaction.dart';
