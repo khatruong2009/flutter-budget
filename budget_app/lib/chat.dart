@@ -9,8 +9,6 @@ class ChatHelper {
     final apiKey = dotenv.env['OPEN_AI_API_KEY'];
     OpenAI.apiKey = apiKey!;
 
-    // print("Starting chat now...");
-
     // Convert transactions into a suitable format (e.g., a String) for API request.
     String transactionsData = convertTransactionsToString(transactions);
 
@@ -25,10 +23,25 @@ class ChatHelper {
         ),
       ],
     );
-
-    // print(chatCompletion.choices[0].message.content);
-    // print(convertTransactionsToString(transactions));
     return chatCompletion.choices[0].message.content;
+  }
+
+  Stream<OpenAIStreamChatCompletionModel> generateTextStream(
+      String prompt, List<Transaction> transactions) async* {
+    await dotenv.load(fileName: '.env');
+    final apiKey = dotenv.env['OPEN_AI_API_KEY'];
+    OpenAI.apiKey = apiKey!;
+    String transactionsData = convertTransactionsToString(transactions);
+
+    yield* OpenAI.instance.chat.createStream(
+      model: "gpt-3.5-turbo",
+      messages: [
+        OpenAIChatCompletionChoiceMessageModel(
+          content: prompt + transactionsData,
+          role: OpenAIChatMessageRole.user,
+        ),
+      ],
+    );
   }
 
   String convertTransactionsToString(List<Transaction> transactions) {
