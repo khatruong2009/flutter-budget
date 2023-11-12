@@ -52,6 +52,8 @@ class InsightsPageState extends State<InsightsPage> {
       isLoading = true;
     });
 
+    FocusScope.of(context).unfocus();
+
     // Accessing transactions using Provider
     List<Transaction> transactions =
         Provider.of<TransactionModel>(context, listen: false)
@@ -121,47 +123,53 @@ class InsightsPageState extends State<InsightsPage> {
       appBar: AppBar(title: const Text('Budgie Insights')),
       body: SafeArea(
         // Step 1: Wrap your content with SafeArea
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _textEditingController,
-                decoration: const InputDecoration(
-                  labelText: 'Ask a question about your finances',
-                  border: OutlineInputBorder(),
+        child: GestureDetector(
+          onTap: () {
+            // Step 2: Call FocusScope.of(context).unfocus() when a tap is detected
+            FocusScope.of(context).unfocus();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _textEditingController,
+                  decoration: const InputDecoration(
+                    labelText: 'Ask a question about your finances',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
                 ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: isLoading ? null : askQuestion,
-                    child: Text(isLoading ? 'Loading...' : 'Submit'),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: clearQuestion,
-                    child: const Text('Clear'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Text(
-                    apiResponse,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                      height: 1.5,
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: isLoading ? null : askQuestion,
+                      child: Text(isLoading ? 'Loading...' : 'Submit'),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: clearQuestion,
+                      child: const Text('Clear'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      apiResponse,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                        height: 1.5,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
