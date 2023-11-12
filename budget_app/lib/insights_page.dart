@@ -18,39 +18,17 @@ class InsightsPage extends StatefulWidget {
 
 class InsightsPageState extends State<InsightsPage> {
   String apiResponse = "";
-  bool isLoading = true;
+  bool isLoading = false;
 
   late StreamController<String> _responseController;
   ChatHelper chatHelper = ChatHelper();
-
-  // This method will convert transactions to string and send it to the API
-  Future<void> fetchInsights() async {
-    StringBuffer fullContent = StringBuffer();
-    // Accessing transactions using Provider
-    List<Transaction> transactions =
-        Provider.of<TransactionModel>(context, listen: false)
-            .currentMonthTransactions;
-
-    Stream<OpenAIStreamChatCompletionModel> chatStream =
-        chatHelper.generateTextStream(
-      "Pretend you are my financial advisor. I'm going to give you a summary of my financial transactions this month. The format is as follows: [Transaction Type] [Description] [Amount] [Category] [Date]. For example, 'Expense Groceries 100 Food 2021-10-01'. Can you give me some high level insights about this month's finances without listing all the categories? If spending in a category is normal, do not include it in the insights. Here is how I want the insights to be formatted: I want you first to list anything that might be concerning or unusual. Then, I want you to give me a quick summary of my financial health this month.",
-      transactions,
-    );
-
-    chatStream.listen((event) {
-      final content = event.choices.first.delta.content;
-      fullContent.write(content!);
-      _responseController.add(fullContent.toString());
-    }, onError: (error) {
-      _responseController.addError(error);
-    }, onDone: () {});
-  }
+  final _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _responseController = StreamController<String>();
-    fetchInsights();
+    // fetchInsights();
   }
 
   @override
@@ -59,26 +37,122 @@ class InsightsPageState extends State<InsightsPage> {
     super.dispose();
   }
 
+  Future<void> askQuestion() async {
+    String userQuestion = _textEditingController.text.trim();
+    if (userQuestion.isEmpty) {
+      setState(() {
+        apiResponse = "Please enter a question.";
+        isLoading =
+            false; // Ensure isLoading is set to false if no question is asked
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    // Accessing transactions using Provider
+    List<Transaction> transactions =
+        Provider.of<TransactionModel>(context, listen: false)
+            .currentMonthTransactions;
+
+    // Convert transactions to string
+    String transactionsData =
+        chatHelper.convertTransactionsToString(transactions);
+
+    // Create prompt with user question
+    String prompt =
+        "Pretend you are my financial advisor. I'm going to give you a summary of my financial transactions this month. The format is as follows: [Transaction Type] [Description] [Amount] [Category] [Date]. For example, 'Expense Groceries 100 Food 2021-10-01'. "
+        "$transactionsData\n"
+        "$userQuestion";
+
+    try {
+      StringBuffer fullResponse = StringBuffer();
+      Stream<OpenAIStreamChatCompletionModel> responseStream =
+          chatHelper.generateTextStream(
+        "Pretend you are my financial advisor. I'm going to give you a summary of my financial transactions this month. The format is as follows: [Transaction Type] [Description] [Amount] [Category] [Date]. For example, 'Expense Groceries 100 Food 2021-10-01'. $userQuestion\n",
+        transactions,
+      );
+
+      responseStream.listen(
+        (event) {
+          final content = event.choices.first.delta.content;
+          if (content != null) {
+            fullResponse.write(content);
+            setState(() {
+              apiResponse = fullResponse.toString();
+            });
+          }
+        },
+        onError: (error) {
+          // print('Error: $error'); // Log error for debugging
+          setState(() {
+            apiResponse = 'Error: Something went wrong';
+            isLoading = false;
+          });
+        },
+        onDone: () {
+          setState(() {
+            isLoading = false;
+          });
+        },
+        cancelOnError: true,
+      );
+    } catch (error) {
+      // print('Error: $error'); // Log error for debugging
+      setState(() {
+        apiResponse = 'Error: Something went wrong';
+        isLoading = false;
+      });
+    }
+  }
+
+  void clearQuestion() {
+    _textEditingController.clear();
+    setState(() {
+      apiResponse = "";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Budgie Insights')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<String>(
-          stream: _responseController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 20.0),
+      body: SafeArea(
+        // Step 1: Wrap your content with SafeArea
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _textEditingController,
+                decoration: const InputDecoration(
+                  labelText: 'Ask a question about your finances',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: isLoading ? null : askQuestion,
+                    child: Text(isLoading ? 'Loading...' : 'Submit'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: clearQuestion,
+                    child: const Text('Clear'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: SingleChildScrollView(
                   child: Text(
-                    snapshot.data!,
+                    apiResponse,
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -86,11 +160,9 @@ class InsightsPageState extends State<InsightsPage> {
                     ),
                   ),
                 ),
-              );
-            } else {
-              return const Center(child: Text('No insights available.'));
-            }
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );
