@@ -21,6 +21,7 @@ Future<void> showTransactionForm(
   DateTime selectedDate = DateTime.now();
 
   final amountController = TextEditingController();
+  final amountFocusNode = FocusNode();
 
   // Check if we are editing an existing transaction
   if (transactionToEdit != null) {
@@ -36,6 +37,10 @@ Future<void> showTransactionForm(
   await showCupertinoDialog(
     context: context,
     builder: (BuildContext context) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(amountFocusNode);
+      });
+
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         final categoryMap = type == TransactionTyp.EXPENSE
@@ -101,6 +106,7 @@ Future<void> showTransactionForm(
                 CupertinoTextField(
                   controller: amountController,
                   placeholder: 'Amount',
+                  focusNode: amountFocusNode,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   padding:
