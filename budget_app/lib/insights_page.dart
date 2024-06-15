@@ -59,16 +59,6 @@ class InsightsPageState extends State<InsightsPage> {
         Provider.of<TransactionModel>(context, listen: false)
             .currentMonthTransactions;
 
-    // Convert transactions to string
-    String transactionsData =
-        chatHelper.convertTransactionsToString(transactions);
-
-    // Create prompt with user question
-    String prompt =
-        "Pretend you are my financial advisor. I'm going to give you a summary of my financial transactions this month. The format is as follows: [Transaction Type] [Description] [Amount] [Category] [Date]. For example, 'Expense Groceries 100 Food 2021-10-01'. "
-        "$transactionsData\n"
-        "$userQuestion";
-
     try {
       StringBuffer fullResponse = StringBuffer();
       Stream<OpenAIStreamChatCompletionModel> responseStream =
