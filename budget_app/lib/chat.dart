@@ -3,7 +3,7 @@ import 'package:dart_openai/dart_openai.dart';
 import 'transaction.dart';
 
 class ChatHelper {
-  Future<List<OpenAIChatCompletionChoiceMessageContentItemModel>?> generateText(
+  Future<String> generateText(
       String prompt, List<Transaction> transactions) async {
     await dotenv.load(fileName: '.env');
     final apiKey = dotenv.env['OPEN_AI_API_KEY'];
@@ -17,10 +17,8 @@ class ChatHelper {
       model: "gpt-3.5-turbo",
       messages: [
         OpenAIChatCompletionChoiceMessageModel(
-          content: [
-            OpenAIChatCompletionChoiceMessageContentItemModel(
-                text: prompt, type: '')
-          ],
+          content:
+              prompt + transactionsData, // Example of using transactionsData
           role: OpenAIChatMessageRole.user,
         ),
       ],
@@ -39,10 +37,7 @@ class ChatHelper {
       model: "gpt-3.5-turbo",
       messages: [
         OpenAIChatCompletionChoiceMessageModel(
-          content: [
-            OpenAIChatCompletionChoiceMessageContentItemModel(
-                text: prompt, type: '')
-          ],
+          content: prompt + transactionsData,
           role: OpenAIChatMessageRole.user,
         ),
       ],
