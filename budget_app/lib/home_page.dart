@@ -44,11 +44,13 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
             icon: Icon(Icons.pie_chart),
             label: 'Categories',
           ),
-          // add a page for Insights
+          // Commented out Insights tab
+          /*
           BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb),
             label: 'Insights',
           ),
+          */
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.gear),
             label: 'Settings',
@@ -66,9 +68,15 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
               case 2:
                 return CategoryPage();
               case 3:
+                // With Insights tab commented out, Settings is now at index 3
+                return const SettingsPage();
+              // Commented out Insights case
+              /*
+              case 3:
                 return const InsightsPage();
               case 4:
                 return const SettingsPage();
+              */
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
