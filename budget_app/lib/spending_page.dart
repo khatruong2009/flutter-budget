@@ -207,7 +207,8 @@ class SpendingPageState extends State<SpendingPage> {
                               transactionModel.addTransaction);
                         },
                         child: const Text('Add Expense',
-                            style: TextStyle(fontSize: 20)),
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.white)),
                       ),
                       CupertinoButton(
                         color: Colors.green,
@@ -219,7 +220,8 @@ class SpendingPageState extends State<SpendingPage> {
                               transactionModel.addTransaction);
                         },
                         child: const Text('Add Income',
-                            style: TextStyle(fontSize: 20)),
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.white)),
                       ),
                     ],
                   ),
