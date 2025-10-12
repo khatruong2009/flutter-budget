@@ -5,6 +5,7 @@ import 'transaction.dart';
 import 'spending_page.dart';
 import 'transaction_page.dart';
 import 'category_page.dart';
+import 'history_page.dart';
 import 'settings_page.dart';
 
 class BudgetHomePage extends StatefulWidget {
@@ -43,13 +44,10 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
             icon: Icon(Icons.pie_chart),
             label: 'Categories',
           ),
-          // Commented out Insights tab
-          /*
           BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb),
-            label: 'Insights',
+            icon: Icon(CupertinoIcons.clock),
+            label: 'History',
           ),
-          */
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.gear),
             label: 'Settings',
@@ -67,15 +65,9 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
               case 2:
                 return CategoryPage();
               case 3:
-                // With Insights tab commented out, Settings is now at index 3
-                return const SettingsPage();
-              // Commented out Insights case
-              /*
-              case 3:
-                return const InsightsPage();
+                return const HistoryPage();
               case 4:
                 return const SettingsPage();
-              */
             }
             return const CupertinoPageScaffold(
               child: Center(child: Text('Page not found.')),
