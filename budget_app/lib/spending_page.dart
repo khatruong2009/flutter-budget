@@ -199,7 +199,6 @@ class SpendingPageState extends State<SpendingPage> {
                     children: <Widget>[
                       CupertinoButton(
                         color: Colors.red,
-                        minSize: 50,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         onPressed: () {
@@ -209,10 +208,10 @@ class SpendingPageState extends State<SpendingPage> {
                         child: const Text('Add Expense',
                             style:
                                 TextStyle(fontSize: 20, color: Colors.white)),
+                        minimumSize: Size(50, 50),
                       ),
                       CupertinoButton(
                         color: Colors.green,
-                        minSize: 50,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         onPressed: () {
@@ -222,6 +221,7 @@ class SpendingPageState extends State<SpendingPage> {
                         child: const Text('Add Income',
                             style:
                                 TextStyle(fontSize: 20, color: Colors.white)),
+                        minimumSize: Size(50, 50),
                       ),
                     ],
                   ),

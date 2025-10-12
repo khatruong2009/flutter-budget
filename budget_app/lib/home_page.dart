@@ -6,7 +6,6 @@ import 'spending_page.dart';
 import 'transaction_page.dart';
 import 'category_page.dart';
 import 'settings_page.dart';
-import 'insights_page.dart';
 
 class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
