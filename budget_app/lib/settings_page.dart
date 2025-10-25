@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'theme_provider.dart';
+import 'transaction_model.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,7 +14,49 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-// Default value
+  bool _isExporting = false;
+
+  Future<void> _exportTransactions(BuildContext context) async {
+    setState(() {
+      _isExporting = true;
+    });
+
+    try {
+      final transactionModel =
+          Provider.of<TransactionModel>(context, listen: false);
+
+      // Get the position of the button for iPad popover positioning
+      final RenderBox? box = context.findRenderObject() as RenderBox?;
+      final Rect? sharePositionOrigin =
+          box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+      await transactionModel.exportTransactionsToCSV(sharePositionOrigin);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Transactions exported successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error exporting transactions: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isExporting = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +83,25 @@ class SettingsPageState extends State<SettingsPage> {
                       .toggleTheme();
                   // Save to shared_preferences if needed
                 },
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: const Text('Data'),
+            tiles: [
+              SettingsTile.navigation(
+                title: const Text('Export Transactions'),
+                description: const Text('Export all transactions as CSV'),
+                leading: _isExporting
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.file_download),
+                onPressed: _isExporting
+                    ? null
+                    : (context) => _exportTransactions(context),
               ),
             ],
           ),

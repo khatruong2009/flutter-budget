@@ -1,9 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:csv/csv.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 import 'transaction.dart';
 
 class TransactionModel extends ChangeNotifier {
@@ -127,5 +132,54 @@ class TransactionModel extends ChangeNotifier {
     List<Transaction> sorted = List.from(transactions);
     sorted.sort((a, b) => b.date.compareTo(a.date));
     return sorted;
+  }
+
+  // Export all transactions to CSV
+  Future<void> exportTransactionsToCSV(Rect? sharePositionOrigin) async {
+    try {
+      // Create CSV data
+      List<List<dynamic>> rows = [];
+
+      // Add header row
+      rows.add(['Date', 'Type', 'Category', 'Description', 'Amount']);
+
+      // Sort transactions by date (oldest first for better readability in CSV)
+      List<Transaction> sortedTransactions = List.from(transactions);
+      sortedTransactions.sort((a, b) => a.date.compareTo(b.date));
+
+      // Add transaction data
+      for (var transaction in sortedTransactions) {
+        rows.add([
+          DateFormat('yyyy-MM-dd').format(transaction.date),
+          transaction.type == TransactionTyp.INCOME ? 'Income' : 'Expense',
+          transaction.category,
+          transaction.description,
+          transaction.amount.toStringAsFixed(2),
+        ]);
+      }
+
+      // Convert to CSV string
+      String csv = const ListToCsvConverter().convert(rows);
+
+      // Get temporary directory
+      final Directory tempDir = await getTemporaryDirectory();
+      final String timestamp =
+          DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final String filePath = '${tempDir.path}/transactions_$timestamp.csv';
+
+      // Write to file
+      final File file = File(filePath);
+      await file.writeAsString(csv);
+
+      // Share the file
+      await Share.shareXFiles(
+        [XFile(filePath)],
+        subject: 'Budget Transactions Export',
+        sharePositionOrigin: sharePositionOrigin,
+      );
+    } catch (e) {
+      print('Error exporting transactions: $e');
+      rethrow;
+    }
   }
 }
