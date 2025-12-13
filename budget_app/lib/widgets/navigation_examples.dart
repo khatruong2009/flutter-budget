@@ -33,8 +33,8 @@ class ModernAppBarExample extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => _ExamplePage(
-                      appBar: const ModernAppBar(
+                    builder: (context) => const _ExamplePage(
+                      appBar: ModernAppBar(
                         title: 'Gradient AppBar',
                         showGradient: true,
                       ),
@@ -55,8 +55,8 @@ class ModernAppBarExample extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => _ExamplePage(
-                      appBar: const ModernAppBar(
+                    builder: (context) => const _ExamplePage(
+                      appBar: ModernAppBar(
                         title: 'Main Title',
                         subtitle: 'Subtitle text here',
                         showGradient: true,
@@ -113,8 +113,8 @@ class ModernAppBarExample extends StatelessWidget {
               'Slide Transition',
               'Navigate with slide animation',
               () {
-                context.pushWithSlide(_ExamplePage(
-                  appBar: const ModernAppBar(title: 'Slide Transition'),
+                context.pushWithSlide(const _ExamplePage(
+                  appBar: ModernAppBar(title: 'Slide Transition'),
                 ));
               },
             ),
@@ -127,8 +127,8 @@ class ModernAppBarExample extends StatelessWidget {
               'Fade Transition',
               'Navigate with fade animation',
               () {
-                context.pushWithFade(_ExamplePage(
-                  appBar: const ModernAppBar(title: 'Fade Transition'),
+                context.pushWithFade(const _ExamplePage(
+                  appBar: ModernAppBar(title: 'Fade Transition'),
                 ));
               },
             ),
@@ -141,8 +141,8 @@ class ModernAppBarExample extends StatelessWidget {
               'Scale Transition',
               'Navigate with scale animation',
               () {
-                context.pushWithScale(_ExamplePage(
-                  appBar: const ModernAppBar(title: 'Scale Transition'),
+                context.pushWithScale(const _ExamplePage(
+                  appBar: ModernAppBar(title: 'Scale Transition'),
                 ));
               },
             ),
@@ -155,8 +155,8 @@ class ModernAppBarExample extends StatelessWidget {
               'Slide & Fade Transition',
               'Navigate with combined animation',
               () {
-                context.pushWithSlideAndFade(_ExamplePage(
-                  appBar: const ModernAppBar(title: 'Slide & Fade'),
+                context.pushWithSlideAndFade(const _ExamplePage(
+                  appBar: ModernAppBar(title: 'Slide & Fade'),
                 ));
               },
             ),
@@ -172,7 +172,7 @@ class ModernAppBarExample extends StatelessWidget {
     String description,
     VoidCallback onTap,
   ) {
-    return GlassCard(
+    return ElevatedCard(
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +203,7 @@ class ModernAppBarExample extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppDesign.spacingXS),
-              Icon(
+              const Icon(
                 Icons.arrow_forward,
                 size: AppDesign.iconS,
                 color: AppColors.primary,

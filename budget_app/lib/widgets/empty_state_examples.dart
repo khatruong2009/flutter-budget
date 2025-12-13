@@ -199,7 +199,7 @@ class EmptyStateExamples extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppDesign.spacingM),
-        GlassCard(
+        ElevatedCard(
           child: SizedBox(
             height: 300,
             child: example,

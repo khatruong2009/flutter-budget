@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_digit/animated_digit.dart';
@@ -59,14 +58,6 @@ void main() {
       expect(AppDesign.shadowL, isA<List<BoxShadow>>());
       expect(AppDesign.shadowXL, isA<List<BoxShadow>>());
     });
-
-    test('Glassmorphism settings are defined', () {
-      expect(AppDesign.glassBlurLight, 10.0);
-      expect(AppDesign.glassBlurMedium, 15.0);
-      expect(AppDesign.glassBlurHeavy, 20.0);
-      expect(AppDesign.glassOpacity, 0.15);
-      expect(AppDesign.glassBorderOpacity, 0.2);
-    });
   });
 
   group('AppColors Tests', () {
@@ -74,7 +65,6 @@ void main() {
       expect(AppColors.primaryGradient, isA<LinearGradient>());
       expect(AppColors.incomeGradient, isA<LinearGradient>());
       expect(AppColors.expenseGradient, isA<LinearGradient>());
-      expect(AppColors.backgroundGradient, isA<LinearGradient>());
     });
 
     test('Semantic colors are defined', () {
@@ -96,12 +86,11 @@ void main() {
       expect(AppColors.chartColors.length, greaterThanOrEqualTo(3));
     });
 
-    test('Glass surface colors work with opacity', () {
-      final lightGlass = AppColors.glassSurface(0.5);
-      expect(lightGlass, isA<Color>());
-      
-      final darkGlass = AppColors.glassSurfaceDark(0.5);
-      expect(darkGlass, isA<Color>());
+    test('Surface colors are defined', () {
+      expect(AppColors.surfaceLight, isA<Color>());
+      expect(AppColors.surfaceDark, isA<Color>());
+      expect(AppColors.cardLight, isA<Color>());
+      expect(AppColors.cardDark, isA<Color>());
     });
   });
 
@@ -176,174 +165,6 @@ void main() {
     test('Chart animation configuration is defined', () {
       expect(AppAnimations.chartAnimationDuration, isA<Duration>());
       expect(AppAnimations.chartAnimationCurve, isA<Curve>());
-    });
-  });
-
-  group('GlassCard Component Tests', () {
-    testWidgets('GlassCard renders with default properties', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test Content'),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Test Content'), findsOneWidget);
-      expect(find.byType(BackdropFilter), findsOneWidget);
-      expect(find.byType(ClipRRect), findsOneWidget);
-    });
-
-    testWidgets('GlassCard applies custom blur value', (tester) async {
-      const customBlur = 20.0;
-      
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              blur: customBlur,
-              child: Text('Test Content'),
-            ),
-          ),
-        ),
-      );
-
-      final backdropFilter = tester.widget<BackdropFilter>(
-        find.byType(BackdropFilter),
-      );
-      
-      expect(backdropFilter.filter, isA<ImageFilter>());
-    });
-
-    testWidgets('GlassCard applies custom border radius', (tester) async {
-      final customRadius = BorderRadius.circular(AppDesign.radiusXL);
-      
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              borderRadius: customRadius,
-              child: Text('Test Content'),
-            ),
-          ),
-        ),
-      );
-
-      final clipRRect = tester.widget<ClipRRect>(
-        find.byType(ClipRRect),
-      );
-      
-      expect(clipRRect.borderRadius, customRadius);
-    });
-
-    testWidgets('GlassCard applies custom padding', (tester) async {
-      const customPadding = EdgeInsets.all(AppDesign.spacingL);
-      
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              padding: customPadding,
-              child: Text('Test Content'),
-            ),
-          ),
-        ),
-      );
-
-      final padding = tester.widget<Padding>(
-        find.descendant(
-          of: find.byType(InkWell),
-          matching: find.byType(Padding),
-        ),
-      );
-      
-      expect(padding.padding, customPadding);
-    });
-
-    testWidgets('GlassCard handles tap interactions', (tester) async {
-      var tapped = false;
-      
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              onTap: () => tapped = true,
-              child: Text('Tap Me'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Tap Me'));
-      await tester.pump();
-      
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('GlassCard uses default values when not specified', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
-          ),
-        ),
-      );
-
-      final clipRRect = tester.widget<ClipRRect>(
-        find.byType(ClipRRect),
-      );
-      
-      // Default border radius should be AppDesign.radiusL
-      expect(
-        clipRRect.borderRadius,
-        BorderRadius.circular(AppDesign.radiusL),
-      );
-    });
-
-    testWidgets('GlassCard contains Material and InkWell for interactions', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
-          ),
-        ),
-      );
-
-      // GlassCard should contain a Material widget with transparent color
-      final materials = tester.widgetList<Material>(find.byType(Material));
-      expect(materials.any((m) => m.color == Colors.transparent), isTrue);
-      
-      expect(find.byType(InkWell), findsOneWidget);
-    });
-
-    testWidgets('GlassCard applies glassmorphism effect with Container decoration', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GlassCard(
-              child: Text('Test'),
-            ),
-          ),
-        ),
-      );
-
-      final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(BackdropFilter),
-          matching: find.byType(Container),
-        ).first,
-      );
-      
-      expect(container.decoration, isA<BoxDecoration>());
-      final decoration = container.decoration as BoxDecoration;
-      expect(decoration.border, isNotNull);
-      expect(decoration.borderRadius, isNotNull);
     });
   });
 
@@ -687,7 +508,7 @@ void main() {
   group('AnimatedMetricCard Component Tests', () {
     testWidgets('AnimatedMetricCard renders with required properties', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Total Income',
@@ -706,7 +527,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard applies scale animation on init', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test Metric',
@@ -731,7 +552,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard uses ElevatedCard as base', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',
@@ -748,7 +569,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard displays icon in gradient container', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Expenses',
@@ -796,7 +617,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard displays value with AnimatedDigitWidget', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Balance',
@@ -820,7 +641,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard respects fractionDigits parameter', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Count',
@@ -842,7 +663,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard displays prefix when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Price',
@@ -860,7 +681,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard displays suffix when provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Growth',
@@ -878,7 +699,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard icon container has proper padding', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',
@@ -904,7 +725,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard icon container has rounded corners', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',
@@ -929,7 +750,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard label uses secondary text color', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test Label',
@@ -949,7 +770,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard contains AnimatedDigitWidget for value display', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Amount',
@@ -967,7 +788,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard has proper spacing between elements', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',
@@ -991,7 +812,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard icon has correct size', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',
@@ -1010,7 +831,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard uses correct typography for label', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test Label',
@@ -1030,7 +851,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard displays value correctly', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Amount',
@@ -1052,7 +873,7 @@ void main() {
 
     testWidgets('AnimatedMetricCard disposes animation controller', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AnimatedMetricCard(
               label: 'Test',

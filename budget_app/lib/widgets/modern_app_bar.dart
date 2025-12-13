@@ -120,10 +120,10 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
                   decoration: BoxDecoration(
                     color: showGradient
                         ? Colors.transparent
-                        : AppDesign.getGlassSurface(context, 0.1),
+                        : AppDesign.getSurfaceColor(context).withValues(alpha: 0.9),
                     border: Border(
                       bottom: BorderSide(
-                        color: AppDesign.getGlassBorder(context, 0.2),
+                        color: AppDesign.getBorderColor(context).withValues(alpha: 0.7),
                         width: AppDesign.borderThin,
                       ),
                     ),

@@ -8,7 +8,7 @@ void main() {
     testWidgets('renders expense transaction correctly', (tester) async {
       // Create a test expense transaction
       final transaction = Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Test Expense',
         amount: 50.00,
         category: 'Groceries',
@@ -16,7 +16,6 @@ void main() {
       );
 
       bool tapCalled = false;
-      bool deleteCalled = false;
 
       // Build the widget
       await tester.pumpWidget(
@@ -25,7 +24,7 @@ void main() {
             body: ModernTransactionListItem(
               transaction: transaction,
               onTap: () => tapCalled = true,
-              onDelete: () => deleteCalled = true,
+              onDelete: () {},
             ),
           ),
         ),
@@ -51,7 +50,7 @@ void main() {
     testWidgets('renders income transaction correctly', (tester) async {
       // Create a test income transaction
       final transaction = Transaction(
-        type: TransactionTyp.INCOME,
+        type: TransactionTyp.income,
         description: 'Test Income',
         amount: 1000.00,
         category: 'Salary',
@@ -83,7 +82,7 @@ void main() {
 
     testWidgets('displays category icon with gradient background', (tester) async {
       final transaction = Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Test',
         amount: 25.00,
         category: 'Groceries',
@@ -115,7 +114,7 @@ void main() {
 
     testWidgets('formats date correctly', (tester) async {
       final transaction = Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Test',
         amount: 25.00,
         category: 'General',

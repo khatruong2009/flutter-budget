@@ -42,7 +42,7 @@ class TransactionPage extends StatelessWidget {
                     onAction: () {
                       showTransactionForm(
                         context,
-                        TransactionTyp.EXPENSE,
+                        TransactionTyp.expense,
                         transactionModel.addTransaction,
                       );
                     },

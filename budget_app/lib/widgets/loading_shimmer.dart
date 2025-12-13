@@ -93,10 +93,10 @@ class LoadingShimmer extends StatefulWidget {
   }) {
     return LoadingShimmer(
       type: ShimmerType.custom,
-      child: child,
       height: height,
       width: width,
       enabled: enabled,
+      child: child,
     );
   }
 

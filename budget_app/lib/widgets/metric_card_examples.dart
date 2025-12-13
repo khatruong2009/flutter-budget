@@ -172,7 +172,7 @@ class _MetricCardExamplesPageState extends State<MetricCardExamplesPage> {
               ),
               const SizedBox(height: AppDesign.spacingM),
               
-              AnimatedMetricCard(
+              const AnimatedMetricCard(
                 label: 'Card Color',
                 value: 1234.56,
                 icon: CupertinoIcons.creditcard_fill,
@@ -199,7 +199,7 @@ class _MetricCardExamplesPageState extends State<MetricCardExamplesPage> {
               ),
               const SizedBox(height: AppDesign.spacingM),
               
-              AnimatedMetricCard(
+              const AnimatedMetricCard(
                 label: 'Total Transactions',
                 value: 42,
                 icon: CupertinoIcons.list_bullet,

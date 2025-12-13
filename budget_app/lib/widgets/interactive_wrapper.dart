@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import '../design_system.dart';
-import '../utils/micro_interactions.dart';
 
 /// InteractiveWrapper enhances any widget with micro-interactions including:
 /// - Haptic feedback on tap

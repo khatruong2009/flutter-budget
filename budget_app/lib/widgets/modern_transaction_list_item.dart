@@ -27,7 +27,7 @@ class ModernTransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isExpense = transaction.type == TransactionTyp.EXPENSE;
+    final isExpense = transaction.type == TransactionTyp.expense;
     final categoryColor = isExpense
         ? AppDesign.getExpenseColor(context)
         : AppDesign.getIncomeColor(context);

@@ -140,8 +140,8 @@ class AccessibilityUtils {
 
   /// Checks if text size is large (for accessibility)
   static bool isLargeTextSize(BuildContext context) {
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    return textScaleFactor > 1.3;
+    final textScaler = MediaQuery.of(context).textScaler;
+    return textScaler.scale(1.0) > 1.3;
   }
 
   /// Gets minimum touch target size (44pt for accessibility)

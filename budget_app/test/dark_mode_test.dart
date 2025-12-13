@@ -240,7 +240,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData.light(),
-            home: Scaffold(
+            home: const Scaffold(
               body: ElevatedCard(
                 child: Text('Test'),
               ),
@@ -270,7 +270,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData.dark(),
-            home: Scaffold(
+            home: const Scaffold(
               body: ElevatedCard(
                 child: Text('Test'),
               ),
@@ -301,7 +301,7 @@ void main() {
           await tester.pumpWidget(
             MaterialApp(
               theme: ThemeData(brightness: brightness),
-              home: Scaffold(
+              home: const Scaffold(
                 body: ElevatedCard(
                   elevation: 4.0,
                   child: Text('Test'),
@@ -431,9 +431,9 @@ void main() {
 
     group('Contrast Ratios', () {
       double calculateLuminance(Color color) {
-        final r = color.red / 255.0;
-        final g = color.green / 255.0;
-        final b = color.blue / 255.0;
+        final r = color.r;
+        final g = color.g;
+        final b = color.b;
         
         final rLinear = r <= 0.03928 ? r / 12.92 : pow((r + 0.055) / 1.055, 2.4);
         final gLinear = g <= 0.03928 ? g / 12.92 : pow((g + 0.055) / 1.055, 2.4);
@@ -453,40 +453,40 @@ void main() {
       }
 
       test('Light theme text on background meets WCAG AA (4.5:1)', () {
-        final textColor = AppColors.textPrimary;
-        final backgroundColor = AppColors.backgroundLight;
+        const textColor = AppColors.textPrimary;
+        const backgroundColor = AppColors.backgroundLight;
         
         final contrastRatio = calculateContrastRatio(textColor, backgroundColor);
         expect(contrastRatio, greaterThanOrEqualTo(4.5));
       });
 
       test('Dark theme text on background meets WCAG AA (4.5:1)', () {
-        final textColor = AppColors.textPrimaryDark;
-        final backgroundColor = AppColors.backgroundDark;
+        const textColor = AppColors.textPrimaryDark;
+        const backgroundColor = AppColors.backgroundDark;
         
         final contrastRatio = calculateContrastRatio(textColor, backgroundColor);
         expect(contrastRatio, greaterThanOrEqualTo(4.5));
       });
 
       test('Light theme text on card meets WCAG AA (4.5:1)', () {
-        final textColor = AppColors.textPrimary;
-        final cardColor = AppColors.cardLight;
+        const textColor = AppColors.textPrimary;
+        const cardColor = AppColors.cardLight;
         
         final contrastRatio = calculateContrastRatio(textColor, cardColor);
         expect(contrastRatio, greaterThanOrEqualTo(4.5));
       });
 
       test('Dark theme text on card meets WCAG AA (4.5:1)', () {
-        final textColor = AppColors.textPrimaryDark;
-        final cardColor = AppColors.cardDark;
+        const textColor = AppColors.textPrimaryDark;
+        const cardColor = AppColors.cardDark;
         
         final contrastRatio = calculateContrastRatio(textColor, cardColor);
         expect(contrastRatio, greaterThanOrEqualTo(4.5));
       });
 
       test('Income color on light background has reasonable contrast', () {
-        final incomeColor = AppColors.income;
-        final backgroundColor = AppColors.backgroundLight;
+        const incomeColor = AppColors.income;
+        const backgroundColor = AppColors.backgroundLight;
         
         final contrastRatio = calculateContrastRatio(incomeColor, backgroundColor);
         // Income color is used for semantic meaning, not primary text
@@ -495,24 +495,24 @@ void main() {
       });
 
       test('Expense color on light background has sufficient contrast', () {
-        final expenseColor = AppColors.expense;
-        final backgroundColor = AppColors.backgroundLight;
+        const expenseColor = AppColors.expense;
+        const backgroundColor = AppColors.backgroundLight;
         
         final contrastRatio = calculateContrastRatio(expenseColor, backgroundColor);
         expect(contrastRatio, greaterThanOrEqualTo(3.0)); // AA for large text
       });
 
       test('Income color on dark background has sufficient contrast', () {
-        final incomeColor = AppColors.incomeDarkTheme;
-        final backgroundColor = AppColors.backgroundDark;
+        const incomeColor = AppColors.incomeDarkTheme;
+        const backgroundColor = AppColors.backgroundDark;
         
         final contrastRatio = calculateContrastRatio(incomeColor, backgroundColor);
         expect(contrastRatio, greaterThanOrEqualTo(3.0)); // AA for large text
       });
 
       test('Expense color on dark background has sufficient contrast', () {
-        final expenseColor = AppColors.expenseDarkTheme;
-        final backgroundColor = AppColors.backgroundDark;
+        const expenseColor = AppColors.expenseDarkTheme;
+        const backgroundColor = AppColors.backgroundDark;
         
         final contrastRatio = calculateContrastRatio(expenseColor, backgroundColor);
         expect(contrastRatio, greaterThanOrEqualTo(3.0)); // AA for large text

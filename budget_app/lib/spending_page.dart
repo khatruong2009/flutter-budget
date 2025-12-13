@@ -50,7 +50,7 @@ class SpendingPageState extends State<SpendingPage> {
   // calculate total income
   double calculateTotalIncome(List<Transaction> transactions) {
     return transactions
-        .where((transaction) => transaction.type == TransactionTyp.INCOME)
+        .where((transaction) => transaction.type == TransactionTyp.income)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -58,7 +58,7 @@ class SpendingPageState extends State<SpendingPage> {
   // calculate total expenses
   double calculateTotalExpenses(List<Transaction> transactions) {
     return transactions
-        .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
+        .where((transaction) => transaction.type == TransactionTyp.expense)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -261,7 +261,7 @@ class SpendingPageState extends State<SpendingPage> {
                                           color: displayColor,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        child: Text('\$'),
+                                        child: const Text('\$'),
                                       ),
                                       AnimatedDigitWidget(
                                         key: ValueKey<int>(value.sign.toInt()),
@@ -309,7 +309,7 @@ class SpendingPageState extends State<SpendingPage> {
                             onPressed: () {
                               showTransactionForm(
                                 context,
-                                TransactionTyp.EXPENSE,
+                                TransactionTyp.expense,
                                 transactionModel.addTransaction,
                               );
                             },
@@ -324,7 +324,7 @@ class SpendingPageState extends State<SpendingPage> {
                             onPressed: () {
                               showTransactionForm(
                                 context,
-                                TransactionTyp.INCOME,
+                                TransactionTyp.income,
                                 transactionModel.addTransaction,
                               );
                             },

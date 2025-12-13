@@ -23,6 +23,8 @@ class SettingsPageState extends State<SettingsPage> {
       _isExporting = true;
     });
 
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
     try {
       final transactionModel =
           Provider.of<TransactionModel>(context, listen: false);
@@ -34,33 +36,31 @@ class SettingsPageState extends State<SettingsPage> {
 
       await transactionModel.exportTransactionsToCSV(sharePositionOrigin);
 
-      if (mounted) {
-        final messenger = ScaffoldMessenger.of(context);
-        messenger.showSnackBar(
-          SnackBar(
-            content: const Text('Transactions exported successfully!'),
-            backgroundColor: AppColors.income,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            ),
+      if (!mounted) return;
+
+      messenger?.showSnackBar(
+        SnackBar(
+          content: const Text('Transactions exported successfully!'),
+          backgroundColor: AppColors.income,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDesign.radiusM),
           ),
-        );
-      }
+        ),
+      );
     } catch (e) {
-      if (mounted) {
-        final messenger = ScaffoldMessenger.of(context);
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Error exporting transactions: $e'),
-            backgroundColor: AppColors.expense,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            ),
+      if (!mounted) return;
+
+      messenger?.showSnackBar(
+        SnackBar(
+          content: Text('Error exporting transactions: $e'),
+          backgroundColor: AppColors.expense,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDesign.radiusM),
           ),
-        );
-      }
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {

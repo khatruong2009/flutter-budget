@@ -52,7 +52,7 @@ class _CategoryPageState extends State<CategoryPage>
       builder: (context, transactionModel, child) {
         final Map<String, double> expensesPerCategory = {};
         for (final transaction in transactionModel.currentMonthTransactions
-            .where((t) => t.type == TransactionTyp.EXPENSE)) {
+            .where((t) => t.type == TransactionTyp.expense)) {
           expensesPerCategory.update(
             transaction.category,
             (existingValue) => existingValue + transaction.amount,

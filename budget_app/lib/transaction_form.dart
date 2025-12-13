@@ -15,7 +15,7 @@ Future<void> showTransactionForm(
   final formKey = GlobalKey<FormState>();
   String description = '';
   final descriptionController = TextEditingController();
-  String category = type == TransactionTyp.EXPENSE
+  String category = type == TransactionTyp.expense
       ? expenseCategories.keys.first
       : incomeCategories.keys.first;
   double amount = 0.0;
@@ -50,7 +50,7 @@ Future<void> showTransactionForm(
 
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-        final categoryMap = type == TransactionTyp.EXPENSE
+        final categoryMap = type == TransactionTyp.expense
             ? expenseCategories
             : incomeCategories;
 
@@ -110,7 +110,7 @@ Future<void> showTransactionForm(
                     children: [
                             // Title
                             Text(
-                              type == TransactionTyp.EXPENSE
+                              type == TransactionTyp.expense
                                   ? 'Add Expense'
                                   : 'Add Income',
                               style: AppTypography.headingLarge.copyWith(
@@ -204,7 +204,7 @@ Future<void> showTransactionForm(
                                         Container(
                                           padding: const EdgeInsets.all(AppDesign.spacingXS),
                                           decoration: BoxDecoration(
-                                            color: type == TransactionTyp.EXPENSE
+                                            color: type == TransactionTyp.expense
                                                 ? AppColors.expense
                                                 : AppColors.income,
                                             borderRadius: BorderRadius.circular(
@@ -247,7 +247,7 @@ Future<void> showTransactionForm(
                                 Expanded(
                                   child: AppButton.primary(
                                     label: transactionToEdit != null ? 'Update' : 'Add',
-                                    gradient: type == TransactionTyp.EXPENSE
+                                    gradient: type == TransactionTyp.expense
                                         ? AppColors.getExpenseGradient(Theme.of(context).brightness == Brightness.dark)
                                         : AppColors.getIncomeGradient(Theme.of(context).brightness == Brightness.dark),
                                     onPressed: () {
@@ -465,7 +465,7 @@ class _ModernTextFieldState extends State<_ModernTextField>
           const SizedBox(height: AppDesign.spacingXS),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline,
                 size: AppDesign.iconS,
                 color: AppColors.error,

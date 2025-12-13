@@ -172,13 +172,13 @@ class PlatformUtils {
       return CupertinoSwitch(
         value: value,
         onChanged: onChanged,
-        activeColor: activeColor,
+        activeTrackColor: activeColor,
       );
     } else {
       return Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: activeColor,
+        activeThumbColor: activeColor,
       );
     }
   }

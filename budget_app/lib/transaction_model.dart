@@ -24,7 +24,7 @@ class TransactionModel extends ChangeNotifier {
   // Calculate total income for selected month
   double get totalIncome {
     return currentMonthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.INCOME)
+        .where((transaction) => transaction.type == TransactionTyp.income)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -32,7 +32,7 @@ class TransactionModel extends ChangeNotifier {
   // Calculate total expenses for selected month
   double get totalExpenses {
     return currentMonthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.EXPENSE)
+        .where((transaction) => transaction.type == TransactionTyp.expense)
         .map((transaction) => transaction.amount)
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
@@ -114,10 +114,10 @@ class TransactionModel extends ChangeNotifier {
   Map<String, double> getMonthlySummary(DateTime month) {
     List<Transaction> monthTransactions = getTransactionsForMonth(month);
     double income = monthTransactions
-        .where((t) => t.type == TransactionTyp.INCOME)
+        .where((t) => t.type == TransactionTyp.income)
         .fold(0.0, (sum, t) => sum + t.amount);
     double expenses = monthTransactions
-        .where((t) => t.type == TransactionTyp.EXPENSE)
+        .where((t) => t.type == TransactionTyp.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
 
     return {
@@ -151,7 +151,7 @@ class TransactionModel extends ChangeNotifier {
       for (var transaction in sortedTransactions) {
         rows.add([
           DateFormat('yyyy-MM-dd').format(transaction.date),
-          transaction.type == TransactionTyp.INCOME ? 'Income' : 'Expense',
+          transaction.type == TransactionTyp.income ? 'Income' : 'Expense',
           transaction.category,
           transaction.description,
           transaction.amount.toStringAsFixed(2),
@@ -178,7 +178,7 @@ class TransactionModel extends ChangeNotifier {
         sharePositionOrigin: sharePositionOrigin,
       );
     } catch (e) {
-      print('Error exporting transactions: $e');
+      debugPrint('Error exporting transactions: $e');
       rethrow;
     }
   }

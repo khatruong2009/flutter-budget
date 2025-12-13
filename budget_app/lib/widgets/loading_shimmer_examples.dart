@@ -128,7 +128,7 @@ class _LoadingShimmerExamplesState extends State<LoadingShimmerExamples> {
   }
 
   Widget _buildListItem(String title, String category, String amount, Color color) {
-    return GlassCard(
+    return ElevatedCard(
       child: Row(
         children: [
           Container(
@@ -192,7 +192,7 @@ class _LoadingShimmerExamplesState extends State<LoadingShimmerExamples> {
   }
 
   Widget _buildMetricCard(String label, String value, IconData icon, Gradient gradient) {
-    return GlassCard(
+    return ElevatedCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -258,8 +258,12 @@ class _LoadingShimmerExamplesState extends State<LoadingShimmerExamples> {
     return Container(
       padding: const EdgeInsets.all(AppDesign.spacingL),
       decoration: BoxDecoration(
-        color: AppDesign.getGlassSurface(context, AppDesign.glassOpacity),
+        color: AppDesign.getSurfaceColor(context).withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(AppDesign.radiusL),
+        border: Border.all(
+          color: AppDesign.getBorderColor(context).withValues(alpha: 0.4),
+          width: AppDesign.borderThin,
+        ),
       ),
       child: Column(
         children: [
@@ -293,7 +297,7 @@ class _LoadingShimmerExamplesState extends State<LoadingShimmerExamples> {
   }
 
   Widget _buildSampleCustomContent() {
-    return GlassCard(
+    return ElevatedCard(
       padding: const EdgeInsets.all(AppDesign.spacingL),
       child: Column(
         children: [
@@ -387,7 +391,7 @@ class _TransactionListWithShimmerState extends State<TransactionListWithShimmer>
   }
 
   Widget _buildTransaction(String title, String category, String amount) {
-    return GlassCard(
+    return ElevatedCard(
       child: Row(
         children: [
           Container(
@@ -435,4 +439,3 @@ class _TransactionListWithShimmerState extends State<TransactionListWithShimmer>
     );
   }
 }
-

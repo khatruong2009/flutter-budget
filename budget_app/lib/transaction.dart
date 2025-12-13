@@ -1,6 +1,6 @@
 enum TransactionTyp {
-  INCOME,
-  EXPENSE,
+  income,
+  expense,
 }
 
 class Transaction {
@@ -20,7 +20,7 @@ class Transaction {
 
   // convert transaction object into a map
   Map<String, dynamic> toJson() => {
-        'type': type == TransactionTyp.EXPENSE ? 'expense' : 'income',
+        'type': type == TransactionTyp.expense ? 'expense' : 'income',
         'description': description,
         'amount': amount,
         'category': category,
@@ -31,8 +31,8 @@ class Transaction {
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       type: json['type'] == 'expense'
-          ? TransactionTyp.EXPENSE
-          : TransactionTyp.INCOME,
+          ? TransactionTyp.expense
+          : TransactionTyp.income,
       description: json['description'],
       amount: json['amount'],
       category: json['category'],

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:budget_app/utils/platform_utils.dart';
 import 'package:budget_app/utils/platform_enhancements.dart';
 import 'package:budget_app/widgets/responsive_layout.dart';
-import 'package:budget_app/design_system.dart';
 
 void main() {
   group('Platform Utils Tests', () {
@@ -138,13 +137,13 @@ void main() {
 
     testWidgets('AdaptiveGrid should render children', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AdaptiveGrid(
               children: [
-                Container(child: const Text('Item 1')),
-                Container(child: const Text('Item 2')),
-                Container(child: const Text('Item 3')),
+                Text('Item 1'),
+                Text('Item 2'),
+                Text('Item 3'),
               ],
             ),
           ),
@@ -158,12 +157,12 @@ void main() {
 
     testWidgets('AdaptiveColumns should render children', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AdaptiveColumns(
               children: [
-                const Text('Column 1'),
-                const Text('Column 2'),
+                Text('Column 1'),
+                Text('Column 2'),
               ],
             ),
           ),

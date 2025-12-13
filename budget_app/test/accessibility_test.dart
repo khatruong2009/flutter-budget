@@ -65,7 +65,7 @@ void main() {
           amount: 100.0,
           category: 'Food',
           date: DateTime.now(),
-          type: TransactionTyp.EXPENSE,
+          type: TransactionTyp.expense,
         );
 
         await tester.pumpWidget(
@@ -147,7 +147,7 @@ void main() {
           amount: 50.25,
           category: 'Food',
           date: DateTime(2024, 1, 15),
-          type: TransactionTyp.EXPENSE,
+          type: TransactionTyp.expense,
         );
 
         await tester.pumpWidget(
@@ -484,7 +484,7 @@ void main() {
           final contrast = calculateContrastRatio(color, backgroundColor);
           // Chart colors are used for large visual elements with borders
           expect(contrast, greaterThanOrEqualTo(2.0),
-            reason: 'Primary chart color ${color.value.toRadixString(16)} should have at least 2:1 contrast');
+            reason: 'Primary chart color ${color.toARGB32().toRadixString(16)} should have at least 2:1 contrast');
         }
       });
 
@@ -495,7 +495,7 @@ void main() {
         for (final color in chartColors) {
           final contrast = calculateContrastRatio(color, backgroundColor);
           expect(contrast, greaterThanOrEqualTo(3.0),
-            reason: 'Chart color ${color.value.toRadixString(16)} should have at least 3:1 contrast in dark mode');
+            reason: 'Chart color ${color.toARGB32().toRadixString(16)} should have at least 3:1 contrast in dark mode');
         }
       });
     });
@@ -528,10 +528,6 @@ void main() {
       });
 
       testWidgets('Multiple buttons can be navigated with tab', (tester) async {
-        bool button1Pressed = false;
-        bool button2Pressed = false;
-        bool button3Pressed = false;
-
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -539,17 +535,17 @@ void main() {
                 children: [
                   AppButton.primary(
                     label: 'Button 1',
-                    onPressed: () => button1Pressed = true,
+                    onPressed: () {},
                   ),
                   const SizedBox(height: 16),
                   AppButton.secondary(
                     label: 'Button 2',
-                    onPressed: () => button2Pressed = true,
+                    onPressed: () {},
                   ),
                   const SizedBox(height: 16),
                   AppButton.primary(
                     label: 'Button 3',
-                    onPressed: () => button3Pressed = true,
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -564,7 +560,6 @@ void main() {
       });
 
       testWidgets('ElevatedCard with onTap is focusable', (tester) async {
-        bool cardTapped = false;
         final focusNode = FocusNode();
 
         await tester.pumpWidget(
@@ -573,7 +568,7 @@ void main() {
               body: Focus(
                 focusNode: focusNode,
                 child: ElevatedCard(
-                  onTap: () => cardTapped = true,
+                  onTap: () {},
                   child: const Text('Tappable Card'),
                 ),
               ),
@@ -624,11 +619,10 @@ void main() {
           amount: 50.0,
           category: 'Food',
           date: DateTime.now(),
-          type: TransactionTyp.EXPENSE,
+          type: TransactionTyp.expense,
         );
 
         bool itemTapped = false;
-        bool itemDeleted = false;
 
         await tester.pumpWidget(
           MaterialApp(
@@ -636,7 +630,7 @@ void main() {
               body: ModernTransactionListItem(
                 transaction: transaction,
                 onTap: () => itemTapped = true,
-                onDelete: () => itemDeleted = false,
+                onDelete: () {},
               ),
             ),
           ),
@@ -766,11 +760,11 @@ void main() {
     group('ElevatedCard Accessibility Tests', () {
       testWidgets('ElevatedCard renders with proper elevation', (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: Scaffold(
               body: ElevatedCard(
                 elevation: 4.0,
-                child: const Text('Card Content'),
+                child: Text('Card Content'),
               ),
             ),
           ),
@@ -923,7 +917,7 @@ void main() {
     group('AnimatedMetricCard Accessibility Tests', () {
       testWidgets('AnimatedMetricCard displays semantic content', (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: Scaffold(
               body: AnimatedMetricCard(
                 label: 'Total Income',
@@ -941,7 +935,7 @@ void main() {
 
       testWidgets('AnimatedMetricCard icon has proper color contrast', (tester) async {
         await tester.pumpWidget(
-          MaterialApp(
+          const MaterialApp(
             home: Scaffold(
               body: AnimatedMetricCard(
                 label: 'Total',
@@ -987,7 +981,7 @@ void main() {
       testWidgets('Buttons scale properly with large text', (tester) async {
         await tester.pumpWidget(
           MediaQuery(
-            data: const MediaQueryData(textScaleFactor: 2.0),
+            data: const MediaQueryData(textScaler: TextScaler.linear(2.0)),
             child: MaterialApp(
               home: Scaffold(
                 body: AppButton.primary(
@@ -1007,9 +1001,9 @@ void main() {
 
       testWidgets('Cards adapt to large text', (tester) async {
         await tester.pumpWidget(
-          MediaQuery(
-            data: const MediaQueryData(textScaleFactor: 2.0),
-            child: const MaterialApp(
+          const MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(2.0)),
+            child: MaterialApp(
               home: Scaffold(
                 body: ElevatedCard(
                   child: Text('Large text in card'),
@@ -1029,12 +1023,12 @@ void main() {
           amount: 999.99,
           category: 'Food',
           date: DateTime.now(),
-          type: TransactionTyp.EXPENSE,
+          type: TransactionTyp.expense,
         );
 
         await tester.pumpWidget(
           MediaQuery(
-            data: const MediaQueryData(textScaleFactor: 2.0),
+            data: const MediaQueryData(textScaler: TextScaler.linear(2.0)),
             child: MaterialApp(
               home: Scaffold(
                 body: ModernTransactionListItem(

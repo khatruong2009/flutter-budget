@@ -35,7 +35,7 @@ class _MicroInteractionsExamplesPageState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Status Display
-              GlassCard(
+              ElevatedCard(
                 child: Column(
                   children: [
                     Text(
@@ -195,7 +195,7 @@ class _MicroInteractionsExamplesPageState
                   });
                 },
                 hapticType: HapticFeedbackType.light,
-                child: GlassCard(
+                child: ElevatedCard(
                   child: Row(
                     children: [
                       Container(
@@ -252,7 +252,7 @@ class _MicroInteractionsExamplesPageState
                   });
                 },
                 hapticType: HapticFeedbackType.heavy,
-                child: GlassCard(
+                child: ElevatedCard(
                   child: Row(
                     children: [
                       Container(
@@ -316,7 +316,7 @@ class _MicroInteractionsExamplesPageState
               Row(
                 children: [
                   Expanded(
-                    child: GlassCard(
+                    child: ElevatedCard(
                       onTap: () {
                         setState(() {
                           _lastAction = 'Hoverable card 1 tapped';
@@ -343,7 +343,7 @@ class _MicroInteractionsExamplesPageState
                   ),
                   const SizedBox(width: AppDesign.spacingM),
                   Expanded(
-                    child: GlassCard(
+                    child: ElevatedCard(
                       onTap: () {
                         setState(() {
                           _lastAction = 'Hoverable card 2 tapped';
@@ -381,7 +381,7 @@ class _MicroInteractionsExamplesPageState
               ),
               const SizedBox(height: AppDesign.spacingM),
 
-              GlassCard(
+              ElevatedCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

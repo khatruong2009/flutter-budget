@@ -4,35 +4,39 @@ import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'platform_utils.dart';
 
-/// Mixin that provides platform-specific enhancements to widgets
-mixin PlatformEnhancements<T extends StatefulWidget> on State<T> {
-  /// Handles keyboard shortcuts for desktop platforms
-  void handleKeyboardShortcut(RawKeyEvent event) {
-    if (!PlatformUtils.supportsKeyboardShortcuts) return;
+  /// Mixin that provides platform-specific enhancements to widgets
+  mixin PlatformEnhancements<T extends StatefulWidget> on State<T> {
+    /// Handles keyboard shortcuts for desktop platforms
+    void handleKeyboardShortcut(KeyEvent event) {
+      if (!PlatformUtils.supportsKeyboardShortcuts) return;
 
-    // Ctrl/Cmd + N: New transaction
-    if (event.isControlPressed || event.isMetaPressed) {
-      if (event.logicalKey == LogicalKeyboardKey.keyN) {
-        onNewTransaction();
+      final isControlPressed = HardwareKeyboard.instance.isControlPressed;
+      final isMetaPressed = HardwareKeyboard.instance.isMetaPressed;
+      final logicalKey = event.logicalKey;
+
+      // Ctrl/Cmd + N: New transaction
+      if (isControlPressed || isMetaPressed) {
+        if (logicalKey == LogicalKeyboardKey.keyN) {
+          onNewTransaction();
+        }
+        // Ctrl/Cmd + S: Save/Settings
+        else if (logicalKey == LogicalKeyboardKey.keyS) {
+          onSave();
+        }
+        // Ctrl/Cmd + F: Search/Filter
+        else if (logicalKey == LogicalKeyboardKey.keyF) {
+          onSearch();
+        }
+        // Ctrl/Cmd + W: Close
+        else if (logicalKey == LogicalKeyboardKey.keyW) {
+          onClose();
+        }
       }
-      // Ctrl/Cmd + S: Save/Settings
-      else if (event.logicalKey == LogicalKeyboardKey.keyS) {
-        onSave();
-      }
-      // Ctrl/Cmd + F: Search/Filter
-      else if (event.logicalKey == LogicalKeyboardKey.keyF) {
-        onSearch();
-      }
-      // Ctrl/Cmd + W: Close
-      else if (event.logicalKey == LogicalKeyboardKey.keyW) {
-        onClose();
+      // Escape: Cancel/Close
+      else if (logicalKey == LogicalKeyboardKey.escape) {
+        onCancel();
       }
     }
-    // Escape: Cancel/Close
-    else if (event.logicalKey == LogicalKeyboardKey.escape) {
-      onCancel();
-    }
-  }
 
   /// Override these methods in your widget to handle shortcuts
   void onNewTransaction() {}

@@ -26,42 +26,42 @@ class _TransactionListItemExamplesPageState
   List<Transaction> _createSampleTransactions() {
     return [
       Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Grocery Shopping',
         amount: 125.50,
         category: 'Groceries',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
       Transaction(
-        type: TransactionTyp.INCOME,
+        type: TransactionTyp.income,
         description: 'Monthly Salary',
         amount: 5000.00,
         category: 'Salary',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Restaurant Dinner',
         amount: 85.00,
         category: 'Eating Out',
         date: DateTime.now().subtract(const Duration(days: 3)),
       ),
       Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Gas Station',
         amount: 45.00,
         category: 'Transportation',
         date: DateTime.now().subtract(const Duration(days: 4)),
       ),
       Transaction(
-        type: TransactionTyp.INCOME,
+        type: TransactionTyp.income,
         description: 'Freelance Project',
         amount: 750.00,
         category: 'Other',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Transaction(
-        type: TransactionTyp.EXPENSE,
+        type: TransactionTyp.expense,
         description: 'Movie Tickets',
         amount: 30.00,
         category: 'Entertainment',

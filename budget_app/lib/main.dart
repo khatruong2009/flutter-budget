@@ -90,7 +90,7 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -104,13 +104,13 @@ class _MyAppState extends State<MyApp> {
       if (shortcutType == 'action_add_expense') {
         showTransactionForm(
             context,
-            TransactionTyp.EXPENSE,
+            TransactionTyp.expense,
             Provider.of<TransactionModel>(context, listen: false)
                 .addTransaction);
       } else if (shortcutType == 'action_add_income') {
         showTransactionForm(
             context,
-            TransactionTyp.INCOME,
+            TransactionTyp.income,
             Provider.of<TransactionModel>(context, listen: false)
                 .addTransaction);
       }

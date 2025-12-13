@@ -138,7 +138,7 @@ void main() {
 
     testWidgets('renders with gradient icon container', (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: EmptyState(
               type: EmptyStateType.noData,
