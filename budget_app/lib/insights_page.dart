@@ -2,10 +2,14 @@ import 'dart:async';
 
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'chat.dart';
 import 'transaction.dart';
 import 'transaction_model.dart';
+import 'design_system.dart';
+import 'widgets/empty_state.dart';
+import 'utils/platform_utils.dart';
 
 class InsightsPage extends StatefulWidget {
   const InsightsPage({
@@ -28,12 +32,12 @@ class InsightsPageState extends State<InsightsPage> {
   void initState() {
     super.initState();
     _responseController = StreamController<String>();
-    // fetchInsights();
   }
 
   @override
   void dispose() {
     _responseController.close();
+    _textEditingController.dispose();
     super.dispose();
   }
 
@@ -42,8 +46,7 @@ class InsightsPageState extends State<InsightsPage> {
     if (userQuestion.isEmpty) {
       setState(() {
         apiResponse = "Please enter a question.";
-        isLoading =
-            false; // Ensure isLoading is set to false if no question is asked
+        isLoading = false;
       });
       return;
     }
@@ -78,7 +81,6 @@ class InsightsPageState extends State<InsightsPage> {
           }
         },
         onError: (error) {
-          // print('Error: $error'); // Log error for debugging
           setState(() {
             apiResponse = 'Error: Something went wrong';
             isLoading = false;
@@ -92,7 +94,6 @@ class InsightsPageState extends State<InsightsPage> {
         cancelOnError: true,
       );
     } catch (error) {
-      // print('Error: $error'); // Log error for debugging
       setState(() {
         apiResponse = 'Error: Something went wrong';
         isLoading = false;
@@ -110,58 +111,274 @@ class InsightsPageState extends State<InsightsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Budgie Insights')),
-      body: SafeArea(
-        // Step 1: Wrap your content with SafeArea
-        child: GestureDetector(
-          onTap: () {
-            // Step 2: Call FocusScope.of(context).unfocus() when a tap is detected
-            FocusScope.of(context).unfocus();
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: _textEditingController,
-                  decoration: const InputDecoration(
-                    labelText: 'Ask a question about your finances',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: isLoading ? null : askQuestion,
-                      child: Text(isLoading ? 'Loading...' : 'Submit'),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text(
+          'Insights',
+          style: AppTypography.headingLarge.copyWith(
+            color: AppDesign.getTextPrimary(context),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Container(
+        color: AppDesign.getBackgroundColor(context),
+        child: SafeArea(
+          child: Consumer<TransactionModel>(
+            builder: (context, model, child) {
+              final hasTransactions = model.currentMonthTransactions.isNotEmpty;
+              
+              if (!hasTransactions) {
+                return EmptyState.noData(
+                  title: 'No Data Available',
+                  message: 'Add some transactions to see insights and ask questions about your finances',
+                  icon: CupertinoIcons.chart_bar,
+                );
+              }
+
+              return GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: CustomScrollView(
+                  physics: PlatformUtils.platformScrollPhysics,
+                  slivers: [
+                    // Dashboard Metrics
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppDesign.spacingM),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Financial Overview',
+                              style: AppTypography.headingMedium.copyWith(
+                                color: AppDesign.getTextPrimary(context),
+                              ),
+                            ),
+                            const SizedBox(height: AppDesign.spacingM),
+                            _buildMetricCards(model),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: clearQuestion,
-                      child: const Text('Clear'),
+
+                    // AI Chat Section
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: AppDesign.spacingL),
+                            Text(
+                              'Ask Your Financial Advisor',
+                              style: AppTypography.headingMedium.copyWith(
+                                color: AppDesign.getTextPrimary(context),
+                              ),
+                            ),
+                            const SizedBox(height: AppDesign.spacingM),
+                            _buildChatInterface(),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Response Section
+                    if (apiResponse.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppDesign.spacingM),
+                          child: _buildResponseCard(),
+                        ),
+                      ),
+
+                    // Bottom padding
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppDesign.spacingXL),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      apiResponse,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMetricCards(TransactionModel model) {
+    final totalIncome = model.totalIncome;
+    final totalExpenses = model.totalExpenses;
+    final balance = totalIncome - totalExpenses;
+    final transactionCount = model.currentMonthTransactions.length;
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: AnimatedMetricCard(
+                label: 'Income',
+                value: totalIncome,
+                icon: CupertinoIcons.arrow_down_circle_fill,
+                color: AppColors.getIncome(isDark),
+                prefix: '\$',
+              ),
+            ),
+            const SizedBox(width: AppDesign.spacingM),
+            Expanded(
+              child: AnimatedMetricCard(
+                label: 'Expenses',
+                value: totalExpenses,
+                icon: CupertinoIcons.arrow_up_circle_fill,
+                color: AppColors.getExpense(isDark),
+                prefix: '\$',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppDesign.spacingM),
+        Row(
+          children: [
+            Expanded(
+              child: AnimatedMetricCard(
+                label: 'Balance',
+                value: balance,
+                icon: CupertinoIcons.money_dollar_circle_fill,
+                color: balance >= 0
+                    ? AppColors.getIncome(isDark)
+                    : AppColors.getExpense(isDark),
+                prefix: '\$',
+              ),
+            ),
+            const SizedBox(width: AppDesign.spacingM),
+            Expanded(
+              child: AnimatedMetricCard(
+                label: 'Transactions',
+                value: transactionCount.toDouble(),
+                icon: CupertinoIcons.list_bullet,
+                color: AppColors.getNeutral(isDark),
+                fractionDigits: 0,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChatInterface() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return ElevatedCard(
+      elevation: AppDesign.elevationS,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              labelText: 'Ask a question about your finances',
+              labelStyle: AppTypography.bodyMedium.copyWith(
+                color: AppDesign.getTextSecondary(context),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                borderSide: BorderSide(
+                  color: AppDesign.getTextSecondary(context).withValues(alpha: 0.3),
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                borderSide: BorderSide(
+                  color: AppDesign.getTextSecondary(context).withValues(alpha: 0.3),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                borderSide: BorderSide(
+                  color: AppDesign.getTextPrimary(context),
+                  width: AppDesign.borderMedium,
+                ),
+              ),
+              filled: true,
+              fillColor: AppColors.getSurface(isDark).withValues(alpha: 0.5),
+            ),
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppDesign.getTextPrimary(context),
+            ),
+            maxLines: 3,
+          ),
+          const SizedBox(height: AppDesign.spacingM),
+          Row(
+            children: [
+              Expanded(
+                child: AppButton.primary(
+                  label: isLoading ? 'Loading...' : 'Ask',
+                  onPressed: isLoading ? null : askQuestion,
+                  icon: CupertinoIcons.chat_bubble_text,
+                  isLoading: isLoading,
+                ),
+              ),
+              const SizedBox(width: AppDesign.spacingM),
+              AppButton.secondary(
+                label: 'Clear',
+                onPressed: clearQuestion,
+                icon: CupertinoIcons.clear,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResponseCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return ElevatedCard(
+      elevation: AppDesign.elevationS,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppDesign.spacingS),
+                decoration: BoxDecoration(
+                  color: AppColors.getInfo(isDark),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusS),
+                ),
+                child: const Icon(
+                  CupertinoIcons.lightbulb_fill,
+                  color: AppColors.textOnPrimary,
+                  size: AppDesign.iconM,
+                ),
+              ),
+              const SizedBox(width: AppDesign.spacingM),
+              Expanded(
+                child: Text(
+                  'AI Insights',
+                  style: AppTypography.headingMedium.copyWith(
+                    color: AppDesign.getTextPrimary(context),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppDesign.spacingM),
+          Text(
+            apiResponse,
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppDesign.getTextPrimary(context),
+              height: 1.6,
+            ),
+          ),
+        ],
       ),
     );
   }

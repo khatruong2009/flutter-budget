@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 import 'transaction_model.dart';
 import 'transaction.dart';
 import 'transaction_form.dart';
-import 'common.dart';
+import 'design_system.dart';
+import 'widgets/modern_transaction_list_item.dart';
+import 'widgets/empty_state.dart';
+import 'utils/platform_utils.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -30,105 +33,103 @@ class _HistoryPageState extends State<HistoryPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text(
+            title: Text(
               'Transaction History',
-              textAlign: TextAlign.center,
+              style: AppTypography.headingMedium.copyWith(
+                color: AppDesign.getTextPrimary(context),
+              ),
             ),
             centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
-          body: availableMonths.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          extendBodyBehindAppBar: false,
+          body: Container(
+            color: AppDesign.getBackgroundColor(context),
+            child: availableMonths.isEmpty
+                ? EmptyState.noData(
+                    title: 'No Transaction History',
+                    message: 'Start adding transactions to see your history',
+                    icon: CupertinoIcons.doc_text_search,
+                  )
+                : Column(
                     children: [
-                      Icon(
-                        CupertinoIcons.doc_text_search,
-                        size: 64,
-                        color: Colors.grey.shade400,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No transaction history yet',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey.shade600,
+                      // Month selector dropdown
+                      Padding(
+                        padding: const EdgeInsets.all(AppDesign.spacingM),
+                        child: ElevatedCard(
+                          elevation: AppDesign.elevationS,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDesign.spacingM,
+                            vertical: AppDesign.spacingXS,
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<DateTime>(
+                              isExpanded: true,
+                              value: selectedMonth,
+                              dropdownColor: Theme.of(context).brightness == Brightness.dark
+                                  ? const Color(0xFF1E1E1E)
+                                  : Colors.white,
+                              icon: Icon(
+                                CupertinoIcons.chevron_down,
+                                color: AppDesign.getTextPrimary(context),
+                              ),
+                              items: availableMonths.map((DateTime month) {
+                                return DropdownMenuItem<DateTime>(
+                                  value: month,
+                                  child: Text(
+                                    DateFormat.yMMMM().format(month),
+                                    style: AppTypography.bodyLarge.copyWith(
+                                      color: AppDesign.getTextPrimary(context),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (DateTime? newValue) {
+                                setState(() {
+                                  selectedMonth = newValue;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Start adding transactions to see your history',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade500,
+
+                      // Monthly summary card
+                      if (selectedMonth != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDesign.spacingM,
+                          ),
+                          child: ElevatedCard(
+                            elevation: AppDesign.elevationS,
+                            child: _buildMonthlySummary(
+                              transactionModel.getMonthlySummary(selectedMonth!),
+                            ),
+                          ),
                         ),
+
+                      const SizedBox(height: AppDesign.spacingM),
+
+                      // Transaction list with grouped headers
+                      Expanded(
+                        child: selectedMonth == null
+                            ? Center(
+                                child: Text(
+                                  'Select a month',
+                                  style: AppTypography.bodyLarge.copyWith(
+                                    color: AppDesign.getTextSecondary(context),
+                                  ),
+                                ),
+                              )
+                            : _buildGroupedTransactionList(
+                                transactionModel,
+                                transactionModel.getTransactionsForMonth(selectedMonth!),
+                              ),
                       ),
                     ],
                   ),
-                )
-              : Column(
-                  children: [
-                    // Month selector dropdown
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<DateTime>(
-                            isExpanded: true,
-                            value: selectedMonth,
-                            items: availableMonths.map((DateTime month) {
-                              return DropdownMenuItem<DateTime>(
-                                value: month,
-                                child: Text(
-                                  DateFormat.yMMMM().format(month),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (DateTime? newValue) {
-                              setState(() {
-                                selectedMonth = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Monthly summary card
-                    if (selectedMonth != null)
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Card(
-                          elevation: 4,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: _buildMonthlySummary(
-                              transactionModel
-                                  .getMonthlySummary(selectedMonth!),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 16),
-
-                    // Transaction list
-                    Expanded(
-                      child: selectedMonth == null
-                          ? const Center(child: Text('Select a month'))
-                          : _buildTransactionList(
-                              transactionModel,
-                              transactionModel
-                                  .getTransactionsForMonth(selectedMonth!),
-                            ),
-                    ),
-                  ],
-                ),
+          ),
         );
       },
     );
@@ -144,27 +145,35 @@ class _HistoryPageState extends State<HistoryPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSummaryItem('Income', income, Colors.green),
-            _buildSummaryItem('Expenses', expenses, Colors.red),
+            _buildSummaryItem('Income', income, AppColors.income),
+            _buildSummaryItem('Expenses', expenses, AppColors.expense),
           ],
         ),
-        const Divider(height: 24),
+        Divider(
+          height: AppDesign.spacingL,
+          color: AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Net Cash Flow',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+            Expanded(
+              child: Text(
+                'Net Cash Flow',
+                style: AppTypography.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppDesign.getTextPrimary(context),
+                ),
               ),
             ),
-            Text(
-              '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: net >= 0 ? Colors.green : Colors.red,
+            const SizedBox(width: AppDesign.spacingS),
+            Flexible(
+              child: Text(
+                '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
+                style: AppTypography.headingMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: net >= 0 ? AppColors.income : AppColors.expense,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -174,148 +183,188 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildSummaryItem(String label, double amount, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppDesign.getTextSecondary(context),
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
-          style: TextStyle(
-            fontSize: 18,
-            color: color,
-            fontWeight: FontWeight.w600,
+          const SizedBox(height: AppDesign.spacingXS),
+          Text(
+            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
+            style: AppTypography.headingMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildTransactionList(
+  /// Builds a grouped transaction list with sticky date headers
+  Widget _buildGroupedTransactionList(
     TransactionModel transactionModel,
     List<Transaction> transactions,
   ) {
     if (transactions.isEmpty) {
-      return Center(
-        child: Text(
-          'No transactions for this month',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey.shade600,
-          ),
-        ),
+      return EmptyState.noData(
+        title: 'No Transactions',
+        message: 'No transactions for this month',
+        icon: CupertinoIcons.tray,
       );
     }
 
-    final sortedTransactions = List.from(transactions)
+    // Sort transactions by date (newest first)
+    final sortedTransactions = List<Transaction>.from(transactions)
       ..sort((a, b) => b.date.compareTo(a.date));
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      separatorBuilder: (context, index) =>
-          Divider(color: Colors.grey.shade300),
-      itemCount: sortedTransactions.length,
-      itemBuilder: (context, index) {
-        final transaction = sortedTransactions[index];
-        return Dismissible(
-          key: ValueKey(transaction.description + transaction.date.toString()),
-          direction: DismissDirection.endToStart,
-          confirmDismiss: (direction) => showDialog(
-            context: context,
-            builder: (context) => CupertinoAlertDialog(
-              title: const Text('Delete Transaction'),
-              content: const Text(
-                'Are you sure you want to delete this transaction?',
-              ),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
+    // Group transactions by date
+    final Map<String, List<Transaction>> groupedTransactions = {};
+    for (var transaction in sortedTransactions) {
+      final dateKey = DateFormat.yMMMd().format(transaction.date);
+      if (!groupedTransactions.containsKey(dateKey)) {
+        groupedTransactions[dateKey] = [];
+      }
+      groupedTransactions[dateKey]!.add(transaction);
+    }
+
+    return CustomScrollView(
+      physics: PlatformUtils.platformScrollPhysics,
+      slivers: [
+        // Build sliver list for each date group
+        ...groupedTransactions.entries.map((entry) {
+          final dateKey = entry.key;
+          final dateTransactions = entry.value;
+
+          return SliverMainAxisGroup(
+            slivers: [
+              // Sticky date header
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _DateHeaderDelegate(
+                  dateKey: dateKey,
+                  context: context,
                 ),
-                CupertinoDialogAction(
-                  child: const Text(
-                    'Delete',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              // Transaction items for this date
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDesign.spacingM,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final transaction = dateTransactions[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppDesign.spacingS,
+                        ),
+                        child: ModernTransactionListItem(
+                          transaction: transaction,
+                          onTap: () {
+                            showTransactionForm(
+                              context,
+                              transaction.type,
+                              transactionModel.addTransaction,
+                              transaction,
+                            );
+                          },
+                          onDelete: () {
+                            transactionModel.deleteTransaction(transaction);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Transaction deleted'),
+                                backgroundColor: AppColors.expense,
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    childCount: dateTransactions.length,
+                    // Optimize list performance
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
                 ),
-              ],
-            ),
-          ),
-          onDismissed: (direction) {
-            transactionModel.deleteTransaction(transaction);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Transaction deleted'),
               ),
-            );
-          },
-          background: Container(
-            color: Colors.red,
-            padding: const EdgeInsets.only(right: 20),
-            alignment: Alignment.centerRight,
-            child: const Icon(
-              CupertinoIcons.delete,
-              color: Colors.white,
-            ),
-          ),
-          child: ListTile(
-            onTap: () {
-              showTransactionForm(
-                context,
-                transaction.type,
-                transactionModel.addTransaction,
-                transaction,
-              );
-            },
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 15.0,
-            ),
-            title: Text(
-              transaction.description,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              'Category: ${transaction.category}\nDate: ${DateFormat.yMMMd().format(transaction.date)}',
-              style: const TextStyle(fontSize: 12),
-            ),
-            trailing: Text(
-              '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
-              style: TextStyle(
-                fontSize: 16,
-                color: transaction.type == TransactionTyp.EXPENSE
-                    ? (Theme.of(context).brightness == Brightness.light
-                        ? Colors.red
-                        : Colors.red[300])
-                    : (Theme.of(context).brightness == Brightness.light
-                        ? Colors.green
-                        : Colors.green[300]),
-              ),
-            ),
-            leading: Icon(
-              transaction.type == TransactionTyp.EXPENSE
-                  ? expenseCategories[transaction.category] ??
-                      CupertinoIcons.down_arrow
-                  : incomeCategories[transaction.category] ??
-                      CupertinoIcons.up_arrow,
-              color: transaction.type == TransactionTyp.EXPENSE
-                  ? Colors.red
-                  : Colors.green,
-            ),
-          ),
-        );
-      },
+            ],
+          );
+        }),
+        // Bottom padding
+        const SliverPadding(
+          padding: EdgeInsets.only(bottom: AppDesign.spacingL),
+        ),
+      ],
     );
+  }
+}
+
+/// Delegate for sticky date headers in the transaction list
+class _DateHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final String dateKey;
+  final BuildContext context;
+
+  _DateHeaderDelegate({
+    required this.dateKey,
+    required this.context,
+  });
+
+  @override
+  double get minExtent => 40.0;
+
+  @override
+  double get maxExtent => 40.0;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesign.spacingM,
+        vertical: AppDesign.spacingS,
+      ),
+      color: AppDesign.getBackgroundColor(context),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesign.spacingM,
+              vertical: AppDesign.spacingXS,
+            ),
+            decoration: BoxDecoration(
+              color: AppDesign.getSurfaceColor(context),
+              borderRadius: BorderRadius.circular(AppDesign.radiusS),
+              border: Border.all(
+                color: AppDesign.getBorderColor(context),
+                width: AppDesign.borderThin,
+              ),
+            ),
+            child: Text(
+              dateKey,
+              style: AppTypography.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppDesign.getTextPrimary(context),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _DateHeaderDelegate oldDelegate) {
+    return dateKey != oldDelegate.dateKey;
   }
 }

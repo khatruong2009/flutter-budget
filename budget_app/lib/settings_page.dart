@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:settings_ui/settings_ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'theme_provider.dart';
 import 'transaction_model.dart';
 import 'package:provider/provider.dart';
+import 'design_system.dart';
+import 'utils/platform_utils.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -33,19 +35,29 @@ class SettingsPageState extends State<SettingsPage> {
       await transactionModel.exportTransactionsToCSV(sharePositionOrigin);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Transactions exported successfully!'),
-            backgroundColor: Colors.green,
+        final messenger = ScaffoldMessenger.of(context);
+        messenger.showSnackBar(
+          SnackBar(
+            content: const Text('Transactions exported successfully!'),
+            backgroundColor: AppColors.income,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            ),
           ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        final messenger = ScaffoldMessenger.of(context);
+        messenger.showSnackBar(
           SnackBar(
             content: Text('Error exporting transactions: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.expense,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            ),
           ),
         );
       }
@@ -60,54 +72,183 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: SettingsList(
-        darkTheme: SettingsThemeData(tileHighlightColor: Colors.grey[800]),
-        lightTheme: SettingsThemeData(tileHighlightColor: Colors.blue[50]),
-        sections: [
-          SettingsSection(
-            title: const Text('Appearance'),
-            tiles: [
-              SettingsTile.switchTile(
-                initialValue: Provider.of<ThemeProvider>(context, listen: false)
-                        .themeMode ==
-                    ThemeMode.dark,
-                title: const Text('Dark Mode'),
-                leading: Icon(Provider.of<ThemeProvider>(context).themeMode ==
-                        ThemeMode.light
-                    ? Icons.wb_sunny
-                    : Icons.nights_stay),
-                onToggle: (bool value) {
-                  Provider.of<ThemeProvider>(context, listen: false)
-                      .toggleTheme();
-                  // Save to shared_preferences if needed
-                },
-              ),
-            ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text(
+          'Settings',
+          style: AppTypography.headingLarge.copyWith(
+            color: AppDesign.getTextPrimary(context),
           ),
-          SettingsSection(
-            title: const Text('Data'),
-            tiles: [
-              SettingsTile.navigation(
-                title: const Text('Export Transactions'),
-                description: const Text('Export all transactions as CSV'),
-                leading: _isExporting
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Container(
+        color: AppDesign.getBackgroundColor(context),
+        child: SafeArea(
+          child: ListView(
+            physics: PlatformUtils.platformScrollPhysics,
+            padding: const EdgeInsets.all(AppDesign.spacingM),
+            children: [
+              // Appearance Section
+              _buildSectionHeader(context, 'Appearance'),
+              const SizedBox(height: AppDesign.spacingS),
+              _buildSettingCard(
+                context,
+                icon: isDarkMode ? Icons.nights_stay : Icons.wb_sunny,
+                iconGradient: AppDesign.getPrimaryGradient(context),
+                title: 'Dark Mode',
+                description: 'Switch between light and dark themes',
+                trailing: _buildModernSwitch(
+                  context,
+                  value: isDarkMode,
+                  onChanged: (value) {
+                    themeProvider.toggleTheme();
+                  },
+                ),
+              ),
+              const SizedBox(height: AppDesign.spacingXL),
+
+              // Data Section
+              _buildSectionHeader(context, 'Data'),
+              const SizedBox(height: AppDesign.spacingS),
+              _buildSettingCard(
+                context,
+                icon: Icons.file_download,
+                iconGradient: AppDesign.getIncomeGradient(context),
+                title: 'Export Transactions',
+                description: 'Export all transactions as CSV file',
+                trailing: _isExporting
+                    ? SizedBox(
+                        width: AppDesign.iconM,
+                        height: AppDesign.iconM,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppDesign.getTextPrimary(context),
+                          ),
+                        ),
                       )
-                    : const Icon(Icons.file_download),
-                onPressed: _isExporting
-                    ? null
-                    : (context) => _exportTransactions(context),
+                    : Icon(
+                        Icons.chevron_right,
+                        color: AppDesign.getTextTertiary(context),
+                        size: AppDesign.iconM,
+                      ),
+                onTap: _isExporting ? null : () => _exportTransactions(context),
+              ),
+              const SizedBox(height: AppDesign.spacingXL),
+
+              // About Section
+              _buildSectionHeader(context, 'About'),
+              const SizedBox(height: AppDesign.spacingS),
+              _buildSettingCard(
+                context,
+                icon: Icons.info_outline,
+                iconGradient: AppDesign.getNeutralGradient(context),
+                title: 'Version',
+                description: 'Budget App v1.2.0',
+                trailing: null,
               ),
             ],
           ),
-          // Add more settings sections here...
+        ),
+      ),
+    );
+  }
+
+  /// Builds a section header with consistent styling
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppDesign.spacingS),
+      child: Text(
+        title.toUpperCase(),
+        style: AppTypography.caption.copyWith(
+          color: AppDesign.getTextSecondary(context),
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+
+  /// Builds a modern setting card with glassmorphism effect
+  Widget _buildSettingCard(
+    BuildContext context, {
+    required IconData icon,
+    required Gradient iconGradient,
+    required String title,
+    required String description,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ElevatedCard(
+      elevation: AppDesign.elevationS,
+      onTap: onTap,
+      padding: const EdgeInsets.all(AppDesign.spacingM),
+      child: Row(
+        children: [
+          // Icon container with gradient
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              gradient: iconGradient,
+              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            ),
+            child: Icon(
+              icon,
+              color: AppColors.textOnPrimary,
+              size: AppDesign.iconM,
+            ),
+          ),
+          const SizedBox(width: AppDesign.spacingM),
+          // Title and description
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTypography.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppDesign.getTextPrimary(context),
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingXXS),
+                Text(
+                  description,
+                  style: AppTypography.caption.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Trailing widget (switch, chevron, etc.)
+          if (trailing != null) ...[
+            const SizedBox(width: AppDesign.spacingM),
+            trailing,
+          ],
         ],
       ),
+    );
+  }
+
+  /// Builds a modern switch with custom styling
+  Widget _buildModernSwitch(
+    BuildContext context, {
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return CupertinoSwitch(
+      value: value,
+      onChanged: onChanged,
+      activeTrackColor: AppDesign.getPrimaryGradient(context).colors.first,
+      inactiveTrackColor: AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
     );
   }
 }
