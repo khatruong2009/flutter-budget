@@ -35,7 +35,7 @@ Future<void> showTransactionForm(
     category = transactionToEdit.category;
     amount = transactionToEdit.amount;
     selectedDate = transactionToEdit.date;
-    amountController.text = amount.toString();
+    amountController.text = amount.toStringAsFixed(2);
     descriptionController.text = description;
   }
 

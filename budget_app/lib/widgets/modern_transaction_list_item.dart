@@ -124,7 +124,7 @@ class ModernTransactionListItem extends StatelessWidget {
             ),
             // Transaction amount
             Text(
-              '\$${NumberFormat("#,##0.00").format(transaction.amount)}',
+              '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
               style: AppTypography.headingMedium.copyWith(
                 color: isExpense 
                     ? AppDesign.getExpenseColor(context)
