@@ -318,10 +318,10 @@ class _DateHeaderDelegate extends SliverPersistentHeaderDelegate {
   });
 
   @override
-  double get minExtent => 40.0;
+  double get minExtent => 48.0;
 
   @override
-  double get maxExtent => 40.0;
+  double get maxExtent => 48.0;
 
   @override
   Widget build(
