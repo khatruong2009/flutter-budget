@@ -198,33 +198,37 @@ Future<void> showTransactionForm(
                                     });
                                   },
                                   children: categoryMap.entries.map((entry) {
-                                    return Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: const EdgeInsets.all(AppDesign.spacingXS),
-                                          decoration: BoxDecoration(
-                                            color: type == TransactionTyp.expense
-                                                ? AppColors.expense
-                                                : AppColors.income,
-                                            borderRadius: BorderRadius.circular(
-                                              AppDesign.radiusS,
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppDesign.spacingM,
+                                      ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            padding: const EdgeInsets.all(AppDesign.spacingXS),
+                                            decoration: BoxDecoration(
+                                              color: type == TransactionTyp.expense
+                                                  ? AppColors.expense
+                                                  : AppColors.income,
+                                              borderRadius: BorderRadius.circular(
+                                                AppDesign.radiusS,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              entry.value,
+                                              size: AppDesign.iconS,
+                                              color: AppColors.textOnPrimary,
                                             ),
                                           ),
-                                          child: Icon(
-                                            entry.value,
-                                            size: AppDesign.iconS,
-                                            color: AppColors.textOnPrimary,
+                                          const SizedBox(width: AppDesign.spacingM),
+                                          Text(
+                                            entry.key,
+                                            style: AppTypography.bodyMedium.copyWith(
+                                              color: AppDesign.getTextPrimary(context),
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: AppDesign.spacingS),
-                                        Text(
-                                          entry.key,
-                                          style: AppTypography.bodyMedium.copyWith(
-                                            color: AppDesign.getTextPrimary(context),
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     );
                                   }).toList(),
                                 ),
