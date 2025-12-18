@@ -80,14 +80,6 @@ class _HistoryPageState extends State<HistoryPage> {
                                       color: AppDesign.getTextPrimary(context),
                                     ),
                                   ),
-                                  const SizedBox(height: AppDesign.spacingS),
-                                  Text(
-                                    'Tap any bar to see details',
-                                    style: AppTypography.bodySmall.copyWith(
-                                      color: AppDesign.getTextTertiary(context),
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
                                   const SizedBox(height: AppDesign.spacingM),
                                   _buildResponsiveChart(chartData, isDark),
                                 ],
@@ -178,15 +170,17 @@ class _HistoryPageState extends State<HistoryPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     
     // Determine if we need horizontal scrolling
+    // If we have more than 12 months, enable horizontal scrolling
     final needsScrolling = chartData.length > 12;
     
     if (needsScrolling) {
       // Calculate width needed for all bars with proper spacing
-      final chartWidth = chartData.length * 50.0 + 100;
+      final chartWidth = chartData.length * 50.0 + 100; // 50px per bar + padding
       
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Hint text for scrolling
           Padding(
             padding: const EdgeInsets.only(bottom: AppDesign.spacingS),
             child: Row(
@@ -221,6 +215,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       );
     } else {
+      // No scrolling needed, use responsive sizing
       return SizedBox(
         height: 300,
         child: _buildChart(chartData, isDark, useFixedWidth: false),
@@ -229,21 +224,25 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildChart(List<MonthCashFlow> chartData, bool isDark, {required bool useFixedWidth}) {
+    // Get screen width for responsive layout
     final screenWidth = MediaQuery.of(context).size.width;
     
+    // Determine display data based on scrolling mode
     List<MonthCashFlow> displayData;
     if (useFixedWidth) {
+      // Show all data when scrolling is enabled
       displayData = chartData;
     } else {
+      // Limit to most recent months based on screen size when not scrolling
       int maxMonthsToDisplay;
       if (screenWidth < 360) {
-        maxMonthsToDisplay = 6;
+        maxMonthsToDisplay = 6; // Very small screens
       } else if (screenWidth < 600) {
-        maxMonthsToDisplay = 8;
+        maxMonthsToDisplay = 8; // Phone screens
       } else if (screenWidth < 900) {
-        maxMonthsToDisplay = 10;
+        maxMonthsToDisplay = 10; // Tablets
       } else {
-        maxMonthsToDisplay = 12;
+        maxMonthsToDisplay = 12; // Large screens
       }
       
       displayData = chartData.length > maxMonthsToDisplay
@@ -251,11 +250,15 @@ class _HistoryPageState extends State<HistoryPage> {
           : chartData;
     }
 
+    // Find min and max values for y-axis scaling
     double minValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a < b ? a : b);
     double maxValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a > b ? a : b);
 
+    // Round to nice numbers for better visual appearance
     double roundToNiceNumber(double value, bool roundUp) {
-      if (value == 0) return 0;
+      if (value == 0) {
+        return 0;
+      }
       
       final absValue = value.abs();
       final magnitude = (absValue.abs() == 0) ? 1 : pow(10, (log(absValue) / ln10).floor()).toDouble();
@@ -287,17 +290,20 @@ class _HistoryPageState extends State<HistoryPage> {
       return (value < 0 ? -1 : 1) * niceNumber * magnitude;
     }
 
+    // Add padding and round to nice numbers
     double range = maxValue - minValue;
-    double padding = range * 0.15;
+    double padding = range * 0.15; // Slightly more padding for better appearance
     
     minValue = minValue < 0 ? roundToNiceNumber(minValue - padding, false) : 0;
     maxValue = roundToNiceNumber(maxValue + padding, true);
 
+    // Calculate bar width based on mode
     final double barWidth;
     if (useFixedWidth) {
-      barWidth = 20.0;
+      barWidth = 20.0; // Fixed width for scrolling mode
     } else {
-      final availableWidth = screenWidth - 120;
+      // Responsive width based on available space
+      final availableWidth = screenWidth - 120; // Account for padding and y-axis labels
       barWidth = (availableWidth / displayData.length).clamp(12.0, 24.0);
     }
 
@@ -317,6 +323,7 @@ class _HistoryPageState extends State<HistoryPage> {
             
             final index = barTouchResponse.spot!.touchedBarGroupIndex;
             if (index >= 0 && index < displayData.length) {
+              // Show bottom sheet instead of updating state
               _showMonthDetailsBottomSheet(displayData[index], isDark);
             }
           },
@@ -382,6 +389,7 @@ class _HistoryPageState extends State<HistoryPage> {
               showTitles: true,
               reservedSize: 60,
               getTitlesWidget: (value, meta) {
+                // Format currency values
                 String text;
                 if (value.abs() >= 1000) {
                   text = '\$${(value / 1000).toStringAsFixed(1)}K';
@@ -409,6 +417,7 @@ class _HistoryPageState extends State<HistoryPage> {
           drawVerticalLine: false,
           horizontalInterval: (maxValue - minValue) / 5,
           getDrawingHorizontalLine: (value) {
+            // Use higher opacity for better visibility in both themes
             return FlLine(
               color: isDark 
                   ? AppColors.borderDark.withValues(alpha: 0.5)
@@ -455,6 +464,87 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Widget _buildSelectedMonthDetails(MonthCashFlow monthData, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.yMMMM().format(monthData.month),
+          style: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppDesign.getTextPrimary(context),
+          ),
+        ),
+        const SizedBox(height: AppDesign.spacingM),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildDetailItem('Income', monthData.income, AppColors.getIncome(isDark)),
+            _buildDetailItem('Expenses', monthData.expenses, AppColors.getExpense(isDark)),
+          ],
+        ),
+        Divider(
+          height: AppDesign.spacingL,
+          color: AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                'Net Cash Flow',
+                style: AppTypography.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppDesign.getTextPrimary(context),
+                ),
+              ),
+            ),
+            const SizedBox(width: AppDesign.spacingS),
+            Flexible(
+              child: Text(
+                '\$${NumberFormat("#,##0.00", "en_US").format(monthData.netCashFlow)}',
+                style: AppTypography.headingMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: monthData.netCashFlow >= 0
+                      ? AppColors.getIncome(isDark)
+                      : AppColors.getExpense(isDark),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailItem(String label, double amount, Color color) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppDesign.getTextSecondary(context),
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingXS),
+          Text(
+            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
+            style: AppTypography.headingMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
   void _showMonthDetailsBottomSheet(MonthCashFlow monthData, bool isDark) {
     showModalBottomSheet(
       context: context,
@@ -481,6 +571,7 @@ class _HistoryPageState extends State<HistoryPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Drag handle
                 Center(
                   child: Container(
                     width: 40,
@@ -492,6 +583,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                   ),
                 ),
+                // Month title with icon
                 Row(
                   children: [
                     Container(
@@ -524,6 +616,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ],
                 ),
                 const SizedBox(height: AppDesign.spacingL),
+                // Income and Expenses cards
                 Row(
                   children: [
                     Expanded(
@@ -548,6 +641,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ],
                 ),
                 const SizedBox(height: AppDesign.spacingM),
+                // Net cash flow card
                 Container(
                   padding: const EdgeInsets.all(AppDesign.spacingM),
                   decoration: BoxDecoration(
@@ -598,7 +692,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         ],
                       ),
                       Text(
-                        '\$${NumberFormat("#,##0.00", "en_US").format(monthData.netCashFlow)}',
+                        '\${NumberFormat("#,##0.00", "en_US").format(monthData.netCashFlow)}',
                         style: AppTypography.headingMedium.copyWith(
                           fontWeight: FontWeight.bold,
                           color: monthData.netCashFlow >= 0
@@ -651,7 +745,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           const SizedBox(height: AppDesign.spacingS),
           Text(
-            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
+            '\${NumberFormat("#,##0.00", "en_US").format(amount)}',
             style: AppTypography.headingMedium.copyWith(
               color: color,
               fontWeight: FontWeight.bold,
@@ -661,4 +755,3 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
     );
   }
-}
