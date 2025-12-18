@@ -249,12 +249,29 @@ class _CategoryPageState extends State<CategoryPage>
                                   final idx = entry.key;
                                   final data = entry.value;
                                   final isSelected = _touchedIndex == idx;
+                                  final showPercentage = data.percentage >= 5.0;
+                                  
                                   return PieChartSectionData(
                                     color: data.color,
                                     value: data.value * _chartAnimation.value,
-                                    title: '',
+                                    title: showPercentage 
+                                        ? '${data.percentage.toStringAsFixed(0)}%'
+                                        : '',
+                                    titleStyle: AppTypography.bodyMedium.copyWith(
+                                      color: AppColors.textOnPrimary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: const Offset(0, 1),
+                                          blurRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    titlePositionPercentageOffset: 0.55,
                                     radius: isSelected ? 110 : 100,
-                                    badgeWidget: _chartAnimation.value > 0.8 && data.percentage >= 4.0
+                                    badgeWidget: data.percentage >= 4.0
                                         ? Container(
                                             padding: const EdgeInsets.all(AppDesign.spacingXS),
                                             decoration: BoxDecoration(
