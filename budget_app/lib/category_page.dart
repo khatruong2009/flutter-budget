@@ -121,172 +121,185 @@ class _CategoryPageState extends State<CategoryPage>
           body: Container(
             color: AppDesign.getBackgroundColor(context),
             child: SafeArea(
-              child: Column(
+              child: Stack(
                 children: <Widget>[
-                  const SizedBox(height: AppDesign.spacingL),
-                  // Animated Pie Chart
-                  Expanded(
-                    flex: 2,
-                    child: RepaintBoundary(
-                      child: AnimatedBuilder(
-                        animation: _chartAnimation,
-                        builder: (context, child) {
-                          return Padding(
-                            padding: const EdgeInsets.all(AppDesign.spacingL),
-                            child: PieChart(
-                            PieChartData(
-                              sections: categoryDataList.asMap().entries.map((entry) {
-                                final idx = entry.key;
-                                final data = entry.value;
-                                final isSelected = _touchedIndex == idx;
-                                return PieChartSectionData(
-                                  color: data.color,
-                                  value: data.value * _chartAnimation.value,
-                                  title: '',
-                                  radius: isSelected ? 110 : 100,
-                                  badgeWidget: _chartAnimation.value > 0.8 && data.percentage >= 4.0
-                                      ? Container(
-                                          padding: const EdgeInsets.all(AppDesign.spacingXS),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: AppDesign.shadowS,
-                                          ),
-                                          child: Icon(
-                                            data.iconData,
-                                            color: data.color,
-                                            size: AppDesign.iconM,
-                                          ),
-                                        )
-                                      : null,
-                                  badgePositionPercentageOffset: 1.2,
-                                );
-                              }).toList(),
-                              sectionsSpace: 3,
-                              centerSpaceRadius: 40,
-                              pieTouchData: PieTouchData(
-                                enabled: true,
-                                touchCallback: (FlTouchEvent event,
-                                    PieTouchResponse? response) {
-                                  setState(() {
-                                    if (!event.isInterestedForInteractions ||
-                                        response == null ||
-                                        response.touchedSection == null) {
-                                      _touchedIndex = -1;
-                                      return;
-                                    }
-                                    _touchedIndex = response
-                                        .touchedSection!.touchedSectionIndex;
-                                  });
-                                  
-                                  // Haptic feedback on touch
-                                  if (event.isInterestedForInteractions) {
-                                    HapticFeedback.selectionClick();
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    ),
-                  ),
-                  // Legend with Elevated Cards
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDesign.spacingM,
-                        vertical: AppDesign.spacingS,
+                  // Background Column with list
+                  Column(
+                    children: <Widget>[
+                      const SizedBox(height: AppDesign.spacingL),
+                      // Chart area placeholder
+                      Expanded(
+                        flex: 2,
+                        child: Container(),
                       ),
-                      child: ListView.separated(
-                        physics: PlatformUtils.platformScrollPhysics,
-                        padding: const EdgeInsets.only(
-                          bottom: AppDesign.spacingL,
-                        ),
-                        itemCount: categoryDataList.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppDesign.spacingS),
-                        // Optimize list performance
-                        addAutomaticKeepAlives: false,
-                        addRepaintBoundaries: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          final data = categoryDataList[index];
-                          final isSelected = _touchedIndex == index;
-                          
-                          return AnimatedScale(
-                            scale: isSelected ? 1.02 : 1.0,
-                            duration: AppAnimations.fast,
-                            child: ElevatedCard(
-                              elevation: isSelected ? AppDesign.elevationM : AppDesign.elevationS,
-                              padding: const EdgeInsets.all(AppDesign.spacingM),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // Category Icon with Solid Color
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: data.color,
-                                      borderRadius: BorderRadius.circular(
-                                          AppDesign.radiusM),
-                                      boxShadow: AppDesign.shadowS,
-                                    ),
-                                    child: Icon(
-                                      data.iconData,
-                                      color: AppColors.textOnPrimary,
-                                      size: AppDesign.iconM,
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppDesign.spacingM),
-                                  // Category Details
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          data.category,
-                                          style: AppTypography.bodyLarge
-                                              .copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            color: AppDesign.getTextPrimary(
-                                                context),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                            height: AppDesign.spacingXXS),
-                                        Text(
-                                          '${data.percentage.toStringAsFixed(1)}%',
-                                          style: AppTypography.bodyMedium
-                                              .copyWith(
-                                            color: AppDesign.getTextSecondary(
-                                                context),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppDesign.spacingS),
-                                  // Amount
-                                  Flexible(
-                                    child: Text(
-                                      '\$${NumberFormat("#,##0.00", "en_US").format(data.value)}',
-                                      style:
-                                          AppTypography.headingMedium.copyWith(
-                                        color: data.color,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                      // Legend with Elevated Cards
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDesign.spacingM,
+                            vertical: AppDesign.spacingS,
+                          ),
+                          child: ListView.separated(
+                            physics: PlatformUtils.platformScrollPhysics,
+                            padding: const EdgeInsets.only(
+                              bottom: AppDesign.spacingL,
                             ),
-                          );
-                        },
+                            itemCount: categoryDataList.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppDesign.spacingS),
+                            addAutomaticKeepAlives: false,
+                            addRepaintBoundaries: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              final data = categoryDataList[index];
+                              final isSelected = _touchedIndex == index;
+                              
+                              return AnimatedScale(
+                                scale: isSelected ? 1.02 : 1.0,
+                                duration: AppAnimations.fast,
+                                child: ElevatedCard(
+                                  elevation: isSelected ? AppDesign.elevationM : AppDesign.elevationS,
+                                  padding: const EdgeInsets.all(AppDesign.spacingM),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: data.color,
+                                          borderRadius: BorderRadius.circular(
+                                              AppDesign.radiusM),
+                                          boxShadow: AppDesign.shadowS,
+                                        ),
+                                        child: Icon(
+                                          data.iconData,
+                                          color: AppColors.textOnPrimary,
+                                          size: AppDesign.iconM,
+                                        ),
+                                      ),
+                                      const SizedBox(width: AppDesign.spacingM),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              data.category,
+                                              style: AppTypography.bodyLarge
+                                                  .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color: AppDesign.getTextPrimary(
+                                                    context),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                                height: AppDesign.spacingXXS),
+                                            Text(
+                                              '${data.percentage.toStringAsFixed(1)}%',
+                                              style: AppTypography.bodyMedium
+                                                  .copyWith(
+                                                color: AppDesign.getTextSecondary(
+                                                    context),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: AppDesign.spacingS),
+                                      Flexible(
+                                        child: Text(
+                                          '\$${NumberFormat("#,##0.00", "en_US").format(data.value)}',
+                                          style:
+                                              AppTypography.headingMedium.copyWith(
+                                            color: data.color,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Animated Pie Chart on top layer
+                  Positioned(
+                    top: AppDesign.spacingL,
+                    left: 0,
+                    right: 0,
+                    child: IgnorePointer(
+                      ignoring: false,
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        child: RepaintBoundary(
+                          child: AnimatedBuilder(
+                            animation: _chartAnimation,
+                            builder: (context, child) {
+                              return Padding(
+                                padding: const EdgeInsets.all(AppDesign.spacingL),
+                                child: PieChart(
+                              PieChartData(
+                                sections: categoryDataList.asMap().entries.map((entry) {
+                                  final idx = entry.key;
+                                  final data = entry.value;
+                                  final isSelected = _touchedIndex == idx;
+                                  return PieChartSectionData(
+                                    color: data.color,
+                                    value: data.value * _chartAnimation.value,
+                                    title: '',
+                                    radius: isSelected ? 110 : 100,
+                                    badgeWidget: _chartAnimation.value > 0.8 && data.percentage >= 4.0
+                                        ? Container(
+                                            padding: const EdgeInsets.all(AppDesign.spacingXS),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: AppDesign.shadowS,
+                                            ),
+                                            child: Icon(
+                                              data.iconData,
+                                              color: data.color,
+                                              size: AppDesign.iconM,
+                                            ),
+                                          )
+                                        : null,
+                                    badgePositionPercentageOffset: 1.2,
+                                  );
+                                }).toList(),
+                                sectionsSpace: 3,
+                                centerSpaceRadius: 40,
+                                pieTouchData: PieTouchData(
+                                  enabled: true,
+                                  touchCallback: (FlTouchEvent event,
+                                      PieTouchResponse? response) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          response == null ||
+                                          response.touchedSection == null) {
+                                        _touchedIndex = -1;
+                                        return;
+                                      }
+                                      _touchedIndex = response
+                                          .touchedSection!.touchedSectionIndex;
+                                    });
+                                    
+                                    if (event.isInterestedForInteractions) {
+                                      HapticFeedback.selectionClick();
+                                    }
+                                  },
+                                ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        ),
                       ),
                     ),
                   ),
@@ -300,7 +313,6 @@ class _CategoryPageState extends State<CategoryPage>
   }
 }
 
-// Helper class to store category data with color information
 class _CategoryData {
   final String category;
   final double value;
