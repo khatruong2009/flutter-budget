@@ -11,6 +11,49 @@ import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 import 'transaction.dart';
 
+// Data class for monthly cash flow information
+class MonthCashFlow {
+  final DateTime month;
+  final double netCashFlow;
+  final double income;
+  final double expenses;
+
+  MonthCashFlow({
+    required this.month,
+    required this.netCashFlow,
+    required this.income,
+    required this.expenses,
+  });
+}
+
+// Data class for cash flow statistics
+class CashFlowStatistics {
+  final double average;
+  final MonthCashFlow bestMonth;
+  final MonthCashFlow worstMonth;
+
+  CashFlowStatistics({
+    required this.average,
+    required this.bestMonth,
+    required this.worstMonth,
+  });
+
+  factory CashFlowStatistics.empty() {
+    DateTime now = DateTime.now();
+    MonthCashFlow empty = MonthCashFlow(
+      month: now,
+      netCashFlow: 0.0,
+      income: 0.0,
+      expenses: 0.0,
+    );
+    return CashFlowStatistics(
+      average: 0.0,
+      bestMonth: empty,
+      worstMonth: empty,
+    );
+  }
+}
+
 class TransactionModel extends ChangeNotifier {
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
@@ -181,5 +224,46 @@ class TransactionModel extends ChangeNotifier {
       debugPrint('Error exporting transactions: $e');
       rethrow;
     }
+  }
+
+  // Get net cash flow data for all months (for charting)
+  List<MonthCashFlow> getNetCashFlowHistory() {
+    List<DateTime> months = getAvailableMonths();
+    return months.map((month) {
+      Map<String, double> summary = getMonthlySummary(month);
+      return MonthCashFlow(
+        month: month,
+        netCashFlow: summary['net'] ?? 0.0,
+        income: summary['income'] ?? 0.0,
+        expenses: summary['expenses'] ?? 0.0,
+      );
+    }).toList();
+  }
+
+  // Get summary statistics for cash flow history
+  CashFlowStatistics getCashFlowStatistics() {
+    List<MonthCashFlow> history = getNetCashFlowHistory();
+    if (history.isEmpty) {
+      return CashFlowStatistics.empty();
+    }
+
+    double average = history
+            .map((m) => m.netCashFlow)
+            .reduce((a, b) => a + b) /
+        history.length;
+
+    MonthCashFlow best = history.reduce(
+      (a, b) => a.netCashFlow > b.netCashFlow ? a : b,
+    );
+
+    MonthCashFlow worst = history.reduce(
+      (a, b) => a.netCashFlow < b.netCashFlow ? a : b,
+    );
+
+    return CashFlowStatistics(
+      average: average,
+      bestMonth: best,
+      worstMonth: worst,
+    );
   }
 }

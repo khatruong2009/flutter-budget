@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'theme_provider.dart';
 import 'transaction_model.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,23 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   bool _isExporting = false;
+  late Future<String> _versionFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _versionFuture = _loadVersion();
+  }
+
+  Future<String> _loadVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.version;
+    } catch (e) {
+      // Fallback to hardcoded version if package info fails
+      return '2.0.0';
+    }
+  }
 
   Future<void> _exportTransactions(BuildContext context) async {
     setState(() {
@@ -145,13 +163,19 @@ class SettingsPageState extends State<SettingsPage> {
               // About Section
               _buildSectionHeader(context, 'About'),
               const SizedBox(height: AppDesign.spacingS),
-              _buildSettingCard(
-                context,
-                icon: Icons.info_outline,
-                iconGradient: AppDesign.getNeutralGradient(context),
-                title: 'Version',
-                description: 'Budget App v1.2.0',
-                trailing: null,
+              FutureBuilder<String>(
+                future: _versionFuture,
+                builder: (context, snapshot) {
+                  final version = snapshot.data ?? '2.0.0';
+                  return _buildSettingCard(
+                    context,
+                    icon: Icons.info_outline,
+                    iconGradient: AppDesign.getNeutralGradient(context),
+                    title: 'Version',
+                    description: 'Budget App v$version',
+                    trailing: null,
+                  );
+                },
               ),
             ],
           ),

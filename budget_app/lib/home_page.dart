@@ -90,15 +90,15 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         ),
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.list_bullet),
-          label: 'Transaction',
+          label: 'Transactions',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.pie_chart),
           label: 'Categories',
         ),
         BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.clock),
-          label: 'History',
+          icon: Icon(CupertinoIcons.chart_bar),
+          label: 'Cash Flow',
         ),
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.gear),

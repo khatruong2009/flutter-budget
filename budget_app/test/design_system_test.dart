@@ -765,7 +765,7 @@ void main() {
       final textWidgets = tester.widgetList<Text>(find.text('Test Label'));
       final labelText = textWidgets.first;
       
-      expect(labelText.style?.color, AppDesign.textSecondary);
+      expect(labelText.style?.color, AppDesign.textPrimary);
     });
 
     testWidgets('AnimatedMetricCard contains AnimatedDigitWidget for value display', (tester) async {

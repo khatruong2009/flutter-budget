@@ -1,12 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'transaction_model.dart';
-import 'transaction.dart';
-import 'transaction_form.dart';
 import 'design_system.dart';
-import 'widgets/modern_transaction_list_item.dart';
 import 'widgets/empty_state.dart';
 import 'utils/platform_utils.dart';
 
@@ -18,23 +18,21 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  DateTime? selectedMonth;
+  int? selectedBarIndex;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
-        List<DateTime> availableMonths = transactionModel.getAvailableMonths();
-
-        // Set initial selected month if not set
-        if (selectedMonth == null && availableMonths.isNotEmpty) {
-          selectedMonth = availableMonths.first;
-        }
+        List<MonthCashFlow> chartData = transactionModel.getNetCashFlowHistory();
+        CashFlowStatistics statistics = transactionModel.getCashFlowStatistics();
 
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              'Transaction History',
+              'Cash Flow History',
               style: AppTypography.headingMedium.copyWith(
                 color: AppDesign.getTextPrimary(context),
               ),
@@ -46,88 +44,68 @@ class _HistoryPageState extends State<HistoryPage> {
           extendBodyBehindAppBar: false,
           body: Container(
             color: AppDesign.getBackgroundColor(context),
-            child: availableMonths.isEmpty
+            child: chartData.isEmpty
                 ? EmptyState.noData(
                     title: 'No Transaction History',
-                    message: 'Start adding transactions to see your history',
-                    icon: CupertinoIcons.doc_text_search,
+                    message: 'Start adding transactions to see your cash flow',
+                    icon: CupertinoIcons.chart_bar,
                   )
-                : Column(
-                    children: [
-                      // Month selector dropdown
-                      Padding(
-                        padding: const EdgeInsets.all(AppDesign.spacingM),
-                        child: ElevatedCard(
-                          elevation: AppDesign.elevationS,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDesign.spacingM,
-                            vertical: AppDesign.spacingXS,
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<DateTime>(
-                              isExpanded: true,
-                              value: selectedMonth,
-                              dropdownColor: Theme.of(context).brightness == Brightness.dark
-                                  ? const Color(0xFF1E1E1E)
-                                  : Colors.white,
-                              icon: Icon(
-                                CupertinoIcons.chevron_down,
-                                color: AppDesign.getTextPrimary(context),
-                              ),
-                              items: availableMonths.map((DateTime month) {
-                                return DropdownMenuItem<DateTime>(
-                                  value: month,
-                                  child: Text(
-                                    DateFormat.yMMMM().format(month),
-                                    style: AppTypography.bodyLarge.copyWith(
-                                      color: AppDesign.getTextPrimary(context),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (DateTime? newValue) {
-                                setState(() {
-                                  selectedMonth = newValue;
-                                });
-                              },
-                            ),
+                : SingleChildScrollView(
+                    physics: PlatformUtils.platformScrollPhysics,
+                    child: Column(
+                      children: [
+                        // Summary statistics card
+                        Padding(
+                          padding: const EdgeInsets.all(AppDesign.spacingM),
+                          child: ElevatedCard(
+                            elevation: AppDesign.elevationS,
+                            child: _buildSummaryStatistics(statistics, isDark),
                           ),
                         ),
-                      ),
 
-                      // Monthly summary card
-                      if (selectedMonth != null)
+                        // Chart card
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppDesign.spacingM,
                           ),
                           child: ElevatedCard(
                             elevation: AppDesign.elevationS,
-                            child: _buildMonthlySummary(
-                              transactionModel.getMonthlySummary(selectedMonth!),
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppDesign.spacingM),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Monthly Net Cash Flow',
+                                    style: AppTypography.bodyLarge.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppDesign.getTextPrimary(context),
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppDesign.spacingM),
+                                  _buildResponsiveChart(chartData, isDark),
+                                ],
+                              ),
                             ),
                           ),
                         ),
 
-                      const SizedBox(height: AppDesign.spacingM),
-
-                      // Transaction list with grouped headers
-                      Expanded(
-                        child: selectedMonth == null
-                            ? Center(
-                                child: Text(
-                                  'Select a month',
-                                  style: AppTypography.bodyLarge.copyWith(
-                                    color: AppDesign.getTextSecondary(context),
-                                  ),
-                                ),
-                              )
-                            : _buildGroupedTransactionList(
-                                transactionModel,
-                                transactionModel.getTransactionsForMonth(selectedMonth!),
+                        // Selected month details
+                        if (selectedBarIndex != null && selectedBarIndex! < chartData.length)
+                          Padding(
+                            padding: const EdgeInsets.all(AppDesign.spacingM),
+                            child: ElevatedCard(
+                              elevation: AppDesign.elevationS,
+                              child: _buildSelectedMonthDetails(
+                                chartData[selectedBarIndex!],
+                                isDark,
                               ),
-                      ),
-                    ],
+                            ),
+                          ),
+
+                        const SizedBox(height: AppDesign.spacingL),
+                      ],
+                    ),
                   ),
           ),
         );
@@ -135,18 +113,388 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildMonthlySummary(Map<String, double> summary) {
-    double income = summary['income'] ?? 0.0;
-    double expenses = summary['expenses'] ?? 0.0;
-    double net = summary['net'] ?? 0.0;
-
+  Widget _buildSummaryStatistics(CashFlowStatistics statistics, bool isDark) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 360;
+    
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Summary Statistics',
+          style: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppDesign.getTextPrimary(context),
+          ),
+        ),
+        SizedBox(height: isCompact ? AppDesign.spacingS : AppDesign.spacingM),
+        _buildStatisticRow(
+          'Average Monthly Net',
+          statistics.average,
+          isDark,
+          isCompact: isCompact,
+        ),
+        SizedBox(height: isCompact ? AppDesign.spacingXS : AppDesign.spacingS),
+        _buildStatisticRow(
+          'Best Month (${DateFormat.MMM().format(statistics.bestMonth.month)})',
+          statistics.bestMonth.netCashFlow,
+          isDark,
+          isCompact: isCompact,
+        ),
+        SizedBox(height: isCompact ? AppDesign.spacingXS : AppDesign.spacingS),
+        _buildStatisticRow(
+          'Worst Month (${DateFormat.MMM().format(statistics.worstMonth.month)})',
+          statistics.worstMonth.netCashFlow,
+          isDark,
+          isCompact: isCompact,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatisticRow(String label, double value, bool isDark, {bool isCompact = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: (isCompact ? AppTypography.bodySmall : AppTypography.bodyMedium).copyWith(
+              color: AppDesign.getTextSecondary(context),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppDesign.spacingS),
+        Flexible(
+          child: Text(
+            '\$${NumberFormat("#,##0.00", "en_US").format(value)}',
+            style: (isCompact ? AppTypography.bodyMedium : AppTypography.bodyLarge).copyWith(
+              fontWeight: FontWeight.w600,
+              color: value >= 0
+                  ? AppColors.getIncome(isDark)
+                  : AppColors.getExpense(isDark),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResponsiveChart(List<MonthCashFlow> chartData, bool isDark) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Determine if we need horizontal scrolling
+    // If we have more than 12 months, enable horizontal scrolling
+    final needsScrolling = chartData.length > 12;
+    
+    if (needsScrolling) {
+      // Calculate width needed for all bars with proper spacing
+      final chartWidth = chartData.length * 50.0 + 100; // 50px per bar + padding
+      
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Hint text for scrolling
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppDesign.spacingS),
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.arrow_left_right,
+                  size: 14,
+                  color: AppDesign.getTextTertiary(context),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Swipe to see all ${chartData.length} months',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextTertiary(context),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 300,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: SizedBox(
+                width: chartWidth.clamp(screenWidth, double.infinity),
+                child: _buildChart(chartData, isDark, useFixedWidth: true),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      // No scrolling needed, use responsive sizing
+      return SizedBox(
+        height: 300,
+        child: _buildChart(chartData, isDark, useFixedWidth: false),
+      );
+    }
+  }
+
+  Widget _buildChart(List<MonthCashFlow> chartData, bool isDark, {required bool useFixedWidth}) {
+    // Get screen width for responsive layout
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Determine display data based on scrolling mode
+    List<MonthCashFlow> displayData;
+    if (useFixedWidth) {
+      // Show all data when scrolling is enabled
+      displayData = chartData;
+    } else {
+      // Limit to most recent months based on screen size when not scrolling
+      int maxMonthsToDisplay;
+      if (screenWidth < 360) {
+        maxMonthsToDisplay = 6; // Very small screens
+      } else if (screenWidth < 600) {
+        maxMonthsToDisplay = 8; // Phone screens
+      } else if (screenWidth < 900) {
+        maxMonthsToDisplay = 10; // Tablets
+      } else {
+        maxMonthsToDisplay = 12; // Large screens
+      }
+      
+      displayData = chartData.length > maxMonthsToDisplay
+          ? chartData.sublist(0, maxMonthsToDisplay)
+          : chartData;
+    }
+
+    // Find min and max values for y-axis scaling
+    double minValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a < b ? a : b);
+    double maxValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a > b ? a : b);
+
+    // Round to nice numbers for better visual appearance
+    double roundToNiceNumber(double value, bool roundUp) {
+      if (value == 0) {
+        return 0;
+      }
+      
+      final absValue = value.abs();
+      final magnitude = (absValue.abs() == 0) ? 1 : pow(10, (log(absValue) / ln10).floor()).toDouble();
+      final normalized = absValue / magnitude;
+      
+      double niceNumber;
+      if (roundUp) {
+        if (normalized <= 1) {
+          niceNumber = 1;
+        } else if (normalized <= 2) {
+          niceNumber = 2;
+        } else if (normalized <= 5) {
+          niceNumber = 5;
+        } else {
+          niceNumber = 10;
+        }
+      } else {
+        if (normalized < 1.5) {
+          niceNumber = 1;
+        } else if (normalized < 3) {
+          niceNumber = 2;
+        } else if (normalized < 7) {
+          niceNumber = 5;
+        } else {
+          niceNumber = 10;
+        }
+      }
+      
+      return (value < 0 ? -1 : 1) * niceNumber * magnitude;
+    }
+
+    // Add padding and round to nice numbers
+    double range = maxValue - minValue;
+    double padding = range * 0.15; // Slightly more padding for better appearance
+    
+    minValue = minValue < 0 ? roundToNiceNumber(minValue - padding, false) : 0;
+    maxValue = roundToNiceNumber(maxValue + padding, true);
+
+    // Calculate bar width based on mode
+    final double barWidth;
+    if (useFixedWidth) {
+      barWidth = 20.0; // Fixed width for scrolling mode
+    } else {
+      // Responsive width based on available space
+      final availableWidth = screenWidth - 120; // Account for padding and y-axis labels
+      barWidth = (availableWidth / displayData.length).clamp(12.0, 24.0);
+    }
+
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        maxY: maxValue,
+        minY: minValue,
+        barTouchData: BarTouchData(
+          enabled: true,
+          touchCallback: (FlTouchEvent event, barTouchResponse) {
+            setState(() {
+              if (barTouchResponse == null ||
+                  barTouchResponse.spot == null ||
+                  event is! FlTapUpEvent) {
+                selectedBarIndex = null;
+                return;
+              }
+              selectedBarIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+            });
+          },
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (group) => isDark 
+                ? AppColors.cardDark 
+                : AppColors.cardLight,
+            tooltipBorder: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              width: 1.5,
+            ),
+            tooltipPadding: const EdgeInsets.all(8),
+            tooltipMargin: 8,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final monthData = displayData[groupIndex];
+              return BarTooltipItem(
+                '${DateFormat.MMM().format(monthData.month)}\n',
+                AppTypography.bodySmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isDark 
+                      ? AppColors.textPrimaryDark 
+                      : AppColors.textPrimary,
+                ),
+                children: [
+                  TextSpan(
+                    text: '\$${NumberFormat("#,##0.00", "en_US").format(monthData.netCashFlow)}',
+                    style: AppTypography.bodySmall.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: monthData.netCashFlow >= 0
+                          ? AppColors.getIncome(isDark)
+                          : AppColors.getExpense(isDark),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              getTitlesWidget: (value, meta) {
+                if (value.toInt() >= 0 && value.toInt() < displayData.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      DateFormat.MMM().format(displayData[value.toInt()].month),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppDesign.getTextSecondary(context),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 60,
+              getTitlesWidget: (value, meta) {
+                // Format currency values
+                String text;
+                if (value.abs() >= 1000) {
+                  text = '\$${(value / 1000).toStringAsFixed(1)}K';
+                } else {
+                  text = '\$${value.toStringAsFixed(0)}';
+                }
+                return Text(
+                  text,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                  ),
+                );
+              },
+            ),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: (maxValue - minValue) / 5,
+          getDrawingHorizontalLine: (value) {
+            // Use higher opacity for better visibility in both themes
+            return FlLine(
+              color: isDark 
+                  ? AppColors.borderDark.withValues(alpha: 0.5)
+                  : AppColors.borderLight.withValues(alpha: 0.5),
+              strokeWidth: 1,
+            );
+          },
+        ),
+        borderData: FlBorderData(
+          show: true,
+          border: Border(
+            bottom: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              width: 1.5,
+            ),
+            left: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              width: 1.5,
+            ),
+          ),
+        ),
+        barGroups: displayData.asMap().entries.map((entry) {
+          final index = entry.key;
+          final data = entry.value;
+          final isSelected = selectedBarIndex == index;
+
+          return BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                toY: data.netCashFlow,
+                color: data.netCashFlow >= 0
+                    ? AppColors.getIncome(isDark)
+                    : AppColors.getExpense(isDark),
+                width: isSelected ? barWidth + 4 : barWidth,
+                borderRadius: BorderRadius.circular(4),
+                backDrawRodData: BackgroundBarChartRodData(
+                  show: false,
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildSelectedMonthDetails(MonthCashFlow monthData, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.yMMMM().format(monthData.month),
+          style: AppTypography.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppDesign.getTextPrimary(context),
+          ),
+        ),
+        const SizedBox(height: AppDesign.spacingM),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSummaryItem('Income', income, AppColors.income),
-            _buildSummaryItem('Expenses', expenses, AppColors.expense),
+            _buildDetailItem('Income', monthData.income, AppColors.getIncome(isDark)),
+            _buildDetailItem('Expenses', monthData.expenses, AppColors.getExpense(isDark)),
           ],
         ),
         Divider(
@@ -168,10 +516,12 @@ class _HistoryPageState extends State<HistoryPage> {
             const SizedBox(width: AppDesign.spacingS),
             Flexible(
               child: Text(
-                '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
+                '\$${NumberFormat("#,##0.00", "en_US").format(monthData.netCashFlow)}',
                 style: AppTypography.headingMedium.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: net >= 0 ? AppColors.income : AppColors.expense,
+                  color: monthData.netCashFlow >= 0
+                      ? AppColors.getIncome(isDark)
+                      : AppColors.getExpense(isDark),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -182,7 +532,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildSummaryItem(String label, double amount, Color color) {
+  Widget _buildDetailItem(String label, double amount, Color color) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,165 +556,5 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       ),
     );
-  }
-
-  /// Builds a grouped transaction list with sticky date headers
-  Widget _buildGroupedTransactionList(
-    TransactionModel transactionModel,
-    List<Transaction> transactions,
-  ) {
-    if (transactions.isEmpty) {
-      return EmptyState.noData(
-        title: 'No Transactions',
-        message: 'No transactions for this month',
-        icon: CupertinoIcons.tray,
-      );
-    }
-
-    // Sort transactions by date (newest first)
-    final sortedTransactions = List<Transaction>.from(transactions)
-      ..sort((a, b) => b.date.compareTo(a.date));
-
-    // Group transactions by date
-    final Map<String, List<Transaction>> groupedTransactions = {};
-    for (var transaction in sortedTransactions) {
-      final dateKey = DateFormat.yMMMd().format(transaction.date);
-      if (!groupedTransactions.containsKey(dateKey)) {
-        groupedTransactions[dateKey] = [];
-      }
-      groupedTransactions[dateKey]!.add(transaction);
-    }
-
-    return CustomScrollView(
-      physics: PlatformUtils.platformScrollPhysics,
-      slivers: [
-        // Build sliver list for each date group
-        ...groupedTransactions.entries.map((entry) {
-          final dateKey = entry.key;
-          final dateTransactions = entry.value;
-
-          return SliverMainAxisGroup(
-            slivers: [
-              // Sticky date header
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _DateHeaderDelegate(
-                  dateKey: dateKey,
-                  context: context,
-                ),
-              ),
-              // Transaction items for this date
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDesign.spacingM,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final transaction = dateTransactions[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: AppDesign.spacingS,
-                        ),
-                        child: ModernTransactionListItem(
-                          transaction: transaction,
-                          onTap: () {
-                            showTransactionForm(
-                              context,
-                              transaction.type,
-                              transactionModel.addTransaction,
-                              transaction,
-                            );
-                          },
-                          onDelete: () {
-                            transactionModel.deleteTransaction(transaction);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Transaction deleted'),
-                                backgroundColor: AppColors.expense,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    childCount: dateTransactions.length,
-                    // Optimize list performance
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: true,
-                  ),
-                ),
-              ),
-            ],
-          );
-        }),
-        // Bottom padding
-        const SliverPadding(
-          padding: EdgeInsets.only(bottom: AppDesign.spacingL),
-        ),
-      ],
-    );
-  }
-}
-
-/// Delegate for sticky date headers in the transaction list
-class _DateHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final String dateKey;
-  final BuildContext context;
-
-  _DateHeaderDelegate({
-    required this.dateKey,
-    required this.context,
-  });
-
-  @override
-  double get minExtent => 48.0;
-
-  @override
-  double get maxExtent => 48.0;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingM,
-        vertical: AppDesign.spacingS,
-      ),
-      color: AppDesign.getBackgroundColor(context),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDesign.spacingM,
-              vertical: AppDesign.spacingXS,
-            ),
-            decoration: BoxDecoration(
-              color: AppDesign.getSurfaceColor(context),
-              borderRadius: BorderRadius.circular(AppDesign.radiusS),
-              border: Border.all(
-                color: AppDesign.getBorderColor(context),
-                width: AppDesign.borderThin,
-              ),
-            ),
-            child: Text(
-              dateKey,
-              style: AppTypography.bodyMedium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppDesign.getTextPrimary(context),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant _DateHeaderDelegate oldDelegate) {
-    return dateKey != oldDelegate.dateKey;
   }
 }
