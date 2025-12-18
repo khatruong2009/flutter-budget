@@ -101,7 +101,7 @@ Future<void> showTransactionForm(
             ),
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(AppDesign.spacingL),
+                padding: const EdgeInsets.all(AppDesign.spacingM),
                 child: Form(
                   key: formKey,
                   child: Column(
@@ -113,12 +113,12 @@ Future<void> showTransactionForm(
                               type == TransactionTyp.expense
                                   ? 'Add Expense'
                                   : 'Add Income',
-                              style: AppTypography.headingLarge.copyWith(
+                              style: AppTypography.headingMedium.copyWith(
                                 color: AppDesign.getTextPrimary(context),
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: AppDesign.spacingL),
+                            const SizedBox(height: AppDesign.spacingM),
 
                             // Amount Input Field with floating label
                             _ModernTextField(
@@ -140,7 +140,7 @@ Future<void> showTransactionForm(
                                 }
                               },
                             ),
-                            const SizedBox(height: AppDesign.spacingM),
+                            const SizedBox(height: AppDesign.spacingS),
 
                             // Description Input Field with floating label
                             _ModernTextField(
@@ -159,7 +159,7 @@ Future<void> showTransactionForm(
                                 }
                               },
                             ),
-                            const SizedBox(height: AppDesign.spacingM),
+                            const SizedBox(height: AppDesign.spacingS),
 
                             // Category Picker Label
                             Padding(
@@ -178,7 +178,7 @@ Future<void> showTransactionForm(
 
                             // Category Picker with modern styling
                             Container(
-                              height: 150,
+                              height: 90,
                               decoration: BoxDecoration(
                                 color: AppDesign.getCardColor(context),
                                 borderRadius: BorderRadius.circular(AppDesign.radiusM),
@@ -191,7 +191,7 @@ Future<void> showTransactionForm(
                                 borderRadius: BorderRadius.circular(AppDesign.radiusM),
                                 child: CupertinoPicker(
                                   scrollController: categoryScrollController,
-                                  itemExtent: 40,
+                                  itemExtent: 32,
                                   onSelectedItemChanged: (index) {
                                     setState(() {
                                       category = categoryMap.keys.elementAt(index);
@@ -234,7 +234,7 @@ Future<void> showTransactionForm(
                                 ),
                               ),
                             ),
-                            const SizedBox(height: AppDesign.spacingXL),
+                            const SizedBox(height: AppDesign.spacingM),
 
                             // Action Buttons
                             Row(
@@ -326,50 +326,24 @@ class _ModernTextField extends StatefulWidget {
   State<_ModernTextField> createState() => _ModernTextFieldState();
 }
 
-class _ModernTextFieldState extends State<_ModernTextField>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _labelAnimation;
+class _ModernTextFieldState extends State<_ModernTextField> {
   bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: AppAnimations.fast,
-      vsync: this,
-    );
-
-    _labelAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: AppAnimations.easeOut,
-      ),
-    );
-
     widget.focusNode.addListener(_onFocusChange);
-
-    // Start animation if field already has text
-    if (widget.controller.text.isNotEmpty) {
-      _animationController.value = 1.0;
-    }
   }
 
   @override
   void dispose() {
     widget.focusNode.removeListener(_onFocusChange);
-    _animationController.dispose();
     super.dispose();
   }
 
   void _onFocusChange() {
     setState(() {
       _isFocused = widget.focusNode.hasFocus;
-      if (_isFocused || widget.controller.text.isNotEmpty) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
     });
   }
 
@@ -385,84 +359,76 @@ class _ModernTextFieldState extends State<_ModernTextField>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AnimatedBuilder(
-          animation: _labelAnimation,
-          builder: (context, child) {
-            return Container(
-              decoration: BoxDecoration(
-                color: AppDesign.getCardColor(context),
-                borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                border: Border.all(
-                  color: borderColor,
-                  width: _isFocused ? AppDesign.borderThick : AppDesign.borderMedium,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDesign.spacingM,
-                  vertical: AppDesign.spacingS,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Floating label
-                    if (_labelAnimation.value > 0)
-                      Opacity(
-                        opacity: _labelAnimation.value,
-                        child: Text(
-                          widget.label,
-                          style: AppTypography.caption.copyWith(
-                            color: hasError
-                                ? AppColors.error
-                                : _isFocused
-                                    ? AppColors.primary
-                                    : AppDesign.getTextSecondary(context),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    // Input field
-                    Row(
-                      children: [
-                        if (widget.prefixIcon != null) ...[
-                          Icon(
-                            widget.prefixIcon,
-                            size: AppDesign.iconM,
-                            color: hasError
-                                ? AppColors.error
-                                : _isFocused
-                                    ? AppColors.primary
-                                    : AppDesign.getTextSecondary(context),
-                          ),
-                          const SizedBox(width: AppDesign.spacingS),
-                        ],
-                        Expanded(
-                          child: TextField(
-                            controller: widget.controller,
-                            focusNode: widget.focusNode,
-                            keyboardType: widget.keyboardType,
-                            style: AppTypography.bodyLarge.copyWith(
-                              color: AppDesign.getTextPrimary(context),
-                            ),
-                            decoration: InputDecoration(
-                              hintText: widget.hint,
-                              hintStyle: AppTypography.bodyLarge.copyWith(
-                                color: AppDesign.getTextTertiary(context),
-                              ),
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            onChanged: widget.onChanged,
-                          ),
-                        ),
-                      ],
+        // Fixed label - always visible
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppDesign.spacingS,
+            bottom: AppDesign.spacingXS,
+          ),
+          child: Text(
+            widget.label,
+            style: AppTypography.caption.copyWith(
+              color: hasError
+                  ? AppColors.error
+                  : _isFocused
+                      ? AppColors.primary
+                      : AppDesign.getTextSecondary(context),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        // Input field container
+        Container(
+          decoration: BoxDecoration(
+            color: AppDesign.getCardColor(context),
+            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            border: Border.all(
+              color: borderColor,
+              width: _isFocused ? AppDesign.borderThick : AppDesign.borderMedium,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesign.spacingM,
+              vertical: AppDesign.spacingS,
+            ),
+            child: Row(
+              children: [
+                if (widget.prefixIcon != null) ...[
+                  Icon(
+                    widget.prefixIcon,
+                    size: AppDesign.iconM,
+                    color: hasError
+                        ? AppColors.error
+                        : _isFocused
+                            ? AppColors.primary
+                            : AppDesign.getTextSecondary(context),
+                  ),
+                  const SizedBox(width: AppDesign.spacingS),
+                ],
+                Expanded(
+                  child: TextField(
+                    controller: widget.controller,
+                    focusNode: widget.focusNode,
+                    keyboardType: widget.keyboardType,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppDesign.getTextPrimary(context),
                     ),
-                  ],
+                    decoration: InputDecoration(
+                      hintText: widget.hint,
+                      hintStyle: AppTypography.bodyLarge.copyWith(
+                        color: AppDesign.getTextTertiary(context),
+                      ),
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    onChanged: widget.onChanged,
+                  ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         ),
         // Error message with icon
         if (hasError) ...[
