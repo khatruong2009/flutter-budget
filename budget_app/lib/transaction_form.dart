@@ -5,6 +5,7 @@ import 'common.dart';
 import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'design_system.dart';
+import 'recurring_transaction_form.dart';
 
 Future<void> showTransactionForm(
     BuildContext context, TransactionTyp type, Function addTransaction,
@@ -287,6 +288,48 @@ Future<void> showTransactionForm(
                                   ),
                                 ),
                               ],
+                            ),
+                            const SizedBox(height: AppDesign.spacingM),
+
+                            // Recurring Transaction Link
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop(); // Close current form
+                                  showRecurringTransactionForm(context, type);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppDesign.spacingM,
+                                    vertical: AppDesign.spacingS,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppDesign.getCardColor(context).withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                                    border: Border.all(
+                                      color: AppDesign.getBorderColor(context),
+                                      width: AppDesign.borderMedium,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.repeat,
+                                        size: AppDesign.iconS,
+                                        color: AppDesign.getTextSecondary(context),
+                                      ),
+                                      const SizedBox(width: AppDesign.spacingS),
+                                      Text(
+                                        'Make this recurring',
+                                        style: AppTypography.caption.copyWith(
+                                          color: AppDesign.getTextSecondary(context),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                     ],
                   ),

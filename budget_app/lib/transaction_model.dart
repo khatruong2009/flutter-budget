@@ -81,14 +81,21 @@ class TransactionModel extends ChangeNotifier {
   }
 
   // add transaction
-  void addTransaction(TransactionTyp type, String description, double amount,
-      String category, DateTime date) {
+  void addTransaction(
+    TransactionTyp type,
+    String description,
+    double amount,
+    String category,
+    DateTime date, {
+    String? recurringTemplateId,
+  }) {
     Transaction newTransaction = Transaction(
       type: type,
       description: description,
       amount: amount,
       category: category,
       date: date,
+      recurringTemplateId: recurringTemplateId,
     );
     transactions.add(newTransaction);
     saveTransactions(transactions);

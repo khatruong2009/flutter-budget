@@ -9,6 +9,7 @@ class Transaction {
   final double amount;
   final String category;
   final DateTime date;
+  final String? recurringTemplateId;
 
   Transaction({
     required this.type,
@@ -16,7 +17,11 @@ class Transaction {
     required this.amount,
     required this.category,
     required this.date,
+    this.recurringTemplateId,
   });
+
+  // Check if transaction is from recurring template
+  bool get isRecurring => recurringTemplateId != null;
 
   // convert transaction object into a map
   Map<String, dynamic> toJson() => {
@@ -25,6 +30,7 @@ class Transaction {
         'amount': amount,
         'category': category,
         'date': date.toIso8601String(),
+        'recurringTemplateId': recurringTemplateId,
       };
 
   // convert map into a transaction object
@@ -37,6 +43,7 @@ class Transaction {
       amount: json['amount'],
       category: json['category'],
       date: DateTime.parse(json['date']),
+      recurringTemplateId: json['recurringTemplateId'],
     );
   }
 }

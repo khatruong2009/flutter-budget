@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:budget_app/widgets/modern_transaction_list_item.dart';
+import 'package:budget_app/widgets/recurrence_indicator.dart';
 import 'package:budget_app/transaction.dart';
 
 void main() {
@@ -135,6 +136,59 @@ void main() {
 
       // Verify date is formatted (Mar 15)
       expect(find.textContaining('Mar'), findsOneWidget);
+    });
+
+    testWidgets('displays recurrence indicator for recurring transactions', (tester) async {
+      // Create a recurring transaction
+      final recurringTransaction = Transaction(
+        type: TransactionTyp.expense,
+        description: 'Netflix Subscription',
+        amount: 15.99,
+        category: 'Entertainment',
+        date: DateTime(2024, 1, 1),
+        recurringTemplateId: 'test-recurring-id',
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ModernTransactionListItem(
+              transaction: recurringTransaction,
+              onTap: () {},
+              onDelete: () {},
+            ),
+          ),
+        ),
+      );
+
+      // Verify the recurrence indicator is displayed
+      expect(find.byType(RecurrenceIndicator), findsOneWidget);
+    });
+
+    testWidgets('does not display recurrence indicator for non-recurring transactions', (tester) async {
+      // Create a non-recurring transaction
+      final transaction = Transaction(
+        type: TransactionTyp.expense,
+        description: 'One-time Purchase',
+        amount: 50.00,
+        category: 'Shopping',
+        date: DateTime(2024, 1, 1),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ModernTransactionListItem(
+              transaction: transaction,
+              onTap: () {},
+              onDelete: () {},
+            ),
+          ),
+        ),
+      );
+
+      // Verify the recurrence indicator is NOT displayed
+      expect(find.byType(RecurrenceIndicator), findsNothing);
     });
   });
 }

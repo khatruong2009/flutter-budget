@@ -6,6 +6,7 @@ import 'transaction_model.dart';
 import 'package:provider/provider.dart';
 import 'design_system.dart';
 import 'utils/platform_utils.dart';
+import 'recurring_transactions_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -133,6 +134,26 @@ class SettingsPageState extends State<SettingsPage> {
 
               // Data Section
               _buildSectionHeader(context, 'Data'),
+              const SizedBox(height: AppDesign.spacingS),
+              _buildSettingCard(
+                context,
+                icon: Icons.repeat,
+                iconGradient: AppDesign.getPrimaryGradient(context),
+                title: 'Recurring Transactions',
+                description: 'Manage your recurring expenses and income',
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: AppDesign.getTextTertiary(context),
+                  size: AppDesign.iconM,
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const RecurringTransactionsPage(),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: AppDesign.spacingS),
               _buildSettingCard(
                 context,

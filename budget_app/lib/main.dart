@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'transaction_model.dart';
+import 'recurring_transaction_model.dart';
+import 'transaction_generator.dart';
 import 'theme_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'transaction_form.dart';
@@ -15,6 +17,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TransactionModel()),
+        ChangeNotifierProvider(create: (context) => RecurringTransactionModel()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: const AppContainer(child: MyApp()),
@@ -145,7 +148,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: context.read<TransactionModel>().getTransactions(),
+      future: _initializeApp(context),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return const BudgetHomePage(title: 'Home');
@@ -154,5 +157,22 @@ class _MyAppState extends State<MyApp> {
         }
       },
     );
+  }
+
+  /// Initialize app by loading data and generating due recurring transactions
+  Future<void> _initializeApp(BuildContext context) async {
+    final transactionModel = context.read<TransactionModel>();
+    final recurringModel = context.read<RecurringTransactionModel>();
+
+    // Load existing transactions and recurring transactions
+    await transactionModel.getTransactions();
+    await recurringModel.loadRecurringTransactions();
+
+    // Create transaction generator and generate due transactions
+    final generator = TransactionGenerator(
+      transactionModel: transactionModel,
+      recurringModel: recurringModel,
+    );
+    await generator.generateDueTransactions();
   }
 }

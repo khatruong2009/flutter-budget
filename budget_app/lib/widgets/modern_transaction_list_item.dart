@@ -5,6 +5,7 @@ import '../transaction.dart';
 import '../design_system.dart';
 import '../common.dart';
 import '../utils/accessibility_utils.dart';
+import 'recurrence_indicator.dart';
 
 /// ModernTransactionListItem is an enhanced transaction list item component
 /// featuring elevated cards, solid color icon containers, and swipe-to-delete
@@ -105,12 +106,22 @@ class ModernTransactionListItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    transaction.description,
-                    style: AppTypography.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppDesign.getTextPrimary(context),
-                    ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          transaction.description,
+                          style: AppTypography.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppDesign.getTextPrimary(context),
+                          ),
+                        ),
+                      ),
+                      if (transaction.isRecurring) ...[
+                        const SizedBox(width: 6),
+                        const RecurrenceIndicator(size: 16.0),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(

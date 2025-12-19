@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'package:budget_app/main.dart';
 import 'package:budget_app/transaction_model.dart';
+import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/theme_provider.dart';
 
 void main() {
@@ -19,6 +20,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => TransactionModel()),
+          ChangeNotifierProvider(create: (_) => RecurringTransactionModel()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
         child: const MyApp(),
