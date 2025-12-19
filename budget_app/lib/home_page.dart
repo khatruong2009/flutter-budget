@@ -65,11 +65,31 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           });
         },
         children: [
-          SpendingPage(),
-          const TransactionPage(),
-          const CategoryPage(),
-          const HistoryPage(),
-          const SettingsPage(),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => SpendingPage(),
+            ),
+          ),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => const TransactionPage(),
+            ),
+          ),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => const CategoryPage(),
+            ),
+          ),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => const HistoryPage(),
+            ),
+          ),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => const SettingsPage(),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: _buildModernTabBar(isDark),

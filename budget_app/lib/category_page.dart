@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'design_system.dart';
 import 'widgets/empty_state.dart';
 import 'utils/platform_utils.dart';
+import 'category_transactions_page.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({Key? key}) : super(key: key);
@@ -157,7 +158,22 @@ class _CategoryPageState extends State<CategoryPage>
                               return AnimatedScale(
                                 scale: isSelected ? 1.02 : 1.0,
                                 duration: AppAnimations.fast,
-                                child: ElevatedCard(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (context) => CategoryTransactionsPage(
+                                          category: data.category,
+                                          categoryColor: data.color,
+                                          categoryIcon: data.iconData,
+                                          month: transactionModel.selectedMonth,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: ElevatedCard(
                                   elevation: isSelected ? AppDesign.elevationM : AppDesign.elevationS,
                                   padding: const EdgeInsets.all(AppDesign.spacingM),
                                   child: Row(
@@ -218,7 +234,14 @@ class _CategoryPageState extends State<CategoryPage>
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
+                                      const SizedBox(width: AppDesign.spacingS),
+                                      Icon(
+                                        CupertinoIcons.chevron_right,
+                                        color: AppDesign.getTextSecondary(context),
+                                        size: AppDesign.iconS,
+                                      ),
                                     ],
+                                  ),
                                   ),
                                 ),
                               );
