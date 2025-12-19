@@ -229,7 +229,7 @@ class TransactionModel extends ChangeNotifier {
   // Get net cash flow data for all months (for charting)
   List<MonthCashFlow> getNetCashFlowHistory() {
     List<DateTime> months = getAvailableMonths();
-    return months.map((month) {
+    return months.reversed.map((month) {
       Map<String, double> summary = getMonthlySummary(month);
       return MonthCashFlow(
         month: month,

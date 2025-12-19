@@ -18,6 +18,10 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  final ScrollController _chartScrollController = ScrollController();
+  int? _lastChartDataLength;
+  bool _hasScrolledToLatest = false;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -106,6 +110,12 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  @override
+  void dispose() {
+    _chartScrollController.dispose();
+    super.dispose();
+  }
+
   Widget _buildSummaryStatistics(CashFlowStatistics statistics, bool isDark) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isCompact = screenWidth < 360;
@@ -176,10 +186,26 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildResponsiveChart(List<MonthCashFlow> chartData, bool isDark) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Determine if we need horizontal scrolling
     final needsScrolling = chartData.length > 12;
-    
+
+    if (_lastChartDataLength != chartData.length) {
+      _lastChartDataLength = chartData.length;
+      _hasScrolledToLatest = false;
+    }
+
+    if (needsScrolling && !_hasScrolledToLatest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_chartScrollController.hasClients) {
+          _chartScrollController.jumpTo(
+            _chartScrollController.position.maxScrollExtent,
+          );
+          _hasScrolledToLatest = true;
+        }
+      });
+    }
+
     if (needsScrolling) {
       // Calculate width needed for all bars with proper spacing
       final chartWidth = chartData.length * 50.0 + 100;
@@ -212,6 +238,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
+              controller: _chartScrollController,
               child: SizedBox(
                 width: chartWidth.clamp(screenWidth, double.infinity),
                 child: _buildChart(chartData, isDark, useFixedWidth: true),
@@ -230,7 +257,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildChart(List<MonthCashFlow> chartData, bool isDark, {required bool useFixedWidth}) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     List<MonthCashFlow> displayData;
     if (useFixedWidth) {
       displayData = chartData;
@@ -245,11 +272,13 @@ class _HistoryPageState extends State<HistoryPage> {
       } else {
         maxMonthsToDisplay = 12;
       }
-      
+
       displayData = chartData.length > maxMonthsToDisplay
           ? chartData.sublist(0, maxMonthsToDisplay)
           : chartData;
     }
+
+    displayData = displayData.reversed.toList();
 
     double minValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a < b ? a : b);
     double maxValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a > b ? a : b);
@@ -333,10 +362,10 @@ class _HistoryPageState extends State<HistoryPage> {
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final monthData = displayData[groupIndex];
               return BarTooltipItem(
-                '${DateFormat.MMM().format(monthData.month)}\n',
+                "${DateFormat("MMM ''yy").format(monthData.month)}\n",
                 AppTypography.bodySmall.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isDark 
+                  color: isDark
                       ? AppColors.textPrimaryDark 
                       : AppColors.textPrimary,
                 ),
@@ -366,7 +395,8 @@ class _HistoryPageState extends State<HistoryPage> {
                   return Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      DateFormat.MMM().format(displayData[value.toInt()].month),
+                      DateFormat("MMM ''yy")
+                          .format(displayData[value.toInt()].month),
                       style: AppTypography.bodySmall.copyWith(
                         color: AppDesign.getTextSecondary(context),
                       ),
@@ -388,10 +418,17 @@ class _HistoryPageState extends State<HistoryPage> {
                 } else {
                   text = '\$${value.toStringAsFixed(0)}';
                 }
-                return Text(
-                  text,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: value == meta.max ? 4.0 : 0,
+                    bottom: value == meta.min ? 4.0 : 0,
+                    right: 4.0,
+                  ),
+                  child: Text(
+                    text,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppDesign.getTextSecondary(context),
+                    ),
                   ),
                 );
               },
