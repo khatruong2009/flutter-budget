@@ -298,7 +298,7 @@ class _CategoryPageState extends State<CategoryPage>
                                         ? Container(
                                             padding: const EdgeInsets.all(AppDesign.spacingXS),
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color: AppDesign.getBackgroundColor(context),
                                               shape: BoxShape.circle,
                                               boxShadow: AppDesign.shadowS,
                                             ),
