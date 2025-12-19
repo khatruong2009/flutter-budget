@@ -274,12 +274,15 @@ class _HistoryPageState extends State<HistoryPage> {
         maxMonthsToDisplay = 12;
       }
 
-      displayData = chartData.length > maxMonthsToDisplay
-          ? chartData.sublist(0, maxMonthsToDisplay)
-          : chartData;
+      if (chartData.length > maxMonthsToDisplay) {
+        // Keep the most recent months when the data needs to be truncated
+        displayData = chartData.sublist(
+          chartData.length - maxMonthsToDisplay,
+        );
+      } else {
+        displayData = chartData;
+      }
     }
-
-    displayData = displayData.reversed.toList();
 
     double minValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a < b ? a : b);
     double maxValue = displayData.map((d) => d.netCashFlow).reduce((a, b) => a > b ? a : b);
