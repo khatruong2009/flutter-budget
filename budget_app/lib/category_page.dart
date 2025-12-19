@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +26,7 @@ class _CategoryPageState extends State<CategoryPage>
   late AnimationController _animationController;
   late Animation<double> _chartAnimation;
   int _touchedIndex = -1;
+  DateTime? selectedMonth;
 
   @override
   void initState() {
@@ -51,8 +54,20 @@ class _CategoryPageState extends State<CategoryPage>
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
+        List<DateTime> availableMonths = transactionModel.getAvailableMonths();
+
+        // Set initial selected month to most recent month if not set
+        if (selectedMonth == null && availableMonths.isNotEmpty) {
+          selectedMonth = availableMonths.first;
+        }
+
+        // Get transactions for selected month
+        final monthTransactions = selectedMonth != null
+            ? transactionModel.getTransactionsForMonth(selectedMonth!)
+            : transactionModel.currentMonthTransactions;
+
         final Map<String, double> expensesPerCategory = {};
-        for (final transaction in transactionModel.currentMonthTransactions
+        for (final transaction in monthTransactions
             .where((t) => t.type == TransactionTyp.expense)) {
           expensesPerCategory.update(
             transaction.category,
@@ -65,8 +80,8 @@ class _CategoryPageState extends State<CategoryPage>
             ? expensesPerCategory.values.reduce((a, b) => a + b)
             : 0.0;
 
-        // Show empty state when no expenses
-        if (totalAmount == 0.0) {
+        // Show empty state when no months available
+        if (availableMonths.isEmpty) {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Categories'),
@@ -84,6 +99,78 @@ class _CategoryPageState extends State<CategoryPage>
                   message: 'Start tracking your expenses to see category breakdowns',
                   icon: CupertinoIcons.chart_pie,
                   iconGradient: AppDesign.getExpenseGradient(context),
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Show empty state when no expenses for selected month
+        if (totalAmount == 0.0) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Categories'),
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+            extendBodyBehindAppBar: true,
+            body: Container(
+              color: AppDesign.getBackgroundColor(context),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Month selector dropdown
+                    Padding(
+                      padding: const EdgeInsets.all(AppDesign.spacingM),
+                      child: ElevatedCard(
+                        elevation: AppDesign.elevationS,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                          vertical: AppDesign.spacingXS,
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<DateTime>(
+                            isExpanded: true,
+                            value: selectedMonth,
+                            dropdownColor: Theme.of(context).brightness == Brightness.dark
+                                ? const Color(0xFF1E1E1E)
+                                : Colors.white,
+                            icon: Icon(
+                              CupertinoIcons.chevron_down,
+                              color: AppDesign.getTextPrimary(context),
+                            ),
+                            items: availableMonths.map((DateTime month) {
+                              return DropdownMenuItem<DateTime>(
+                                value: month,
+                                child: Text(
+                                  DateFormat.yMMMM().format(month),
+                                  style: AppTypography.bodyLarge.copyWith(
+                                    color: AppDesign.getTextPrimary(context),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (DateTime? newValue) {
+                              setState(() {
+                                selectedMonth = newValue;
+                                _touchedIndex = -1;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: EmptyState(
+                        type: EmptyStateType.noData,
+                        title: 'No Expenses',
+                        message: 'No expenses recorded for this month',
+                        icon: CupertinoIcons.chart_pie,
+                        iconGradient: AppDesign.getExpenseGradient(context),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -111,6 +198,13 @@ class _CategoryPageState extends State<CategoryPage>
 
         categoryDataList.sort((a, b) => b.value.compareTo(a.value));
 
+        final double screenWidth = MediaQuery.of(context).size.width;
+        final double baseChartDiameter = math.max(
+          200.0,
+          math.min(screenWidth - AppDesign.spacingL * 2, 300.0),
+        ).toDouble();
+        final double chartHeight = baseChartDiameter + AppDesign.spacingM * 2;
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Categories'),
@@ -122,224 +216,270 @@ class _CategoryPageState extends State<CategoryPage>
           body: Container(
             color: AppDesign.getBackgroundColor(context),
             child: SafeArea(
-              child: Stack(
+              child: Column(
                 children: <Widget>[
-                  // Background Column with list
-                  Column(
-                    children: <Widget>[
-                      const SizedBox(height: AppDesign.spacingL),
-                      // Chart area placeholder
-                      Expanded(
-                        flex: 2,
-                        child: Container(),
+                  // Month selector dropdown
+                  Padding(
+                    padding: const EdgeInsets.all(AppDesign.spacingM),
+                    child: ElevatedCard(
+                      elevation: AppDesign.elevationS,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDesign.spacingM,
+                        vertical: AppDesign.spacingXS,
                       ),
-                      // Legend with Elevated Cards
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDesign.spacingM,
-                            vertical: AppDesign.spacingS,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<DateTime>(
+                          isExpanded: true,
+                          value: selectedMonth,
+                          dropdownColor: Theme.of(context).brightness == Brightness.dark
+                              ? const Color(0xFF1E1E1E)
+                              : Colors.white,
+                          icon: Icon(
+                            CupertinoIcons.chevron_down,
+                            color: AppDesign.getTextPrimary(context),
                           ),
-                          child: ListView.separated(
-                            physics: PlatformUtils.platformScrollPhysics,
-                            padding: const EdgeInsets.only(
-                              bottom: AppDesign.spacingL,
-                            ),
-                            itemCount: categoryDataList.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: AppDesign.spacingS),
-                            addAutomaticKeepAlives: false,
-                            addRepaintBoundaries: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              final data = categoryDataList[index];
-                              final isSelected = _touchedIndex == index;
-                              
-                              return AnimatedScale(
-                                scale: isSelected ? 1.02 : 1.0,
-                                duration: AppAnimations.fast,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    HapticFeedback.lightImpact();
-                                    Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                        builder: (context) => CategoryTransactionsPage(
-                                          category: data.category,
-                                          categoryColor: data.color,
-                                          categoryIcon: data.iconData,
-                                          month: transactionModel.selectedMonth,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: ElevatedCard(
-                                  elevation: isSelected ? AppDesign.elevationM : AppDesign.elevationS,
-                                  padding: const EdgeInsets.all(AppDesign.spacingM),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 48,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: data.color,
-                                          borderRadius: BorderRadius.circular(
-                                              AppDesign.radiusM),
-                                          boxShadow: AppDesign.shadowS,
-                                        ),
-                                        child: Icon(
-                                          data.iconData,
-                                          color: AppColors.textOnPrimary,
-                                          size: AppDesign.iconM,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppDesign.spacingM),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              data.category,
-                                              style: AppTypography.bodyLarge
-                                                  .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: AppDesign.getTextPrimary(
-                                                    context),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                                height: AppDesign.spacingXXS),
-                                            Text(
-                                              '${data.percentage.toStringAsFixed(1)}%',
-                                              style: AppTypography.bodyMedium
-                                                  .copyWith(
-                                                color: AppDesign.getTextSecondary(
-                                                    context),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppDesign.spacingS),
-                                      Flexible(
-                                        child: Text(
-                                          '\$${NumberFormat("#,##0.00", "en_US").format(data.value)}',
-                                          style:
-                                              AppTypography.headingMedium.copyWith(
-                                            color: data.color,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppDesign.spacingS),
-                                      Icon(
-                                        CupertinoIcons.chevron_right,
-                                        color: AppDesign.getTextSecondary(context),
-                                        size: AppDesign.iconS,
-                                      ),
-                                    ],
-                                  ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Animated Pie Chart on top layer
-                  Positioned(
-                    top: AppDesign.spacingL,
-                    left: 0,
-                    right: 0,
-                    child: IgnorePointer(
-                      ignoring: false,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        child: RepaintBoundary(
-                          child: AnimatedBuilder(
-                            animation: _chartAnimation,
-                            builder: (context, child) {
-                              return Padding(
-                                padding: const EdgeInsets.all(AppDesign.spacingL),
-                                child: PieChart(
-                              PieChartData(
-                                sections: categoryDataList.asMap().entries.map((entry) {
-                                  final idx = entry.key;
-                                  final data = entry.value;
-                                  final isSelected = _touchedIndex == idx;
-                                  final showPercentage = data.percentage >= 5.0;
-                                  
-                                  return PieChartSectionData(
-                                    color: data.color,
-                                    value: data.value * _chartAnimation.value,
-                                    title: showPercentage 
-                                        ? '${data.percentage.toStringAsFixed(0)}%'
-                                        : '',
-                                    titleStyle: AppTypography.bodyMedium.copyWith(
-                                      color: AppColors.textOnPrimary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withOpacity(0.3),
-                                          offset: const Offset(0, 1),
-                                          blurRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    titlePositionPercentageOffset: 0.55,
-                                    radius: isSelected ? 110 : 100,
-                                    badgeWidget: data.percentage >= 4.0
-                                        ? Container(
-                                            padding: const EdgeInsets.all(AppDesign.spacingXS),
-                                            decoration: BoxDecoration(
-                                              color: AppDesign.getBackgroundColor(context),
-                                              shape: BoxShape.circle,
-                                              boxShadow: AppDesign.shadowS,
-                                            ),
-                                            child: Icon(
-                                              data.iconData,
-                                              color: data.color,
-                                              size: AppDesign.iconM,
-                                            ),
-                                          )
-                                        : null,
-                                    badgePositionPercentageOffset: 1.2,
-                                  );
-                                }).toList(),
-                                sectionsSpace: 3,
-                                centerSpaceRadius: 40,
-                                pieTouchData: PieTouchData(
-                                  enabled: true,
-                                  touchCallback: (FlTouchEvent event,
-                                      PieTouchResponse? response) {
-                                    setState(() {
-                                      if (!event.isInterestedForInteractions ||
-                                          response == null ||
-                                          response.touchedSection == null) {
-                                        _touchedIndex = -1;
-                                        return;
-                                      }
-                                      _touchedIndex = response
-                                          .touchedSection!.touchedSectionIndex;
-                                    });
-                                    
-                                    if (event.isInterestedForInteractions) {
-                                      HapticFeedback.selectionClick();
-                                    }
-                                  },
-                                ),
+                          items: availableMonths.map((DateTime month) {
+                            return DropdownMenuItem<DateTime>(
+                              value: month,
+                              child: Text(
+                                DateFormat.yMMMM().format(month),
+                                style: AppTypography.bodyLarge.copyWith(
+                                  color: AppDesign.getTextPrimary(context),
                                 ),
                               ),
                             );
+                          }).toList(),
+                          onChanged: (DateTime? newValue) {
+                            setState(() {
+                              selectedMonth = newValue;
+                              _touchedIndex = -1;
+                              // Restart animation when month changes
+                              _animationController.reset();
+                              _animationController.forward();
+                            });
                           },
                         ),
+                      ),
+                    ),
+                  ),
+                  // Animated Pie Chart with dedicated space between dropdown and list
+                  SizedBox(
+                    height: chartHeight,
+                    child: Center(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double maxDiameter = math.max(
+                            200.0,
+                            math.min(
+                              math.max(constraints.maxWidth - AppDesign.spacingL * 2, 0),
+                              300.0,
+                            ),
+                          ).toDouble();
+                          final double chartDiameter = math.min(baseChartDiameter, maxDiameter).toDouble();
+                          final double baseRadius = math.min(chartDiameter / 3.4, 110.0).toDouble();
+                          final double selectedRadius = baseRadius + 6;
+
+                          return SizedBox(
+                            width: chartDiameter,
+                            height: chartDiameter,
+                            child: RepaintBoundary(
+                              child: AnimatedBuilder(
+                                animation: _chartAnimation,
+                                builder: (context, child) {
+                                  return PieChart(
+                                    PieChartData(
+                                      sections: categoryDataList
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final idx = entry.key;
+                                        final data = entry.value;
+                                        final isSelected = _touchedIndex == idx;
+                                        final showPercentage =
+                                            data.percentage >= 5.0;
+
+                                        return PieChartSectionData(
+                                          color: data.color,
+                                          value: data.value * _chartAnimation.value,
+                                          title: showPercentage
+                                              ? '${data.percentage.toStringAsFixed(0)}%'
+                                              : '',
+                                          titleStyle: AppTypography.bodyMedium.copyWith(
+                                            color: AppColors.textOnPrimary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black.withOpacity(0.3),
+                                                offset: const Offset(0, 1),
+                                                blurRadius: 2,
+                                              ),
+                                            ],
+                                          ),
+                                          titlePositionPercentageOffset: 0.55,
+                                          radius: isSelected
+                                              ? selectedRadius
+                                              : baseRadius,
+                                          badgeWidget: data.percentage >= 4.0
+                                              ? Container(
+                                                  padding: const EdgeInsets.all(
+                                                      AppDesign.spacingXS),
+                                                  decoration: BoxDecoration(
+                                                    color: AppDesign.getBackgroundColor(
+                                                        context),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: AppDesign.shadowS,
+                                                  ),
+                                                  child: Icon(
+                                                    data.iconData,
+                                                    color: data.color,
+                                                    size: AppDesign.iconS,
+                                                  ),
+                                                )
+                                              : null,
+                                          badgePositionPercentageOffset: 1.15,
+                                        );
+                                      }).toList(),
+                                      sectionsSpace: 2,
+                                      centerSpaceRadius: 30,
+                                      pieTouchData: PieTouchData(
+                                        enabled: true,
+                                        touchCallback: (FlTouchEvent event,
+                                            PieTouchResponse? response) {
+                                          setState(() {
+                                            if (!event.isInterestedForInteractions ||
+                                                response == null ||
+                                                response.touchedSection == null) {
+                                              _touchedIndex = -1;
+                                              return;
+                                            }
+                                            _touchedIndex = response
+                                                .touchedSection!.touchedSectionIndex;
+                                          });
+
+                                          if (event.isInterestedForInteractions) {
+                                            HapticFeedback.selectionClick();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  // Legend with Elevated Cards
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDesign.spacingM,
+                        vertical: AppDesign.spacingS,
+                      ),
+                      child: ListView.separated(
+                        physics: PlatformUtils.platformScrollPhysics,
+                        padding: const EdgeInsets.only(
+                          bottom: AppDesign.spacingL,
                         ),
+                        itemCount: categoryDataList.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: AppDesign.spacingS),
+                        addAutomaticKeepAlives: false,
+                        addRepaintBoundaries: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          final data = categoryDataList[index];
+                          final isSelected = _touchedIndex == index;
+
+                          return AnimatedScale(
+                            scale: isSelected ? 1.02 : 1.0,
+                            duration: AppAnimations.fast,
+                            child: GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => CategoryTransactionsPage(
+                                      category: data.category,
+                                      categoryColor: data.color,
+                                      categoryIcon: data.iconData,
+                                      month: selectedMonth ?? transactionModel.selectedMonth,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ElevatedCard(
+                                elevation: isSelected
+                                    ? AppDesign.elevationM
+                                    : AppDesign.elevationS,
+                                padding:
+                                    const EdgeInsets.all(AppDesign.spacingM),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: data.color,
+                                        borderRadius:
+                                            BorderRadius.circular(AppDesign.radiusM),
+                                        boxShadow: AppDesign.shadowS,
+                                      ),
+                                      child: Icon(
+                                        data.iconData,
+                                        color: AppColors.textOnPrimary,
+                                        size: AppDesign.iconM,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppDesign.spacingM),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data.category,
+                                            style: AppTypography.bodyLarge.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: AppDesign.getTextPrimary(context),
+                                            ),
+                                          ),
+                                          const SizedBox(height: AppDesign.spacingXXS),
+                                          Text(
+                                            '${data.percentage.toStringAsFixed(1)}%',
+                                            style: AppTypography.bodyMedium.copyWith(
+                                              color: AppDesign.getTextSecondary(context),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppDesign.spacingS),
+                                    Flexible(
+                                      child: Text(
+                                        '\$${NumberFormat("#,##0.00", "en_US").format(data.value)}',
+                                        style: AppTypography.headingMedium.copyWith(
+                                          color: data.color,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppDesign.spacingS),
+                                    Icon(
+                                      CupertinoIcons.chevron_right,
+                                      color: AppDesign.getTextSecondary(context),
+                                      size: AppDesign.iconS,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
