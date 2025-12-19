@@ -40,8 +40,9 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             ),
             centerTitle: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppDesign.getBackgroundColor(context),
             elevation: 0,
+            surfaceTintColor: Colors.transparent,
           ),
           extendBodyBehindAppBar: false,
           body: Container(

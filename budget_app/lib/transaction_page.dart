@@ -40,8 +40,9 @@ class _TransactionPageState extends State<TransactionPage> {
               ),
             ),
             centerTitle: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppDesign.getBackgroundColor(context),
             elevation: 0,
+            surfaceTintColor: Colors.transparent,
           ),
           extendBodyBehindAppBar: false,
           body: Container(

@@ -166,34 +166,36 @@ class SpendingPageState extends State<SpendingPage> {
                             duration: AppAnimations.normal,
                             curve: AppAnimations.easeInOut,
                             child: isExpanded
-                                ? Column(
-                                    children: [
-                                      const SizedBox(height: AppDesign.spacingS),
-                                      Expanded(
-                                        child: CupertinoPicker(
-                                          scrollController: scrollController,
-                                          itemExtent: 32,
-                                          onSelectedItemChanged: (int index) {
-                                            setState(() {
-                                              currentMonthIndex = index;
-                                            });
-                                            transactionModel.selectMonth(
-                                                DateTime(DateTime.now().year, index + 1));
-                                          },
-                                          children: months.map((String month) {
-                                            return Center(
-                                              child: Text(
-                                                month,
-                                                style: AppTypography.bodyMedium.copyWith(
-                                                  color: AppDesign.getTextPrimary(context),
-                                                  fontWeight: FontWeight.w500,
+                                ? ClipRect(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: AppDesign.spacingS),
+                                        Expanded(
+                                          child: CupertinoPicker(
+                                            scrollController: scrollController,
+                                            itemExtent: 32,
+                                            onSelectedItemChanged: (int index) {
+                                              setState(() {
+                                                currentMonthIndex = index;
+                                              });
+                                              transactionModel.selectMonth(
+                                                  DateTime(DateTime.now().year, index + 1));
+                                            },
+                                            children: months.map((String month) {
+                                              return Center(
+                                                child: Text(
+                                                  month,
+                                                  style: AppTypography.bodyMedium.copyWith(
+                                                    color: AppDesign.getTextPrimary(context),
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }).toList(),
+                                              );
+                                            }).toList(),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   )
                                 : const SizedBox.shrink(),
                           ),
