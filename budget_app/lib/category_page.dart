@@ -97,7 +97,8 @@ class _CategoryPageState extends State<CategoryPage>
                 child: EmptyState(
                   type: EmptyStateType.noData,
                   title: 'No Expenses Yet',
-                  message: 'Start tracking your expenses to see category breakdowns',
+                  message:
+                      'Start tracking your expenses to see category breakdowns',
                   icon: CupertinoIcons.chart_pie,
                   iconGradient: AppDesign.getExpenseGradient(context),
                 ),
@@ -150,10 +151,15 @@ class _CategoryPageState extends State<CategoryPage>
 
         final List<_CategoryData> categoryDataList = [];
         final chartColors = AppDesign.getChartColors(context);
+        final Map<String, Color> categoryColorMap = {
+          for (int i = 0; i < expenseCategories.length; i++)
+            expenseCategories.keys.elementAt(i):
+                chartColors[i % chartColors.length],
+        };
 
-        int index = 0;
         expensesPerCategory.forEach((key, value) {
-          final color = chartColors[index % chartColors.length];
+          final color = categoryColorMap[key] ??
+              chartColors[key.hashCode.abs() % chartColors.length];
           double percentage = (value / totalAmount) * 100;
           categoryDataList.add(
             _CategoryData(
@@ -164,16 +170,17 @@ class _CategoryPageState extends State<CategoryPage>
               iconData: expenseCategories[key],
             ),
           );
-          index++;
         });
 
         categoryDataList.sort((a, b) => b.value.compareTo(a.value));
 
         final double screenWidth = MediaQuery.of(context).size.width;
-        final double baseChartDiameter = math.max(
-          200.0,
-          math.min(screenWidth - AppDesign.spacingL * 2, 300.0),
-        ).toDouble();
+        final double baseChartDiameter = math
+            .max(
+              200.0,
+              math.min(screenWidth - AppDesign.spacingL * 2, 300.0),
+            )
+            .toDouble();
         final double chartHeight = baseChartDiameter + AppDesign.spacingM * 2;
 
         return Scaffold(
@@ -209,15 +216,23 @@ class _CategoryPageState extends State<CategoryPage>
                     child: Center(
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final double maxDiameter = math.max(
-                            200.0,
-                            math.min(
-                              math.max(constraints.maxWidth - AppDesign.spacingL * 2, 0),
-                              300.0,
-                            ),
-                          ).toDouble();
-                          final double chartDiameter = math.min(baseChartDiameter, maxDiameter).toDouble();
-                          final double baseRadius = math.min(chartDiameter / 3.4, 110.0).toDouble();
+                          final double maxDiameter = math
+                              .max(
+                                200.0,
+                                math.min(
+                                  math.max(
+                                      constraints.maxWidth -
+                                          AppDesign.spacingL * 2,
+                                      0),
+                                  300.0,
+                                ),
+                              )
+                              .toDouble();
+                          final double chartDiameter = math
+                              .min(baseChartDiameter, maxDiameter)
+                              .toDouble();
+                          final double baseRadius =
+                              math.min(chartDiameter / 3.4, 110.0).toDouble();
                           final double selectedRadius = baseRadius + 6;
 
                           return SizedBox(
@@ -241,17 +256,20 @@ class _CategoryPageState extends State<CategoryPage>
 
                                         return PieChartSectionData(
                                           color: data.color,
-                                          value: data.value * _chartAnimation.value,
+                                          value: data.value *
+                                              _chartAnimation.value,
                                           title: showPercentage
                                               ? '${data.percentage.toStringAsFixed(0)}%'
                                               : '',
-                                          titleStyle: AppTypography.bodyMedium.copyWith(
+                                          titleStyle:
+                                              AppTypography.bodyMedium.copyWith(
                                             color: AppColors.textOnPrimary,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
                                             shadows: [
                                               Shadow(
-                                                color: Colors.black.withValues(alpha: 0.3),
+                                                color: Colors.black
+                                                    .withValues(alpha: 0.3),
                                                 offset: const Offset(0, 1),
                                                 blurRadius: 2,
                                               ),
@@ -266,10 +284,12 @@ class _CategoryPageState extends State<CategoryPage>
                                                   padding: const EdgeInsets.all(
                                                       AppDesign.spacingXS),
                                                   decoration: BoxDecoration(
-                                                    color: AppDesign.getBackgroundColor(
-                                                        context),
+                                                    color: AppDesign
+                                                        .getBackgroundColor(
+                                                            context),
                                                     shape: BoxShape.circle,
-                                                    boxShadow: AppDesign.shadowS,
+                                                    boxShadow:
+                                                        AppDesign.shadowS,
                                                   ),
                                                   child: Icon(
                                                     data.iconData,
@@ -288,17 +308,21 @@ class _CategoryPageState extends State<CategoryPage>
                                         touchCallback: (FlTouchEvent event,
                                             PieTouchResponse? response) {
                                           setState(() {
-                                            if (!event.isInterestedForInteractions ||
+                                            if (!event
+                                                    .isInterestedForInteractions ||
                                                 response == null ||
-                                                response.touchedSection == null) {
+                                                response.touchedSection ==
+                                                    null) {
                                               _touchedIndex = -1;
                                               return;
                                             }
                                             _touchedIndex = response
-                                                .touchedSection!.touchedSectionIndex;
+                                                .touchedSection!
+                                                .touchedSectionIndex;
                                           });
 
-                                          if (event.isInterestedForInteractions) {
+                                          if (event
+                                              .isInterestedForInteractions) {
                                             HapticFeedback.selectionClick();
                                           }
                                         },
@@ -343,11 +367,13 @@ class _CategoryPageState extends State<CategoryPage>
                                 Navigator.push(
                                   context,
                                   CupertinoPageRoute(
-                                    builder: (context) => CategoryTransactionsPage(
+                                    builder: (context) =>
+                                        CategoryTransactionsPage(
                                       category: data.category,
                                       categoryColor: data.color,
                                       categoryIcon: data.iconData,
-                                      month: selectedMonth ?? transactionModel.selectedMonth,
+                                      month: selectedMonth ??
+                                          transactionModel.selectedMonth,
                                     ),
                                   ),
                                 );
@@ -366,8 +392,8 @@ class _CategoryPageState extends State<CategoryPage>
                                       height: 48,
                                       decoration: BoxDecoration(
                                         color: data.color,
-                                        borderRadius:
-                                            BorderRadius.circular(AppDesign.radiusM),
+                                        borderRadius: BorderRadius.circular(
+                                            AppDesign.radiusM),
                                         boxShadow: AppDesign.shadowS,
                                       ),
                                       child: Icon(
@@ -379,20 +405,26 @@ class _CategoryPageState extends State<CategoryPage>
                                     const SizedBox(width: AppDesign.spacingM),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data.category,
-                                            style: AppTypography.bodyLarge.copyWith(
+                                            style: AppTypography.bodyLarge
+                                                .copyWith(
                                               fontWeight: FontWeight.w600,
-                                              color: AppDesign.getTextPrimary(context),
+                                              color: AppDesign.getTextPrimary(
+                                                  context),
                                             ),
                                           ),
-                                          const SizedBox(height: AppDesign.spacingXXS),
+                                          const SizedBox(
+                                              height: AppDesign.spacingXXS),
                                           Text(
                                             '${data.percentage.toStringAsFixed(1)}%',
-                                            style: AppTypography.bodyMedium.copyWith(
-                                              color: AppDesign.getTextSecondary(context),
+                                            style: AppTypography.bodyMedium
+                                                .copyWith(
+                                              color: AppDesign.getTextSecondary(
+                                                  context),
                                             ),
                                           ),
                                         ],
@@ -402,7 +434,8 @@ class _CategoryPageState extends State<CategoryPage>
                                     Flexible(
                                       child: Text(
                                         '\$${NumberFormat("#,##0.00", "en_US").format(data.value)}',
-                                        style: AppTypography.headingMedium.copyWith(
+                                        style: AppTypography.headingMedium
+                                            .copyWith(
                                           color: data.color,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -412,7 +445,8 @@ class _CategoryPageState extends State<CategoryPage>
                                     const SizedBox(width: AppDesign.spacingS),
                                     Icon(
                                       CupertinoIcons.chevron_right,
-                                      color: AppDesign.getTextSecondary(context),
+                                      color:
+                                          AppDesign.getTextSecondary(context),
                                       size: AppDesign.iconS,
                                     ),
                                   ],
