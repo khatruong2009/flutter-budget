@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'design_system.dart';
 import 'recurring_transaction_form.dart';
+import 'utils/micro_interactions.dart';
 
 Future<void> showTransactionForm(
     BuildContext context, TransactionTyp type, Function addTransaction,
@@ -194,6 +195,7 @@ Future<void> showTransactionForm(
                                   scrollController: categoryScrollController,
                                   itemExtent: 32,
                                   onSelectedItemChanged: (index) {
+                                    MicroInteractions.selectionClick();
                                     setState(() {
                                       category = categoryMap.keys.elementAt(index);
                                     });
