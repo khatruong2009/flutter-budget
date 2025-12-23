@@ -7,6 +7,7 @@ import 'transaction_form.dart';
 import 'package:provider/provider.dart';
 import 'design_system.dart';
 import 'utils/platform_utils.dart';
+import 'widgets/home_quick_action_widget.dart';
 
 class SpendingPage extends StatefulWidget {
   final List<Transaction> transactions = [];
@@ -94,61 +95,79 @@ class SpendingPageState extends State<SpendingPage> {
               child: Builder(
                 builder: (context) {
                   final isDark = Theme.of(context).brightness == Brightness.dark;
-                    
-                    return Column(
-                      children: <Widget>[
-                        // Income and Expenses Metric Cards
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AnimatedMetricCard(
-                                label: 'Income',
-                                value: totalIncome,
-                                icon: CupertinoIcons.arrow_down_circle_fill,
-                                color: AppColors.getIncome(isDark),
-                                prefix: '\$',
-                              ),
-                            ),
-                            const SizedBox(width: AppDesign.spacingM),
-                            Expanded(
-                              child: AnimatedMetricCard(
-                                label: 'Expenses',
-                                value: totalExpenses,
-                                icon: CupertinoIcons.arrow_up_circle_fill,
-                                color: AppColors.getExpense(isDark),
-                                prefix: '\$',
-                              ),
-                            ),
-                          ],
-                        ),
-                    const SizedBox(height: AppDesign.spacingL),
 
-                    // Month Selector - Enhanced with better styling
-                    ElevatedCard(
-                      elevation: AppDesign.elevationM,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDesign.spacingM,
-                        vertical: AppDesign.spacingS,
+                  return Column(
+                    children: <Widget>[
+                      HomeQuickActionWidget(
+                        onAddIncome: () {
+                          showTransactionForm(
+                            context,
+                            TransactionTyp.income,
+                            transactionModel.addTransaction,
+                          );
+                        },
+                        onAddExpense: () {
+                          showTransactionForm(
+                            context,
+                            TransactionTyp.expense,
+                            transactionModel.addTransaction,
+                          );
+                        },
                       ),
-                      child: Column(
+                      const SizedBox(height: AppDesign.spacingL),
+
+                      // Income and Expenses Metric Cards
+                      Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isExpanded = !isExpanded;
-                              });
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  months[currentMonthIndex],
-                                  style: AppTypography.bodyMedium.copyWith(
-                                    color: AppDesign.getTextPrimary(context),
-                                    fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: AnimatedMetricCard(
+                              label: 'Income',
+                              value: totalIncome,
+                              icon: CupertinoIcons.arrow_down_circle_fill,
+                              color: AppColors.getIncome(isDark),
+                              prefix: '\$',
+                            ),
+                          ),
+                          const SizedBox(width: AppDesign.spacingM),
+                          Expanded(
+                            child: AnimatedMetricCard(
+                              label: 'Expenses',
+                              value: totalExpenses,
+                              icon: CupertinoIcons.arrow_up_circle_fill,
+                              color: AppColors.getExpense(isDark),
+                              prefix: '\$',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppDesign.spacingL),
+
+                      // Month Selector - Enhanced with better styling
+                      ElevatedCard(
+                        elevation: AppDesign.elevationM,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                          vertical: AppDesign.spacingS,
+                        ),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isExpanded = !isExpanded;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    months[currentMonthIndex],
+                                    style: AppTypography.bodyMedium.copyWith(
+                                      color: AppDesign.getTextPrimary(context),
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                AnimatedRotation(
+                                  AnimatedRotation(
                                   turns: isExpanded ? 0.5 : 0,
                                   duration: AppAnimations.normal,
                                   curve: AppAnimations.easeInOut,
