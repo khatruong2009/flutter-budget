@@ -27,20 +27,22 @@ struct BudgetQuickActionsEntryView: View {
   private let expenseURL = URL(string: "budgetapp://add-expense")!
 
   var body: some View {
-    VStack(spacing: 0) {
+    VStack(spacing: 10) {
       actionButton(
-        title: "Add Income",
+        title: "Income",
         icon: "plus.circle.fill",
         color: Color(red: 0.33, green: 0.74, blue: 0.47),
         destination: incomeURL
       )
       actionButton(
-        title: "Add Expense",
+        title: "Expense",
         icon: "minus.circle.fill",
         color: Color(red: 0.90, green: 0.40, blue: 0.35),
         destination: expenseURL
       )
     }
+    .padding(8)
+    .modifier(BackgroundForVersion())
   }
 
   private func actionButton(title: String, icon: String, color: Color, destination: URL) -> some View {
@@ -50,15 +52,18 @@ struct BudgetQuickActionsEntryView: View {
           .font(.system(size: 20))
         Text(title)
           .fontWeight(.semibold)
-          .font(.system(size: 15))
+          .font(.system(size: 14))
           .lineLimit(1)
-          .minimumScaleFactor(0.6)
+          .minimumScaleFactor(0.8)
         Spacer(minLength: 0)
       }
-      .padding(.vertical, 24)
-      .padding(.horizontal, 12)
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(color)
+      .padding(.vertical, 12)
+      .padding(.horizontal, 10)
+      .frame(maxWidth: .infinity)
+      .background(
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
+          .fill(color)
+      )
       .foregroundColor(.white)
     }
     .buttonStyle(.plain)
@@ -104,4 +109,3 @@ struct BackgroundForVersion: ViewModifier {
     }
   }
 }
-
