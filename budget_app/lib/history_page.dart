@@ -414,7 +414,7 @@ class _HistoryPageState extends State<HistoryPage> {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 60,
+              reservedSize: 64,
               getTitlesWidget: (value, meta) {
                 String text;
                 if (value.abs() >= 1000) {
@@ -423,11 +423,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   text = '\$${value.toStringAsFixed(0)}';
                 }
                 return Padding(
-                  padding: EdgeInsets.only(
-                    top: value == meta.max ? 4.0 : 0,
-                    bottom: value == meta.min ? 4.0 : 0,
-                    right: 4.0,
-                  ),
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
                     text,
                     style: AppTypography.bodySmall.copyWith(
@@ -441,8 +437,28 @@ class _HistoryPageState extends State<HistoryPage> {
           topTitles: const AxisTitles(
             sideTitles: SideTitles(showTitles: false),
           ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 64,
+              getTitlesWidget: (value, meta) {
+                String text;
+                if (value.abs() >= 1000) {
+                  text = '\$${(value / 1000).toStringAsFixed(1)}K';
+                } else {
+                  text = '\$${value.toStringAsFixed(0)}';
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    text,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppDesign.getTextSecondary(context),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
         gridData: FlGridData(
@@ -466,6 +482,10 @@ class _HistoryPageState extends State<HistoryPage> {
               width: 1.5,
             ),
             left: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              width: 1.5,
+            ),
+            right: BorderSide(
               color: isDark ? AppColors.borderDark : AppColors.borderLight,
               width: 1.5,
             ),
