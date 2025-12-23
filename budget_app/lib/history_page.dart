@@ -393,17 +393,37 @@ class _HistoryPageState extends State<HistoryPage> {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 30,
+              reservedSize: 44,
               getTitlesWidget: (value, meta) {
                 if (value.toInt() >= 0 && value.toInt() < displayData.length) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      DateFormat("MMM ''yy")
-                          .format(displayData[value.toInt()].month),
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppDesign.getTextSecondary(context),
-                      ),
+                  final date = displayData[value.toInt()].month;
+                  return SideTitleWidget(
+                    meta: meta,
+                    space: 8,
+                    fitInside: SideTitleFitInsideData.fromTitleMeta(
+                      meta,
+                      distanceFromEdge: 4,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          DateFormat("MMM").format(date),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppDesign.getTextSecondary(context),
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          DateFormat("yy").format(date),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppDesign.getTextSecondary(context),
+                            fontSize: 10,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -414,20 +434,26 @@ class _HistoryPageState extends State<HistoryPage> {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 64,
+              reservedSize: 70,
               getTitlesWidget: (value, meta) {
                 String text;
                 if (value.abs() >= 1000) {
-                  text = '\$${(value / 1000).toStringAsFixed(1)}K';
+                  text = '\$${(value / 1000).toStringAsFixed(1)}k';
                 } else {
                   text = '\$${value.toStringAsFixed(0)}';
                 }
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                return SideTitleWidget(
+                  meta: meta,
+                  space: 8,
+                  fitInside: SideTitleFitInsideData.fromTitleMeta(
+                    meta,
+                    distanceFromEdge: 4,
+                  ),
                   child: Text(
                     text,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppDesign.getTextSecondary(context),
+                      fontSize: 11,
                     ),
                   ),
                 );
@@ -440,20 +466,26 @@ class _HistoryPageState extends State<HistoryPage> {
           rightTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 64,
+              reservedSize: 70,
               getTitlesWidget: (value, meta) {
                 String text;
                 if (value.abs() >= 1000) {
-                  text = '\$${(value / 1000).toStringAsFixed(1)}K';
+                  text = '\$${(value / 1000).toStringAsFixed(1)}k';
                 } else {
                   text = '\$${value.toStringAsFixed(0)}';
                 }
-                return Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                return SideTitleWidget(
+                  meta: meta,
+                  space: 8,
+                  fitInside: SideTitleFitInsideData.fromTitleMeta(
+                    meta,
+                    distanceFromEdge: 4,
+                  ),
                   child: Text(
                     text,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppDesign.getTextSecondary(context),
+                      fontSize: 11,
                     ),
                   ),
                 );

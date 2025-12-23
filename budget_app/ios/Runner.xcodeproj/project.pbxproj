@@ -92,6 +92,7 @@
 		5423A0EEA8634843A225DAC2 /* BudgetWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgets.swift; sourceTree = "<group>"; };
 		D657BFA347A248F5BD2C68BF /* BudgetWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetsBundle.swift; sourceTree = "<group>"; };
 		D940BE165CCE4B60BFAC2E44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9F5C6D3CFB849A982C74AD9 /* BudgetWidgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BudgetWidgets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +205,7 @@
 		DB247F2B8FAA44858DAD66C0 /* BudgetWidgets */ = {
 			isa = PBXGroup;
 			children = (
+				F9F5C6D3CFB849A982C74AD9 /* BudgetWidgets.xcconfig */,
 				D940BE165CCE4B60BFAC2E44 /* Info.plist */,
 				D657BFA347A248F5BD2C68BF /* BudgetWidgetsBundle.swift */,
 				5423A0EEA8634843A225DAC2 /* BudgetWidgets.swift */,
@@ -810,10 +812,11 @@
 		};
 		ABBDF8EF55D8454E99EE9A75 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F9F5C6D3CFB849A982C74AD9 /* BudgetWidgets.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = TJ37GFZKW2;
 				INFOPLIST_FILE = BudgetWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -822,7 +825,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -835,10 +838,11 @@
 		};
 		E29EEB1DEE4E4B61AB939366 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F9F5C6D3CFB849A982C74AD9 /* BudgetWidgets.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = TJ37GFZKW2;
 				INFOPLIST_FILE = BudgetWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -847,7 +851,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -859,10 +863,11 @@
 		};
 		151E86BB05024BEE953A5AB5 /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F9F5C6D3CFB849A982C74AD9 /* BudgetWidgets.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = TJ37GFZKW2;
 				INFOPLIST_FILE = BudgetWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -871,7 +876,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
