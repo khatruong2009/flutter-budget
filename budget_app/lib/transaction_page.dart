@@ -9,6 +9,7 @@ import 'design_system.dart';
 import 'widgets/modern_transaction_list_item.dart';
 import 'widgets/empty_state.dart';
 import 'utils/platform_utils.dart';
+import 'widgets/month_selector.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -63,45 +64,15 @@ class _TransactionPageState extends State<TransactionPage> {
                   )
                 : Column(
                     children: [
-                      // Month selector dropdown
-                      Padding(
-                        padding: const EdgeInsets.all(AppDesign.spacingM),
-                        child: ElevatedCard(
-                          elevation: AppDesign.elevationS,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDesign.spacingM,
-                            vertical: AppDesign.spacingXS,
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<DateTime>(
-                              isExpanded: true,
-                              value: selectedMonth,
-                              dropdownColor: Theme.of(context).brightness == Brightness.dark
-                                  ? const Color(0xFF1E1E1E)
-                                  : Colors.white,
-                              icon: Icon(
-                                CupertinoIcons.chevron_down,
-                                color: AppDesign.getTextPrimary(context),
-                              ),
-                              items: availableMonths.map((DateTime month) {
-                                return DropdownMenuItem<DateTime>(
-                                  value: month,
-                                  child: Text(
-                                    DateFormat.yMMMM().format(month),
-                                    style: AppTypography.bodyLarge.copyWith(
-                                      color: AppDesign.getTextPrimary(context),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (DateTime? newValue) {
-                                setState(() {
-                                  selectedMonth = newValue;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
+                      // Month selector
+                      MonthSelector(
+                        selectedMonth: selectedMonth,
+                        availableMonths: availableMonths,
+                        onMonthChanged: (DateTime newMonth) {
+                          setState(() {
+                            selectedMonth = newMonth;
+                          });
+                        },
                       ),
 
                       // Monthly summary card

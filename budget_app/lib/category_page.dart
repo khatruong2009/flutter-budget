@@ -13,6 +13,7 @@ import 'design_system.dart';
 import 'widgets/empty_state.dart';
 import 'utils/platform_utils.dart';
 import 'category_transactions_page.dart';
+import 'widgets/month_selector.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({Key? key}) : super(key: key);
@@ -120,46 +121,16 @@ class _CategoryPageState extends State<CategoryPage>
               child: SafeArea(
                 child: Column(
                   children: [
-                    // Month selector dropdown
-                    Padding(
-                      padding: const EdgeInsets.all(AppDesign.spacingM),
-                      child: ElevatedCard(
-                        elevation: AppDesign.elevationS,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDesign.spacingM,
-                          vertical: AppDesign.spacingXS,
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<DateTime>(
-                            isExpanded: true,
-                            value: selectedMonth,
-                            dropdownColor: Theme.of(context).brightness == Brightness.dark
-                                ? const Color(0xFF1E1E1E)
-                                : Colors.white,
-                            icon: Icon(
-                              CupertinoIcons.chevron_down,
-                              color: AppDesign.getTextPrimary(context),
-                            ),
-                            items: availableMonths.map((DateTime month) {
-                              return DropdownMenuItem<DateTime>(
-                                value: month,
-                                child: Text(
-                                  DateFormat.yMMMM().format(month),
-                                  style: AppTypography.bodyLarge.copyWith(
-                                    color: AppDesign.getTextPrimary(context),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (DateTime? newValue) {
-                              setState(() {
-                                selectedMonth = newValue;
-                                _touchedIndex = -1;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                    // Month selector
+                    MonthSelector(
+                      selectedMonth: selectedMonth,
+                      availableMonths: availableMonths,
+                      onMonthChanged: (DateTime newMonth) {
+                        setState(() {
+                          selectedMonth = newMonth;
+                          _touchedIndex = -1;
+                        });
+                      },
                     ),
                     Expanded(
                       child: EmptyState(
@@ -218,51 +189,21 @@ class _CategoryPageState extends State<CategoryPage>
             child: SafeArea(
               child: Column(
                 children: <Widget>[
-                  // Month selector dropdown
-                  Padding(
-                    padding: const EdgeInsets.all(AppDesign.spacingM),
-                    child: ElevatedCard(
-                      elevation: AppDesign.elevationS,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDesign.spacingM,
-                        vertical: AppDesign.spacingXS,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<DateTime>(
-                          isExpanded: true,
-                          value: selectedMonth,
-                          dropdownColor: Theme.of(context).brightness == Brightness.dark
-                              ? const Color(0xFF1E1E1E)
-                              : Colors.white,
-                          icon: Icon(
-                            CupertinoIcons.chevron_down,
-                            color: AppDesign.getTextPrimary(context),
-                          ),
-                          items: availableMonths.map((DateTime month) {
-                            return DropdownMenuItem<DateTime>(
-                              value: month,
-                              child: Text(
-                                DateFormat.yMMMM().format(month),
-                                style: AppTypography.bodyLarge.copyWith(
-                                  color: AppDesign.getTextPrimary(context),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (DateTime? newValue) {
-                            setState(() {
-                              selectedMonth = newValue;
-                              _touchedIndex = -1;
-                              // Restart animation when month changes
-                              _animationController.reset();
-                              _animationController.forward();
-                            });
-                          },
-                        ),
-                      ),
-                    ),
+                  // Month selector
+                  MonthSelector(
+                    selectedMonth: selectedMonth,
+                    availableMonths: availableMonths,
+                    onMonthChanged: (DateTime newMonth) {
+                      setState(() {
+                        selectedMonth = newMonth;
+                        _touchedIndex = -1;
+                        // Restart animation when month changes
+                        _animationController.reset();
+                        _animationController.forward();
+                      });
+                    },
                   ),
-                  // Animated Pie Chart with dedicated space between dropdown and list
+                  // Animated Pie Chart with dedicated space between selector and list
                   SizedBox(
                     height: chartHeight,
                     child: Center(
