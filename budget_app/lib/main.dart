@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'transaction_model.dart';
@@ -110,11 +112,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final QuickActions quickActions = const QuickActions();
+  static const MethodChannel _deepLinkChannel =
+      MethodChannel('budget_app/deeplink');
+  final Completer<void> _initializationCompleter = Completer<void>();
 
   @override
   void initState() {
     super.initState();
 
+    _setupDeepLinks();
     quickActions.initialize((String shortcutType) {
       if (shortcutType == 'action_add_expense') {
         showTransactionForm(
@@ -164,15 +170,69 @@ class _MyAppState extends State<MyApp> {
     final transactionModel = context.read<TransactionModel>();
     final recurringModel = context.read<RecurringTransactionModel>();
 
-    // Load existing transactions and recurring transactions
-    await transactionModel.getTransactions();
-    await recurringModel.loadRecurringTransactions();
+    try {
+      // Load existing transactions and recurring transactions
+      await transactionModel.getTransactions();
+      await recurringModel.loadRecurringTransactions();
 
-    // Create transaction generator and generate due transactions
-    final generator = TransactionGenerator(
-      transactionModel: transactionModel,
-      recurringModel: recurringModel,
-    );
-    await generator.generateDueTransactions();
+      // Create transaction generator and generate due transactions
+      final generator = TransactionGenerator(
+        transactionModel: transactionModel,
+        recurringModel: recurringModel,
+      );
+      await generator.generateDueTransactions();
+    } finally {
+      if (!_initializationCompleter.isCompleted) {
+        _initializationCompleter.complete();
+      }
+    }
+  }
+
+  void _setupDeepLinks() {
+    _deepLinkChannel.setMethodCallHandler((call) async {
+      if (call.method == 'deep_link') {
+        await _handleDeepLink(call.arguments as String?);
+      } else {
+        throw PlatformException(
+            code: 'UNIMPLEMENTED',
+            message: 'Method ${call.method} not implemented');
+      }
+    });
+
+    _deepLinkChannel.invokeMethod<String>('getInitialLink').then((value) {
+      _handleDeepLink(value);
+    }).catchError((_) {
+      // Silently ignore failures fetching the initial link so app startup isn't blocked.
+    });
+  }
+
+  Future<void> _handleDeepLink(String? link) async {
+    if (link == null || !mounted) return;
+    final uri = Uri.tryParse(link);
+    if (uri == null) return;
+
+    final action = uri.host.isNotEmpty
+        ? uri.host
+        : (uri.pathSegments.isNotEmpty ? uri.pathSegments.first : '');
+
+    if (action.isEmpty) return;
+
+    await _initializationCompleter.future;
+
+    final targetContext = navigatorKey.currentContext ?? context;
+    final transactionModel =
+        Provider.of<TransactionModel>(targetContext, listen: false);
+
+    void openForm(TransactionTyp type) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showTransactionForm(targetContext, type, transactionModel.addTransaction);
+      });
+    }
+
+    if (action == 'add-income' || action == 'add_income') {
+      openForm(TransactionTyp.income);
+    } else if (action == 'add-expense' || action == 'add_expense') {
+      openForm(TransactionTyp.expense);
+    }
   }
 }

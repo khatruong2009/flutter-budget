@@ -17,6 +17,9 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		B741B4172A8B323600513078 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B741B4162A8B323600513078 /* Launch Screen.storyboard */; };
 		FDEA2F93167EE1F0C026B55F /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B4DA79D99676DE6106D742E /* Pods_RunnerTests.framework */; };
+		821FEF304CEB46A8AC4E5A61 /* BudgetWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5423A0EEA8634843A225DAC2 /* BudgetWidgets.swift */; };
+		1E774FAF1E22460081E29D81 /* BudgetWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D657BFA347A248F5BD2C68BF /* BudgetWidgetsBundle.swift */; };
+		1C82B616AFB9422E96F82A9B /* BudgetWidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0E57032BF81F4F57ACF60503 /* BudgetWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +29,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+		ACEED5BA8F69437C9F0D8CAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B42507FFCA7440282B77860;
+			remoteInfo = BudgetWidgetsExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -38,6 +48,17 @@
 			files = (
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		98DA6BC310084C44BB19439C /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1C82B616AFB9422E96F82A9B /* BudgetWidgetsExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -67,6 +88,10 @@
 		AF2E14F9ADADC7AFC460BE34 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		B741B4162A8B323600513078 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		BD000E4421260ECA59BA2D84 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E57032BF81F4F57ACF60503 /* BudgetWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BudgetWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5423A0EEA8634843A225DAC2 /* BudgetWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgets.swift; sourceTree = "<group>"; };
+		D657BFA347A248F5BD2C68BF /* BudgetWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetsBundle.swift; sourceTree = "<group>"; };
+		D940BE165CCE4B60BFAC2E44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +100,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				872C83F2CB164B3A3B4BC907 /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9796D3AAE5EF4927AECD7576 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +167,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				DB247F2B8FAA44858DAD66C0 /* BudgetWidgets */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				7F33CA006C80D9913FC87226 /* Pods */,
@@ -147,6 +180,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				0E57032BF81F4F57ACF60503 /* BudgetWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,6 +199,16 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		DB247F2B8FAA44858DAD66C0 /* BudgetWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				D940BE165CCE4B60BFAC2E44 /* Info.plist */,
+				D657BFA347A248F5BD2C68BF /* BudgetWidgetsBundle.swift */,
+				5423A0EEA8634843A225DAC2 /* BudgetWidgets.swift */,
+			);
+			path = BudgetWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,6 +233,23 @@
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		2B42507FFCA7440282B77860 /* BudgetWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C0A980DEFAD846FC831CF4DE /* Build configuration list for PBXNativeTarget "BudgetWidgetsExtension" */;
+			buildPhases = (
+				8346331862874B0EAA433A0C /* Sources */,
+				9796D3AAE5EF4927AECD7576 /* Frameworks */,
+				79FA8A1E05F6418DAA259C13 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BudgetWidgetsExtension;
+			productName = BudgetWidgetsExtension;
+			productReference = 0E57032BF81F4F57ACF60503 /* BudgetWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -199,12 +260,14 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				98DA6BC310084C44BB19439C /* Embed App Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				89FE71E367D3EDCE0188CD7F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D457267092A846B0B9CA8E7A /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -225,6 +288,9 @@
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 97C146ED1CF9000F007C117D;
 					};
+					2B42507FFCA7440282B77860 = {
+						CreatedOnToolsVersion = 15.0;
+					};
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
@@ -244,6 +310,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				2B42507FFCA7440282B77860 /* BudgetWidgetsExtension */,
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 			);
@@ -252,6 +319,13 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		331C807F294A63A400263BE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79FA8A1E05F6418DAA259C13 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -376,6 +450,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8346331862874B0EAA433A0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				821FEF304CEB46A8AC4E5A61 /* BudgetWidgets.swift in Sources */,
+				1E774FAF1E22460081E29D81 /* BudgetWidgetsBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -392,6 +475,11 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		D457267092A846B0B9CA8E7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B42507FFCA7440282B77860 /* BudgetWidgetsExtension */;
+			targetProxy = ACEED5BA8F69437C9F0D8CAF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -720,6 +808,79 @@
 			};
 			name = Release;
 		};
+		ABBDF8EF55D8454E99EE9A75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TJ37GFZKW2;
+				INFOPLIST_FILE = BudgetWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E29EEB1DEE4E4B61AB939366 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TJ37GFZKW2;
+				INFOPLIST_FILE = BudgetWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		151E86BB05024BEE953A5AB5 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TJ37GFZKW2;
+				INFOPLIST_FILE = BudgetWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.BudgetWidgetsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -749,6 +910,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C0A980DEFAD846FC831CF4DE /* Build configuration list for PBXNativeTarget "BudgetWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABBDF8EF55D8454E99EE9A75 /* Debug */,
+				E29EEB1DEE4E4B61AB939366 /* Release */,
+				151E86BB05024BEE953A5AB5 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
