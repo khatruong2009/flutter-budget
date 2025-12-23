@@ -141,12 +141,12 @@ class _MyAppState extends State<MyApp> {
       const ShortcutItem(
         type: 'action_add_expense',
         localizedTitle: 'Add Expense',
-        icon: 'minus',
+        icon: 'minus.circle.fill',
       ),
       const ShortcutItem(
         type: 'action_add_income',
         localizedTitle: 'Add Income',
-        icon: 'plus',
+        icon: 'plus.circle.fill',
       ),
     ]);
   }
