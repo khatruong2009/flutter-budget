@@ -6,6 +6,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
   private var deepLinkChannel: FlutterMethodChannel?
   private var initialLink: String?
+  private var flutterViewController: FlutterViewController?
+  private var pendingShortcutType: String?
 
   func scene(
     _ scene: UIScene,
@@ -20,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       nibName: nil,
       bundle: nil
     )
+    self.flutterViewController = flutterViewController
     
     // Create and configure the window
     window = UIWindow(windowScene: windowScene)
@@ -32,6 +35,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // Handle initial URL if present
     if let urlContext = connectionOptions.urlContexts.first {
       handleDeepLink(urlContext.url)
+    }
+
+    if let shortcutItem = connectionOptions.shortcutItem {
+      pendingShortcutType = shortcutItem.type
     }
   }
   
@@ -61,10 +68,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     initialLink = url.absoluteString
     deepLinkChannel?.invokeMethod("deep_link", arguments: url.absoluteString)
   }
-  
+
+  private func sendQuickAction(_ shortcutType: String) {
+    guard let controller = flutterViewController else {
+      pendingShortcutType = shortcutType
+      return
+    }
+
+    let channel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.quick_actions_ios.IOSQuickActionsFlutterApi.launchAction",
+      binaryMessenger: controller.binaryMessenger,
+      codec: FlutterStandardMessageCodec.sharedInstance()
+    )
+    channel.sendMessage([shortcutType])
+  }
+
   func sceneDidDisconnect(_ scene: UIScene) {}
-  func sceneDidBecomeActive(_ scene: UIScene) {}
+  func sceneDidBecomeActive(_ scene: UIScene) {
+    if let shortcutType = pendingShortcutType {
+      pendingShortcutType = nil
+      sendQuickAction(shortcutType)
+    }
+  }
   func sceneWillResignActive(_ scene: UIScene) {}
   func sceneWillEnterForeground(_ scene: UIScene) {}
   func sceneDidEnterBackground(_ scene: UIScene) {}
+
+  func windowScene(
+    _ windowScene: UIWindowScene,
+    performActionFor shortcutItem: UIApplicationShortcutItem,
+    completionHandler: @escaping (Bool) -> Void
+  ) {
+    sendQuickAction(shortcutItem.type)
+    completionHandler(true)
+  }
 }

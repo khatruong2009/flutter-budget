@@ -121,21 +121,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _setupDeepLinks();
-    quickActions.initialize((String shortcutType) {
-      if (shortcutType == 'action_add_expense') {
-        showTransactionForm(
-            context,
-            TransactionTyp.expense,
-            Provider.of<TransactionModel>(context, listen: false)
-                .addTransaction);
-      } else if (shortcutType == 'action_add_income') {
-        showTransactionForm(
-            context,
-            TransactionTyp.income,
-            Provider.of<TransactionModel>(context, listen: false)
-                .addTransaction);
-      }
-    });
+    quickActions.initialize(_handleQuickAction);
 
     quickActions.setShortcutItems(<ShortcutItem>[
       const ShortcutItem(
@@ -204,6 +190,28 @@ class _MyAppState extends State<MyApp> {
     }).catchError((_) {
       // Silently ignore failures fetching the initial link so app startup isn't blocked.
     });
+  }
+
+  Future<void> _handleQuickAction(String shortcutType) async {
+    await _initializationCompleter.future;
+    if (!mounted) return;
+
+    final targetContext = navigatorKey.currentContext ?? context;
+    final transactionModel =
+        Provider.of<TransactionModel>(targetContext, listen: false);
+
+    void openForm(TransactionTyp type) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showTransactionForm(targetContext, type, transactionModel.addTransaction);
+      });
+    }
+
+    if (shortcutType == 'action_add_expense') {
+      openForm(TransactionTyp.expense);
+    } else if (shortcutType == 'action_add_income') {
+      openForm(TransactionTyp.income);
+    }
   }
 
   Future<void> _handleDeepLink(String? link) async {
