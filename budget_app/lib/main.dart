@@ -115,6 +115,9 @@ class _MyAppState extends State<MyApp> {
   static const MethodChannel _deepLinkChannel =
       MethodChannel('budget_app/deeplink');
   final Completer<void> _initializationCompleter = Completer<void>();
+  static const Duration _deepLinkDedupWindow = Duration(seconds: 2);
+  String? _lastHandledLink;
+  DateTime? _lastHandledLinkAt;
 
   @override
   void initState() {
@@ -216,6 +219,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _handleDeepLink(String? link) async {
     if (link == null || !mounted) return;
+    if (!_shouldHandleDeepLink(link)) return;
     final uri = Uri.tryParse(link);
     if (uri == null) return;
 
@@ -242,5 +246,18 @@ class _MyAppState extends State<MyApp> {
     } else if (action == 'add-expense' || action == 'add_expense') {
       openForm(TransactionTyp.expense);
     }
+  }
+
+  bool _shouldHandleDeepLink(String link) {
+    final lastHandledAt = _lastHandledLinkAt;
+    final now = DateTime.now();
+    if (_lastHandledLink == link &&
+        lastHandledAt != null &&
+        now.difference(lastHandledAt) < _deepLinkDedupWindow) {
+      return false;
+    }
+    _lastHandledLink = link;
+    _lastHandledLinkAt = now;
+    return true;
   }
 }
