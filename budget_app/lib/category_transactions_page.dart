@@ -28,7 +28,8 @@ class CategoryTransactionsPage extends StatelessWidget {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
         // Filter transactions by category and month
-        final categoryTransactions = transactionModel.currentMonthTransactions
+        final categoryTransactions = transactionModel
+            .getTransactionsForMonth(month)
             .where((t) => t.category == category && t.type == TransactionTyp.expense)
             .toList();
 
