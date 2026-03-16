@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'transaction.dart';
+import 'net_worth_page.dart';
 import 'spending_page.dart';
-import 'transaction_page.dart';
 import 'category_page.dart';
 import 'history_page.dart';
 import 'settings_page.dart';
@@ -72,7 +72,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           ),
           Navigator(
             onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const TransactionPage(),
+              builder: (context) => const NetWorthPage(),
             ),
           ),
           Navigator(
@@ -109,8 +109,8 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           label: 'Spending',
         ),
         BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.list_bullet),
-          label: 'Transactions',
+          icon: Icon(CupertinoIcons.chart_pie),
+          label: 'Net Worth',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.pie_chart),

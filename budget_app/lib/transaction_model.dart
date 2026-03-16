@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'net_worth_entry.dart';
 import 'transaction.dart';
 
 // Data class for monthly cash flow information
@@ -39,8 +40,8 @@ class CashFlowStatistics {
   });
 
   factory CashFlowStatistics.empty() {
-    DateTime now = DateTime.now();
-    MonthCashFlow empty = MonthCashFlow(
+    final now = DateTime.now();
+    final empty = MonthCashFlow(
       month: now,
       netCashFlow: 0.0,
       income: 0.0,
@@ -55,13 +56,52 @@ class CashFlowStatistics {
 }
 
 class TransactionModel extends ChangeNotifier {
+  static const String _transactionsStorageKey = 'transactions';
+  static const String _netWorthEntriesStorageKey = 'net_worth_entries';
+  static const String _netWorthMonthStorageKey = 'net_worth_selected_month';
+
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
+  DateTime _selectedNetWorthMonth =
+      DateTime(DateTime.now().year, DateTime.now().month);
+  List<NetWorthEntry> _netWorthEntries = [];
+
+  DateTime get selectedNetWorthMonth => _selectedNetWorthMonth;
+  List<NetWorthEntry> get netWorthEntries =>
+      List<NetWorthEntry>.unmodifiable(_netWorthEntries);
+  List<NetWorthEntry> get assetEntriesForSelectedNetWorthMonth =>
+      getNetWorthEntriesForMonth(
+        _selectedNetWorthMonth,
+        type: NetWorthEntryType.asset,
+      );
+  List<NetWorthEntry> get liabilityEntriesForSelectedNetWorthMonth =>
+      getNetWorthEntriesForMonth(
+        _selectedNetWorthMonth,
+        type: NetWorthEntryType.liability,
+      );
+  double get totalAssets => getTotalAssetsForMonth(_selectedNetWorthMonth);
+  double get totalLiabilities =>
+      getTotalLiabilitiesForMonth(_selectedNetWorthMonth);
+  double get netWorth => totalAssets - totalLiabilities;
+  int get staleNetWorthEntryCount =>
+      getStaleNetWorthEntryCountForMonth(_selectedNetWorthMonth);
+  bool get hasNetWorthEntries => _netWorthEntries.isNotEmpty;
 
   // method to change selected month
   void selectMonth(DateTime date) {
     selectedMonth = DateTime(date.year, date.month);
     notifyListeners();
+  }
+
+  Future<void> selectNetWorthMonth(DateTime date) async {
+    _selectedNetWorthMonth = DateTime(date.year, date.month);
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _netWorthMonthStorageKey,
+      _selectedNetWorthMonth.toIso8601String(),
+    );
   }
 
   // Calculate total income for selected month
@@ -89,7 +129,7 @@ class TransactionModel extends ChangeNotifier {
     DateTime date, {
     String? recurringTemplateId,
   }) {
-    Transaction newTransaction = Transaction(
+    final newTransaction = Transaction(
       type: type,
       description: description,
       amount: amount,
@@ -106,16 +146,35 @@ class TransactionModel extends ChangeNotifier {
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    await prefs.setString('transactions', jsonEncode(jsonTransactions));
+    await prefs.setString(_transactionsStorageKey, jsonEncode(jsonTransactions));
   }
 
   // load transactions
   Future<void> getTransactions() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('transactions');
+    final jsonString = prefs.getString(_transactionsStorageKey);
+    final netWorthEntriesJson = prefs.getString(_netWorthEntriesStorageKey);
+    final netWorthMonthString = prefs.getString(_netWorthMonthStorageKey);
+
     if (jsonString != null && jsonString.isNotEmpty) {
-      final jsonList = jsonDecode(jsonString) as List;
+      final jsonList = jsonDecode(jsonString) as List<dynamic>;
       transactions = jsonList.map((e) => Transaction.fromJson(e)).toList();
+    }
+
+    if (netWorthEntriesJson != null && netWorthEntriesJson.isNotEmpty) {
+      final jsonList = jsonDecode(netWorthEntriesJson) as List<dynamic>;
+      _netWorthEntries = jsonList
+          .map((entry) => NetWorthEntry.fromJson(entry as Map<String, dynamic>))
+          .toList();
+    } else {
+      _netWorthEntries = await _migrateLegacyNetWorthIfNeeded(prefs);
+    }
+
+    if (netWorthMonthString != null && netWorthMonthString.isNotEmpty) {
+      final parsedMonth = DateTime.tryParse(netWorthMonthString);
+      if (parsedMonth != null) {
+        _selectedNetWorthMonth = DateTime(parsedMonth.year, parsedMonth.month);
+      }
     }
   }
 
@@ -134,16 +193,208 @@ class TransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<NetWorthEntry> getNetWorthEntriesForMonth(
+    DateTime month, {
+    NetWorthEntryType? type,
+  }) {
+    final entries = _netWorthEntries.where((entry) {
+      if (type != null && entry.type != type) {
+        return false;
+      }
+      return entry.amountForMonth(month) != null;
+    }).toList();
+
+    entries.sort((a, b) {
+      final amountCompare =
+          (b.amountForMonth(month) ?? 0.0).compareTo(a.amountForMonth(month) ?? 0.0);
+      if (amountCompare != 0) {
+        return amountCompare;
+      }
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+
+    return entries;
+  }
+
+  double getTotalAssetsForMonth(DateTime month) {
+    return _sumNetWorthEntriesForMonth(month, NetWorthEntryType.asset);
+  }
+
+  double getTotalLiabilitiesForMonth(DateTime month) {
+    return _sumNetWorthEntriesForMonth(month, NetWorthEntryType.liability);
+  }
+
+  double getNetWorthForMonth(DateTime month) {
+    return getTotalAssetsForMonth(month) - getTotalLiabilitiesForMonth(month);
+  }
+
+  int getStaleNetWorthEntryCountForMonth(DateTime month) {
+    final selectedMonthKey = netWorthMonthKey(month);
+    return _netWorthEntries.where((entry) {
+      final latestSnapshot = entry.latestSnapshotThrough(month);
+      return latestSnapshot != null && latestSnapshot.monthKey != selectedMonthKey;
+    }).length;
+  }
+
+  List<NetWorthMonthSummary> getNetWorthHistory({int limit = 6}) {
+    final monthKeys = <String>{
+      netWorthMonthKey(_selectedNetWorthMonth),
+    };
+
+    for (final entry in _netWorthEntries) {
+      for (final snapshot in entry.snapshots) {
+        monthKeys.add(snapshot.monthKey);
+      }
+    }
+
+    final sortedKeys = monthKeys.toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    return sortedKeys.take(limit).map((monthKey) {
+      final month = netWorthMonthFromKey(monthKey);
+      return NetWorthMonthSummary(
+        month: month,
+        assets: getTotalAssetsForMonth(month),
+        liabilities: getTotalLiabilitiesForMonth(month),
+      );
+    }).toList();
+  }
+
+  List<DateTime> getNetWorthAvailableMonths() {
+    final monthKeys = <String>{
+      netWorthMonthKey(_selectedNetWorthMonth),
+    };
+
+    for (final entry in _netWorthEntries) {
+      for (final snapshot in entry.snapshots) {
+        monthKeys.add(snapshot.monthKey);
+      }
+    }
+
+    final months = monthKeys.map(netWorthMonthFromKey).toList()
+      ..sort((a, b) => b.compareTo(a));
+    return months;
+  }
+
+  bool hasNetWorthDataForMonth(DateTime month) {
+    return _netWorthEntries.any((entry) => entry.amountForMonth(month) != null);
+  }
+
+  int getTrackedNetWorthEntryCountForMonth(DateTime month) {
+    return _netWorthEntries
+        .where((entry) => entry.amountForMonth(month) != null)
+        .length;
+  }
+
+  int getUpdatedNetWorthEntryCountForMonth(DateTime month) {
+    return _netWorthEntries
+        .where((entry) => entry.snapshotForMonth(month) != null)
+        .length;
+  }
+
+  Future<void> addNetWorthEntry({
+    required String name,
+    required NetWorthEntryType type,
+    required double amount,
+    DateTime? month,
+  }) async {
+    final effectiveMonth = month ?? _selectedNetWorthMonth;
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      return;
+    }
+
+    _netWorthEntries = [
+      ..._netWorthEntries,
+      NetWorthEntry(
+        name: trimmedName,
+        type: type,
+        snapshots: [
+          NetWorthSnapshot.forMonth(
+            month: effectiveMonth,
+            amount: amount,
+          ),
+        ],
+      ),
+    ];
+
+    await _saveNetWorthEntries();
+    notifyListeners();
+  }
+
+  Future<void> updateNetWorthEntry({
+    required String id,
+    required String name,
+    required NetWorthEntryType type,
+    required double amount,
+    DateTime? month,
+  }) async {
+    final effectiveMonth = month ?? _selectedNetWorthMonth;
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      return;
+    }
+
+    _netWorthEntries = _netWorthEntries.map((entry) {
+      if (entry.id != id) {
+        return entry;
+      }
+
+      return entry
+          .copyWith(name: trimmedName, type: type)
+          .withAmountForMonth(month: effectiveMonth, amount: amount);
+    }).toList();
+
+    await _saveNetWorthEntries();
+    notifyListeners();
+  }
+
+  Future<void> deleteNetWorthEntry(String id) async {
+    _netWorthEntries = _netWorthEntries.where((entry) => entry.id != id).toList();
+    await _saveNetWorthEntries();
+    notifyListeners();
+  }
+
+  Future<bool> carryNetWorthMonthForward(DateTime month) async {
+    bool changed = false;
+    final previousMonth = DateTime(month.year, month.month - 1);
+
+    _netWorthEntries = _netWorthEntries.map((entry) {
+      if (entry.hasSnapshotForMonth(month)) {
+        return entry;
+      }
+
+      final previousSnapshot = entry.latestSnapshotThrough(previousMonth);
+      if (previousSnapshot == null) {
+        return entry;
+      }
+
+      changed = true;
+      return entry.withAmountForMonth(
+        month: month,
+        amount: previousSnapshot.amount,
+      );
+    }).toList();
+
+    if (!changed) {
+      return false;
+    }
+
+    await _saveNetWorthEntries();
+    notifyListeners();
+    return true;
+  }
+
   // Get all unique months that have transactions
   List<DateTime> getAvailableMonths() {
-    Set<String> monthKeys = {};
-    for (var transaction in transactions) {
-      String key = '${transaction.date.year}-${transaction.date.month}';
+    final monthKeys = <String>{};
+    for (final transaction in transactions) {
+      final key = '${transaction.date.year}-${transaction.date.month}';
       monthKeys.add(key);
     }
 
-    List<DateTime> months = monthKeys.map((key) {
-      var parts = key.split('-');
+    final months = monthKeys.map((key) {
+      final parts = key.split('-');
       return DateTime(int.parse(parts[0]), int.parse(parts[1]));
     }).toList();
 
@@ -162,11 +413,11 @@ class TransactionModel extends ChangeNotifier {
 
   // Calculate monthly summary
   Map<String, double> getMonthlySummary(DateTime month) {
-    List<Transaction> monthTransactions = getTransactionsForMonth(month);
-    double income = monthTransactions
+    final monthTransactions = getTransactionsForMonth(month);
+    final income = monthTransactions
         .where((t) => t.type == TransactionTyp.income)
         .fold(0.0, (sum, t) => sum + t.amount);
-    double expenses = monthTransactions
+    final expenses = monthTransactions
         .where((t) => t.type == TransactionTyp.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
 
@@ -179,7 +430,7 @@ class TransactionModel extends ChangeNotifier {
 
   // Get all transactions sorted by date (newest first)
   List<Transaction> getAllTransactionsSorted() {
-    List<Transaction> sorted = List.from(transactions);
+    final sorted = List<Transaction>.from(transactions);
     sorted.sort((a, b) => b.date.compareTo(a.date));
     return sorted;
   }
@@ -188,17 +439,17 @@ class TransactionModel extends ChangeNotifier {
   Future<void> exportTransactionsToCSV(Rect? sharePositionOrigin) async {
     try {
       // Create CSV data
-      List<List<dynamic>> rows = [];
+      final rows = <List<dynamic>>[];
 
       // Add header row
       rows.add(['Date', 'Type', 'Category', 'Description', 'Amount']);
 
       // Sort transactions by date (oldest first for better readability in CSV)
-      List<Transaction> sortedTransactions = List.from(transactions);
+      final sortedTransactions = List<Transaction>.from(transactions);
       sortedTransactions.sort((a, b) => a.date.compareTo(b.date));
 
       // Add transaction data
-      for (var transaction in sortedTransactions) {
+      for (final transaction in sortedTransactions) {
         rows.add([
           DateFormat('yyyy-MM-dd').format(transaction.date),
           transaction.type == TransactionTyp.income ? 'Income' : 'Expense',
@@ -209,16 +460,15 @@ class TransactionModel extends ChangeNotifier {
       }
 
       // Convert to CSV string
-      String csv = const ListToCsvConverter().convert(rows);
+      final csv = const ListToCsvConverter().convert(rows);
 
       // Get temporary directory
-      final Directory tempDir = await getTemporaryDirectory();
-      final String timestamp =
-          DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-      final String filePath = '${tempDir.path}/transactions_$timestamp.csv';
+      final tempDir = await getTemporaryDirectory();
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final filePath = '${tempDir.path}/transactions_$timestamp.csv';
 
       // Write to file
-      final File file = File(filePath);
+      final file = File(filePath);
       await file.writeAsString(csv);
 
       // Share the file
@@ -235,9 +485,9 @@ class TransactionModel extends ChangeNotifier {
 
   // Get net cash flow data for all months (for charting)
   List<MonthCashFlow> getNetCashFlowHistory() {
-    List<DateTime> months = getAvailableMonths();
+    final months = getAvailableMonths();
     return months.reversed.map((month) {
-      Map<String, double> summary = getMonthlySummary(month);
+      final summary = getMonthlySummary(month);
       return MonthCashFlow(
         month: month,
         netCashFlow: summary['net'] ?? 0.0,
@@ -249,21 +499,21 @@ class TransactionModel extends ChangeNotifier {
 
   // Get summary statistics for cash flow history
   CashFlowStatistics getCashFlowStatistics() {
-    List<MonthCashFlow> history = getNetCashFlowHistory();
+    final history = getNetCashFlowHistory();
     if (history.isEmpty) {
       return CashFlowStatistics.empty();
     }
 
-    double average = history
+    final average = history
             .map((m) => m.netCashFlow)
             .reduce((a, b) => a + b) /
         history.length;
 
-    MonthCashFlow best = history.reduce(
+    final best = history.reduce(
       (a, b) => a.netCashFlow > b.netCashFlow ? a : b,
     );
 
-    MonthCashFlow worst = history.reduce(
+    final worst = history.reduce(
       (a, b) => a.netCashFlow < b.netCashFlow ? a : b,
     );
 
@@ -272,5 +522,71 @@ class TransactionModel extends ChangeNotifier {
       bestMonth: best,
       worstMonth: worst,
     );
+  }
+
+  double _sumNetWorthEntriesForMonth(
+    DateTime month,
+    NetWorthEntryType type,
+  ) {
+    return _netWorthEntries
+        .where((entry) => entry.type == type)
+        .map((entry) => entry.amountForMonth(month) ?? 0.0)
+        .fold(0.0, (sum, amount) => sum + amount);
+  }
+
+  Future<void> _saveNetWorthEntries() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _netWorthEntriesStorageKey,
+      jsonEncode(_netWorthEntries.map((entry) => entry.toJson()).toList()),
+    );
+  }
+
+  Future<List<NetWorthEntry>> _migrateLegacyNetWorthIfNeeded(
+    SharedPreferences prefs,
+  ) async {
+    final startingAssets = prefs.getDouble('starting_assets') ?? 0.0;
+    final startingLiabilities = prefs.getDouble('starting_liabilities') ?? 0.0;
+    final migratedEntries = <NetWorthEntry>[];
+    final currentMonth = DateTime.now();
+
+    if (startingAssets > 0) {
+      migratedEntries.add(
+        NetWorthEntry(
+          name: 'Starting Assets',
+          type: NetWorthEntryType.asset,
+          snapshots: [
+            NetWorthSnapshot.forMonth(
+              month: currentMonth,
+              amount: startingAssets,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (startingLiabilities > 0) {
+      migratedEntries.add(
+        NetWorthEntry(
+          name: 'Starting Liabilities',
+          type: NetWorthEntryType.liability,
+          snapshots: [
+            NetWorthSnapshot.forMonth(
+              month: currentMonth,
+              amount: startingLiabilities,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (migratedEntries.isNotEmpty) {
+      await prefs.setString(
+        _netWorthEntriesStorageKey,
+        jsonEncode(migratedEntries.map((entry) => entry.toJson()).toList()),
+      );
+    }
+
+    return migratedEntries;
   }
 }
