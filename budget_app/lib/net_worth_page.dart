@@ -1032,8 +1032,10 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
       text: widget.existingEntry?.name ?? '',
     );
     _amountController = TextEditingController(
-      text: (widget.existingEntry?.amountForMonth(widget.month) ?? 0.0)
-          .toStringAsFixed(2),
+      text: widget.existingEntry == null
+          ? ''
+          : (widget.existingEntry!.amountForMonth(widget.month) ?? 0.0)
+              .toStringAsFixed(2),
     );
     _selectedType = widget.existingEntry?.type ??
         widget.initialType ??
