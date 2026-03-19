@@ -13,6 +13,8 @@ import 'utils/platform_utils.dart';
 import 'widgets/empty_state.dart';
 import 'widgets/month_selector.dart';
 
+// ---------- Main Page ----------
+
 class NetWorthPage extends StatefulWidget {
   const NetWorthPage({super.key});
 
@@ -21,250 +23,151 @@ class NetWorthPage extends StatefulWidget {
 }
 
 class _NetWorthPageState extends State<NetWorthPage> {
-  final ScrollController _chartScrollController = ScrollController();
-  int? _lastChartLength;
-  bool _hasScrolledToLatest = false;
-
-  @override
-  void dispose() {
-    _chartScrollController.dispose();
-    super.dispose();
-  }
+  int _selectedTab = 0; // 0 = Assets, 1 = Liabilities
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
-      builder: (context, transactionModel, child) {
-        final month = transactionModel.selectedNetWorthMonth;
-        final monthLabel = formatNetWorthMonth(month);
-        final assets = transactionModel.totalAssets;
-        final liabilities = transactionModel.totalLiabilities;
-        final netWorth = transactionModel.netWorth;
-        final staleCount = transactionModel.staleNetWorthEntryCount;
-        final trackedCount = transactionModel.getTrackedNetWorthEntryCountForMonth(
-          month,
-        );
-        final updatedCount = transactionModel.getUpdatedNetWorthEntryCountForMonth(
-          month,
-        );
-        final assetEntries =
-            transactionModel.assetEntriesForSelectedNetWorthMonth;
-        final liabilityEntries =
-            transactionModel.liabilityEntriesForSelectedNetWorthMonth;
-        final availableMonths = transactionModel.getNetWorthAvailableMonths();
-        final history = transactionModel.getNetWorthHistory(limit: 24);
+      builder: (context, model, child) {
+        final month = model.selectedNetWorthMonth;
+        final assets = model.totalAssets;
+        final liabilities = model.totalLiabilities;
+        final netWorth = model.netWorth;
+        final assetEntries = model.assetEntriesForSelectedNetWorthMonth;
+        final liabilityEntries = model.liabilityEntriesForSelectedNetWorthMonth;
+        final availableMonths = model.getNetWorthAvailableMonths();
+        final history = model.getNetWorthHistory(limit: 24);
         final chartData = history.reversed.toList();
         final previousMonth = DateTime(month.year, month.month - 1);
-        final hasPreviousData =
-            transactionModel.hasNetWorthDataForMonth(previousMonth);
+        final hasPreviousData = model.hasNetWorthDataForMonth(previousMonth);
         final monthChange = hasPreviousData
-            ? netWorth - transactionModel.getNetWorthForMonth(previousMonth)
+            ? netWorth - model.getNetWorthForMonth(previousMonth)
             : null;
 
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              'Net Worth',
+              'Net Worth Tracker',
               style: AppTypography.headingLarge.copyWith(
                 color: AppDesign.getTextPrimary(context),
+                fontWeight: FontWeight.w700,
               ),
             ),
             centerTitle: true,
             backgroundColor: AppDesign.getBackgroundColor(context),
             elevation: 0,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: AppDesign.spacingS),
+                child: IconButton(
+                  icon: Icon(
+                    CupertinoIcons.plus_circle_fill,
+                    color: AppDesign.getIncomeColor(context),
+                  ),
+                  onPressed: () => _showNetWorthEditor(
+                    context: context,
+                    transactionModel: model,
+                    month: month,
+                    initialType: _selectedTab == 0
+                        ? NetWorthEntryType.asset
+                        : NetWorthEntryType.liability,
+                  ),
+                ),
+              ),
+            ],
           ),
           backgroundColor: AppDesign.getBackgroundColor(context),
-          body: transactionModel.hasNetWorthEntries
+          body: model.hasNetWorthEntries
               ? SingleChildScrollView(
                   physics: PlatformUtils.platformScrollPhysics,
-                  padding: const EdgeInsets.all(AppDesign.spacingM),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _NetWorthHeroCard(
-                        monthLabel: monthLabel,
-                        netWorth: netWorth,
-                        monthChange: monthChange,
-                        updatedCount: updatedCount,
-                        trackedCount: trackedCount,
+                      // Month selector
+                      MonthSelector(
+                        selectedMonth: month,
+                        availableMonths: availableMonths,
+                        onMonthChanged: (m) async {
+                          await model.selectNetWorthMonth(m);
+                        },
                       ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _MetricTile(
-                              label: 'Assets',
-                              value: _formatCurrency(assets),
-                              accentColor: AppDesign.getIncomeColor(context),
-                              icon: CupertinoIcons.arrow_up_right_circle_fill,
-                            ),
-                          ),
-                          const SizedBox(width: AppDesign.spacingM),
-                          Expanded(
-                            child: _MetricTile(
-                              label: 'Liabilities',
-                              value: _formatCurrency(liabilities),
-                              accentColor: AppDesign.getExpenseColor(context),
-                              icon: CupertinoIcons.arrow_down_left_circle_fill,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      ElevatedCard(
-                        elevation: AppDesign.elevationM,
+                      // Hero: net worth amount + change badge
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppDesign.spacingM,
+                          AppDesign.spacingS,
+                          AppDesign.spacingM,
+                          AppDesign.spacingL,
+                        ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Timeline',
-                              style: AppTypography.headingMedium.copyWith(
-                                color: AppDesign.getTextPrimary(context),
+                              _formatCurrency(netWorth),
+                              style: AppTypography.displayLarge.copyWith(
+                                color: netWorth >= 0
+                                    ? AppDesign.getIncomeColor(context)
+                                    : AppDesign.getExpenseColor(context),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 44,
+                                letterSpacing: -1.5,
                               ),
-                            ),
-                            const SizedBox(height: AppDesign.spacingXS),
-                            Text(
-                              'Net worth over time across your saved monthly snapshots.',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: AppDesign.getTextSecondary(context),
-                              ),
-                            ),
-                            const SizedBox(height: AppDesign.spacingM),
-                            _buildChart(chartData),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      ElevatedCard(
-                        elevation: AppDesign.elevationM,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Monthly Workflow',
-                              style: AppTypography.headingMedium.copyWith(
-                                color: AppDesign.getTextPrimary(context),
-                              ),
-                            ),
-                            const SizedBox(height: AppDesign.spacingXS),
-                            Text(
-                              staleCount > 0
-                                  ? '$staleCount account${staleCount == 1 ? '' : 's'} still show their latest saved balances in $monthLabel.'
-                                  : 'Every tracked account has a fresh balance saved for $monthLabel.',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: AppDesign.getTextSecondary(context),
-                              ),
-                            ),
-                            const SizedBox(height: AppDesign.spacingM),
-                            MonthSelector(
-                              selectedMonth: month,
-                              availableMonths: availableMonths,
-                              onMonthChanged: (selectedMonth) async {
-                                await transactionModel.selectNetWorthMonth(
-                                  selectedMonth,
-                                );
-                              },
-                            ),
-                            const SizedBox(height: AppDesign.spacingM),
-                            Wrap(
-                              spacing: AppDesign.spacingS,
-                              runSpacing: AppDesign.spacingS,
-                              children: [
-                                AppButton.primary(
-                                  label: 'Add Account',
-                                  icon: CupertinoIcons.plus_circle_fill,
-                                  gradient: AppDesign.getPrimaryGradient(context),
-                                  onPressed: () => _showNetWorthEditor(
-                                    context: context,
-                                    transactionModel: transactionModel,
-                                    month: month,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      _SectionCard(
-                        title: 'Assets',
-                        subtitle:
-                            '${assetEntries.length} tracked in $monthLabel',
-                        onAdd: () => _showNetWorthEditor(
-                          context: context,
-                          transactionModel: transactionModel,
-                          month: month,
-                          initialType: NetWorthEntryType.asset,
-                        ),
-                        addLabel: 'Add Account',
-                        entries: assetEntries,
-                        month: month,
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      _SectionCard(
-                        title: 'Liabilities',
-                        subtitle:
-                            '${liabilityEntries.length} tracked in $monthLabel',
-                        onAdd: () => _showNetWorthEditor(
-                          context: context,
-                          transactionModel: transactionModel,
-                          month: month,
-                          initialType: NetWorthEntryType.liability,
-                        ),
-                        addLabel: 'Add Account',
-                        entries: liabilityEntries,
-                        month: month,
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      ElevatedCard(
-                        elevation: AppDesign.elevationM,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Recent Months',
-                              style: AppTypography.headingMedium.copyWith(
-                                color: AppDesign.getTextPrimary(context),
-                              ),
+                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: AppDesign.spacingS),
-                            ...history.take(6).map(
-                              (summary) {
-                                final priorMonth = DateTime(
-                                  summary.month.year,
-                                  summary.month.month - 1,
-                                );
-                                final change = transactionModel
-                                        .hasNetWorthDataForMonth(priorMonth)
-                                    ? summary.netWorth -
-                                        transactionModel.getNetWorthForMonth(
-                                          priorMonth,
-                                        )
-                                    : null;
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppDesign.spacingS,
-                                  ),
-                                  child: _HistoryRow(
-                                    summary: summary,
-                                    change: change,
-                                    isSelected: _isSameMonth(
-                                      summary.month,
-                                      month,
-                                    ),
-                                    onTap: () async {
-                                      await transactionModel.selectNetWorthMonth(
-                                        summary.month,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
+                            if (monthChange != null)
+                              _ChangeBadge(
+                                change: monthChange,
+                                netWorth: netWorth,
+                              ),
                           ],
                         ),
                       ),
+                      // Growth chart card
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                        ),
+                        child: _GrowthChartCard(chartData: chartData),
+                      ),
+                      const SizedBox(height: AppDesign.spacingL),
+                      // Assets / Liabilities toggle
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                        ),
+                        child: _AccountsToggle(
+                          selectedTab: _selectedTab,
+                          onTabChanged: (tab) =>
+                              setState(() => _selectedTab = tab),
+                        ),
+                      ),
+                      const SizedBox(height: AppDesign.spacingM),
+                      // Accounts list
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                        ),
+                        child: _AccountsList(
+                          selectedTab: _selectedTab,
+                          assetEntries: assetEntries,
+                          liabilityEntries: liabilityEntries,
+                          totalAssets: assets,
+                          totalLiabilities: liabilities,
+                          month: month,
+                          onEditEntry: (entry) => _showNetWorthEditor(
+                            context: context,
+                            transactionModel: model,
+                            month: month,
+                            existingEntry: entry,
+                          ),
+                          onDeleteEntry: (entry) => _confirmDeleteNetWorthEntry(
+                            context: context,
+                            transactionModel: model,
+                            entry: entry,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppDesign.spacingXXL),
                     ],
                   ),
                 )
@@ -276,7 +179,7 @@ class _NetWorthPageState extends State<NetWorthPage> {
                   actionLabel: 'Add Account',
                   onAction: () => _showNetWorthEditor(
                     context: context,
-                    transactionModel: transactionModel,
+                    transactionModel: model,
                     month: month,
                   ),
                 ),
@@ -284,59 +187,170 @@ class _NetWorthPageState extends State<NetWorthPage> {
       },
     );
   }
+}
 
-  Widget _buildChart(List<NetWorthMonthSummary> chartData) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+// ---------- Change Badge ----------
 
-    if (chartData.isEmpty) {
-      return Container(
-        height: 220,
-        alignment: Alignment.center,
-        child: Text(
-          'Add monthly balances to build your line chart.',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppDesign.getTextSecondary(context),
-          ),
+class _ChangeBadge extends StatelessWidget {
+  final double change;
+  final double netWorth;
+
+  const _ChangeBadge({required this.change, required this.netWorth});
+
+  @override
+  Widget build(BuildContext context) {
+    final isPositive = change >= 0;
+    final color = isPositive
+        ? AppDesign.getIncomeColor(context)
+        : AppDesign.getExpenseColor(context);
+
+    final previousNetWorth = netWorth - change;
+    final percentStr = previousNetWorth.abs() > 0.001
+        ? '${isPositive ? '+' : ''}${(change / previousNetWorth.abs() * 100).toStringAsFixed(1)}%'
+        : '${isPositive ? '+' : '-'}—';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesign.spacingM,
+        vertical: AppDesign.spacingS,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
         ),
-      );
-    }
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.22),
+              borderRadius: BorderRadius.circular(AppDesign.radiusXS),
+            ),
+            child: Icon(
+              isPositive ? CupertinoIcons.arrow_up : CupertinoIcons.arrow_down,
+              size: 13,
+              color: color,
+            ),
+          ),
+          const SizedBox(width: AppDesign.spacingS),
+          Text(
+            '$percentStr  Since last month',
+            style: AppTypography.bodyMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-    if (_lastChartLength != chartData.length) {
-      _lastChartLength = chartData.length;
+// ---------- Growth Chart Card ----------
+
+class _GrowthChartCard extends StatefulWidget {
+  final List<NetWorthMonthSummary> chartData;
+
+  const _GrowthChartCard({required this.chartData});
+
+  @override
+  State<_GrowthChartCard> createState() => _GrowthChartCardState();
+}
+
+class _GrowthChartCardState extends State<_GrowthChartCard> {
+  final ScrollController _scrollController = ScrollController();
+  int? _lastLength;
+  bool _hasScrolledToLatest = false;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final chartData = widget.chartData;
+
+    if (_lastLength != chartData.length) {
+      _lastLength = chartData.length;
       _hasScrolledToLatest = false;
     }
 
     final needsScrolling = chartData.length > 8;
-    final chartWidth = max(
-      MediaQuery.of(context).size.width - (AppDesign.spacingM * 4),
-      chartData.length * 72.0,
-    );
 
     if (needsScrolling && !_hasScrolledToLatest) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_chartScrollController.hasClients) {
-          _chartScrollController.jumpTo(
-            _chartScrollController.position.maxScrollExtent,
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(
+            _scrollController.position.maxScrollExtent,
           );
-          _hasScrolledToLatest = true;
+          setState(() => _hasScrolledToLatest = true);
         }
       });
     }
 
-    final chart = SizedBox(
-      width: chartWidth,
-      height: 260,
-      child: _NetWorthLineChart(
-        chartData: chartData,
-        isDark: isDark,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppDesign.getCardColor(context),
+        borderRadius: BorderRadius.circular(AppDesign.radiusXL),
+        boxShadow: AppDesign.shadowM,
       ),
+      padding: const EdgeInsets.all(AppDesign.spacingM),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Net Worth Growth',
+            style: AppTypography.headingMedium.copyWith(
+              color: AppDesign.getTextPrimary(context),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingM),
+          if (chartData.isEmpty)
+            Container(
+              height: 220,
+              alignment: Alignment.center,
+              child: Text(
+                'Add monthly balances to build your growth chart.',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppDesign.getTextSecondary(context),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            )
+          else
+            _buildChartContent(context, chartData, isDark, needsScrolling),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChartContent(
+    BuildContext context,
+    List<NetWorthMonthSummary> chartData,
+    bool isDark,
+    bool needsScrolling,
+  ) {
+    final chartWidth = max(
+      MediaQuery.of(context).size.width - (AppDesign.spacingM * 4 + 32),
+      chartData.length * 72.0,
+    );
+
+    final chart = SizedBox(
+      width: needsScrolling ? chartWidth : double.infinity,
+      height: 240,
+      child: _NetWorthLineChart(chartData: chartData, isDark: isDark),
     );
 
     if (!needsScrolling) {
-      return SizedBox(
-        height: 260,
-        child: chart,
-      );
+      return SizedBox(height: 240, child: chart);
     }
 
     return Column(
@@ -351,7 +365,7 @@ class _NetWorthPageState extends State<NetWorthPage> {
             ),
             const SizedBox(width: AppDesign.spacingXS),
             Text(
-              'Swipe to see the full history',
+              'Swipe to see full history',
               style: AppTypography.bodySmall.copyWith(
                 color: AppDesign.getTextTertiary(context),
               ),
@@ -360,9 +374,9 @@ class _NetWorthPageState extends State<NetWorthPage> {
         ),
         const SizedBox(height: AppDesign.spacingS),
         SizedBox(
-          height: 260,
+          height: 240,
           child: SingleChildScrollView(
-            controller: _chartScrollController,
+            controller: _scrollController,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             child: chart,
@@ -371,155 +385,9 @@ class _NetWorthPageState extends State<NetWorthPage> {
       ],
     );
   }
-
-  bool _isSameMonth(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month;
-  }
 }
 
-class _NetWorthHeroCard extends StatelessWidget {
-  final String monthLabel;
-  final double netWorth;
-  final double? monthChange;
-  final int updatedCount;
-  final int trackedCount;
-
-  const _NetWorthHeroCard({
-    required this.monthLabel,
-    required this.netWorth,
-    required this.monthChange,
-    required this.updatedCount,
-    required this.trackedCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final completion = trackedCount == 0 ? 0.0 : updatedCount / trackedCount;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppDesign.spacingL),
-      decoration: BoxDecoration(
-        gradient: AppDesign.getAccentGradient(context),
-        borderRadius: BorderRadius.circular(AppDesign.radiusXL),
-        boxShadow: AppDesign.shadowL,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            monthLabel,
-            style: AppTypography.bodyMedium.copyWith(
-              color: Colors.white.withValues(alpha: 0.88),
-            ),
-          ),
-          const SizedBox(height: AppDesign.spacingXS),
-          Text(
-            _formatCurrency(netWorth),
-            style: AppTypography.displayLarge.copyWith(
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: AppDesign.spacingM),
-          Wrap(
-            spacing: AppDesign.spacingS,
-            runSpacing: AppDesign.spacingS,
-            children: [
-              _HeroChip(
-                label: monthChange == null
-                    ? 'No prior month'
-                    : '${monthChange! >= 0 ? '+' : '-'}${_formatCurrency(monthChange!.abs())} vs last month',
-              ),
-              _HeroChip(
-                label: '$updatedCount of $trackedCount accounts updated',
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesign.spacingM),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppDesign.radiusRound),
-            child: LinearProgressIndicator(
-              value: completion,
-              minHeight: 8,
-              backgroundColor: Colors.white.withValues(alpha: 0.24),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HeroChip extends StatelessWidget {
-  final String label;
-
-  const _HeroChip({
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingM,
-        vertical: AppDesign.spacingS,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(AppDesign.radiusRound),
-      ),
-      child: Text(
-        label,
-        style: AppTypography.bodySmall.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _MetricTile extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color accentColor;
-  final IconData icon;
-
-  const _MetricTile({
-    required this.label,
-    required this.value,
-    required this.accentColor,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedCard(
-      elevation: AppDesign.elevationM,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: accentColor),
-          const SizedBox(height: AppDesign.spacingS),
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: AppDesign.getTextSecondary(context),
-            ),
-          ),
-          const SizedBox(height: AppDesign.spacingXS),
-          Text(
-            value,
-            style: AppTypography.headingMedium.copyWith(
-              color: accentColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// ---------- Line Chart ----------
 
 class _NetWorthLineChart extends StatelessWidget {
   final List<NetWorthMonthSummary> chartData;
@@ -535,20 +403,25 @@ class _NetWorthLineChart extends StatelessWidget {
     final values = chartData.map((item) => item.netWorth).toList();
     final minValue = values.reduce(min);
     final maxValue = values.reduce(max);
-    final range = max(maxValue - minValue, 1.0);
+    // Enforce a minimum range (10% of the max value) so Y labels stay
+    // meaningfully spaced even with a single data point.
+    final rawRange = maxValue - minValue;
+    final range = max(rawRange, max(1.0, maxValue.abs() * 0.10));
     final paddedMin = minValue - (range * 0.18);
     final paddedMax = maxValue + (range * 0.18);
+    final yInterval = _niceInterval(paddedMax - paddedMin);
+    final incomeColor = AppDesign.getIncomeColor(context);
 
     return LineChart(
       LineChartData(
         minX: 0,
-        maxX: (chartData.length - 1).toDouble(),
+        maxX: max(1.0, (chartData.length - 1).toDouble()),
         minY: paddedMin,
         maxY: paddedMax,
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          horizontalInterval: range / 4,
+          horizontalInterval: yInterval,
           getDrawingHorizontalLine: (value) => FlLine(
             color: (isDark ? AppColors.borderDark : AppColors.borderLight)
                 .withValues(alpha: 0.45),
@@ -576,24 +449,23 @@ class _NetWorthLineChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 40,
+              reservedSize: 36,
+              interval: 1,
               getTitlesWidget: (value, meta) {
                 final index = value.toInt();
+                if (value != index.toDouble()) return const SizedBox.shrink();
                 if (index < 0 || index >= chartData.length) {
                   return const SizedBox.shrink();
                 }
-
-                final shouldShow =
-                    chartData.length <= 6 || index.isEven || index == chartData.length - 1;
-                if (!shouldShow) {
-                  return const SizedBox.shrink();
-                }
-
+                final shouldShow = chartData.length <= 6 ||
+                    index.isEven ||
+                    index == chartData.length - 1;
+                if (!shouldShow) return const SizedBox.shrink();
                 final month = chartData[index].month;
                 return SideTitleWidget(
                   meta: meta,
                   child: Text(
-                    DateFormat('MMM yy').format(month),
+                    DateFormat('MMM').format(month),
                     style: AppTypography.bodySmall.copyWith(
                       color: AppDesign.getTextSecondary(context),
                       fontSize: 11,
@@ -606,8 +478,14 @@ class _NetWorthLineChart extends StatelessWidget {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 68,
+              reservedSize: 64,
+              interval: yInterval,
               getTitlesWidget: (value, meta) {
+                // Skip the auto boundary labels fl_chart injects at min/max —
+                // they land right on top of the nearest interval tick.
+                if (value == meta.min || value == meta.max) {
+                  return const SizedBox.shrink();
+                }
                 return SideTitleWidget(
                   meta: meta,
                   child: Text(
@@ -632,8 +510,9 @@ class _NetWorthLineChart extends StatelessWidget {
             ),
             getTooltipItems: (spots) {
               return spots.map((spot) {
-                final month = chartData[spot.x.toInt()].month;
-                final value = chartData[spot.x.toInt()].netWorth;
+                final index = spot.x.toInt().clamp(0, chartData.length - 1);
+                final month = chartData[index].month;
+                final value = chartData[index].netWorth;
                 return LineTooltipItem(
                   '${DateFormat('MMM y').format(month)}\n',
                   AppTypography.bodySmall.copyWith(
@@ -658,37 +537,31 @@ class _NetWorthLineChart extends StatelessWidget {
         ),
         lineBarsData: [
           LineChartBarData(
-            spots: List.generate(
-              chartData.length,
-              (index) => FlSpot(index.toDouble(), chartData[index].netWorth),
-            ),
+            spots: chartData.length == 1
+                ? [
+                    FlSpot(0.0, chartData[0].netWorth),
+                    FlSpot(1.0, chartData[0].netWorth),
+                  ]
+                : List.generate(
+                    chartData.length,
+                    (index) =>
+                        FlSpot(index.toDouble(), chartData[index].netWorth),
+                  ),
             isCurved: true,
-            color: AppColors.primary,
-            barWidth: 4,
+            color: incomeColor,
+            barWidth: 3,
             belowBarData: BarAreaData(
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withValues(alpha: 0.24),
-                  AppColors.primary.withValues(alpha: 0.02),
+                  incomeColor.withValues(alpha: 0.30),
+                  incomeColor.withValues(alpha: 0.0),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, barData, index) {
-                final value = chartData[index].netWorth;
-                return FlDotCirclePainter(
-                  radius: 4.5,
-                  color: value >= 0 ? AppColors.primary : AppColors.expense,
-                  strokeWidth: 2,
-                  strokeColor:
-                      isDark ? AppColors.cardDark : AppColors.cardLight,
-                );
-              },
-            ),
+            dotData: const FlDotData(show: false),
           ),
         ],
       ),
@@ -696,213 +569,45 @@ class _NetWorthLineChart extends StatelessWidget {
   }
 }
 
-class _SectionCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String addLabel;
-  final VoidCallback onAdd;
-  final List<NetWorthEntry> entries;
-  final DateTime month;
+// ---------- Accounts Toggle ----------
 
-  const _SectionCard({
-    required this.title,
-    required this.subtitle,
-    required this.addLabel,
-    required this.onAdd,
-    required this.entries,
-    required this.month,
+class _AccountsToggle extends StatelessWidget {
+  final int selectedTab;
+  final ValueChanged<int> onTabChanged;
+
+  const _AccountsToggle({
+    required this.selectedTab,
+    required this.onTabChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final transactionModel = Provider.of<TransactionModel>(
-      context,
-      listen: false,
-    );
-
-    return ElevatedCard(
-      elevation: AppDesign.elevationM,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTypography.headingMedium.copyWith(
-                        color: AppDesign.getTextPrimary(context),
-                      ),
-                    ),
-                    const SizedBox(height: AppDesign.spacingXXS),
-                    Text(
-                      subtitle,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppDesign.getTextSecondary(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              TextButton.icon(
-                onPressed: onAdd,
-                icon: const Icon(CupertinoIcons.plus, size: AppDesign.iconS),
-                label: Text(addLabel),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesign.spacingM),
-          if (entries.isEmpty)
-            Text(
-              'No $title saved for ${formatNetWorthMonth(month)} yet.',
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppDesign.getTextSecondary(context),
-              ),
-            )
-          else
-            ...entries.map(
-              (entry) => Padding(
-                padding: const EdgeInsets.only(bottom: AppDesign.spacingS),
-                child: _AccountRow(
-                  entry: entry,
-                  month: month,
-                  onEdit: () => _showNetWorthEditor(
-                    context: context,
-                    transactionModel: transactionModel,
-                    month: month,
-                    existingEntry: entry,
-                  ),
-                  onDelete: () => _confirmDeleteNetWorthEntry(
-                    context: context,
-                    transactionModel: transactionModel,
-                    entry: entry,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AccountRow extends StatelessWidget {
-  final NetWorthEntry entry;
-  final DateTime month;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
-  const _AccountRow({
-    required this.entry,
-    required this.month,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final exactSnapshot = entry.snapshotForMonth(month);
-    final effectiveSnapshot = entry.latestSnapshotThrough(month);
-    final amount = effectiveSnapshot?.amount ?? 0.0;
-    final isCurrentMonth = exactSnapshot != null;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.all(AppDesign.spacingM),
+      height: 52,
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppDesign.getSurfaceColor(context),
-        borderRadius: BorderRadius.circular(AppDesign.radiusL),
-        border: Border.all(
-          color: AppDesign.getBorderColor(context),
-        ),
+        color: isDark ? AppColors.surfaceDark : const Color(0xFF1E2530),
+        borderRadius: BorderRadius.circular(AppDesign.radiusRound),
       ),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: (entry.type == NetWorthEntryType.asset
-                      ? AppDesign.getIncomeColor(context)
-                      : AppDesign.getExpenseColor(context))
-                  .withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            ),
-            child: Icon(
-              entry.type == NetWorthEntryType.asset
-                  ? CupertinoIcons.arrow_up_right_circle_fill
-                  : CupertinoIcons.arrow_down_left_circle_fill,
-              color: entry.type == NetWorthEntryType.asset
-                  ? AppDesign.getIncomeColor(context)
-                  : AppDesign.getExpenseColor(context),
-            ),
-          ),
-          const SizedBox(width: AppDesign.spacingM),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entry.name,
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: AppDesign.spacingXXS),
-                Text(
-                  isCurrentMonth
-                      ? 'Updated for ${formatNetWorthMonth(month)}'
-                      : effectiveSnapshot == null
-                          ? 'No balance saved yet'
-                          : 'Using ${formatNetWorthMonth(netWorthMonthFromKey(effectiveSnapshot.monthKey))} value',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                  ),
-                ),
-              ],
+            child: _ToggleTab(
+              label: 'Assets',
+              isSelected: selectedTab == 0,
+              activeColor: AppDesign.getIncomeColor(context),
+              onTap: () => onTabChanged(0),
             ),
           ),
-          const SizedBox(width: AppDesign.spacingS),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                _formatCurrency(amount),
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppDesign.getTextPrimary(context),
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              PopupMenuButton<String>(
-                onSelected: (value) {
-                  if (value == 'delete') {
-                    onDelete();
-                  } else {
-                    onEdit();
-                  }
-                },
-                itemBuilder: (context) => const [
-                  PopupMenuItem<String>(
-                    value: 'edit',
-                    child: Text('Edit Balance'),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'delete',
-                    child: Text('Delete Account'),
-                  ),
-                ],
-                child: Padding(
-                  padding: const EdgeInsets.only(top: AppDesign.spacingXS),
-                  child: Icon(
-                    CupertinoIcons.ellipsis_circle,
-                    color: AppDesign.getTextTertiary(context),
-                  ),
-                ),
-              ),
-            ],
+          Expanded(
+            child: _ToggleTab(
+              label: 'Liabilities',
+              isSelected: selectedTab == 1,
+              activeColor: AppDesign.getExpenseColor(context),
+              onTap: () => onTabChanged(1),
+            ),
           ),
         ],
       ),
@@ -910,75 +615,309 @@ class _AccountRow extends StatelessWidget {
   }
 }
 
-class _HistoryRow extends StatelessWidget {
-  final NetWorthMonthSummary summary;
-  final double? change;
+class _ToggleTab extends StatelessWidget {
+  final String label;
   final bool isSelected;
+  final Color activeColor;
   final VoidCallback onTap;
 
-  const _HistoryRow({
-    required this.summary,
-    required this.change,
+  const _ToggleTab({
+    required this.label,
     required this.isSelected,
+    required this.activeColor,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppDesign.radiusL),
-      child: Container(
-        padding: const EdgeInsets.all(AppDesign.spacingM),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.1)
-              : AppDesign.getSurfaceColor(context),
-          borderRadius: BorderRadius.circular(AppDesign.radiusL),
-          border: Border.all(
+          color: isSelected ? activeColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppDesign.radiusRound - 4),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: activeColor.withValues(alpha: 0.35),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: AppTypography.bodyMedium.copyWith(
             color: isSelected
-                ? AppColors.primary.withValues(alpha: 0.4)
-                : AppDesign.getBorderColor(context),
+                ? const Color(0xFF0D1117)
+                : AppDesign.getTextSecondary(context),
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
           ),
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    formatNetWorthMonth(summary.month),
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppDesign.getTextPrimary(context),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppDesign.spacingXXS),
-                  Text(
-                    change == null
-                        ? 'First tracked month'
-                        : '${change! >= 0 ? '+' : '-'}${_formatCurrency(change!.abs())} vs previous month',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                    ),
-                  ),
-                ],
+      ),
+    );
+  }
+}
+
+// ---------- Accounts List ----------
+
+class _AccountsList extends StatelessWidget {
+  final int selectedTab;
+  final List<NetWorthEntry> assetEntries;
+  final List<NetWorthEntry> liabilityEntries;
+  final double totalAssets;
+  final double totalLiabilities;
+  final DateTime month;
+  final void Function(NetWorthEntry) onEditEntry;
+  final void Function(NetWorthEntry) onDeleteEntry;
+
+  const _AccountsList({
+    required this.selectedTab,
+    required this.assetEntries,
+    required this.liabilityEntries,
+    required this.totalAssets,
+    required this.totalLiabilities,
+    required this.month,
+    required this.onEditEntry,
+    required this.onDeleteEntry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isAssets = selectedTab == 0;
+    final entries = isAssets ? assetEntries : liabilityEntries;
+    final total = isAssets ? totalAssets : totalLiabilities;
+
+    if (entries.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppDesign.spacingL),
+        child: Text(
+          'No ${isAssets ? 'assets' : 'liabilities'} tracked for ${formatNetWorthMonth(month)}.',
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppDesign.getTextSecondary(context),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Column(
+      children: entries.map((entry) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppDesign.spacingS),
+          child: _AccountRow(
+            entry: entry,
+            month: month,
+            totalForCategory: total,
+            onTap: () => onEditEntry(entry),
+            onDelete: () => onDeleteEntry(entry),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ---------- Account Row ----------
+
+class _AccountRow extends StatelessWidget {
+  final NetWorthEntry entry;
+  final DateTime month;
+  final double totalForCategory;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
+
+  const _AccountRow({
+    required this.entry,
+    required this.month,
+    required this.totalForCategory,
+    required this.onTap,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveSnapshot = entry.latestSnapshotThrough(month);
+    final amount = effectiveSnapshot?.amount ?? 0.0;
+    final percentage = totalForCategory > 0
+        ? (amount / totalForCategory).clamp(0.0, 1.0)
+        : 0.0;
+    final isAsset = entry.type == NetWorthEntryType.asset;
+    final color = isAsset
+        ? AppDesign.getIncomeColor(context)
+        : AppDesign.getExpenseColor(context);
+    final icon = _iconForEntry(entry);
+
+    return GestureDetector(
+      onTap: onTap,
+      onLongPress: () => showModalBottomSheet<void>(
+        context: context,
+        builder: (ctx) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: AppDesign.spacingS),
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppDesign.getBorderColor(context),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+                ),
               ),
+              const SizedBox(height: AppDesign.spacingM),
+              ListTile(
+                leading: Icon(CupertinoIcons.pencil,
+                    color: AppDesign.getTextPrimary(ctx)),
+                title: Text(
+                  'Edit Balance',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppDesign.getTextPrimary(ctx),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  onTap();
+                },
+              ),
+              ListTile(
+                leading: Icon(CupertinoIcons.trash,
+                    color: AppDesign.getExpenseColor(ctx)),
+                title: Text(
+                  'Delete Account',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppDesign.getExpenseColor(ctx),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  onDelete();
+                },
+              ),
+              const SizedBox(height: AppDesign.spacingM),
+            ],
+          ),
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(
+          AppDesign.spacingM,
+          AppDesign.spacingM,
+          AppDesign.spacingM,
+          AppDesign.spacingM,
+        ),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.surfaceDark : AppColors.cardLight,
+          borderRadius: BorderRadius.circular(AppDesign.radiusXL),
+          boxShadow: AppDesign.shadowS,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                // Icon
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                  ),
+                  child: Icon(icon, color: color, size: AppDesign.iconS),
+                ),
+                const SizedBox(width: AppDesign.spacingM),
+                // Name + amount
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.name,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppDesign.getTextPrimary(context),
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppDesign.spacingXXS),
+                      Text(
+                        _formatCurrency(amount),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppDesign.getTextSecondary(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppDesign.spacingS),
+                // Percentage on right
+                Text(
+                  '+${(percentage * 100).toStringAsFixed(1)}%',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              _formatCurrency(summary.netWorth),
-              style: AppTypography.bodyLarge.copyWith(
-                color: summary.netWorth >= 0
-                    ? AppDesign.getIncomeColor(context)
-                    : AppDesign.getExpenseColor(context),
-                fontWeight: FontWeight.w700,
+            const SizedBox(height: AppDesign.spacingS),
+            // Progress bar
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+              child: LinearProgressIndicator(
+                value: percentage,
+                minHeight: 4,
+                backgroundColor: color.withValues(alpha: 0.14),
+                valueColor: AlwaysStoppedAnimation<Color>(color),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  IconData _iconForEntry(NetWorthEntry e) {
+    final n = e.name.toLowerCase();
+    if (e.type == NetWorthEntryType.asset) {
+      if (n.contains('bank') ||
+          n.contains('checking') ||
+          n.contains('saving')) {
+        return CupertinoIcons.building_2_fill;
+      }
+      if (n.contains('invest') ||
+          n.contains('stock') ||
+          n.contains('portfolio') ||
+          n.contains('etf') ||
+          n.contains('401') ||
+          n.contains('ira')) {
+        return CupertinoIcons.chart_bar_alt_fill;
+      }
+      if (n.contains('real estate') ||
+          n.contains('house') ||
+          n.contains('home') ||
+          n.contains('property')) {
+        return CupertinoIcons.house_fill;
+      }
+      return CupertinoIcons.arrow_up_right_circle_fill;
+    } else {
+      if (n.contains('loan') ||
+          n.contains('student') ||
+          n.contains('auto') ||
+          n.contains('personal')) {
+        return CupertinoIcons.money_dollar_circle_fill;
+      }
+      if (n.contains('credit') || n.contains('card')) {
+        return CupertinoIcons.creditcard_fill;
+      }
+      return CupertinoIcons.arrow_down_left_circle_fill;
+    }
   }
 }
 
@@ -1075,7 +1014,9 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                existingEntry == null ? 'Add Account' : 'Update ${existingEntry.name}',
+                existingEntry == null
+                    ? 'Add Account'
+                    : 'Update ${existingEntry.name}',
                 style: AppTypography.headingMedium.copyWith(
                   color: AppDesign.getTextPrimary(context),
                 ),
@@ -1138,7 +1079,8 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                   Expanded(
                     child: AppButton.secondary(
                       label: 'Cancel',
-                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                      onPressed: () =>
+                          Navigator.of(context, rootNavigator: true).pop(),
                     ),
                   ),
                   const SizedBox(width: AppDesign.spacingM),
@@ -1293,7 +1235,9 @@ String _formatCurrency(double value) {
     symbol: '\$',
     decimalDigits: 2,
   );
-  return value < 0 ? '-${formatter.format(value.abs())}' : formatter.format(value);
+  return value < 0
+      ? '-${formatter.format(value.abs())}'
+      : formatter.format(value);
 }
 
 String _formatCompactCurrency(double value) {
@@ -1305,4 +1249,23 @@ String _formatCompactCurrency(double value) {
     return '${value < 0 ? '-' : ''}\$${(absValue / 1000).toStringAsFixed(1)}k';
   }
   return '${value < 0 ? '-' : ''}\$${absValue.toStringAsFixed(0)}';
+}
+
+/// Returns a "nice" rounded interval for chart axes.
+double _niceInterval(double range) {
+  if (range <= 0) return 1;
+  final raw = range / 4;
+  final magnitude = pow(10, (log(raw) / log(10)).floor()).toDouble();
+  final normalized = raw / magnitude;
+  final double nice;
+  if (normalized < 1.5) {
+    nice = 1;
+  } else if (normalized < 3.5) {
+    nice = 2;
+  } else if (normalized < 7.5) {
+    nice = 5;
+  } else {
+    nice = 10;
+  }
+  return nice * magnitude;
 }
