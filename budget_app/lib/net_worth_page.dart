@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -940,6 +941,50 @@ Future<void> _showNetWorthEditor({
   );
 }
 
+// Formats a number with commas in the integer part, preserving a decimal portion.
+class _CurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+    if (text.isEmpty) return newValue;
+
+    // Strip commas, then validate only digits + at most one decimal point
+    final stripped = text.replaceAll(',', '');
+    if (!RegExp(r'^\d*\.?\d{0,2}$').hasMatch(stripped)) {
+      return oldValue;
+    }
+
+    final dotIndex = stripped.indexOf('.');
+    final intPart = dotIndex == -1 ? stripped : stripped.substring(0, dotIndex);
+    final decPart = dotIndex == -1 ? null : stripped.substring(dotIndex + 1);
+
+    // Build comma-separated integer string
+    String formatted = '';
+    if (intPart.isNotEmpty) {
+      final buffer = StringBuffer();
+      for (int i = 0; i < intPart.length; i++) {
+        if (i > 0 && (intPart.length - i) % 3 == 0) {
+          buffer.write(',');
+        }
+        buffer.write(intPart[i]);
+      }
+      formatted = buffer.toString();
+    }
+
+    if (dotIndex != -1) {
+      formatted += '.${decPart ?? ''}';
+    }
+
+    return newValue.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
 class _NetWorthEditorDialog extends StatefulWidget {
   final TransactionModel transactionModel;
   final DateTime month;
@@ -960,9 +1005,13 @@ class _NetWorthEditorDialog extends StatefulWidget {
 class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _amountController;
+  late final FocusNode _nameFocus;
+  late final FocusNode _amountFocus;
   late NetWorthEntryType _selectedType;
   String? _nameError;
   String? _amountError;
+  bool _nameFocused = false;
+  bool _amountFocused = false;
 
   @override
   void initState() {
@@ -970,23 +1019,40 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     _nameController = TextEditingController(
       text: widget.existingEntry?.name ?? '',
     );
+    final rawAmount = widget.existingEntry == null
+        ? null
+        : (widget.existingEntry!.amountForMonth(widget.month) ?? 0.0);
     _amountController = TextEditingController(
-      text: widget.existingEntry == null
-          ? ''
-          : (widget.existingEntry!.amountForMonth(widget.month) ?? 0.0)
-              .toStringAsFixed(2),
+      text: rawAmount == null ? '' : NumberFormat('#,##0.##').format(rawAmount),
     );
     _selectedType = widget.existingEntry?.type ??
         widget.initialType ??
         NetWorthEntryType.asset;
+    _nameFocus = FocusNode()
+      ..addListener(() => setState(() => _nameFocused = _nameFocus.hasFocus));
+    _amountFocus = FocusNode()
+      ..addListener(
+          () => setState(() => _amountFocused = _amountFocus.hasFocus));
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _amountController.dispose();
+    _nameFocus.dispose();
+    _amountFocus.dispose();
     super.dispose();
   }
+
+  bool get _isAsset => _selectedType == NetWorthEntryType.asset;
+
+  Color _accentColor(BuildContext context) => _isAsset
+      ? AppDesign.getIncomeColor(context)
+      : AppDesign.getExpenseColor(context);
+
+  LinearGradient _accentGradient(BuildContext context) => _isAsset
+      ? AppDesign.getIncomeGradient(context)
+      : AppDesign.getExpenseGradient(context);
 
   @override
   Widget build(BuildContext context) {
@@ -994,6 +1060,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     final hasPriorValue = existingEntry != null &&
         existingEntry.snapshotForMonth(widget.month) == null &&
         existingEntry.latestSnapshotThrough(widget.month) != null;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -1004,97 +1071,215 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
       child: Container(
         decoration: BoxDecoration(
           color: AppDesign.getCardColor(context),
-          borderRadius: BorderRadius.circular(AppDesign.radiusXL),
-          boxShadow: AppDesign.shadowXL,
+          borderRadius: BorderRadius.circular(AppDesign.radiusXXL),
+          boxShadow: [
+            BoxShadow(
+              color: _accentColor(context).withValues(alpha: 0.18),
+              blurRadius: 32,
+              offset: const Offset(0, 8),
+            ),
+            ...AppDesign.shadowXL,
+          ],
         ),
+        clipBehavior: Clip.antiAlias,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDesign.spacingM),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                existingEntry == null
-                    ? 'Add Account'
-                    : 'Update ${existingEntry.name}',
-                style: AppTypography.headingMedium.copyWith(
-                  color: AppDesign.getTextPrimary(context),
+              // Gradient header banner
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                decoration: BoxDecoration(
+                  gradient: _accentGradient(context),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppDesign.spacingXS),
-              Text(
-                'Save a balance for ${formatNetWorthMonth(widget.month)}.',
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppDesign.getTextSecondary(context),
+                padding: const EdgeInsets.fromLTRB(
+                  AppDesign.spacingL,
+                  AppDesign.spacingL,
+                  AppDesign.spacingL,
+                  AppDesign.spacingM,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              if (hasPriorValue) ...[
-                const SizedBox(height: AppDesign.spacingS),
-                Text(
-                  'This account is currently carrying forward an older balance.',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              const SizedBox(height: AppDesign.spacingM),
-              _TypeSelector(
-                selectedType: _selectedType,
-                onChanged: (type) {
-                  if (type == null) return;
-                  setState(() {
-                    _selectedType = type;
-                  });
-                },
-              ),
-              const SizedBox(height: AppDesign.spacingM),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Account Name',
-                  errorText: _nameError,
-                ),
-                textCapitalization: TextCapitalization.words,
-              ),
-              const SizedBox(height: AppDesign.spacingS),
-              TextField(
-                controller: _amountController,
-                decoration: InputDecoration(
-                  labelText: _selectedType == NetWorthEntryType.asset
-                      ? 'Asset Balance'
-                      : 'Liability Balance',
-                  prefixText: '\$',
-                  errorText: _amountError,
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-              ),
-              const SizedBox(height: AppDesign.spacingM),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton.secondary(
-                      label: 'Cancel',
-                      onPressed: () =>
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                      ),
+                      child: Icon(
+                        _isAsset
+                            ? CupertinoIcons.arrow_up_right_circle_fill
+                            : CupertinoIcons.arrow_down_left_circle_fill,
+                        color: Colors.white,
+                        size: AppDesign.iconL,
+                      ),
+                    ),
+                    const SizedBox(width: AppDesign.spacingM),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            existingEntry == null
+                                ? 'Add Account'
+                                : 'Edit Account',
+                            style: AppTypography.headingMedium.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            formatNetWorthMonth(widget.month),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: Colors.white.withValues(alpha: 0.80),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Close button
+                    GestureDetector(
+                      onTap: () =>
                           Navigator.of(context, rootNavigator: true).pop(),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.22),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          CupertinoIcons.xmark,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: AppDesign.spacingM),
-                  Expanded(
-                    child: AppButton.primary(
-                      label: existingEntry == null ? 'Add' : 'Save',
-                      icon: CupertinoIcons.check_mark_circled_solid,
-                      gradient: _selectedType == NetWorthEntryType.asset
-                          ? AppDesign.getIncomeGradient(context)
-                          : AppDesign.getExpenseGradient(context),
-                      onPressed: _save,
+                  ],
+                ),
+              ),
+
+              // Form body
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppDesign.spacingL,
+                  AppDesign.spacingL,
+                  AppDesign.spacingL,
+                  AppDesign.spacingM,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Type toggle
+                    _TypeToggle(
+                      selectedType: _selectedType,
+                      onChanged: (type) => setState(() => _selectedType = type),
                     ),
-                  ),
-                ],
+
+                    if (hasPriorValue) ...[
+                      const SizedBox(height: AppDesign.spacingM),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDesign.spacingM,
+                          vertical: AppDesign.spacingS,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppDesign.getWarningColor(context)
+                              .withValues(alpha: 0.10),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
+                          border: Border.all(
+                            color: AppDesign.getWarningColor(context)
+                                .withValues(alpha: 0.35),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.info_circle_fill,
+                              size: AppDesign.iconS,
+                              color: AppDesign.getWarningColor(context),
+                            ),
+                            const SizedBox(width: AppDesign.spacingS),
+                            Expanded(
+                              child: Text(
+                                'Carrying forward an older balance.',
+                                style: AppTypography.caption.copyWith(
+                                  color: AppDesign.getWarningColor(context),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: AppDesign.spacingM),
+
+                    // Account name field
+                    _EditorField(
+                      label: 'Account Name',
+                      controller: _nameController,
+                      focusNode: _nameFocus,
+                      isFocused: _nameFocused,
+                      errorText: _nameError,
+                      accentColor: _accentColor(context),
+                      prefixIcon: CupertinoIcons.creditcard,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
+                      isDark: isDark,
+                    ),
+
+                    const SizedBox(height: AppDesign.spacingM),
+
+                    // Balance field
+                    _EditorField(
+                      label: _isAsset ? 'Asset Balance' : 'Liability Balance',
+                      controller: _amountController,
+                      focusNode: _amountFocus,
+                      isFocused: _amountFocused,
+                      errorText: _amountError,
+                      accentColor: _accentColor(context),
+                      prefixIcon: CupertinoIcons.money_dollar_circle,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [_CurrencyInputFormatter()],
+                      isDark: isDark,
+                    ),
+
+                    const SizedBox(height: AppDesign.spacingL),
+
+                    // Action buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton.secondary(
+                            label: 'Cancel',
+                            onPressed: () =>
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop(),
+                          ),
+                        ),
+                        const SizedBox(width: AppDesign.spacingM),
+                        Expanded(
+                          child: AppButton.primary(
+                            label: existingEntry == null ? 'Add' : 'Save',
+                            icon: CupertinoIcons.check_mark_circled_solid,
+                            gradient: _accentGradient(context),
+                            onPressed: _save,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1104,7 +1289,8 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   }
 
   Future<void> _save() async {
-    final parsedAmount = double.tryParse(_amountController.text.trim());
+    final cleanText = _amountController.text.replaceAll(',', '').trim();
+    final parsedAmount = double.tryParse(cleanText);
 
     setState(() {
       _nameError = null;
@@ -1112,22 +1298,18 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     });
 
     if (_nameController.text.trim().isEmpty) {
-      setState(() {
-        _nameError = 'Name is required';
-      });
+      setState(() => _nameError = 'Name is required');
       return;
     }
 
     if (parsedAmount == null || parsedAmount < 0) {
-      setState(() {
-        _amountError = 'Enter a valid balance';
-      });
+      setState(() => _amountError = 'Enter a valid balance');
       return;
     }
 
     if (widget.existingEntry == null) {
       await widget.transactionModel.addNetWorthEntry(
-        name: _nameController.text,
+        name: _nameController.text.trim(),
         type: _selectedType,
         amount: parsedAmount,
         month: widget.month,
@@ -1135,7 +1317,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     } else {
       await widget.transactionModel.updateNetWorthEntry(
         id: widget.existingEntry!.id,
-        name: _nameController.text,
+        name: _nameController.text.trim(),
         type: _selectedType,
         amount: parsedAmount,
         month: widget.month,
@@ -1147,52 +1329,235 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   }
 }
 
-class _TypeSelector extends StatelessWidget {
-  final NetWorthEntryType selectedType;
-  final ValueChanged<NetWorthEntryType?> onChanged;
+// Reusable styled input field for the editor dialog.
+class _EditorField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final bool isFocused;
+  final String? errorText;
+  final Color accentColor;
+  final IconData prefixIcon;
+  final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool isDark;
 
-  const _TypeSelector({
+  const _EditorField({
+    required this.label,
+    required this.controller,
+    required this.focusNode,
+    required this.isFocused,
+    required this.errorText,
+    required this.accentColor,
+    required this.prefixIcon,
+    required this.isDark,
+    this.keyboardType,
+    this.textCapitalization = TextCapitalization.none,
+    this.inputFormatters,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasError = errorText != null;
+    final borderColor = hasError
+        ? AppDesign.getErrorColor(context)
+        : isFocused
+            ? accentColor
+            : AppDesign.getBorderColor(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppDesign.spacingXS,
+            bottom: AppDesign.spacingXS,
+          ),
+          child: Text(
+            label,
+            style: AppTypography.caption.copyWith(
+              color: hasError
+                  ? AppDesign.getErrorColor(context)
+                  : isFocused
+                      ? accentColor
+                      : AppDesign.getTextSecondary(context),
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          decoration: BoxDecoration(
+            color: isDark
+                ? AppColors.surfaceDark.withValues(alpha: 0.6)
+                : AppColors.backgroundLight,
+            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            border: Border.all(
+              color: borderColor,
+              width: isFocused ? AppDesign.borderThick : AppDesign.borderThin,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesign.spacingM,
+              vertical: AppDesign.spacingS,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  prefixIcon,
+                  size: AppDesign.iconS,
+                  color: hasError
+                      ? AppDesign.getErrorColor(context)
+                      : isFocused
+                          ? accentColor
+                          : AppDesign.getTextTertiary(context),
+                ),
+                const SizedBox(width: AppDesign.spacingS),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    keyboardType: keyboardType,
+                    textCapitalization: textCapitalization,
+                    inputFormatters: inputFormatters,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppDesign.getTextPrimary(context),
+                      fontWeight: FontWeight.w500,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (hasError) ...[
+          const SizedBox(height: AppDesign.spacingXS),
+          Row(
+            children: [
+              Icon(
+                CupertinoIcons.exclamationmark_circle_fill,
+                size: AppDesign.iconXS,
+                color: AppDesign.getErrorColor(context),
+              ),
+              const SizedBox(width: AppDesign.spacingXS),
+              Text(
+                errorText!,
+                style: AppTypography.caption.copyWith(
+                  color: AppDesign.getErrorColor(context),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// Two-pill toggle for asset / liability selection.
+class _TypeToggle extends StatelessWidget {
+  final NetWorthEntryType selectedType;
+  final ValueChanged<NetWorthEntryType> onChanged;
+
+  const _TypeToggle({
     required this.selectedType,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoSlidingSegmentedControl<NetWorthEntryType>(
-      groupValue: selectedType,
-      onValueChanged: onChanged,
-      children: {
-        NetWorthEntryType.asset: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDesign.spacingM,
-            vertical: AppDesign.spacingS,
+    return Row(
+      children: [
+        _TypePill(
+          label: 'Asset',
+          icon: CupertinoIcons.arrow_up_right,
+          type: NetWorthEntryType.asset,
+          isSelected: selectedType == NetWorthEntryType.asset,
+          gradient: AppDesign.getIncomeGradient(context),
+          onTap: () => onChanged(NetWorthEntryType.asset),
+        ),
+        const SizedBox(width: AppDesign.spacingS),
+        _TypePill(
+          label: 'Liability',
+          icon: CupertinoIcons.arrow_down_left,
+          type: NetWorthEntryType.liability,
+          isSelected: selectedType == NetWorthEntryType.liability,
+          gradient: AppDesign.getExpenseGradient(context),
+          onTap: () => onChanged(NetWorthEntryType.liability),
+        ),
+      ],
+    );
+  }
+}
+
+class _TypePill extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final NetWorthEntryType type;
+  final bool isSelected;
+  final LinearGradient gradient;
+  final VoidCallback onTap;
+
+  const _TypePill({
+    required this.label,
+    required this.icon,
+    required this.type,
+    required this.isSelected,
+    required this.gradient,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeInOut,
+          height: 48,
+          decoration: BoxDecoration(
+            gradient: isSelected ? gradient : null,
+            color: isSelected
+                ? null
+                : AppDesign.getBorderColor(context).withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            border: isSelected
+                ? null
+                : Border.all(color: AppDesign.getBorderColor(context)),
           ),
-          child: Text(
-            'Asset',
-            style: AppTypography.bodyMedium.copyWith(
-              color: selectedType == NetWorthEntryType.asset
-                  ? Colors.white
-                  : AppDesign.getTextPrimary(context),
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: AppDesign.iconXS,
+                color: isSelected
+                    ? Colors.white
+                    : AppDesign.getTextSecondary(context),
+              ),
+              const SizedBox(width: AppDesign.spacingXS),
+              Text(
+                label,
+                style: AppTypography.labelMedium.copyWith(
+                  color: isSelected
+                      ? Colors.white
+                      : AppDesign.getTextSecondary(context),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
-        NetWorthEntryType.liability: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDesign.spacingM,
-            vertical: AppDesign.spacingS,
-          ),
-          child: Text(
-            'Liability',
-            style: AppTypography.bodyMedium.copyWith(
-              color: selectedType == NetWorthEntryType.liability
-                  ? Colors.white
-                  : AppDesign.getTextPrimary(context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      },
+      ),
     );
   }
 }
