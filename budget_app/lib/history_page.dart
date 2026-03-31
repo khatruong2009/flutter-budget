@@ -242,7 +242,7 @@ class _HistoryPageState extends State<HistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Monthly Trends: Income vs. Expenses',
+            'Monthly Net Cash Flow',
             style: AppTypography.bodyLarge.copyWith(
               color: AppDesign.getTextPrimary(context),
               fontWeight: FontWeight.bold,
@@ -251,29 +251,49 @@ class _HistoryPageState extends State<HistoryPage> {
           const SizedBox(height: 16),
           SizedBox(
             height: 220,
-            child: _buildStackedBarChart(context, chartData, isDark),
+            child: _buildNetCashFlowBarChart(context, chartData, isDark),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStackedBarChart(
+  Widget _buildNetCashFlowBarChart(
       BuildContext context, List<MonthCashFlow> chartData, bool isDark) {
     final incomeColor = AppColors.getIncome(isDark);
     final expenseColor = AppColors.getExpense(isDark);
+    final netValues = chartData.map((d) => d.netCashFlow).toList();
+    final minNet = netValues.reduce(min);
+    final maxNet = netValues.reduce(max);
 
-    // Bar height = income; red portion = expenses, green portion = savings
-    final maxIncome =
-        chartData.map((d) => d.income).fold(0.0, (a, b) => a > b ? a : b);
-    final maxY = _roundUpNice(maxIncome * 1.15);
-    final interval = maxY / 2;
+    late final double minY;
+    late final double maxY;
+    late final double interval;
+
+    if (minNet == 0 && maxNet == 0) {
+      minY = -100;
+      maxY = 100;
+      interval = 50;
+    } else if (minNet < 0 && maxNet > 0) {
+      final maxMagnitude = _roundUpNice(max(minNet.abs(), maxNet.abs()) * 1.15);
+      minY = -maxMagnitude;
+      maxY = maxMagnitude;
+      interval = maxMagnitude / 2;
+    } else if (maxNet <= 0) {
+      minY = -_roundUpNice(minNet.abs() * 1.15);
+      maxY = 0;
+      interval = minY.abs() / 2;
+    } else {
+      minY = 0;
+      maxY = _roundUpNice(maxNet * 1.15);
+      interval = maxY / 2;
+    }
 
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
         maxY: maxY,
-        minY: 0,
+        minY: minY,
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
@@ -316,9 +336,11 @@ class _HistoryPageState extends State<HistoryPage> {
               reservedSize: 48,
               interval: interval,
               getTitlesWidget: (value, meta) {
-                final label = value >= 1000
-                    ? '\$${(value / 1000).toStringAsFixed(0)}k'
-                    : '\$${value.toStringAsFixed(0)}';
+                final absValue = value.abs();
+                final prefix = value < 0 ? '-\$' : '\$';
+                final label = absValue >= 1000
+                    ? '$prefix${(absValue / 1000).toStringAsFixed(0)}k'
+                    : '$prefix${absValue.toStringAsFixed(0)}';
                 return SideTitleWidget(
                   meta: meta,
                   child: Text(
@@ -344,28 +366,29 @@ class _HistoryPageState extends State<HistoryPage> {
           getDrawingHorizontalLine: (value) => FlLine(
             color: (isDark ? AppColors.borderDark : AppColors.borderLight)
                 .withValues(alpha: 0.5),
-            strokeWidth: 1,
+            strokeWidth: value == 0 ? 1.5 : 1,
           ),
         ),
         borderData: FlBorderData(show: false),
         barGroups: chartData.asMap().entries.map((entry) {
           final data = entry.value;
-          final expenses = data.expenses.clamp(0.0, data.income);
-          final savings = (data.income - expenses).clamp(0.0, double.infinity);
+          final isPositive = data.netCashFlow >= 0;
           return BarChartGroupData(
             x: entry.key,
             barRods: [
               BarChartRodData(
-                toY: data.income,
-                rodStackItems: [
-                  BarChartRodStackItem(0, expenses, expenseColor),
-                  BarChartRodStackItem(
-                      expenses, expenses + savings, incomeColor),
-                ],
+                fromY: 0,
+                toY: data.netCashFlow,
+                color: isPositive ? incomeColor : expenseColor,
                 width: 28,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  topRight: Radius.circular(5),
+                borderRadius: BorderRadius.only(
+                  topLeft: isPositive ? const Radius.circular(5) : Radius.zero,
+                  topRight:
+                      isPositive ? const Radius.circular(5) : Radius.zero,
+                  bottomLeft:
+                      isPositive ? Radius.zero : const Radius.circular(5),
+                  bottomRight:
+                      isPositive ? Radius.zero : const Radius.circular(5),
                 ),
               ),
             ],
