@@ -146,7 +146,8 @@ class TransactionModel extends ChangeNotifier {
   Future<void> saveTransactions(List<Transaction> transactions) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    await prefs.setString(_transactionsStorageKey, jsonEncode(jsonTransactions));
+    await prefs.setString(
+        _transactionsStorageKey, jsonEncode(jsonTransactions));
   }
 
   // load transactions
@@ -205,8 +206,8 @@ class TransactionModel extends ChangeNotifier {
     }).toList();
 
     entries.sort((a, b) {
-      final amountCompare =
-          (b.amountForMonth(month) ?? 0.0).compareTo(a.amountForMonth(month) ?? 0.0);
+      final amountCompare = (b.amountForMonth(month) ?? 0.0)
+          .compareTo(a.amountForMonth(month) ?? 0.0);
       if (amountCompare != 0) {
         return amountCompare;
       }
@@ -231,33 +232,35 @@ class TransactionModel extends ChangeNotifier {
   int getStaleNetWorthEntryCountForMonth(DateTime month) {
     final selectedMonthKey = netWorthMonthKey(month);
     return _netWorthEntries.where((entry) {
-      final latestSnapshot = entry.latestSnapshotThrough(month);
-      return latestSnapshot != null && latestSnapshot.monthKey != selectedMonthKey;
+      final latestSnapshot =
+          entry.latestSnapshotThrough(endOfNetWorthMonth(month));
+      return latestSnapshot != null &&
+          latestSnapshot.monthKey != selectedMonthKey;
     }).length;
   }
 
-  List<NetWorthMonthSummary> getNetWorthHistory({int limit = 6}) {
-    final monthKeys = <String>{
-      netWorthMonthKey(_selectedNetWorthMonth),
-    };
+  List<NetWorthHistoryPoint> getNetWorthHistory({int limit = 24}) {
+    final dayKeys = <String>{};
 
     for (final entry in _netWorthEntries) {
       for (final snapshot in entry.snapshots) {
-        monthKeys.add(snapshot.monthKey);
+        dayKeys.add(snapshot.dayKey);
       }
     }
 
-    final sortedKeys = monthKeys.toList()
-      ..sort((a, b) => b.compareTo(a));
+    final hasSelectedMonthPoint = dayKeys.any((dayKey) {
+      final date = netWorthDayFromKey(dayKey);
+      return date.year == _selectedNetWorthMonth.year &&
+          date.month == _selectedNetWorthMonth.month;
+    });
 
-    return sortedKeys.take(limit).map((monthKey) {
-      final month = netWorthMonthFromKey(monthKey);
-      return NetWorthMonthSummary(
-        month: month,
-        assets: getTotalAssetsForMonth(month),
-        liabilities: getTotalLiabilitiesForMonth(month),
-      );
-    }).toList();
+    if (!hasSelectedMonthPoint &&
+        hasNetWorthDataForMonth(_selectedNetWorthMonth)) {
+      dayKeys.add(
+          netWorthDayKey(_defaultSnapshotDateForMonth(_selectedNetWorthMonth)));
+    }
+
+    return _buildNetWorthHistoryPoints(dayKeys.toList(), limit);
   }
 
   List<DateTime> getNetWorthAvailableMonths() {
@@ -297,8 +300,11 @@ class TransactionModel extends ChangeNotifier {
     required NetWorthEntryType type,
     required double amount,
     DateTime? month,
+    DateTime? recordedAt,
   }) async {
     final effectiveMonth = month ?? _selectedNetWorthMonth;
+    final effectiveRecordedAt =
+        recordedAt ?? _defaultSnapshotDateForMonth(effectiveMonth);
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) {
       return;
@@ -310,8 +316,8 @@ class TransactionModel extends ChangeNotifier {
         name: trimmedName,
         type: type,
         snapshots: [
-          NetWorthSnapshot.forMonth(
-            month: effectiveMonth,
+          NetWorthSnapshot.forDate(
+            date: effectiveRecordedAt,
             amount: amount,
           ),
         ],
@@ -328,8 +334,11 @@ class TransactionModel extends ChangeNotifier {
     required NetWorthEntryType type,
     required double amount,
     DateTime? month,
+    DateTime? recordedAt,
   }) async {
     final effectiveMonth = month ?? _selectedNetWorthMonth;
+    final effectiveRecordedAt =
+        recordedAt ?? _defaultSnapshotDateForMonth(effectiveMonth);
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) {
       return;
@@ -342,7 +351,7 @@ class TransactionModel extends ChangeNotifier {
 
       return entry
           .copyWith(name: trimmedName, type: type)
-          .withAmountForMonth(month: effectiveMonth, amount: amount);
+          .withSnapshot(date: effectiveRecordedAt, amount: amount);
     }).toList();
 
     await _saveNetWorthEntries();
@@ -350,7 +359,8 @@ class TransactionModel extends ChangeNotifier {
   }
 
   Future<void> deleteNetWorthEntry(String id) async {
-    _netWorthEntries = _netWorthEntries.where((entry) => entry.id != id).toList();
+    _netWorthEntries =
+        _netWorthEntries.where((entry) => entry.id != id).toList();
     await _saveNetWorthEntries();
     notifyListeners();
   }
@@ -364,14 +374,15 @@ class TransactionModel extends ChangeNotifier {
         return entry;
       }
 
-      final previousSnapshot = entry.latestSnapshotThrough(previousMonth);
+      final previousSnapshot =
+          entry.latestSnapshotThrough(endOfNetWorthMonth(previousMonth));
       if (previousSnapshot == null) {
         return entry;
       }
 
       changed = true;
-      return entry.withAmountForMonth(
-        month: month,
+      return entry.withSnapshot(
+        date: _defaultSnapshotDateForMonth(month),
         amount: previousSnapshot.amount,
       );
     }).toList();
@@ -504,9 +515,7 @@ class TransactionModel extends ChangeNotifier {
       return CashFlowStatistics.empty();
     }
 
-    final average = history
-            .map((m) => m.netCashFlow)
-            .reduce((a, b) => a + b) /
+    final average = history.map((m) => m.netCashFlow).reduce((a, b) => a + b) /
         history.length;
 
     final best = history.reduce(
@@ -528,10 +537,126 @@ class TransactionModel extends ChangeNotifier {
     DateTime month,
     NetWorthEntryType type,
   ) {
+    return _sumNetWorthEntriesAtDate(endOfNetWorthMonth(month), type);
+  }
+
+  double _sumNetWorthEntriesAtDate(
+    DateTime date,
+    NetWorthEntryType type,
+  ) {
     return _netWorthEntries
         .where((entry) => entry.type == type)
-        .map((entry) => entry.amountForMonth(month) ?? 0.0)
+        .map((entry) => entry.amountAt(date) ?? 0.0)
         .fold(0.0, (sum, amount) => sum + amount);
+  }
+
+  double _getTotalAssetsAtDate(DateTime date) {
+    return _sumNetWorthEntriesAtDate(date, NetWorthEntryType.asset);
+  }
+
+  double _getTotalLiabilitiesAtDate(DateTime date) {
+    return _sumNetWorthEntriesAtDate(date, NetWorthEntryType.liability);
+  }
+
+  int _countNetWorthEntriesAtDate(
+    DateTime date,
+    NetWorthEntryType type,
+  ) {
+    return _netWorthEntries
+        .where((entry) => entry.type == type)
+        .where((entry) => entry.amountAt(date) != null)
+        .length;
+  }
+
+  List<NetWorthHistoryPoint> _buildNetWorthHistoryPoints(
+    List<String> dayKeys,
+    int limit,
+  ) {
+    if (dayKeys.isEmpty || limit <= 0) {
+      return const [];
+    }
+
+    final sortedKeys = dayKeys.toList()..sort((a, b) => b.compareTo(a));
+    final monthBuckets = <String, List<String>>{};
+    for (final dayKey in sortedKeys) {
+      final monthKey = netWorthMonthKey(netWorthDayFromKey(dayKey));
+      monthBuckets.putIfAbsent(monthKey, () => []).add(dayKey);
+    }
+
+    final compressedMonths = <String>{};
+    var pointCount = sortedKeys.length;
+    final oldestMonthsFirst = monthBuckets.keys.toList()..sort();
+
+    for (final monthKey in oldestMonthsFirst) {
+      if (pointCount <= limit) {
+        break;
+      }
+
+      final bucket = monthBuckets[monthKey] ?? const [];
+      final reduciblePoints = bucket.length - 1;
+      if (reduciblePoints <= 0) {
+        continue;
+      }
+
+      compressedMonths.add(monthKey);
+      pointCount -= reduciblePoints;
+    }
+
+    final points = <NetWorthHistoryPoint>[];
+    for (final monthKey in monthBuckets.keys) {
+      final bucket = monthBuckets[monthKey] ?? const [];
+      if (compressedMonths.contains(monthKey)) {
+        final month = netWorthMonthFromKey(monthKey);
+        points.add(
+          _buildNetWorthHistoryPoint(
+            displayDate: endOfNetWorthMonth(month),
+            effectiveDate: endOfNetWorthMonth(month),
+            granularity: NetWorthHistoryGranularity.month,
+          ),
+        );
+        continue;
+      }
+
+      for (final dayKey in bucket) {
+        final day = netWorthDayFromKey(dayKey);
+        points.add(
+          _buildNetWorthHistoryPoint(
+            displayDate: day,
+            effectiveDate: endOfNetWorthDay(day),
+          ),
+        );
+      }
+    }
+
+    return points.take(limit).toList();
+  }
+
+  NetWorthHistoryPoint _buildNetWorthHistoryPoint({
+    required DateTime displayDate,
+    required DateTime effectiveDate,
+    NetWorthHistoryGranularity granularity = NetWorthHistoryGranularity.day,
+  }) {
+    return NetWorthHistoryPoint(
+      date: displayDate,
+      assets: _getTotalAssetsAtDate(effectiveDate),
+      liabilities: _getTotalLiabilitiesAtDate(effectiveDate),
+      assetCount:
+          _countNetWorthEntriesAtDate(effectiveDate, NetWorthEntryType.asset),
+      liabilityCount: _countNetWorthEntriesAtDate(
+          effectiveDate, NetWorthEntryType.liability),
+      granularity: granularity,
+    );
+  }
+
+  DateTime _defaultSnapshotDateForMonth(DateTime month) {
+    final normalizedMonth = DateTime(month.year, month.month);
+    final now = DateTime.now();
+    if (normalizedMonth.year == now.year &&
+        normalizedMonth.month == now.month) {
+      return now;
+    }
+
+    return endOfNetWorthMonth(normalizedMonth);
   }
 
   Future<void> _saveNetWorthEntries() async {
@@ -556,8 +681,8 @@ class TransactionModel extends ChangeNotifier {
           name: 'Starting Assets',
           type: NetWorthEntryType.asset,
           snapshots: [
-            NetWorthSnapshot.forMonth(
-              month: currentMonth,
+            NetWorthSnapshot.forDate(
+              date: currentMonth,
               amount: startingAssets,
             ),
           ],
@@ -571,8 +696,8 @@ class TransactionModel extends ChangeNotifier {
           name: 'Starting Liabilities',
           type: NetWorthEntryType.liability,
           snapshots: [
-            NetWorthSnapshot.forMonth(
-              month: currentMonth,
+            NetWorthSnapshot.forDate(
+              date: currentMonth,
               amount: startingLiabilities,
             ),
           ],

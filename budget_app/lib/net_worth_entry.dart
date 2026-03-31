@@ -11,9 +11,23 @@ String netWorthMonthKey(DateTime date) {
   return DateFormat('yyyy-MM').format(normalized);
 }
 
+String netWorthDayKey(DateTime date) {
+  final normalized = DateTime(date.year, date.month, date.day);
+  return DateFormat('yyyy-MM-dd').format(normalized);
+}
+
 DateTime netWorthMonthFromKey(String monthKey) {
   final parts = monthKey.split('-');
   return DateTime(int.parse(parts[0]), int.parse(parts[1]));
+}
+
+DateTime netWorthDayFromKey(String dayKey) {
+  final parts = dayKey.split('-');
+  return DateTime(
+    int.parse(parts[0]),
+    int.parse(parts[1]),
+    int.parse(parts[2]),
+  );
 }
 
 String formatNetWorthMonth(DateTime date) {
@@ -21,41 +35,72 @@ String formatNetWorthMonth(DateTime date) {
   return DateFormat('MMMM y').format(normalized);
 }
 
+DateTime endOfNetWorthMonth(DateTime month) {
+  return DateTime(month.year, month.month + 1)
+      .subtract(const Duration(milliseconds: 1));
+}
+
+DateTime endOfNetWorthDay(DateTime date) {
+  return DateTime(date.year, date.month, date.day + 1)
+      .subtract(const Duration(milliseconds: 1));
+}
+
 class NetWorthSnapshot {
-  final String monthKey;
+  final DateTime recordedAt;
   final double amount;
-  final DateTime updatedAt;
+
+  String get monthKey => netWorthMonthKey(recordedAt);
+  String get dayKey => netWorthDayKey(recordedAt);
 
   const NetWorthSnapshot({
-    required this.monthKey,
+    required this.recordedAt,
     required this.amount,
-    required this.updatedAt,
   });
 
-  factory NetWorthSnapshot.forMonth({
-    required DateTime month,
+  factory NetWorthSnapshot.forDate({
+    required DateTime date,
     required double amount,
-    DateTime? updatedAt,
+    DateTime? recordedAt,
   }) {
     return NetWorthSnapshot(
-      monthKey: netWorthMonthKey(month),
+      recordedAt: recordedAt ?? date,
       amount: amount,
-      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 
   factory NetWorthSnapshot.fromJson(Map<String, dynamic> json) {
+    final recordedAtValue = json['recordedAt'] as String?;
+    final legacyMonthKey = json['monthKey'] as String?;
+    final legacyUpdatedAt = json['updatedAt'] as String?;
+
+    late final DateTime recordedAt;
+    if (recordedAtValue != null && recordedAtValue.isNotEmpty) {
+      recordedAt = DateTime.parse(recordedAtValue);
+    } else if (legacyMonthKey != null && legacyMonthKey.isNotEmpty) {
+      final month = netWorthMonthFromKey(legacyMonthKey);
+      final parsedUpdatedAt = legacyUpdatedAt == null || legacyUpdatedAt.isEmpty
+          ? null
+          : DateTime.tryParse(legacyUpdatedAt);
+      recordedAt = parsedUpdatedAt != null &&
+              parsedUpdatedAt.year == month.year &&
+              parsedUpdatedAt.month == month.month
+          ? parsedUpdatedAt
+          : month;
+    } else {
+      recordedAt = legacyUpdatedAt == null || legacyUpdatedAt.isEmpty
+          ? DateTime.now()
+          : DateTime.parse(legacyUpdatedAt);
+    }
+
     return NetWorthSnapshot(
-      monthKey: json['monthKey'] as String,
+      recordedAt: recordedAt,
       amount: (json['amount'] as num).toDouble(),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'monthKey': monthKey,
+        'recordedAt': recordedAt.toIso8601String(),
         'amount': amount,
-        'updatedAt': updatedAt.toIso8601String(),
       };
 }
 
@@ -117,28 +162,15 @@ class NetWorthEntry {
   }
 
   NetWorthSnapshot? snapshotForMonth(DateTime month) {
-    final monthKey = netWorthMonthKey(month);
-    for (final snapshot in snapshots) {
-      if (snapshot.monthKey == monthKey) {
-        return snapshot;
-      }
-    }
-    return null;
-  }
-
-  NetWorthSnapshot? latestSnapshotThrough(DateTime month) {
-    final targetMonthKey = netWorthMonthKey(month);
     NetWorthSnapshot? latest;
 
     for (final snapshot in snapshots) {
-      if (snapshot.monthKey.compareTo(targetMonthKey) > 0) {
+      if (snapshot.recordedAt.year != month.year ||
+          snapshot.recordedAt.month != month.month) {
         continue;
       }
 
-      if (latest == null ||
-          snapshot.monthKey.compareTo(latest.monthKey) > 0 ||
-          (snapshot.monthKey == latest.monthKey &&
-              snapshot.updatedAt.isAfter(latest.updatedAt))) {
+      if (latest == null || snapshot.recordedAt.isAfter(latest.recordedAt)) {
         latest = snapshot;
       }
     }
@@ -146,44 +178,74 @@ class NetWorthEntry {
     return latest;
   }
 
+  NetWorthSnapshot? latestSnapshotThrough(DateTime date) {
+    NetWorthSnapshot? latest;
+
+    for (final snapshot in snapshots) {
+      if (snapshot.recordedAt.isAfter(date)) {
+        continue;
+      }
+
+      if (latest == null || snapshot.recordedAt.isAfter(latest.recordedAt)) {
+        latest = snapshot;
+      }
+    }
+
+    return latest;
+  }
+
+  double? amountAt(DateTime date) {
+    return latestSnapshotThrough(date)?.amount;
+  }
+
   double? amountForMonth(DateTime month) {
-    return latestSnapshotThrough(month)?.amount;
+    return amountAt(endOfNetWorthMonth(month));
   }
 
   bool hasSnapshotForMonth(DateTime month) {
     return snapshotForMonth(month) != null;
   }
 
-  NetWorthEntry withAmountForMonth({
-    required DateTime month,
+  NetWorthEntry withSnapshot({
+    required DateTime date,
     required double amount,
   }) {
-    final monthKey = netWorthMonthKey(month);
-    final updatedSnapshot = NetWorthSnapshot.forMonth(
-      month: month,
+    final updatedSnapshot = NetWorthSnapshot.forDate(
+      date: date,
       amount: amount,
     );
 
     final updatedSnapshots = snapshots
-        .where((snapshot) => snapshot.monthKey != monthKey)
+        .where((snapshot) => snapshot.recordedAt != updatedSnapshot.recordedAt)
         .toList()
       ..add(updatedSnapshot);
 
-    updatedSnapshots.sort((a, b) => a.monthKey.compareTo(b.monthKey));
+    updatedSnapshots.sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
 
     return copyWith(snapshots: updatedSnapshots);
   }
 }
 
-class NetWorthMonthSummary {
-  final DateTime month;
+enum NetWorthHistoryGranularity {
+  day,
+  month,
+}
+
+class NetWorthHistoryPoint {
+  final DateTime date;
   final double assets;
   final double liabilities;
+  final int assetCount;
+  final int liabilityCount;
+  final NetWorthHistoryGranularity granularity;
 
-  const NetWorthMonthSummary({
-    required this.month,
+  const NetWorthHistoryPoint({
+    required this.date,
     required this.assets,
     required this.liabilities,
+    required this.assetCount,
+    required this.liabilityCount,
+    this.granularity = NetWorthHistoryGranularity.day,
   });
 
   double get netWorth => assets - liabilities;

@@ -254,7 +254,7 @@ class _ChangeBadge extends StatelessWidget {
 // ---------- Growth Chart Card ----------
 
 class _GrowthChartCard extends StatefulWidget {
-  final List<NetWorthMonthSummary> chartData;
+  final List<NetWorthHistoryPoint> chartData;
 
   const _GrowthChartCard({required this.chartData});
 
@@ -266,6 +266,7 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
   final ScrollController _scrollController = ScrollController();
   int? _lastLength;
   bool _hasScrolledToLatest = false;
+  int? _selectedSpotIndex;
 
   @override
   void dispose() {
@@ -281,6 +282,7 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
     if (_lastLength != chartData.length) {
       _lastLength = chartData.length;
       _hasScrolledToLatest = false;
+      _selectedSpotIndex = null;
     }
 
     final needsScrolling = chartData.length > 8;
@@ -313,13 +315,24 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
               fontWeight: FontWeight.w700,
             ),
           ),
+          if (chartData.any(
+            (point) => point.granularity == NetWorthHistoryGranularity.month,
+          )) ...[
+            const SizedBox(height: AppDesign.spacingXS),
+            Text(
+              'Older updates are grouped into monthly snapshots.',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppDesign.getTextSecondary(context),
+              ),
+            ),
+          ],
           const SizedBox(height: AppDesign.spacingM),
           if (chartData.isEmpty)
             Container(
               height: 220,
               alignment: Alignment.center,
               child: Text(
-                'Add monthly balances to build your growth chart.',
+                'Add balance updates to build your growth chart.',
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppDesign.getTextSecondary(context),
                 ),
@@ -335,7 +348,7 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
 
   Widget _buildChartContent(
     BuildContext context,
-    List<NetWorthMonthSummary> chartData,
+    List<NetWorthHistoryPoint> chartData,
     bool isDark,
     bool needsScrolling,
   ) {
@@ -347,7 +360,36 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
     final chart = SizedBox(
       width: needsScrolling ? chartWidth : double.infinity,
       height: 240,
-      child: _NetWorthLineChart(chartData: chartData, isDark: isDark),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: _NetWorthLineChart(
+              chartData: chartData,
+              isDark: isDark,
+              selectedSpotIndex: _selectedSpotIndex,
+              onTouchSpot: _handleTouchSpot,
+            ),
+          ),
+          if (_selectedSpotIndex != null)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDesign.spacingS,
+                    vertical: AppDesign.spacingXS,
+                  ),
+                  child: _NetWorthHoverCard(
+                    point: chartData[_selectedSpotIndex!.clamp(
+                      0,
+                      chartData.length - 1,
+                    )],
+                    alignment: _overlayAlignmentForSelectedPoint(chartData),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
 
     if (!needsScrolling) {
@@ -386,17 +428,69 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
       ],
     );
   }
+
+  void _handleTouchSpot(FlTouchEvent event, int? spotIndex) {
+    if (widget.chartData.isEmpty) {
+      return;
+    }
+
+    if (event is FlLongPressStart || event is FlLongPressMoveUpdate) {
+      if (spotIndex == null) {
+        return;
+      }
+
+      final normalizedIndex = spotIndex.clamp(0, widget.chartData.length - 1);
+      if (_selectedSpotIndex == normalizedIndex) {
+        return;
+      }
+
+      HapticFeedback.selectionClick();
+      setState(() => _selectedSpotIndex = normalizedIndex);
+      return;
+    }
+
+    if (_selectedSpotIndex != null &&
+        (event is FlLongPressEnd || !event.isInterestedForInteractions)) {
+      setState(() => _selectedSpotIndex = null);
+    }
+  }
+
+  Alignment _overlayAlignmentForSelectedPoint(
+    List<NetWorthHistoryPoint> chartData,
+  ) {
+    final selectedIndex = _selectedSpotIndex;
+    if (selectedIndex == null || chartData.isEmpty) {
+      return const Alignment(0, -0.42);
+    }
+
+    final safeIndex = selectedIndex.clamp(0, chartData.length - 1);
+    final point = chartData[safeIndex];
+    final values = chartData.map((item) => item.netWorth).toList();
+    final minValue = values.reduce(min);
+    final maxValue = values.reduce(max);
+    final midpoint = (minValue + maxValue) / 2;
+    final useBottom = point.netWorth >= midpoint;
+
+    if (useBottom) {
+      return const Alignment(0, 0.42);
+    }
+    return const Alignment(0, -0.42);
+  }
 }
 
 // ---------- Line Chart ----------
 
 class _NetWorthLineChart extends StatelessWidget {
-  final List<NetWorthMonthSummary> chartData;
+  final List<NetWorthHistoryPoint> chartData;
   final bool isDark;
+  final int? selectedSpotIndex;
+  final void Function(FlTouchEvent event, int? spotIndex) onTouchSpot;
 
   const _NetWorthLineChart({
     required this.chartData,
     required this.isDark,
+    required this.selectedSpotIndex,
+    required this.onTouchSpot,
   });
 
   @override
@@ -412,6 +506,56 @@ class _NetWorthLineChart extends StatelessWidget {
     final paddedMax = maxValue + (range * 0.18);
     final yInterval = _niceInterval(paddedMax - paddedMin);
     final incomeColor = AppDesign.getIncomeColor(context);
+    final expenseColor = AppDesign.getExpenseColor(context);
+    final lineSpots = chartData.length == 1
+        ? [
+            FlSpot(0.0, chartData[0].netWorth),
+            FlSpot(1.0, chartData[0].netWorth),
+          ]
+        : List.generate(
+            chartData.length,
+            (index) => FlSpot(index.toDouble(), chartData[index].netWorth),
+          );
+    final lineBarData = LineChartBarData(
+      spots: lineSpots,
+      isCurved: true,
+      color: incomeColor,
+      barWidth: 3,
+      belowBarData: BarAreaData(
+        show: true,
+        gradient: LinearGradient(
+          colors: [
+            incomeColor.withValues(alpha: 0.30),
+            incomeColor.withValues(alpha: 0.0),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      dotData: FlDotData(
+        show: selectedSpotIndex != null,
+        checkToShowDot: (spot, _) =>
+            selectedSpotIndex != null &&
+            (spot.x.round() == selectedSpotIndex ||
+                (chartData.length == 1 &&
+                    selectedSpotIndex == 0 &&
+                    spot.x.round() == 1)),
+        getDotPainter: (spot, _, __, index) {
+          final pointIndex = chartData.length == 1
+              ? 0
+              : index.clamp(0, chartData.length - 1);
+          final point = chartData[pointIndex];
+          final highlightColor =
+              point.netWorth >= 0 ? incomeColor : expenseColor;
+          return FlDotCirclePainter(
+            radius: 7,
+            color: highlightColor,
+            strokeWidth: 5,
+            strokeColor: highlightColor.withValues(alpha: 0.22),
+          );
+        },
+      ),
+    );
 
     return LineChart(
       LineChartData(
@@ -462,11 +606,11 @@ class _NetWorthLineChart extends StatelessWidget {
                     index.isEven ||
                     index == chartData.length - 1;
                 if (!shouldShow) return const SizedBox.shrink();
-                final month = chartData[index].month;
+                final point = chartData[index];
                 return SideTitleWidget(
                   meta: meta,
                   child: Text(
-                    DateFormat('MMM').format(month),
+                    _formatNetWorthHistoryAxisLabel(point),
                     style: AppTypography.bodySmall.copyWith(
                       color: AppDesign.getTextSecondary(context),
                       fontSize: 11,
@@ -503,71 +647,109 @@ class _NetWorthLineChart extends StatelessWidget {
         ),
         lineTouchData: LineTouchData(
           enabled: true,
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (_) =>
-                isDark ? AppColors.cardDark : AppColors.cardLight,
-            tooltipBorder: BorderSide(
-              color: isDark ? AppColors.borderDark : AppColors.borderLight,
-            ),
-            getTooltipItems: (spots) {
-              return spots.map((spot) {
-                final index = spot.x.toInt().clamp(0, chartData.length - 1);
-                final month = chartData[index].month;
-                final value = chartData[index].netWorth;
-                return LineTooltipItem(
-                  '${DateFormat('MMM y').format(month)}\n',
-                  AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.w700,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: _formatCurrency(value),
-                      style: AppTypography.bodySmall.copyWith(
-                        color: value >= 0
-                            ? AppDesign.getIncomeColor(context)
-                            : AppDesign.getExpenseColor(context),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                );
-              }).toList();
-            },
-          ),
+          handleBuiltInTouches: false,
+          longPressDuration: const Duration(milliseconds: 150),
+          touchCallback: (event, response) {
+            final spotIndex = response?.lineBarSpots?.first.spotIndex;
+            onTouchSpot(event, spotIndex);
+          },
         ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: chartData.length == 1
-                ? [
-                    FlSpot(0.0, chartData[0].netWorth),
-                    FlSpot(1.0, chartData[0].netWorth),
-                  ]
-                : List.generate(
-                    chartData.length,
-                    (index) =>
-                        FlSpot(index.toDouble(), chartData[index].netWorth),
-                  ),
-            isCurved: true,
-            color: incomeColor,
-            barWidth: 3,
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                colors: [
-                  incomeColor.withValues(alpha: 0.30),
-                  incomeColor.withValues(alpha: 0.0),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            dotData: const FlDotData(show: false),
-          ),
-        ],
+        lineBarsData: [lineBarData],
       ),
     );
   }
+
+}
+
+class _NetWorthHoverCard extends StatelessWidget {
+  final NetWorthHistoryPoint point;
+  final Alignment alignment;
+
+  const _NetWorthHoverCard({
+    required this.point,
+    required this.alignment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final netWorthColor = point.netWorth >= 0
+        ? AppDesign.getIncomeColor(context)
+        : AppDesign.getExpenseColor(context);
+
+    return Align(
+      alignment: alignment,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 220),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDesign.spacingM,
+            vertical: AppDesign.spacingS,
+          ),
+          decoration: BoxDecoration(
+            color: AppDesign.getCardColor(context),
+            borderRadius: BorderRadius.circular(AppDesign.radiusL),
+            border: Border.all(color: AppDesign.getBorderColor(context)),
+            boxShadow: AppDesign.shadowM,
+          ),
+          child: DefaultTextStyle(
+            style: AppTypography.bodySmall.copyWith(
+              color: AppDesign.getTextSecondary(context),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _formatNetWorthHistoryTooltipTitle(point),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextPrimary(context),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingXS),
+                Text(
+                  _formatCurrency(point.netWorth),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: netWorthColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingXS),
+                Text('Assets: ${_formatCurrency(point.assets)}'),
+                Text('Liabilities: ${_formatCurrency(point.liabilities)}'),
+                if (point.granularity == NetWorthHistoryGranularity.month) ...[
+                  const SizedBox(height: AppDesign.spacingXS),
+                  Text(
+                    'Monthly snapshot',
+                    style: AppTypography.caption.copyWith(
+                      color: AppDesign.getTextTertiary(context),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _formatNetWorthHistoryAxisLabel(NetWorthHistoryPoint point) {
+  if (point.granularity == NetWorthHistoryGranularity.month) {
+    return DateFormat('MMM').format(point.date);
+  }
+
+  return DateFormat('MMM d').format(point.date);
+}
+
+String _formatNetWorthHistoryTooltipTitle(NetWorthHistoryPoint point) {
+  if (point.granularity == NetWorthHistoryGranularity.month) {
+    return DateFormat('MMMM y').format(point.date);
+  }
+
+  return DateFormat('MMM d, y').format(point.date);
 }
 
 // ---------- Accounts Toggle ----------
@@ -742,7 +924,9 @@ class _AccountRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveSnapshot = entry.latestSnapshotThrough(month);
+    final effectiveSnapshot = entry.latestSnapshotThrough(
+      endOfNetWorthMonth(month),
+    );
     final amount = effectiveSnapshot?.amount ?? 0.0;
     final percentage = totalForCategory > 0
         ? (amount / totalForCategory).clamp(0.0, 1.0)
@@ -1059,7 +1243,8 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     final existingEntry = widget.existingEntry;
     final hasPriorValue = existingEntry != null &&
         existingEntry.snapshotForMonth(widget.month) == null &&
-        existingEntry.latestSnapshotThrough(widget.month) != null;
+        existingEntry.latestSnapshotThrough(endOfNetWorthMonth(widget.month)) !=
+            null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Dialog(
@@ -1427,7 +1612,7 @@ class _EditorField extends StatelessWidget {
                       color: AppDesign.getTextPrimary(context),
                       fontWeight: FontWeight.w500,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
                       contentPadding: EdgeInsets.zero,
