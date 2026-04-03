@@ -209,6 +209,7 @@ class _ChangeBadge extends StatelessWidget {
     final percentStr = previousNetWorth.abs() > 0.001
         ? '${isPositive ? '+' : ''}${(change / previousNetWorth.abs() * 100).toStringAsFixed(1)}%'
         : '${isPositive ? '+' : '-'}—';
+    final dollarStr = '${isPositive ? '+' : ''}${_formatCurrency(change)}';
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -239,7 +240,7 @@ class _ChangeBadge extends StatelessWidget {
           ),
           const SizedBox(width: AppDesign.spacingS),
           Text(
-            '$percentStr  Since last month',
+            '$dollarStr  ($percentStr)  Since last month',
             style: AppTypography.bodyMedium.copyWith(
               color: color,
               fontWeight: FontWeight.w600,

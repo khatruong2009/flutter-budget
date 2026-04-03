@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'transaction.dart';
+import 'transaction_model.dart';
+import 'transaction_generator.dart';
 import 'recurring_transaction.dart';
 import 'recurring_transaction_model.dart';
 import 'common.dart';
@@ -16,6 +18,8 @@ Future<void> showRecurringTransactionForm(
 ]) async {
   final recurringModel =
       Provider.of<RecurringTransactionModel>(context, listen: false);
+  final transactionModel =
+      Provider.of<TransactionModel>(context, listen: false);
 
   // Form state
   String description = '';
@@ -651,6 +655,13 @@ Future<void> showRecurringTransactionForm(
                                     );
                                   } else {
                                     recurringModel.addRecurringTransaction(recurring);
+                                    // Generate any due transactions immediately so
+                                    // today's occurrence is logged right away
+                                    final generator = TransactionGenerator(
+                                      transactionModel: transactionModel,
+                                      recurringModel: recurringModel,
+                                    );
+                                    generator.generateDueTransactions();
                                   }
 
                                   Navigator.of(context).pop();
