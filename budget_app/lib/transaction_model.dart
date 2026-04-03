@@ -264,8 +264,9 @@ class TransactionModel extends ChangeNotifier {
   }
 
   List<DateTime> getNetWorthAvailableMonths() {
+    final now = DateTime.now();
     final monthKeys = <String>{
-      netWorthMonthKey(_selectedNetWorthMonth),
+      netWorthMonthKey(DateTime(now.year, now.month)),
     };
 
     for (final entry in _netWorthEntries) {
