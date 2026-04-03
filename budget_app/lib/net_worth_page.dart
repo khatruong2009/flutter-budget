@@ -1366,45 +1366,6 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                       onChanged: (type) => setState(() => _selectedType = type),
                     ),
 
-                    if (hasPriorValue) ...[
-                      const SizedBox(height: AppDesign.spacingM),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDesign.spacingM,
-                          vertical: AppDesign.spacingS,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppDesign.getWarningColor(context)
-                              .withValues(alpha: 0.10),
-                          borderRadius:
-                              BorderRadius.circular(AppDesign.radiusM),
-                          border: Border.all(
-                            color: AppDesign.getWarningColor(context)
-                                .withValues(alpha: 0.35),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              CupertinoIcons.info_circle_fill,
-                              size: AppDesign.iconS,
-                              color: AppDesign.getWarningColor(context),
-                            ),
-                            const SizedBox(width: AppDesign.spacingS),
-                            Expanded(
-                              child: Text(
-                                'Carrying forward an older balance.',
-                                style: AppTypography.caption.copyWith(
-                                  color: AppDesign.getWarningColor(context),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
                     const SizedBox(height: AppDesign.spacingM),
 
                     // Account name field
