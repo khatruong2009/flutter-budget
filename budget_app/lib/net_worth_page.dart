@@ -161,6 +161,11 @@ class _NetWorthPageState extends State<NetWorthPage> {
                             month: month,
                             existingEntry: entry,
                           ),
+                          onViewHistory: (entry) => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => _AccountHistoryPage(entry: entry),
+                            ),
+                          ),
                           onDeleteEntry: (entry) => _confirmDeleteNetWorthEntry(
                             context: context,
                             transactionModel: model,
@@ -856,6 +861,7 @@ class _AccountsList extends StatelessWidget {
   final double totalLiabilities;
   final DateTime month;
   final void Function(NetWorthEntry) onEditEntry;
+  final void Function(NetWorthEntry) onViewHistory;
   final void Function(NetWorthEntry) onDeleteEntry;
 
   const _AccountsList({
@@ -866,6 +872,7 @@ class _AccountsList extends StatelessWidget {
     required this.totalLiabilities,
     required this.month,
     required this.onEditEntry,
+    required this.onViewHistory,
     required this.onDeleteEntry,
   });
 
@@ -896,7 +903,8 @@ class _AccountsList extends StatelessWidget {
             entry: entry,
             month: month,
             totalForCategory: total,
-            onTap: () => onEditEntry(entry),
+            onViewHistory: () => onViewHistory(entry),
+            onEdit: () => onEditEntry(entry),
             onDelete: () => onDeleteEntry(entry),
           ),
         );
@@ -911,14 +919,16 @@ class _AccountRow extends StatelessWidget {
   final NetWorthEntry entry;
   final DateTime month;
   final double totalForCategory;
-  final VoidCallback onTap;
+  final VoidCallback onViewHistory;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _AccountRow({
     required this.entry,
     required this.month,
     required this.totalForCategory,
-    required this.onTap,
+    required this.onViewHistory,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -939,7 +949,7 @@ class _AccountRow extends StatelessWidget {
     final icon = _iconForEntry(entry);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: onEdit,
       onLongPress: () => showModalBottomSheet<void>(
         context: context,
         builder: (ctx) => SafeArea(
@@ -965,9 +975,23 @@ class _AccountRow extends StatelessWidget {
                     color: AppDesign.getTextPrimary(ctx),
                   ),
                 ),
+                  onTap: () {
+                  Navigator.pop(ctx);
+                  onEdit();
+                },
+              ),
+              ListTile(
+                leading: Icon(CupertinoIcons.chart_bar_alt_fill,
+                    color: AppDesign.getTextPrimary(ctx)),
+                title: Text(
+                  'View History',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppDesign.getTextPrimary(ctx),
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(ctx);
-                  onTap();
+                  onViewHistory();
                 },
               ),
               ListTile(
@@ -1063,7 +1087,66 @@ class _AccountRow extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(color),
               ),
             ),
+            const SizedBox(height: AppDesign.spacingS),
+            Wrap(
+              spacing: AppDesign.spacingS,
+              runSpacing: AppDesign.spacingS,
+              children: [
+                _buildQuickAction(
+                  context: context,
+                  icon: CupertinoIcons.pencil,
+                  label: 'Edit',
+                  color: AppDesign.getTextPrimary(context),
+                  backgroundColor:
+                      AppDesign.getBorderColor(context).withValues(alpha: 0.35),
+                  onPressed: onEdit,
+                ),
+                _buildQuickAction(
+                  context: context,
+                  icon: CupertinoIcons.chart_bar_alt_fill,
+                  label: 'History',
+                  color: color,
+                  backgroundColor: color.withValues(alpha: 0.14),
+                  onPressed: onViewHistory,
+                ),
+              ],
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickAction({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color backgroundColor,
+    required VoidCallback onPressed,
+  }) {
+    return TextButton.icon(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDesign.spacingS,
+          vertical: AppDesign.spacingXS,
+        ),
+        minimumSize: const Size(0, AppDesign.touchTargetMin),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+        foregroundColor: color,
+        backgroundColor: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+        ),
+      ),
+      icon: Icon(icon, size: AppDesign.iconXS),
+      label: Text(
+        label,
+        style: AppTypography.bodySmall.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -1104,6 +1187,851 @@ class _AccountRow extends StatelessWidget {
       }
       return CupertinoIcons.arrow_down_left_circle_fill;
     }
+  }
+}
+
+class _AccountHistoryPage extends StatelessWidget {
+  final NetWorthEntry entry;
+
+  const _AccountHistoryPage({required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    final model = context.read<TransactionModel>();
+    final chartHistory = model.getNetWorthEntryHistory(entry.id);
+    final timelineHistory = chartHistory.reversed.toList();
+    final isAsset = entry.type == NetWorthEntryType.asset;
+    final accentColor = isAsset
+        ? AppDesign.getIncomeColor(context)
+        : AppDesign.getExpenseColor(context);
+    final latestSnapshot = chartHistory.isNotEmpty ? chartHistory.last : null;
+    final previousSnapshot =
+        chartHistory.length > 1 ? chartHistory[chartHistory.length - 2] : null;
+    final latestAmount = latestSnapshot?.amount ?? 0.0;
+    final changeFromPrevious = latestSnapshot != null && previousSnapshot != null
+        ? latestSnapshot.amount - previousSnapshot.amount
+        : null;
+    final totalChange = chartHistory.length > 1
+        ? chartHistory.last.amount - chartHistory.first.amount
+        : null;
+    final totalChangeIsPositive = totalChange == null
+        ? null
+        : isAsset
+            ? totalChange >= 0
+            : totalChange <= 0;
+    final peakAmount = chartHistory.isEmpty
+        ? null
+        : chartHistory.map((point) => point.amount).reduce(max);
+    final lowAmount = chartHistory.isEmpty
+        ? null
+        : chartHistory.map((point) => point.amount).reduce(min);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(entry.name),
+        backgroundColor: AppDesign.getBackgroundColor(context),
+        actions: [
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.pencil,
+              color: AppDesign.getTextPrimary(context),
+            ),
+            onPressed: () => _showNetWorthEditor(
+              context: context,
+              transactionModel: model,
+              month: model.selectedNetWorthMonth,
+              existingEntry: entry,
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.trash,
+              color: AppDesign.getExpenseColor(context),
+            ),
+            onPressed: () async {
+              await _confirmDeleteNetWorthEntry(
+                context: context,
+                transactionModel: model,
+                entry: entry,
+              );
+              if (!context.mounted) return;
+
+              final stillExists =
+                  model.netWorthEntries.any((item) => item.id == entry.id);
+              if (!stillExists) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      ),
+      backgroundColor: AppDesign.getBackgroundColor(context),
+      body: SingleChildScrollView(
+        physics: PlatformUtils.platformScrollPhysics,
+        padding: const EdgeInsets.fromLTRB(
+          AppDesign.spacingM,
+          AppDesign.spacingM,
+          AppDesign.spacingM,
+          AppDesign.spacingXXL,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _AccountHistoryHeroCard(
+              entry: entry,
+              color: accentColor,
+              latestAmount: latestAmount,
+              lastUpdated: latestSnapshot?.recordedAt,
+              changeFromPrevious: changeFromPrevious,
+              totalChange: totalChange,
+              totalChangeIsPositive: totalChangeIsPositive,
+              snapshotCount: chartHistory.length,
+            ),
+            const SizedBox(height: AppDesign.spacingM),
+            Wrap(
+              spacing: AppDesign.spacingS,
+              runSpacing: AppDesign.spacingS,
+              children: [
+                _AccountHistoryStatCard(
+                  label: 'Current',
+                  value: _formatCompactCurrencyNoDecimals(latestAmount),
+                  color: accentColor,
+                ),
+                _AccountHistoryStatCard(
+                  label: 'Peak',
+                  value: peakAmount == null
+                      ? '—'
+                      : _formatCompactCurrencyNoDecimals(peakAmount),
+                  color: accentColor.withValues(alpha: 0.85),
+                ),
+                _AccountHistoryStatCard(
+                  label: 'Low',
+                  value: lowAmount == null
+                      ? '—'
+                      : _formatCompactCurrencyNoDecimals(lowAmount),
+                  color: AppDesign.getTextPrimary(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppDesign.spacingM),
+            _AccountHistoryChart(
+              entryName: entry.name,
+              history: chartHistory,
+              color: accentColor,
+            ),
+            const SizedBox(height: AppDesign.spacingL),
+            Row(
+              children: [
+                Text(
+                  'Timeline',
+                  style: AppTypography.headingMedium.copyWith(
+                    color: AppDesign.getTextPrimary(context),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${chartHistory.length} ${chartHistory.length == 1 ? 'entry' : 'entries'}',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppDesign.spacingS),
+            if (timelineHistory.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppDesign.spacingL),
+                decoration: BoxDecoration(
+                  color: AppDesign.getCardColor(context),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusXL),
+                  border: Border.all(
+                    color: AppDesign.getBorderColor(context)
+                        .withValues(alpha: 0.6),
+                  ),
+                ),
+                child: Text(
+                  'Add updates to this account to build a balance timeline.',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                  ),
+                ),
+              )
+            else
+              Column(
+                children: List.generate(timelineHistory.length, (index) {
+                  final snapshot = timelineHistory[index];
+                  final olderSnapshot = index < timelineHistory.length - 1
+                      ? timelineHistory[index + 1]
+                      : null;
+                  final delta = olderSnapshot == null
+                      ? null
+                      : snapshot.amount - olderSnapshot.amount;
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: index == timelineHistory.length - 1
+                          ? 0
+                          : AppDesign.spacingS,
+                    ),
+                    child: _AccountHistoryTimelineRow(
+                      snapshot: snapshot,
+                      delta: delta,
+                      color: accentColor,
+                      isAsset: isAsset,
+                    ),
+                  );
+                }),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AccountHistoryHeroCard extends StatelessWidget {
+  final NetWorthEntry entry;
+  final Color color;
+  final double latestAmount;
+  final DateTime? lastUpdated;
+  final double? changeFromPrevious;
+  final double? totalChange;
+  final bool? totalChangeIsPositive;
+  final int snapshotCount;
+
+  const _AccountHistoryHeroCard({
+    required this.entry,
+    required this.color,
+    required this.latestAmount,
+    required this.lastUpdated,
+    required this.changeFromPrevious,
+    required this.totalChange,
+    required this.totalChangeIsPositive,
+    required this.snapshotCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isAsset = entry.type == NetWorthEntryType.asset;
+    final surfaceColor = AppDesign.getCardColor(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppDesign.spacingL),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            color.withValues(alpha: 0.18),
+            color.withValues(alpha: 0.08),
+            surfaceColor,
+          ],
+          stops: const [0, 0.42, 1],
+        ),
+        borderRadius: BorderRadius.circular(AppDesign.radiusXXL),
+        border: Border.all(
+          color: color.withValues(alpha: 0.18),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+          ...AppDesign.shadowS,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                ),
+                child: Icon(
+                  isAsset
+                      ? CupertinoIcons.arrow_up_right_circle_fill
+                      : CupertinoIcons.arrow_down_left_circle_fill,
+                  color: color,
+                  size: AppDesign.iconL,
+                ),
+              ),
+              const SizedBox(width: AppDesign.spacingM),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Balance History',
+                      style: AppTypography.headingMedium.copyWith(
+                        color: AppDesign.getTextPrimary(context),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      lastUpdated == null
+                          ? 'No recorded updates yet'
+                          : 'Last update ${DateFormat.yMMMd().format(lastUpdated!)}',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppDesign.getTextSecondary(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDesign.spacingS,
+                  vertical: AppDesign.spacingXS,
+                ),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+                ),
+                child: Text(
+                  isAsset ? 'Asset' : 'Liability',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppDesign.spacingL),
+          Text(
+            'Current Balance',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppDesign.getTextSecondary(context),
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingXS),
+          SizedBox(
+            width: double.infinity,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                _formatCurrency(latestAmount),
+                style: AppTypography.numericLarge.copyWith(
+                  color: AppDesign.getTextPrimary(context),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingM),
+          Wrap(
+            spacing: AppDesign.spacingS,
+            runSpacing: AppDesign.spacingS,
+            children: [
+              _buildMetaChip(
+                context: context,
+                icon: CupertinoIcons.calendar,
+                label:
+                    '$snapshotCount ${snapshotCount == 1 ? 'snapshot' : 'snapshots'}',
+                color: AppDesign.getTextPrimary(context),
+                backgroundColor:
+                    AppDesign.getBorderColor(context).withValues(alpha: 0.30),
+              ),
+              if (changeFromPrevious != null)
+                _buildMetaChip(
+                  context: context,
+                  icon: changeFromPrevious! >= 0
+                      ? CupertinoIcons.arrow_up_right
+                      : CupertinoIcons.arrow_down_right,
+                  label:
+                      '${changeFromPrevious! >= 0 ? '+' : ''}${_formatCompactCurrencyNoDecimals(changeFromPrevious!)} vs prior',
+                  color: changeFromPrevious! >= 0
+                      ? AppDesign.getIncomeColor(context)
+                      : AppDesign.getExpenseColor(context),
+                  backgroundColor: (changeFromPrevious! >= 0
+                          ? AppDesign.getIncomeColor(context)
+                          : AppDesign.getExpenseColor(context))
+                      .withValues(alpha: 0.14),
+                ),
+              if (totalChange != null)
+                _buildMetaChip(
+                  context: context,
+                  icon: totalChangeIsPositive == true
+                      ? CupertinoIcons.arrow_up_right
+                      : CupertinoIcons.arrow_down_right,
+                  label:
+                      '${totalChange! >= 0 ? '+' : ''}${_formatCompactCurrencyNoDecimals(totalChange!)} overall',
+                  color: totalChangeIsPositive == true
+                      ? AppDesign.getIncomeColor(context)
+                      : AppDesign.getExpenseColor(context),
+                  backgroundColor: (totalChangeIsPositive == true
+                          ? AppDesign.getIncomeColor(context)
+                          : AppDesign.getExpenseColor(context))
+                      .withValues(alpha: 0.14),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetaChip({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color backgroundColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesign.spacingS,
+        vertical: AppDesign.spacingXS,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: AppDesign.iconXS, color: color),
+          const SizedBox(width: AppDesign.spacingXS),
+          Text(
+            label,
+            style: AppTypography.labelSmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountHistoryStatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _AccountHistoryStatCard({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 104),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesign.spacingM,
+        vertical: AppDesign.spacingM,
+      ),
+      decoration: BoxDecoration(
+        color: AppDesign.getCardColor(context),
+        borderRadius: BorderRadius.circular(AppDesign.radiusL),
+        border: Border.all(
+          color: AppDesign.getBorderColor(context).withValues(alpha: 0.65),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppDesign.getTextSecondary(context),
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingXS),
+          Text(
+            value,
+            style: AppTypography.numericSmall.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountHistoryTimelineRow extends StatelessWidget {
+  final NetWorthSnapshot snapshot;
+  final double? delta;
+  final Color color;
+  final bool isAsset;
+
+  const _AccountHistoryTimelineRow({
+    required this.snapshot,
+    required this.delta,
+    required this.color,
+    required this.isAsset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final deltaColor = delta == null
+        ? AppDesign.getTextSecondary(context)
+        : (isAsset ? delta! >= 0 : delta! <= 0)
+            ? AppDesign.getIncomeColor(context)
+            : AppDesign.getExpenseColor(context);
+
+    return Container(
+      padding: const EdgeInsets.all(AppDesign.spacingM),
+      decoration: BoxDecoration(
+        color: AppDesign.getCardColor(context),
+        borderRadius: BorderRadius.circular(AppDesign.radiusXL),
+        border: Border.all(
+          color: AppDesign.getBorderColor(context).withValues(alpha: 0.55),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 12,
+            height: 12,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.35),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppDesign.spacingM),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat.yMMMd().format(snapshot.recordedAt),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppDesign.getTextPrimary(context),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingXXS),
+                Text(
+                  DateFormat.jm().format(snapshot.recordedAt),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppDesign.spacingS),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                _formatCurrency(snapshot.amount),
+                style: AppTypography.numericMedium.copyWith(
+                  color: AppDesign.getTextPrimary(context),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              if (delta != null) ...[
+                const SizedBox(height: AppDesign.spacingXXS),
+                Text(
+                  '${delta! >= 0 ? '+' : ''}${_formatCompactCurrencyNoDecimals(delta!)}',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: deltaColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountHistoryChart extends StatelessWidget {
+  final String entryName;
+  final List<NetWorthSnapshot> history;
+  final Color color;
+
+  const _AccountHistoryChart({
+    required this.entryName,
+    required this.history,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final chartColor = color;
+    final chartCardColor = AppDesign.getCardColor(context);
+
+    if (history.isEmpty) {
+      return Container(
+        height: 280,
+        padding: const EdgeInsets.all(AppDesign.spacingL),
+        decoration: BoxDecoration(
+          color: chartCardColor,
+          borderRadius: BorderRadius.circular(AppDesign.radiusXXL),
+          border: Border.all(
+            color: AppDesign.getBorderColor(context).withValues(alpha: 0.65),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'No chart data yet for $entryName.',
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppDesign.getTextSecondary(context),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final values = history.map((point) => point.amount).toList();
+    final minValue = values.reduce(min);
+    final maxValue = values.reduce(max);
+    final rawRange = maxValue - minValue;
+    final baselineRange = max(1.0, max(maxValue.abs(), minValue.abs()) * 0.08);
+    final range = max(rawRange, baselineRange);
+    final paddedMin = minValue - (range * 0.20);
+    final paddedMax = maxValue + (range * 0.20);
+    final yInterval = _niceInterval(paddedMax - paddedMin);
+
+    final spots = history.length == 1
+        ? [
+            FlSpot(0, history.first.amount),
+            FlSpot(1, history.first.amount),
+          ]
+        : List.generate(
+            history.length,
+            (index) => FlSpot(index.toDouble(), history[index].amount),
+          );
+
+    return Container(
+      padding: const EdgeInsets.all(AppDesign.spacingL),
+      decoration: BoxDecoration(
+        color: chartCardColor,
+        borderRadius: BorderRadius.circular(AppDesign.radiusXXL),
+        border: Border.all(
+          color: AppDesign.getBorderColor(context).withValues(alpha: 0.65),
+        ),
+        boxShadow: AppDesign.shadowS,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Trend',
+                      style: AppTypography.headingSmall.copyWith(
+                        color: AppDesign.getTextPrimary(context),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: AppDesign.spacingXXS),
+                    Text(
+                      history.length == 1
+                          ? 'Showing the first recorded balance.'
+                          : '${DateFormat.MMMd().format(history.first.recordedAt)} to ${DateFormat.MMMd().format(history.last.recordedAt)}',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppDesign.getTextSecondary(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDesign.spacingS,
+                  vertical: AppDesign.spacingXS,
+                ),
+                decoration: BoxDecoration(
+                  color: chartColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+                ),
+                child: Text(
+                  _formatCompactCurrencyNoDecimals(history.last.amount),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: chartColor,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppDesign.spacingM),
+          SizedBox(
+            height: 248,
+            child: LineChart(
+              LineChartData(
+                minX: 0,
+                maxX: (max(1, history.length - 1)).toDouble(),
+                minY: paddedMin,
+                maxY: paddedMax,
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: yInterval,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color:
+                        AppDesign.getBorderColor(context).withValues(alpha: 0.22),
+                    strokeWidth: 1,
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 48,
+                      interval: yInterval,
+                      getTitlesWidget: (value, meta) {
+                        if (value == meta.min || value == meta.max) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: AppDesign.spacingS,
+                          child: SizedBox(
+                            width: 44,
+                            child: Text(
+                              _formatAxisCurrency(value),
+                              maxLines: 1,
+                              textAlign: TextAlign.right,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppDesign.getTextSecondary(context),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 28,
+                      interval: max(1, (history.length / 3).floor()).toDouble(),
+                      getTitlesWidget: (value, meta) {
+                        final i = value.round();
+                        if (i < 0 || i >= history.length) {
+                          return const SizedBox.shrink();
+                        }
+                        if (history.length > 3 &&
+                            i != 0 &&
+                            i != history.length - 1 &&
+                            i != (history.length / 2).round()) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: AppDesign.spacingS,
+                          child: Text(
+                            DateFormat.MMMd().format(history[i].recordedAt),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppDesign.getTextSecondary(context),
+                              fontSize: 11,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                lineTouchData: LineTouchData(
+                  enabled: true,
+                  handleBuiltInTouches: true,
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (_) => chartCardColor.withValues(alpha: 0.96),
+                    getTooltipItems: (spots) {
+                      return spots.map((spot) {
+                        final point = history[spot.x.round()];
+                        return LineTooltipItem(
+                          '${DateFormat.yMMMd().format(point.recordedAt)}\n',
+                          AppTypography.labelSmall.copyWith(
+                            color: AppDesign.getTextSecondary(context),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: _formatCurrency(point.amount),
+                              style: AppTypography.labelLarge.copyWith(
+                                color: AppDesign.getTextPrimary(context),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList();
+                    },
+                  ),
+                ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: history.length > 2,
+                    color: chartColor,
+                    barWidth: 3.5,
+                    isStrokeCapRound: true,
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          chartColor.withValues(alpha: 0.24),
+                          chartColor.withValues(alpha: 0.02),
+                        ],
+                      ),
+                    ),
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(
+                        radius: history.length <= 2 ? 5 : 3.5,
+                        color: chartColor,
+                        strokeColor: chartCardColor,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -1761,6 +2689,33 @@ String _formatCompactCurrency(double value) {
     return '${value < 0 ? '-' : ''}\$${(absValue / 1000).toStringAsFixed(1)}k';
   }
   return '${value < 0 ? '-' : ''}\$${absValue.toStringAsFixed(0)}';
+}
+
+String _formatCompactCurrencyNoDecimals(double value) {
+  final absValue = value.abs();
+  final sign = value < 0 ? '-' : '';
+  if (absValue >= 1000000) {
+    final digits = absValue >= 10000000 ? 0 : 1;
+    return '$sign\$${(absValue / 1000000).toStringAsFixed(digits)}M';
+  }
+  if (absValue >= 1000) {
+    final digits = absValue >= 100000 ? 0 : 1;
+    return '$sign\$${(absValue / 1000).toStringAsFixed(digits)}k';
+  }
+  return '$sign\$${absValue.toStringAsFixed(0)}';
+}
+
+String _formatAxisCurrency(double value) {
+  final absValue = value.abs();
+  final sign = value < 0 ? '-' : '';
+  if (absValue >= 1000000) {
+    final digits = absValue >= 10000000 ? 0 : 1;
+    return '$sign\$${(absValue / 1000000).toStringAsFixed(digits)}M';
+  }
+  if (absValue >= 1000) {
+    return '$sign\$${(absValue / 1000).toStringAsFixed(0)}k';
+  }
+  return '$sign\$${absValue.toStringAsFixed(0)}';
 }
 
 /// Returns a "nice" rounded interval for chart axes.

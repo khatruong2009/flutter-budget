@@ -366,6 +366,20 @@ class TransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<NetWorthSnapshot> getNetWorthEntryHistory(String id) {
+    final entry = _netWorthEntries.cast<NetWorthEntry?>().firstWhere(
+          (item) => item?.id == id,
+          orElse: () => null,
+        );
+    if (entry == null) {
+      return const [];
+    }
+
+    final history = List<NetWorthSnapshot>.from(entry.snapshots)
+      ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
+    return history;
+  }
+
   Future<bool> carryNetWorthMonthForward(DateTime month) async {
     bool changed = false;
     final previousMonth = DateTime(month.year, month.month - 1);
