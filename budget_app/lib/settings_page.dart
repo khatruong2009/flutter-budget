@@ -92,7 +92,7 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+    final currentThemeMode = themeProvider.themeMode;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -118,17 +118,15 @@ class SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: AppDesign.spacingS),
               _buildSettingCard(
                 context,
-                icon: isDarkMode ? Icons.nights_stay : Icons.wb_sunny,
+                icon: _themeModeIcon(currentThemeMode),
                 iconGradient: AppDesign.getPrimaryGradient(context),
-                title: 'Dark Mode',
-                description: 'Switch between light and dark themes',
-                trailing: _buildModernSwitch(
+                title: 'Theme',
+                description: 'Light, dark, or follow your device settings',
+                trailing: _buildThemeModeTrailing(
                   context,
-                  value: isDarkMode,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme();
-                  },
+                  currentThemeMode,
                 ),
+                onTap: () => _showThemeModePicker(context, themeProvider),
               ),
               const SizedBox(height: AppDesign.spacingXL),
 
@@ -283,17 +281,133 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  /// Builds a modern switch with custom styling
-  Widget _buildModernSwitch(
-    BuildContext context, {
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return CupertinoSwitch(
-      value: value,
-      onChanged: onChanged,
-      activeTrackColor: AppDesign.getPrimaryGradient(context).colors.first,
-      inactiveTrackColor: AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
+  Future<void> _showThemeModePicker(
+    BuildContext context,
+    ThemeProvider themeProvider,
+  ) async {
+    final selectedMode = await showModalBottomSheet<ThemeMode>(
+      context: context,
+      backgroundColor: AppDesign.getCardColor(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDesign.radiusL),
+        ),
+      ),
+      builder: (sheetContext) {
+        final currentMode = themeProvider.themeMode;
+
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppDesign.spacingM,
+                  AppDesign.spacingM,
+                  AppDesign.spacingM,
+                  AppDesign.spacingS,
+                ),
+                child: Text(
+                  'Choose Theme',
+                  style: AppTypography.headingSmall.copyWith(
+                    color: AppDesign.getTextPrimary(sheetContext),
+                  ),
+                ),
+              ),
+              ...ThemeMode.values.map(
+                (mode) => ListTile(
+                  leading: Icon(
+                    _themeModeIcon(mode),
+                    color: AppDesign.getTextPrimary(sheetContext),
+                  ),
+                  title: Text(
+                    _themeModeLabel(mode),
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppDesign.getTextPrimary(sheetContext),
+                    ),
+                  ),
+                  subtitle: Text(
+                    _themeModeDescription(mode),
+                    style: AppTypography.caption.copyWith(
+                      color: AppDesign.getTextSecondary(sheetContext),
+                    ),
+                  ),
+                  trailing: mode == currentMode
+                      ? Icon(
+                          Icons.check,
+                          color: AppDesign.getPrimaryGradient(sheetContext)
+                              .colors
+                              .first,
+                        )
+                      : null,
+                  onTap: () {
+                    Navigator.of(sheetContext).pop(mode);
+                  },
+                ),
+              ),
+              const SizedBox(height: AppDesign.spacingS),
+            ],
+          ),
+        );
+      },
     );
+
+    if (selectedMode != null) {
+      await themeProvider.setThemeMode(selectedMode);
+    }
+  }
+
+  Widget _buildThemeModeTrailing(BuildContext context, ThemeMode themeMode) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          _themeModeLabel(themeMode),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppDesign.getTextSecondary(context),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: AppDesign.spacingXS),
+        Icon(
+          Icons.chevron_right,
+          color: AppDesign.getTextTertiary(context),
+          size: AppDesign.iconM,
+        ),
+      ],
+    );
+  }
+
+  String _themeModeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return 'System';
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+    }
+  }
+
+  String _themeModeDescription(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return 'Match your device appearance';
+      case ThemeMode.light:
+        return 'Always use the light theme';
+      case ThemeMode.dark:
+        return 'Always use the dark theme';
+    }
+  }
+
+  IconData _themeModeIcon(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return Icons.brightness_auto;
+      case ThemeMode.light:
+        return Icons.wb_sunny;
+      case ThemeMode.dark:
+        return Icons.nights_stay;
+    }
   }
 }

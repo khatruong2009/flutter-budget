@@ -36,4 +36,28 @@ class ThemeProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    if (_themeMode == mode) {
+      return;
+    }
+
+    _themeMode = mode;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('themeMode', _themeModeToPreference(mode));
+
+    notifyListeners();
+  }
+
+  String _themeModeToPreference(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return 'light';
+      case ThemeMode.dark:
+        return 'dark';
+      case ThemeMode.system:
+        return 'system';
+    }
+  }
 }
