@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'storage/storage_keys.dart';
+
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
 
@@ -12,7 +14,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void _loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? themeString = prefs.getString('themeMode');
+    String? themeString = prefs.getString(StorageKeys.themeMode);
     if (themeString != null) {
       if (themeString == 'light') {
         _themeMode = ThemeMode.light;
@@ -29,10 +31,10 @@ class ThemeProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_themeMode == ThemeMode.light) {
       _themeMode = ThemeMode.dark;
-      await prefs.setString('themeMode', 'dark');
+      await prefs.setString(StorageKeys.themeMode, 'dark');
     } else {
       _themeMode = ThemeMode.light;
-      await prefs.setString('themeMode', 'light');
+      await prefs.setString(StorageKeys.themeMode, 'light');
     }
     notifyListeners();
   }
@@ -45,7 +47,7 @@ class ThemeProvider extends ChangeNotifier {
     _themeMode = mode;
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('themeMode', _themeModeToPreference(mode));
+    await prefs.setString(StorageKeys.themeMode, _themeModeToPreference(mode));
 
     notifyListeners();
   }

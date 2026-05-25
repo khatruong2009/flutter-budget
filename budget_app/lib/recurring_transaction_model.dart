@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'recurring_transaction.dart';
+import 'storage/storage_keys.dart';
 
 /// State management class for recurring transactions
 /// Extends ChangeNotifier to integrate with Provider pattern
@@ -46,13 +47,14 @@ class RecurringTransactionModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions =
         recurringTransactions.map((r) => r.toJson()).toList();
-    await prefs.setString('recurring_transactions', jsonEncode(jsonTransactions));
+    await prefs.setString(
+        StorageKeys.recurringTransactions, jsonEncode(jsonTransactions));
   }
 
   /// Load recurring transactions from SharedPreferences
   Future<void> loadRecurringTransactions() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('recurring_transactions');
+    final jsonString = prefs.getString(StorageKeys.recurringTransactions);
     if (jsonString != null && jsonString.isNotEmpty) {
       final jsonList = jsonDecode(jsonString) as List;
       recurringTransactions =

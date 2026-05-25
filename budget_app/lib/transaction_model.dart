@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'net_worth_entry.dart';
+import 'storage/storage_keys.dart';
 import 'transaction.dart';
 
 // Data class for monthly cash flow information
@@ -56,10 +57,6 @@ class CashFlowStatistics {
 }
 
 class TransactionModel extends ChangeNotifier {
-  static const String _transactionsStorageKey = 'transactions';
-  static const String _netWorthEntriesStorageKey = 'net_worth_entries';
-  static const String _netWorthMonthStorageKey = 'net_worth_selected_month';
-
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
@@ -99,7 +96,7 @@ class TransactionModel extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      _netWorthMonthStorageKey,
+      StorageKeys.netWorthSelectedMonth,
       _selectedNetWorthMonth.toIso8601String(),
     );
   }
@@ -147,15 +144,15 @@ class TransactionModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
     await prefs.setString(
-        _transactionsStorageKey, jsonEncode(jsonTransactions));
+        StorageKeys.transactions, jsonEncode(jsonTransactions));
   }
 
   // load transactions
   Future<void> getTransactions() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_transactionsStorageKey);
-    final netWorthEntriesJson = prefs.getString(_netWorthEntriesStorageKey);
-    final netWorthMonthString = prefs.getString(_netWorthMonthStorageKey);
+    final jsonString = prefs.getString(StorageKeys.transactions);
+    final netWorthEntriesJson = prefs.getString(StorageKeys.netWorthEntries);
+    final netWorthMonthString = prefs.getString(StorageKeys.netWorthSelectedMonth);
 
     if (jsonString != null && jsonString.isNotEmpty) {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
@@ -677,7 +674,7 @@ class TransactionModel extends ChangeNotifier {
   Future<void> _saveNetWorthEntries() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      _netWorthEntriesStorageKey,
+      StorageKeys.netWorthEntries,
       jsonEncode(_netWorthEntries.map((entry) => entry.toJson()).toList()),
     );
   }
@@ -685,8 +682,8 @@ class TransactionModel extends ChangeNotifier {
   Future<List<NetWorthEntry>> _migrateLegacyNetWorthIfNeeded(
     SharedPreferences prefs,
   ) async {
-    final startingAssets = prefs.getDouble('starting_assets') ?? 0.0;
-    final startingLiabilities = prefs.getDouble('starting_liabilities') ?? 0.0;
+    final startingAssets = prefs.getDouble(StorageKeys.legacyStartingAssets) ?? 0.0;
+    final startingLiabilities = prefs.getDouble(StorageKeys.legacyStartingLiabilities) ?? 0.0;
     final migratedEntries = <NetWorthEntry>[];
     final currentMonth = DateTime.now();
 
@@ -722,7 +719,7 @@ class TransactionModel extends ChangeNotifier {
 
     if (migratedEntries.isNotEmpty) {
       await prefs.setString(
-        _netWorthEntriesStorageKey,
+        StorageKeys.netWorthEntries,
         jsonEncode(migratedEntries.map((entry) => entry.toJson()).toList()),
       );
     }
