@@ -59,6 +59,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (index) {
           setState(() {
             _currentIndex = index;
@@ -100,7 +101,8 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     return CupertinoTabBar(
       backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
       activeColor: AppColors.primary,
-      inactiveColor: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+      inactiveColor:
+          isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
       currentIndex: _currentIndex,
       onTap: _onTabTapped,
       items: const [

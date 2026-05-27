@@ -152,7 +152,8 @@ class TransactionModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(StorageKeys.transactions);
     final netWorthEntriesJson = prefs.getString(StorageKeys.netWorthEntries);
-    final netWorthMonthString = prefs.getString(StorageKeys.netWorthSelectedMonth);
+    final netWorthMonthString =
+        prefs.getString(StorageKeys.netWorthSelectedMonth);
 
     if (jsonString != null && jsonString.isNotEmpty) {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
@@ -264,6 +265,7 @@ class TransactionModel extends ChangeNotifier {
     final now = DateTime.now();
     final monthKeys = <String>{
       netWorthMonthKey(DateTime(now.year, now.month)),
+      netWorthMonthKey(_selectedNetWorthMonth),
     };
 
     for (final entry in _netWorthEntries) {
@@ -273,7 +275,17 @@ class TransactionModel extends ChangeNotifier {
     }
 
     final months = monthKeys.map(netWorthMonthFromKey).toList()
-      ..sort((a, b) => b.compareTo(a));
+      ..sort((a, b) {
+        final selected = _selectedNetWorthMonth;
+        final aIsSelected =
+            a.year == selected.year && a.month == selected.month;
+        final bIsSelected =
+            b.year == selected.year && b.month == selected.month;
+        if (aIsSelected != bIsSelected) {
+          return aIsSelected ? -1 : 1;
+        }
+        return b.compareTo(a);
+      });
     return months;
   }
 
@@ -359,6 +371,32 @@ class TransactionModel extends ChangeNotifier {
   Future<void> deleteNetWorthEntry(String id) async {
     _netWorthEntries =
         _netWorthEntries.where((entry) => entry.id != id).toList();
+    await _saveNetWorthEntries();
+    notifyListeners();
+  }
+
+  Future<void> deleteNetWorthSnapshot({
+    required String entryId,
+    required DateTime recordedAt,
+  }) async {
+    var changed = false;
+
+    _netWorthEntries = _netWorthEntries.map((entry) {
+      if (entry.id != entryId) {
+        return entry;
+      }
+
+      final updatedSnapshots = entry.snapshots
+          .where((snapshot) => snapshot.recordedAt != recordedAt)
+          .toList();
+      changed = updatedSnapshots.length != entry.snapshots.length;
+      return entry.copyWith(snapshots: updatedSnapshots);
+    }).toList();
+
+    if (!changed) {
+      return;
+    }
+
     await _saveNetWorthEntries();
     notifyListeners();
   }
@@ -682,8 +720,10 @@ class TransactionModel extends ChangeNotifier {
   Future<List<NetWorthEntry>> _migrateLegacyNetWorthIfNeeded(
     SharedPreferences prefs,
   ) async {
-    final startingAssets = prefs.getDouble(StorageKeys.legacyStartingAssets) ?? 0.0;
-    final startingLiabilities = prefs.getDouble(StorageKeys.legacyStartingLiabilities) ?? 0.0;
+    final startingAssets =
+        prefs.getDouble(StorageKeys.legacyStartingAssets) ?? 0.0;
+    final startingLiabilities =
+        prefs.getDouble(StorageKeys.legacyStartingLiabilities) ?? 0.0;
     final migratedEntries = <NetWorthEntry>[];
     final currentMonth = DateTime.now();
 

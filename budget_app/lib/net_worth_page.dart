@@ -362,6 +362,7 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
       MediaQuery.of(context).size.width - (AppDesign.spacingM * 4 + 32),
       chartData.length * 72.0,
     );
+    final yAxisWidth = needsScrolling ? 64.0 : 0.0;
 
     final chart = SizedBox(
       width: needsScrolling ? chartWidth : double.infinity,
@@ -374,6 +375,7 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
               isDark: isDark,
               selectedSpotIndex: _selectedSpotIndex,
               onTouchSpot: _handleTouchSpot,
+              showLeftTitles: !needsScrolling,
             ),
           ),
           if (_selectedSpotIndex != null)
@@ -424,11 +426,26 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
         const SizedBox(height: AppDesign.spacingS),
         SizedBox(
           height: 240,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: chart,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: yAxisWidth,
+                height: 240,
+                child: _NetWorthYAxis(
+                  chartData: chartData,
+                  isDark: isDark,
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: chart,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -478,39 +495,57 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
     final useBottom = point.netWorth >= midpoint;
 
     if (useBottom) {
-      return const Alignment(0, 0.42);
+      return Alignment(
+          _overlayXAlignmentForIndex(safeIndex, chartData.length), 0.42);
     }
-    return const Alignment(0, -0.42);
+    return Alignment(
+      _overlayXAlignmentForIndex(safeIndex, chartData.length),
+      -0.42,
+    );
+  }
+
+  double _overlayXAlignmentForIndex(int index, int length) {
+    if (length <= 1) {
+      return 0;
+    }
+
+    final normalized = index / (length - 1);
+    return (normalized * 2 - 1).clamp(-0.84, 0.84).toDouble();
   }
 }
 
 // ---------- Line Chart ----------
+
+class _NetWorthChartScale {
+  final double paddedMin;
+  final double paddedMax;
+  final double interval;
+
+  const _NetWorthChartScale({
+    required this.paddedMin,
+    required this.paddedMax,
+    required this.interval,
+  });
+}
 
 class _NetWorthLineChart extends StatelessWidget {
   final List<NetWorthHistoryPoint> chartData;
   final bool isDark;
   final int? selectedSpotIndex;
   final void Function(FlTouchEvent event, int? spotIndex) onTouchSpot;
+  final bool showLeftTitles;
 
   const _NetWorthLineChart({
     required this.chartData,
     required this.isDark,
     required this.selectedSpotIndex,
     required this.onTouchSpot,
+    required this.showLeftTitles,
   });
 
   @override
   Widget build(BuildContext context) {
-    final values = chartData.map((item) => item.netWorth).toList();
-    final minValue = values.reduce(min);
-    final maxValue = values.reduce(max);
-    // Enforce a minimum range (10% of the max value) so Y labels stay
-    // meaningfully spaced even with a single data point.
-    final rawRange = maxValue - minValue;
-    final range = max(rawRange, max(1.0, maxValue.abs() * 0.10));
-    final paddedMin = minValue - (range * 0.18);
-    final paddedMax = maxValue + (range * 0.18);
-    final yInterval = _niceInterval(paddedMax - paddedMin);
+    final scale = _netWorthChartScale(chartData);
     final incomeColor = AppDesign.getIncomeColor(context);
     final expenseColor = AppDesign.getExpenseColor(context);
     final lineSpots = chartData.length == 1
@@ -547,9 +582,8 @@ class _NetWorthLineChart extends StatelessWidget {
                     selectedSpotIndex == 0 &&
                     spot.x.round() == 1)),
         getDotPainter: (spot, _, __, index) {
-          final pointIndex = chartData.length == 1
-              ? 0
-              : index.clamp(0, chartData.length - 1);
+          final pointIndex =
+              chartData.length == 1 ? 0 : index.clamp(0, chartData.length - 1);
           final point = chartData[pointIndex];
           final highlightColor =
               point.netWorth >= 0 ? incomeColor : expenseColor;
@@ -567,12 +601,12 @@ class _NetWorthLineChart extends StatelessWidget {
       LineChartData(
         minX: 0,
         maxX: max(1.0, (chartData.length - 1).toDouble()),
-        minY: paddedMin,
-        maxY: paddedMax,
+        minY: scale.paddedMin,
+        maxY: scale.paddedMax,
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          horizontalInterval: yInterval,
+          horizontalInterval: scale.interval,
           getDrawingHorizontalLine: (value) => FlLine(
             color: (isDark ? AppColors.borderDark : AppColors.borderLight)
                 .withValues(alpha: 0.45),
@@ -582,9 +616,12 @@ class _NetWorthLineChart extends StatelessWidget {
         borderData: FlBorderData(
           show: true,
           border: Border(
-            left: BorderSide(
-              color: isDark ? AppColors.borderDark : AppColors.borderLight,
-            ),
+            left: showLeftTitles
+                ? BorderSide(
+                    color:
+                        isDark ? AppColors.borderDark : AppColors.borderLight,
+                  )
+                : BorderSide.none,
             bottom: BorderSide(
               color: isDark ? AppColors.borderDark : AppColors.borderLight,
             ),
@@ -609,7 +646,7 @@ class _NetWorthLineChart extends StatelessWidget {
                   return const SizedBox.shrink();
                 }
                 final shouldShow = chartData.length <= 6 ||
-                    index.isEven ||
+                    _shouldShowNetWorthAxisLabel(index, chartData.length) ||
                     index == chartData.length - 1;
                 if (!shouldShow) return const SizedBox.shrink();
                 final point = chartData[index];
@@ -628,9 +665,9 @@ class _NetWorthLineChart extends StatelessWidget {
           ),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 64,
-              interval: yInterval,
+              showTitles: showLeftTitles,
+              reservedSize: showLeftTitles ? 64 : 0,
+              interval: scale.interval,
               getTitlesWidget: (value, meta) {
                 // Skip the auto boundary labels fl_chart injects at min/max —
                 // they land right on top of the nearest interval tick.
@@ -655,6 +692,7 @@ class _NetWorthLineChart extends StatelessWidget {
           enabled: true,
           handleBuiltInTouches: false,
           longPressDuration: const Duration(milliseconds: 150),
+          touchSpotThreshold: 48,
           touchCallback: (event, response) {
             final spotIndex = response?.lineBarSpots?.first.spotIndex;
             onTouchSpot(event, spotIndex);
@@ -664,7 +702,71 @@ class _NetWorthLineChart extends StatelessWidget {
       ),
     );
   }
+}
 
+class _NetWorthYAxis extends StatelessWidget {
+  final List<NetWorthHistoryPoint> chartData;
+  final bool isDark;
+
+  const _NetWorthYAxis({
+    required this.chartData,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = _netWorthChartScale(chartData);
+    final axisColor = isDark ? AppColors.borderDark : AppColors.borderLight;
+    final labels = <double>[];
+    final firstTick =
+        (scale.paddedMin / scale.interval).ceil() * scale.interval;
+
+    for (var value = firstTick;
+        value < scale.paddedMax;
+        value += scale.interval) {
+      if (value <= scale.paddedMin) {
+        continue;
+      }
+      labels.add(value);
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const bottomTitleHeight = 36.0;
+        final plotHeight = constraints.maxHeight - bottomTitleHeight;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              bottom: bottomTitleHeight,
+              child: Container(width: 1, color: axisColor),
+            ),
+            for (final value in labels)
+              Positioned(
+                top: ((scale.paddedMax - value) /
+                        (scale.paddedMax - scale.paddedMin) *
+                        plotHeight)
+                    .clamp(0.0, plotHeight - 16)
+                    .toDouble(),
+                left: 0,
+                right: AppDesign.spacingS,
+                child: Text(
+                  _formatCompactCurrency(value),
+                  textAlign: TextAlign.right,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppDesign.getTextSecondary(context),
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _NetWorthHoverCard extends StatelessWidget {
@@ -756,6 +858,41 @@ String _formatNetWorthHistoryTooltipTitle(NetWorthHistoryPoint point) {
   }
 
   return DateFormat('MMM d, y').format(point.date);
+}
+
+bool _shouldShowNetWorthAxisLabel(int index, int length) {
+  if (length <= 6) {
+    return true;
+  }
+
+  if (index == 0 || index == length - 1) {
+    return true;
+  }
+
+  final minimumGap = length <= 8 ? 2 : max(2, (length / 6).ceil());
+  if (length - 1 - index < minimumGap) {
+    return false;
+  }
+
+  return index % minimumGap == 0;
+}
+
+_NetWorthChartScale _netWorthChartScale(List<NetWorthHistoryPoint> chartData) {
+  final values = chartData.map((item) => item.netWorth).toList();
+  final minValue = values.reduce(min);
+  final maxValue = values.reduce(max);
+  // Enforce a minimum range (10% of the max value) so Y labels stay
+  // meaningfully spaced even with a single data point.
+  final rawRange = maxValue - minValue;
+  final range = max(rawRange, max(1.0, maxValue.abs() * 0.10));
+  final paddedMin = minValue - (range * 0.18);
+  final paddedMax = maxValue + (range * 0.18);
+
+  return _NetWorthChartScale(
+    paddedMin: paddedMin,
+    paddedMax: paddedMax,
+    interval: _niceInterval(paddedMax - paddedMin),
+  );
 }
 
 // ---------- Accounts Toggle ----------
@@ -942,10 +1079,24 @@ class _AccountRow extends StatelessWidget {
     final percentage = totalForCategory > 0
         ? (amount / totalForCategory).clamp(0.0, 1.0)
         : 0.0;
+    final previousSnapshot = _previousSnapshotBefore(
+      entry.snapshots,
+      effectiveSnapshot?.recordedAt,
+    );
+    final percentChange = previousSnapshot == null ||
+            previousSnapshot.amount.abs() < 0.001
+        ? null
+        : ((amount - previousSnapshot.amount) / previousSnapshot.amount.abs()) *
+            100;
     final isAsset = entry.type == NetWorthEntryType.asset;
     final color = isAsset
         ? AppDesign.getIncomeColor(context)
         : AppDesign.getExpenseColor(context);
+    final changeColor = percentChange == null
+        ? AppDesign.getTextTertiary(context)
+        : (isAsset ? percentChange >= 0 : percentChange <= 0)
+            ? AppDesign.getIncomeColor(context)
+            : AppDesign.getExpenseColor(context);
     final icon = _iconForEntry(entry);
 
     return GestureDetector(
@@ -975,7 +1126,7 @@ class _AccountRow extends StatelessWidget {
                     color: AppDesign.getTextPrimary(ctx),
                   ),
                 ),
-                  onTap: () {
+                onTap: () {
                   Navigator.pop(ctx);
                   onEdit();
                 },
@@ -1066,13 +1217,27 @@ class _AccountRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppDesign.spacingS),
-                // Percentage on right
-                Text(
-                  '+${(percentage * 100).toStringAsFixed(1)}%',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${(percentage * 100).toStringAsFixed(1)}%',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppDesign.spacingXXS),
+                    Text(
+                      percentChange == null
+                          ? '— vs prior'
+                          : '${percentChange >= 0 ? '+' : ''}${percentChange.toStringAsFixed(1)}% vs prior',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: changeColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -1190,6 +1355,26 @@ class _AccountRow extends StatelessWidget {
   }
 }
 
+NetWorthSnapshot? _previousSnapshotBefore(
+  List<NetWorthSnapshot> snapshots,
+  DateTime? recordedAt,
+) {
+  if (recordedAt == null) {
+    return null;
+  }
+
+  NetWorthSnapshot? previous;
+  for (final snapshot in snapshots) {
+    if (!snapshot.recordedAt.isBefore(recordedAt)) {
+      continue;
+    }
+    if (previous == null || snapshot.recordedAt.isAfter(previous.recordedAt)) {
+      previous = snapshot;
+    }
+  }
+  return previous;
+}
+
 class _AccountHistoryPage extends StatelessWidget {
   final NetWorthEntry entry;
 
@@ -1197,10 +1382,14 @@ class _AccountHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<TransactionModel>();
-    final chartHistory = model.getNetWorthEntryHistory(entry.id);
+    final model = context.watch<TransactionModel>();
+    final currentEntry = model.netWorthEntries.firstWhere(
+      (item) => item.id == entry.id,
+      orElse: () => entry,
+    );
+    final chartHistory = model.getNetWorthEntryHistory(currentEntry.id);
     final timelineHistory = chartHistory.reversed.toList();
-    final isAsset = entry.type == NetWorthEntryType.asset;
+    final isAsset = currentEntry.type == NetWorthEntryType.asset;
     final accentColor = isAsset
         ? AppDesign.getIncomeColor(context)
         : AppDesign.getExpenseColor(context);
@@ -1208,9 +1397,10 @@ class _AccountHistoryPage extends StatelessWidget {
     final previousSnapshot =
         chartHistory.length > 1 ? chartHistory[chartHistory.length - 2] : null;
     final latestAmount = latestSnapshot?.amount ?? 0.0;
-    final changeFromPrevious = latestSnapshot != null && previousSnapshot != null
-        ? latestSnapshot.amount - previousSnapshot.amount
-        : null;
+    final changeFromPrevious =
+        latestSnapshot != null && previousSnapshot != null
+            ? latestSnapshot.amount - previousSnapshot.amount
+            : null;
     final totalChange = chartHistory.length > 1
         ? chartHistory.last.amount - chartHistory.first.amount
         : null;
@@ -1228,7 +1418,7 @@ class _AccountHistoryPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(entry.name),
+        title: Text(currentEntry.name),
         backgroundColor: AppDesign.getBackgroundColor(context),
         actions: [
           IconButton(
@@ -1240,7 +1430,7 @@ class _AccountHistoryPage extends StatelessWidget {
               context: context,
               transactionModel: model,
               month: model.selectedNetWorthMonth,
-              existingEntry: entry,
+              existingEntry: currentEntry,
             ),
           ),
           IconButton(
@@ -1252,7 +1442,7 @@ class _AccountHistoryPage extends StatelessWidget {
               await _confirmDeleteNetWorthEntry(
                 context: context,
                 transactionModel: model,
-                entry: entry,
+                entry: currentEntry,
               );
               if (!context.mounted) return;
 
@@ -1278,7 +1468,7 @@ class _AccountHistoryPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _AccountHistoryHeroCard(
-              entry: entry,
+              entry: currentEntry,
               color: accentColor,
               latestAmount: latestAmount,
               lastUpdated: latestSnapshot?.recordedAt,
@@ -1315,7 +1505,7 @@ class _AccountHistoryPage extends StatelessWidget {
             ),
             const SizedBox(height: AppDesign.spacingM),
             _AccountHistoryChart(
-              entryName: entry.name,
+              entryName: currentEntry.name,
               history: chartHistory,
               color: accentColor,
             ),
@@ -1380,6 +1570,13 @@ class _AccountHistoryPage extends StatelessWidget {
                       delta: delta,
                       color: accentColor,
                       isAsset: isAsset,
+                      canDelete: chartHistory.length > 1,
+                      onDelete: () => _confirmDeleteNetWorthSnapshot(
+                        context: context,
+                        transactionModel: model,
+                        entry: currentEntry,
+                        snapshot: snapshot,
+                      ),
                     ),
                   );
                 }),
@@ -1671,12 +1868,16 @@ class _AccountHistoryTimelineRow extends StatelessWidget {
   final double? delta;
   final Color color;
   final bool isAsset;
+  final bool canDelete;
+  final VoidCallback onDelete;
 
   const _AccountHistoryTimelineRow({
     required this.snapshot,
     required this.delta,
     required this.color,
     required this.isAsset,
+    required this.canDelete,
+    required this.onDelete,
   });
 
   @override
@@ -1757,6 +1958,20 @@ class _AccountHistoryTimelineRow extends StatelessWidget {
                 ),
               ],
             ],
+          ),
+          const SizedBox(width: AppDesign.spacingXS),
+          IconButton(
+            tooltip: canDelete
+                ? 'Delete this balance update'
+                : 'Keep at least one balance update',
+            icon: Icon(
+              CupertinoIcons.trash,
+              size: AppDesign.iconXS,
+              color: canDelete
+                  ? AppDesign.getExpenseColor(context)
+                  : AppDesign.getTextTertiary(context),
+            ),
+            onPressed: canDelete ? onDelete : null,
           ),
         ],
       ),
@@ -1894,8 +2109,8 @@ class _AccountHistoryChart extends StatelessWidget {
                   drawVerticalLine: false,
                   horizontalInterval: yInterval,
                   getDrawingHorizontalLine: (_) => FlLine(
-                    color:
-                        AppDesign.getBorderColor(context).withValues(alpha: 0.22),
+                    color: AppDesign.getBorderColor(context)
+                        .withValues(alpha: 0.22),
                     strokeWidth: 1,
                   ),
                 ),
@@ -1972,8 +2187,10 @@ class _AccountHistoryChart extends StatelessWidget {
                 lineTouchData: LineTouchData(
                   enabled: true,
                   handleBuiltInTouches: true,
+                  touchSpotThreshold: 48,
                   touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) => chartCardColor.withValues(alpha: 0.96),
+                    getTooltipColor: (_) =>
+                        chartCardColor.withValues(alpha: 0.96),
                     getTooltipItems: (spots) {
                       return spots.map((spot) {
                         final point = history[spot.x.round()];
@@ -2121,6 +2338,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   late final FocusNode _nameFocus;
   late final FocusNode _amountFocus;
   late NetWorthEntryType _selectedType;
+  late DateTime _entryMonth;
   String? _nameError;
   String? _amountError;
   bool _nameFocused = false;
@@ -2141,6 +2359,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
     _selectedType = widget.existingEntry?.type ??
         widget.initialType ??
         NetWorthEntryType.asset;
+    _entryMonth = DateTime(widget.month.year, widget.month.month);
     _nameFocus = FocusNode()
       ..addListener(() => setState(() => _nameFocused = _nameFocus.hasFocus));
     _amountFocus = FocusNode()
@@ -2170,10 +2389,6 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   @override
   Widget build(BuildContext context) {
     final existingEntry = widget.existingEntry;
-    final hasPriorValue = existingEntry != null &&
-        existingEntry.snapshotForMonth(widget.month) == null &&
-        existingEntry.latestSnapshotThrough(endOfNetWorthMonth(widget.month)) !=
-            null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Dialog(
@@ -2247,7 +2462,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            formatNetWorthMonth(widget.month),
+                            formatNetWorthMonth(_entryMonth),
                             style: AppTypography.bodySmall.copyWith(
                               color: Colors.white.withValues(alpha: 0.80),
                             ),
@@ -2293,6 +2508,15 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                     _TypeToggle(
                       selectedType: _selectedType,
                       onChanged: (type) => setState(() => _selectedType = type),
+                    ),
+
+                    const SizedBox(height: AppDesign.spacingM),
+
+                    _MonthPickerField(
+                      month: _entryMonth,
+                      accentColor: _accentColor(context),
+                      isDark: isDark,
+                      onTap: _pickEntryMonth,
                     ),
 
                     const SizedBox(height: AppDesign.spacingM),
@@ -2387,7 +2611,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
         name: _nameController.text.trim(),
         type: _selectedType,
         amount: parsedAmount,
-        month: widget.month,
+        month: _entryMonth,
       );
     } else {
       await widget.transactionModel.updateNetWorthEntry(
@@ -2395,12 +2619,114 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
         name: _nameController.text.trim(),
         type: _selectedType,
         amount: parsedAmount,
-        month: widget.month,
+        month: _entryMonth,
       );
     }
 
     if (!mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  Future<void> _pickEntryMonth() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _entryMonth,
+      firstDate: DateTime(1970),
+      lastDate: DateTime(now.year, now.month + 1, 0),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      helpText: 'Select balance month',
+    );
+
+    if (picked == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _entryMonth = DateTime(picked.year, picked.month);
+      if (widget.existingEntry != null) {
+        final amount = widget.existingEntry!.amountForMonth(_entryMonth);
+        _amountController.text =
+            amount == null ? '' : NumberFormat('#,##0.##').format(amount);
+      }
+    });
+  }
+}
+
+class _MonthPickerField extends StatelessWidget {
+  final DateTime month;
+  final Color accentColor;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _MonthPickerField({
+    required this.month,
+    required this.accentColor,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppDesign.spacingXS,
+            bottom: AppDesign.spacingXS,
+          ),
+          child: Text(
+            'Balance Month',
+            style: AppTypography.caption.copyWith(
+              color: AppDesign.getTextSecondary(context),
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.surfaceDark.withValues(alpha: 0.6)
+                  : AppColors.backgroundLight,
+              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+              border: Border.all(color: AppDesign.getBorderColor(context)),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesign.spacingM,
+              vertical: AppDesign.spacingM,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.calendar,
+                  size: AppDesign.iconS,
+                  color: accentColor,
+                ),
+                const SizedBox(width: AppDesign.spacingS),
+                Expanded(
+                  child: Text(
+                    formatNetWorthMonth(month),
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppDesign.getTextPrimary(context),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Icon(
+                  CupertinoIcons.chevron_down,
+                  size: AppDesign.iconXS,
+                  color: AppDesign.getTextTertiary(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -2666,6 +2992,43 @@ Future<void> _confirmDeleteNetWorthEntry({
 
   if (shouldDelete == true) {
     await transactionModel.deleteNetWorthEntry(entry.id);
+  }
+}
+
+Future<void> _confirmDeleteNetWorthSnapshot({
+  required BuildContext context,
+  required TransactionModel transactionModel,
+  required NetWorthEntry entry,
+  required NetWorthSnapshot snapshot,
+}) async {
+  final shouldDelete = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: const Text('Delete balance update?'),
+        content: Text(
+          'Remove the ${DateFormat.yMMMd().add_jm().format(snapshot.recordedAt)} '
+          'balance for ${entry.name}? This only removes this one data point.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (shouldDelete == true) {
+    await transactionModel.deleteNetWorthSnapshot(
+      entryId: entry.id,
+      recordedAt: snapshot.recordedAt,
+    );
   }
 }
 

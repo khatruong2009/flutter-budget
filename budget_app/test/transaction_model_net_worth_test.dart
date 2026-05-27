@@ -228,6 +228,44 @@ void main() {
     expect(history[3].netWorth, 1200.0);
   });
 
+  test('individual net worth snapshots can be deleted without deleting account',
+      () async {
+    final model = TransactionModel();
+    final march = DateTime(2026, 3);
+
+    await model.selectNetWorthMonth(march);
+    await model.addNetWorthEntry(
+      name: 'Brokerage',
+      type: NetWorthEntryType.asset,
+      amount: 1000,
+      month: march,
+      recordedAt: DateTime(2026, 3, 1, 9),
+    );
+
+    final brokerage = model.netWorthEntries.single;
+    await model.updateNetWorthEntry(
+      id: brokerage.id,
+      name: brokerage.name,
+      type: brokerage.type,
+      amount: 1500,
+      month: march,
+      recordedAt: DateTime(2026, 3, 20, 9),
+    );
+
+    await model.deleteNetWorthSnapshot(
+      entryId: brokerage.id,
+      recordedAt: DateTime(2026, 3, 1, 9),
+    );
+
+    final remainingEntry = model.netWorthEntries.single;
+    final history = model.getNetWorthEntryHistory(remainingEntry.id);
+
+    expect(remainingEntry.name, 'Brokerage');
+    expect(history.map((snapshot) => snapshot.amount).toList(), [1500.0]);
+    expect(model.getNetWorthHistory(limit: 10).map((point) => point.netWorth),
+        [1500.0]);
+  });
+
   test('legacy baseline values migrate into tracked accounts', () async {
     SharedPreferences.setMockInitialValues({
       'starting_assets': 3200.0,
