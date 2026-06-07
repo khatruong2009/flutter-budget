@@ -434,7 +434,6 @@ class _GrowthChartCardState extends State<_GrowthChartCard> {
                 height: 240,
                 child: _NetWorthYAxis(
                   chartData: chartData,
-                  isDark: isDark,
                 ),
               ),
               Expanded(
@@ -608,8 +607,7 @@ class _NetWorthLineChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: scale.interval,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: (isDark ? AppColors.borderDark : AppColors.borderLight)
-                .withValues(alpha: 0.45),
+            color: AppDesign.getBorderColor(context).withValues(alpha: 0.45),
             strokeWidth: 1,
           ),
         ),
@@ -618,12 +616,11 @@ class _NetWorthLineChart extends StatelessWidget {
           border: Border(
             left: showLeftTitles
                 ? BorderSide(
-                    color:
-                        isDark ? AppColors.borderDark : AppColors.borderLight,
+                    color: AppDesign.getBorderColor(context),
                   )
                 : BorderSide.none,
             bottom: BorderSide(
-              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              color: AppDesign.getBorderColor(context),
             ),
           ),
         ),
@@ -706,17 +703,15 @@ class _NetWorthLineChart extends StatelessWidget {
 
 class _NetWorthYAxis extends StatelessWidget {
   final List<NetWorthHistoryPoint> chartData;
-  final bool isDark;
 
   const _NetWorthYAxis({
     required this.chartData,
-    required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
     final scale = _netWorthChartScale(chartData);
-    final axisColor = isDark ? AppColors.borderDark : AppColors.borderLight;
+    final axisColor = AppDesign.getBorderColor(context);
     final labels = <double>[];
     final firstTick =
         (scale.paddedMin / scale.interval).ceil() * scale.interval;
@@ -914,8 +909,11 @@ class _AccountsToggle extends StatelessWidget {
       height: 52,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : const Color(0xFF1E2530),
+        color: isDark
+            ? AppColors.surfaceDark
+            : AppColors.borderLight.withValues(alpha: 0.65),
         borderRadius: BorderRadius.circular(AppDesign.radiusRound),
+        border: Border.all(color: AppDesign.getBorderColor(context)),
       ),
       child: Row(
         children: [
@@ -978,7 +976,7 @@ class _ToggleTab extends StatelessWidget {
           label,
           style: AppTypography.bodyMedium.copyWith(
             color: isSelected
-                ? const Color(0xFF0D1117)
+                ? AppColors.textOnPrimary
                 : AppDesign.getTextSecondary(context),
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
           ),
@@ -1172,7 +1170,7 @@ class _AccountRow extends StatelessWidget {
           AppDesign.spacingM,
         ),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceDark : AppColors.cardLight,
+          color: AppDesign.getCardColor(context),
           borderRadius: BorderRadius.circular(AppDesign.radiusXL),
           boxShadow: AppDesign.shadowS,
         ),
@@ -2390,6 +2388,8 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
   Widget build(BuildContext context) {
     final existingEntry = widget.existingEntry;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final headerForeground =
+        isDark ? AppColors.textOnPrimary : AppColors.textOnPrimaryDark;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -2435,14 +2435,14 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.22),
+                        color: headerForeground.withValues(alpha: 0.16),
                         borderRadius: BorderRadius.circular(AppDesign.radiusM),
                       ),
                       child: Icon(
                         _isAsset
                             ? CupertinoIcons.arrow_up_right_circle_fill
                             : CupertinoIcons.arrow_down_left_circle_fill,
-                        color: Colors.white,
+                        color: headerForeground,
                         size: AppDesign.iconL,
                       ),
                     ),
@@ -2456,7 +2456,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                                 ? 'Add Account'
                                 : 'Edit Account',
                             style: AppTypography.headingMedium.copyWith(
-                              color: Colors.white,
+                              color: headerForeground,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -2464,7 +2464,7 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                           Text(
                             formatNetWorthMonth(_entryMonth),
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white.withValues(alpha: 0.80),
+                              color: headerForeground.withValues(alpha: 0.72),
                             ),
                           ),
                         ],
@@ -2478,12 +2478,12 @@ class _NetWorthEditorDialogState extends State<_NetWorthEditorDialog> {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.22),
+                          color: headerForeground.withValues(alpha: 0.16),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           CupertinoIcons.xmark,
-                          color: Colors.white,
+                          color: headerForeground,
                           size: 16,
                         ),
                       ),
@@ -2918,6 +2918,10 @@ class _TypePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final selectedForeground =
+        isDark ? AppColors.textOnPrimary : AppColors.textOnPrimaryDark;
+
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -2942,7 +2946,7 @@ class _TypePill extends StatelessWidget {
                 icon,
                 size: AppDesign.iconXS,
                 color: isSelected
-                    ? Colors.white
+                    ? selectedForeground
                     : AppDesign.getTextSecondary(context),
               ),
               const SizedBox(width: AppDesign.spacingXS),
@@ -2950,7 +2954,7 @@ class _TypePill extends StatelessWidget {
                 label,
                 style: AppTypography.labelMedium.copyWith(
                   color: isSelected
-                      ? Colors.white
+                      ? selectedForeground
                       : AppDesign.getTextSecondary(context),
                   fontWeight: FontWeight.w600,
                 ),

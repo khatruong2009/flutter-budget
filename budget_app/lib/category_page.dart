@@ -85,10 +85,16 @@ class _CategoryPageState extends State<CategoryPage>
         if (availableMonths.isEmpty) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Categories'),
+              title: Text(
+                'Categories',
+                style: AppTypography.headingMedium.copyWith(
+                  color: AppDesign.getTextPrimary(context),
+                ),
+              ),
               centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0,
+              foregroundColor: AppDesign.getTextPrimary(context),
             ),
             extendBodyBehindAppBar: true,
             body: Container(
@@ -111,10 +117,16 @@ class _CategoryPageState extends State<CategoryPage>
         if (totalAmount == 0.0) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Categories'),
+              title: Text(
+                'Categories',
+                style: AppTypography.headingMedium.copyWith(
+                  color: AppDesign.getTextPrimary(context),
+                ),
+              ),
               centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0,
+              foregroundColor: AppDesign.getTextPrimary(context),
             ),
             extendBodyBehindAppBar: true,
             body: Container(
@@ -185,10 +197,16 @@ class _CategoryPageState extends State<CategoryPage>
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Categories'),
+            title: Text(
+              'Categories',
+              style: AppTypography.headingMedium.copyWith(
+                color: AppDesign.getTextPrimary(context),
+              ),
+            ),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
+            foregroundColor: AppDesign.getTextPrimary(context),
           ),
           extendBodyBehindAppBar: true,
           body: Container(
@@ -268,7 +286,8 @@ class _CategoryPageState extends State<CategoryPage>
                                             fontSize: 14,
                                             shadows: [
                                               Shadow(
-                                                color: Colors.black
+                                                color: AppDesign.getTextPrimary(
+                                                        context)
                                                     .withValues(alpha: 0.3),
                                                 offset: const Offset(0, 1),
                                                 blurRadius: 2,

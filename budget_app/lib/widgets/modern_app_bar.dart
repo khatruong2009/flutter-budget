@@ -102,7 +102,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       decoration: showGradient
           ? BoxDecoration(
-              gradient: gradient ?? _getDefaultGradient(isDark),
+              gradient: gradient ?? AppColors.getPrimaryGradient(isDark),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -136,21 +136,6 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  LinearGradient _getDefaultGradient(bool isDark) {
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: isDark
-          ? [
-              const Color(0xFF667eea).withValues(alpha: 0.8),
-              const Color(0xFF764ba2).withValues(alpha: 0.8),
-            ]
-          : [
-              const Color(0xFF667eea),
-              const Color(0xFF764ba2),
-            ],
-    );
-  }
 }
 
 /// ModernSliverAppBar is an enhanced SliverAppBar with gradient background
@@ -215,27 +200,11 @@ class ModernSliverAppBar extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           decoration: BoxDecoration(
-            gradient: gradient ?? _getDefaultGradient(isDark),
+            gradient: gradient ?? AppColors.getPrimaryGradient(isDark),
           ),
           child: flexibleSpace,
         ),
       ),
-    );
-  }
-
-  LinearGradient _getDefaultGradient(bool isDark) {
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: isDark
-          ? [
-              const Color(0xFF667eea).withValues(alpha: 0.8),
-              const Color(0xFF764ba2).withValues(alpha: 0.8),
-            ]
-          : [
-              const Color(0xFF667eea),
-              const Color(0xFF764ba2),
-            ],
     );
   }
 }

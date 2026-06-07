@@ -467,12 +467,17 @@ Future<void> showRecurringTransactionForm(
                             firstDate: DateTime.now().subtract(const Duration(days: 365)),
                             lastDate: DateTime.now().add(const Duration(days: 365)),
                             builder: (context, child) {
+                              final accentColor =
+                                  type == TransactionTyp.expense
+                                      ? AppDesign.getExpenseColor(context)
+                                      : AppDesign.getIncomeColor(context);
                               return Theme(
                                 data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: type == TransactionTyp.expense
-                                        ? AppColors.expense
-                                        : AppColors.income,
+                                  colorScheme: Theme.of(context)
+                                      .colorScheme
+                                      .copyWith(
+                                        primary: accentColor,
+                                        secondary: accentColor,
                                   ),
                                 ),
                                 child: child!,

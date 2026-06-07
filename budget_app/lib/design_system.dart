@@ -123,16 +123,16 @@ class AppDesign {
   static const double opacityFull = 1.0;
 
   // Text Colors (Light Theme)
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color textTertiary = Color(0xFF9E9E9E);
-  static const Color textOnPrimary = Colors.white;
+  static const Color textPrimary = AppColors.textPrimary;
+  static const Color textSecondary = AppColors.textSecondary;
+  static const Color textTertiary = AppColors.textTertiary;
+  static const Color textOnPrimary = AppColors.textOnPrimary;
 
   // Text Colors (Dark Theme)
-  static const Color textPrimaryDark = Color(0xFFFFFFFF);
-  static const Color textSecondaryDark = Color(0xFFB0B0B0);
-  static const Color textTertiaryDark = Color(0xFF808080);
-  static const Color textOnPrimaryDark = Color(0xFF212121);
+  static const Color textPrimaryDark = AppColors.textPrimaryDark;
+  static const Color textSecondaryDark = AppColors.textSecondaryDark;
+  static const Color textTertiaryDark = AppColors.textTertiaryDark;
+  static const Color textOnPrimaryDark = AppColors.textOnPrimaryDark;
 
   // Layout Constraints
   static const double maxContentWidth = 600.0;

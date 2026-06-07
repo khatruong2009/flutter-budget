@@ -54,8 +54,6 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -93,16 +91,15 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildModernTabBar(isDark),
+      bottomNavigationBar: _buildModernTabBar(context),
     );
   }
 
-  Widget _buildModernTabBar(bool isDark) {
+  Widget _buildModernTabBar(BuildContext context) {
     return CupertinoTabBar(
-      backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+      backgroundColor: AppDesign.getSurfaceColor(context),
       activeColor: AppColors.primary,
-      inactiveColor:
-          isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+      inactiveColor: AppDesign.getTextSecondary(context),
       currentIndex: _currentIndex,
       onTap: _onTabTapped,
       items: const [

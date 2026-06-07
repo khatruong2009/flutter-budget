@@ -11,6 +11,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'transaction_form.dart';
 import 'transaction.dart';
 import 'utils/platform_enhancements.dart';
+import 'design_system.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,6 +46,29 @@ class AppContainer extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primary,
+          brightness: Brightness.light,
+          primary: AppColors.primary,
+          surface: AppColors.surfaceLight,
+          error: AppColors.error,
+        ),
+        scaffoldBackgroundColor: AppColors.backgroundLight,
+        cardColor: AppColors.cardLight,
+        canvasColor: AppColors.backgroundLight,
+        dialogTheme: const DialogThemeData(
+          backgroundColor: AppColors.cardLight,
+          surfaceTintColor: Colors.transparent,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: AppColors.cardLight,
+          surfaceTintColor: Colors.transparent,
+        ),
+        dividerColor: AppColors.borderLight,
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.backgroundLight,
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -63,6 +87,29 @@ class AppContainer extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primary,
+          brightness: Brightness.dark,
+          primary: AppColors.primaryLight,
+          surface: AppColors.surfaceDark,
+          error: AppColors.errorDarkTheme,
+        ),
+        scaffoldBackgroundColor: AppColors.backgroundDark,
+        cardColor: AppColors.cardDark,
+        canvasColor: AppColors.backgroundDark,
+        dialogTheme: const DialogThemeData(
+          backgroundColor: AppColors.cardDark,
+          surfaceTintColor: Colors.transparent,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: AppColors.cardDark,
+          surfaceTintColor: Colors.transparent,
+        ),
+        dividerColor: AppColors.borderDark,
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.surfaceDark,
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,

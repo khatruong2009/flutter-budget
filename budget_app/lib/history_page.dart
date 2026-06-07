@@ -115,7 +115,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildMonthDropdown(BuildContext context, TransactionModel model,
       List<DateTime> availableMonths, DateTime selectedMonth) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: availableMonths.isEmpty
           ? null
@@ -124,10 +123,10 @@ class _HistoryPageState extends State<HistoryPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.cardDark : AppColors.cardLight,
+          color: AppDesign.getCardColor(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDark ? AppColors.borderDark : AppColors.borderLight,
+            color: AppDesign.getBorderColor(context),
             width: 1,
           ),
         ),
@@ -154,13 +153,12 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void _showMonthPicker(BuildContext context, TransactionModel model,
       List<DateTime> availableMonths, DateTime selectedMonth) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.cardDark : AppColors.cardLight,
+          color: AppDesign.getCardColor(ctx),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: SafeArea(
@@ -235,7 +233,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : AppColors.cardLight,
+        color: AppDesign.getCardColor(context),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -364,8 +362,7 @@ class _HistoryPageState extends State<HistoryPage> {
           drawVerticalLine: false,
           horizontalInterval: interval,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: (isDark ? AppColors.borderDark : AppColors.borderLight)
-                .withValues(alpha: 0.5),
+            color: AppDesign.getBorderColor(context).withValues(alpha: 0.5),
             strokeWidth: value == 0 ? 1.5 : 1,
           ),
         ),
@@ -417,7 +414,7 @@ class _HistoryPageState extends State<HistoryPage> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.cardDark : AppColors.cardLight,
+          color: AppDesign.getCardColor(ctx),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: SafeArea(
@@ -587,7 +584,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : AppColors.cardLight,
+        color: AppDesign.getCardColor(context),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
