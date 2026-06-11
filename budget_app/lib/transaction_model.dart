@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'net_worth_entry.dart';
+import 'savings_goal.dart';
 import 'storage/storage_keys.dart';
 import 'transaction.dart';
 
@@ -56,16 +57,83 @@ class CashFlowStatistics {
   }
 }
 
+class CategoryBudgetProgress {
+  final String category;
+  final double spent;
+  final double limit;
+
+  const CategoryBudgetProgress({
+    required this.category,
+    required this.spent,
+    required this.limit,
+  });
+
+  double get remaining => limit - spent;
+  double get progress => limit <= 0 ? 0.0 : spent / limit;
+  bool get isOverBudget => limit > 0 && spent > limit;
+}
+
+class YearOverYearComparison {
+  final DateTime currentMonth;
+  final DateTime previousYearMonth;
+  final double currentExpenses;
+  final double previousYearExpenses;
+  final Map<String, double> currentCategoryExpenses;
+  final Map<String, double> previousYearCategoryExpenses;
+
+  const YearOverYearComparison({
+    required this.currentMonth,
+    required this.previousYearMonth,
+    required this.currentExpenses,
+    required this.previousYearExpenses,
+    required this.currentCategoryExpenses,
+    required this.previousYearCategoryExpenses,
+  });
+
+  double get difference => currentExpenses - previousYearExpenses;
+  double get percentChange {
+    if (previousYearExpenses == 0) {
+      return currentExpenses == 0 ? 0.0 : 100.0;
+    }
+    return (difference / previousYearExpenses) * 100;
+  }
+
+  List<String> get categories {
+    final names = <String>{
+      ...currentCategoryExpenses.keys,
+      ...previousYearCategoryExpenses.keys,
+    }.toList();
+    names.sort((a, b) {
+      final aTotal = (currentCategoryExpenses[a] ?? 0.0) +
+          (previousYearCategoryExpenses[a] ?? 0.0);
+      final bTotal = (currentCategoryExpenses[b] ?? 0.0) +
+          (previousYearCategoryExpenses[b] ?? 0.0);
+      final amountCompare = bTotal.compareTo(aTotal);
+      if (amountCompare != 0) {
+        return amountCompare;
+      }
+      return a.toLowerCase().compareTo(b.toLowerCase());
+    });
+    return names;
+  }
+}
+
 class TransactionModel extends ChangeNotifier {
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
       DateTime(DateTime.now().year, DateTime.now().month);
   List<NetWorthEntry> _netWorthEntries = [];
+  Map<String, double> _categoryBudgetLimits = {};
+  List<SavingsGoal> _savingsGoals = [];
 
   DateTime get selectedNetWorthMonth => _selectedNetWorthMonth;
   List<NetWorthEntry> get netWorthEntries =>
       List<NetWorthEntry>.unmodifiable(_netWorthEntries);
+  Map<String, double> get categoryBudgetLimits =>
+      Map<String, double>.unmodifiable(_categoryBudgetLimits);
+  List<SavingsGoal> get savingsGoals =>
+      List<SavingsGoal>.unmodifiable(_savingsGoals);
   List<NetWorthEntry> get assetEntriesForSelectedNetWorthMonth =>
       getNetWorthEntriesForMonth(
         _selectedNetWorthMonth,
@@ -154,6 +222,9 @@ class TransactionModel extends ChangeNotifier {
     final netWorthEntriesJson = prefs.getString(StorageKeys.netWorthEntries);
     final netWorthMonthString =
         prefs.getString(StorageKeys.netWorthSelectedMonth);
+    final categoryBudgetLimitsJson =
+        prefs.getString(StorageKeys.categoryBudgetLimits);
+    final savingsGoalsJson = prefs.getString(StorageKeys.savingsGoals);
 
     if (jsonString != null && jsonString.isNotEmpty) {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
@@ -174,6 +245,22 @@ class TransactionModel extends ChangeNotifier {
       if (parsedMonth != null) {
         _selectedNetWorthMonth = DateTime(parsedMonth.year, parsedMonth.month);
       }
+    }
+
+    if (categoryBudgetLimitsJson != null &&
+        categoryBudgetLimitsJson.isNotEmpty) {
+      final decoded =
+          jsonDecode(categoryBudgetLimitsJson) as Map<String, dynamic>;
+      _categoryBudgetLimits = decoded.map(
+        (category, value) => MapEntry(category, (value as num).toDouble()),
+      )..removeWhere((_, limit) => limit <= 0);
+    }
+
+    if (savingsGoalsJson != null && savingsGoalsJson.isNotEmpty) {
+      final jsonList = jsonDecode(savingsGoalsJson) as List<dynamic>;
+      _savingsGoals = jsonList
+          .map((goal) => SavingsGoal.fromJson(goal as Map<String, dynamic>))
+          .toList();
     }
   }
 
@@ -472,6 +559,187 @@ class TransactionModel extends ChangeNotifier {
         .toList();
   }
 
+  double? getCategoryBudgetLimit(String category) {
+    return _categoryBudgetLimits[category];
+  }
+
+  Future<void> setCategoryBudgetLimit(String category, double limit) async {
+    final trimmedCategory = category.trim();
+    if (trimmedCategory.isEmpty) {
+      return;
+    }
+
+    if (limit <= 0) {
+      await removeCategoryBudgetLimit(trimmedCategory);
+      return;
+    }
+
+    _categoryBudgetLimits = {
+      ..._categoryBudgetLimits,
+      trimmedCategory: limit,
+    };
+    await _saveCategoryBudgetLimits();
+    notifyListeners();
+  }
+
+  Future<void> removeCategoryBudgetLimit(String category) async {
+    if (!_categoryBudgetLimits.containsKey(category)) {
+      return;
+    }
+
+    _categoryBudgetLimits = Map<String, double>.from(_categoryBudgetLimits)
+      ..remove(category);
+    await _saveCategoryBudgetLimits();
+    notifyListeners();
+  }
+
+  double getCategorySpendingForMonth(String category, DateTime month) {
+    return getTransactionsForMonth(month)
+        .where((transaction) =>
+            transaction.type == TransactionTyp.expense &&
+            transaction.category == category)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+  }
+
+  Map<String, double> getCategoryExpensesForMonth(DateTime month) {
+    final totals = <String, double>{};
+    for (final transaction in getTransactionsForMonth(month)
+        .where((item) => item.type == TransactionTyp.expense)) {
+      totals.update(
+        transaction.category,
+        (existing) => existing + transaction.amount,
+        ifAbsent: () => transaction.amount,
+      );
+    }
+    return totals;
+  }
+
+  List<CategoryBudgetProgress> getCategoryBudgetProgressForMonth(
+    DateTime month,
+  ) {
+    final progress = _categoryBudgetLimits.entries
+        .map(
+          (entry) => CategoryBudgetProgress(
+            category: entry.key,
+            spent: getCategorySpendingForMonth(entry.key, month),
+            limit: entry.value,
+          ),
+        )
+        .toList();
+
+    progress.sort((a, b) {
+      final overBudgetCompare =
+          (b.isOverBudget ? 1 : 0).compareTo(a.isOverBudget ? 1 : 0);
+      if (overBudgetCompare != 0) {
+        return overBudgetCompare;
+      }
+      final progressCompare = b.progress.compareTo(a.progress);
+      if (progressCompare != 0) {
+        return progressCompare;
+      }
+      return a.category.toLowerCase().compareTo(b.category.toLowerCase());
+    });
+
+    return progress;
+  }
+
+  Future<void> addSavingsGoal({
+    required String name,
+    required double targetAmount,
+    required DateTime targetDate,
+  }) async {
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty || targetAmount <= 0) {
+      return;
+    }
+
+    _savingsGoals = [
+      ..._savingsGoals,
+      SavingsGoal(
+        name: trimmedName,
+        targetAmount: targetAmount,
+        targetDate: DateTime(targetDate.year, targetDate.month, targetDate.day),
+      ),
+    ];
+    await _saveSavingsGoals();
+    notifyListeners();
+  }
+
+  Future<void> updateSavingsGoal(SavingsGoal goal) async {
+    final trimmedName = goal.name.trim();
+    if (trimmedName.isEmpty || goal.targetAmount <= 0) {
+      return;
+    }
+
+    var found = false;
+    _savingsGoals = _savingsGoals.map((existingGoal) {
+      if (existingGoal.id != goal.id) {
+        return existingGoal;
+      }
+
+      found = true;
+      final normalizedCurrent = goal.currentAmount.clamp(
+        0.0,
+        double.infinity,
+      );
+      final isCompleted = normalizedCurrent >= goal.targetAmount;
+      return goal.copyWith(
+        name: trimmedName,
+        currentAmount: normalizedCurrent,
+        completedAt: isCompleted ? goal.completedAt ?? DateTime.now() : null,
+      );
+    }).toList();
+
+    if (!found) {
+      return;
+    }
+
+    await _saveSavingsGoals();
+    notifyListeners();
+  }
+
+  Future<void> deleteSavingsGoal(String id) async {
+    final updatedGoals = _savingsGoals.where((goal) => goal.id != id).toList();
+    if (updatedGoals.length == _savingsGoals.length) {
+      return;
+    }
+
+    _savingsGoals = updatedGoals;
+    await _saveSavingsGoals();
+    notifyListeners();
+  }
+
+  Future<void> allocateToSavingsGoal(String goalId, double amount) async {
+    if (amount == 0) {
+      return;
+    }
+
+    var found = false;
+    _savingsGoals = _savingsGoals.map((goal) {
+      if (goal.id != goalId) {
+        return goal;
+      }
+
+      found = true;
+      final updatedAmount = (goal.currentAmount + amount).clamp(
+        0.0,
+        double.infinity,
+      );
+      final isCompleted = updatedAmount >= goal.targetAmount;
+      return goal.copyWith(
+        currentAmount: updatedAmount,
+        completedAt: isCompleted ? goal.completedAt ?? DateTime.now() : null,
+      );
+    }).toList();
+
+    if (!found) {
+      return;
+    }
+
+    await _saveSavingsGoals();
+    notifyListeners();
+  }
+
   // Calculate monthly summary
   Map<String, double> getMonthlySummary(DateTime month) {
     final monthTransactions = getTransactionsForMonth(month);
@@ -556,6 +824,41 @@ class TransactionModel extends ChangeNotifier {
         expenses: summary['expenses'] ?? 0.0,
       );
     }).toList();
+  }
+
+  List<MonthCashFlow> getRollingCashFlowTrend({int months = 12}) {
+    if (months <= 0) {
+      return const [];
+    }
+
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month - months + 1);
+    return List<MonthCashFlow>.generate(months, (index) {
+      final month = DateTime(start.year, start.month + index);
+      final summary = getMonthlySummary(month);
+      return MonthCashFlow(
+        month: month,
+        netCashFlow: summary['net'] ?? 0.0,
+        income: summary['income'] ?? 0.0,
+        expenses: summary['expenses'] ?? 0.0,
+      );
+    });
+  }
+
+  YearOverYearComparison getYearOverYearComparison(DateTime month) {
+    final normalizedMonth = DateTime(month.year, month.month);
+    final previousYearMonth =
+        DateTime(normalizedMonth.year - 1, normalizedMonth.month);
+    return YearOverYearComparison(
+      currentMonth: normalizedMonth,
+      previousYearMonth: previousYearMonth,
+      currentExpenses: getMonthlySummary(normalizedMonth)['expenses'] ?? 0.0,
+      previousYearExpenses:
+          getMonthlySummary(previousYearMonth)['expenses'] ?? 0.0,
+      currentCategoryExpenses: getCategoryExpensesForMonth(normalizedMonth),
+      previousYearCategoryExpenses:
+          getCategoryExpensesForMonth(previousYearMonth),
+    );
   }
 
   // Get summary statistics for cash flow history
@@ -714,6 +1017,22 @@ class TransactionModel extends ChangeNotifier {
     await prefs.setString(
       StorageKeys.netWorthEntries,
       jsonEncode(_netWorthEntries.map((entry) => entry.toJson()).toList()),
+    );
+  }
+
+  Future<void> _saveCategoryBudgetLimits() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      StorageKeys.categoryBudgetLimits,
+      jsonEncode(_categoryBudgetLimits),
+    );
+  }
+
+  Future<void> _saveSavingsGoals() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      StorageKeys.savingsGoals,
+      jsonEncode(_savingsGoals.map((goal) => goal.toJson()).toList()),
     );
   }
 

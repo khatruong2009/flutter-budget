@@ -23,6 +23,13 @@ class StorageKeys {
   /// Owned by `TransactionModel`.
   static const String netWorthSelectedMonth = 'net_worth_selected_month';
 
+  /// Encoded map of expense category names to monthly budget limits.
+  /// Owned by `TransactionModel`.
+  static const String categoryBudgetLimits = 'category_budget_limits';
+
+  /// Encoded list of savings goals. Owned by `TransactionModel`.
+  static const String savingsGoals = 'savings_goals';
+
   /// Encoded list of `RecurringTransaction` templates.
   /// Owned by `RecurringTransactionModel`.
   static const String recurringTransactions = 'recurring_transactions';

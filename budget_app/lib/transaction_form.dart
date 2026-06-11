@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'transaction_model.dart';
 import 'design_system.dart';
 import 'recurring_transaction_form.dart';
-import 'utils/micro_interactions.dart';
 
 Future<void> showTransactionForm(
     BuildContext context, TransactionTyp type, Function addTransaction,
@@ -110,229 +109,244 @@ Future<void> showTransactionForm(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                            // Title
-                            Text(
-                              type == TransactionTyp.expense
-                                  ? 'Add Expense'
-                                  : 'Add Income',
-                              style: AppTypography.headingMedium.copyWith(
-                                color: AppDesign.getTextPrimary(context),
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: AppDesign.spacingM),
+                      // Title
+                      Text(
+                        type == TransactionTyp.expense
+                            ? 'Add Expense'
+                            : 'Add Income',
+                        style: AppTypography.headingMedium.copyWith(
+                          color: AppDesign.getTextPrimary(context),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppDesign.spacingM),
 
-                            // Amount Input Field with floating label
-                            _ModernTextField(
-                              controller: amountController,
-                              focusNode: amountFocusNode,
-                              label: 'Amount',
-                              hint: '0.00',
-                              keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              prefixIcon: Icons.attach_money,
-                              errorText: amountError,
-                              onChanged: (value) {
-                                // Clear error on change
-                                if (amountError != null) {
-                                  setState(() {
-                                    amountError = null;
-                                  });
-                                }
+                      // Amount Input Field with floating label
+                      _ModernTextField(
+                        controller: amountController,
+                        focusNode: amountFocusNode,
+                        label: 'Amount',
+                        hint: '0.00',
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        prefixIcon: Icons.attach_money,
+                        errorText: amountError,
+                        onChanged: (value) {
+                          // Clear error on change
+                          if (amountError != null) {
+                            setState(() {
+                              amountError = null;
+                            });
+                          }
+                        },
+                      ),
+                      const SizedBox(height: AppDesign.spacingS),
+
+                      // Description Input Field with floating label
+                      _ModernTextField(
+                        controller: descriptionController,
+                        focusNode: descriptionFocusNode,
+                        label: 'Description',
+                        hint: 'What was this for?',
+                        prefixIcon: Icons.description_outlined,
+                        errorText: descriptionError,
+                        onChanged: (value) {
+                          // Clear error on change
+                          if (descriptionError != null) {
+                            setState(() {
+                              descriptionError = null;
+                            });
+                          }
+                        },
+                      ),
+                      const SizedBox(height: AppDesign.spacingS),
+
+                      // Category Picker Label
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: AppDesign.spacingS,
+                          bottom: AppDesign.spacingXS,
+                        ),
+                        child: Text(
+                          'Category',
+                          style: AppTypography.caption.copyWith(
+                            color: AppDesign.getTextSecondary(context),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      // Category Picker with modern styling
+                      Container(
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: AppDesign.getCardColor(context),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
+                          border: Border.all(
+                            color: AppDesign.getBorderColor(context),
+                            width: AppDesign.borderMedium,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
+                          child: CupertinoPicker(
+                            scrollController: categoryScrollController,
+                            itemExtent: 32,
+                            onSelectedItemChanged: (index) {
+                              MicroInteractions.selectionClick();
+                              setState(() {
+                                category = categoryMap.keys.elementAt(index);
+                              });
+                            },
+                            children: categoryMap.entries.map((entry) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppDesign.spacingM,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: const EdgeInsets.all(
+                                          AppDesign.spacingXS),
+                                      decoration: BoxDecoration(
+                                        color: type == TransactionTyp.expense
+                                            ? AppColors.expense
+                                            : AppColors.income,
+                                        borderRadius: BorderRadius.circular(
+                                          AppDesign.radiusS,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        entry.value,
+                                        size: AppDesign.iconS,
+                                        color: AppColors.textOnPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppDesign.spacingM),
+                                    Text(
+                                      entry.key,
+                                      style: AppTypography.bodyMedium.copyWith(
+                                        color:
+                                            AppDesign.getTextPrimary(context),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppDesign.spacingM),
+
+                      // Action Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppButton.secondary(
+                              label: 'Cancel',
+                              onPressed: () {
+                                Navigator.of(context).pop();
                               },
                             ),
-                            const SizedBox(height: AppDesign.spacingS),
+                          ),
+                          const SizedBox(width: AppDesign.spacingM),
+                          Expanded(
+                            child: AppButton.primary(
+                              label:
+                                  transactionToEdit != null ? 'Update' : 'Add',
+                              gradient: type == TransactionTyp.expense
+                                  ? AppColors.getExpenseGradient(
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark)
+                                  : AppColors.getIncomeGradient(
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark),
+                              onPressed: () {
+                                validateForm();
 
-                            // Description Input Field with floating label
-                            _ModernTextField(
-                              controller: descriptionController,
-                              focusNode: descriptionFocusNode,
-                              label: 'Description',
-                              hint: 'What was this for?',
-                              prefixIcon: Icons.description_outlined,
-                              errorText: descriptionError,
-                              onChanged: (value) {
-                                // Clear error on change
-                                if (descriptionError != null) {
-                                  setState(() {
-                                    descriptionError = null;
-                                  });
-                                }
-                              },
-                            ),
-                            const SizedBox(height: AppDesign.spacingS),
-
-                            // Category Picker Label
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: AppDesign.spacingS,
-                                bottom: AppDesign.spacingXS,
-                              ),
-                              child: Text(
-                                'Category',
-                                style: AppTypography.caption.copyWith(
-                                  color: AppDesign.getTextSecondary(context),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-
-                            // Category Picker with modern styling
-                            Container(
-                              height: 90,
-                              decoration: BoxDecoration(
-                                color: AppDesign.getCardColor(context),
-                                borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                                border: Border.all(
-                                  color: AppDesign.getBorderColor(context),
-                                  width: AppDesign.borderMedium,
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                                child: CupertinoPicker(
-                                  scrollController: categoryScrollController,
-                                  itemExtent: 32,
-                                  onSelectedItemChanged: (index) {
-                                    MicroInteractions.selectionClick();
-                                    setState(() {
-                                      category = categoryMap.keys.elementAt(index);
-                                    });
-                                  },
-                                  children: categoryMap.entries.map((entry) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: AppDesign.spacingM,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Container(
-                                            padding: const EdgeInsets.all(AppDesign.spacingXS),
-                                            decoration: BoxDecoration(
-                                              color: type == TransactionTyp.expense
-                                                  ? AppColors.expense
-                                                  : AppColors.income,
-                                              borderRadius: BorderRadius.circular(
-                                                AppDesign.radiusS,
-                                              ),
-                                            ),
-                                            child: Icon(
-                                              entry.value,
-                                              size: AppDesign.iconS,
-                                              color: AppColors.textOnPrimary,
-                                            ),
-                                          ),
-                                          const SizedBox(width: AppDesign.spacingM),
-                                          Text(
-                                            entry.key,
-                                            style: AppTypography.bodyMedium.copyWith(
-                                              color: AppDesign.getTextPrimary(context),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                // Only proceed if no errors
+                                if (amountError == null) {
+                                  if (transactionToEdit != null) {
+                                    // Update the existing transaction
+                                    transactionModel.deleteTransaction(
+                                      transactionToEdit,
                                     );
-                                  }).toList(),
-                                ),
+                                    transactionModel.addTransaction(
+                                      type,
+                                      description.isEmpty
+                                          ? 'Transaction'
+                                          : description,
+                                      amount,
+                                      category,
+                                      selectedDate,
+                                    );
+                                  } else {
+                                    // Add a new transaction
+                                    transactionModel.addTransaction(
+                                      type,
+                                      description.isEmpty
+                                          ? 'Transaction'
+                                          : description,
+                                      amount,
+                                      category,
+                                      selectedDate,
+                                    );
+                                  }
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppDesign.spacingM),
+
+                      // Recurring Transaction Link
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop(); // Close current form
+                            showRecurringTransactionForm(context, type);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDesign.spacingM,
+                              vertical: AppDesign.spacingS,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppDesign.getCardColor(context)
+                                  .withValues(alpha: 0.5),
+                              borderRadius:
+                                  BorderRadius.circular(AppDesign.radiusM),
+                              border: Border.all(
+                                color: AppDesign.getBorderColor(context),
+                                width: AppDesign.borderMedium,
                               ),
                             ),
-                            const SizedBox(height: AppDesign.spacingM),
-
-                            // Action Buttons
-                            Row(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                  child: AppButton.secondary(
-                                    label: 'Cancel',
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
+                                Icon(
+                                  Icons.repeat,
+                                  size: AppDesign.iconS,
+                                  color: AppDesign.getTextSecondary(context),
                                 ),
-                                const SizedBox(width: AppDesign.spacingM),
-                                Expanded(
-                                  child: AppButton.primary(
-                                    label: transactionToEdit != null ? 'Update' : 'Add',
-                                    gradient: type == TransactionTyp.expense
-                                        ? AppColors.getExpenseGradient(Theme.of(context).brightness == Brightness.dark)
-                                        : AppColors.getIncomeGradient(Theme.of(context).brightness == Brightness.dark),
-                                    onPressed: () {
-                                      validateForm();
-                                      
-                                      // Only proceed if no errors
-                                      if (amountError == null) {
-                                        if (transactionToEdit != null) {
-                                          // Update the existing transaction
-                                          transactionModel.deleteTransaction(
-                                            transactionToEdit,
-                                          );
-                                          transactionModel.addTransaction(
-                                            type,
-                                            description.isEmpty ? 'Transaction' : description,
-                                            amount,
-                                            category,
-                                            selectedDate,
-                                          );
-                                        } else {
-                                          // Add a new transaction
-                                          transactionModel.addTransaction(
-                                            type,
-                                            description.isEmpty ? 'Transaction' : description,
-                                            amount,
-                                            category,
-                                            selectedDate,
-                                          );
-                                        }
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
+                                const SizedBox(width: AppDesign.spacingS),
+                                Text(
+                                  'Make this recurring',
+                                  style: AppTypography.caption.copyWith(
+                                    color: AppDesign.getTextSecondary(context),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: AppDesign.spacingM),
-
-                            // Recurring Transaction Link
-                            Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop(); // Close current form
-                                  showRecurringTransactionForm(context, type);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppDesign.spacingM,
-                                    vertical: AppDesign.spacingS,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppDesign.getCardColor(context).withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                                    border: Border.all(
-                                      color: AppDesign.getBorderColor(context),
-                                      width: AppDesign.borderMedium,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.repeat,
-                                        size: AppDesign.iconS,
-                                        color: AppDesign.getTextSecondary(context),
-                                      ),
-                                      const SizedBox(width: AppDesign.spacingS),
-                                      Text(
-                                        'Make this recurring',
-                                        style: AppTypography.caption.copyWith(
-                                          color: AppDesign.getTextSecondary(context),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -429,7 +443,8 @@ class _ModernTextFieldState extends State<_ModernTextField> {
             borderRadius: BorderRadius.circular(AppDesign.radiusM),
             border: Border.all(
               color: borderColor,
-              width: _isFocused ? AppDesign.borderThick : AppDesign.borderMedium,
+              width:
+                  _isFocused ? AppDesign.borderThick : AppDesign.borderMedium,
             ),
           ),
           child: Padding(
@@ -464,6 +479,8 @@ class _ModernTextFieldState extends State<_ModernTextField> {
                       hintStyle: AppTypography.bodyLarge.copyWith(
                         color: AppDesign.getTextTertiary(context),
                       ),
+                      filled: false,
+                      fillColor: Colors.transparent,
                       border: InputBorder.none,
                       isDense: true,
                       contentPadding: EdgeInsets.zero,

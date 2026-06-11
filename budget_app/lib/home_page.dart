@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import 'transaction.dart';
 import 'net_worth_page.dart';
 import 'spending_page.dart';
+import 'savings_goals_page.dart';
 import 'category_page.dart';
 import 'history_page.dart';
 import 'settings_page.dart';
 import 'design_system.dart';
+import 'transaction_model.dart';
 
 class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
@@ -76,6 +79,13 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
           ),
           Navigator(
             onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => SavingsGoalsPage(
+                model: context.watch<TransactionModel>(),
+              ),
+            ),
+          ),
+          Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
               builder: (context) => const CategoryPage(),
             ),
           ),
@@ -110,6 +120,10 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.chart_pie),
           label: 'Net Worth',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.flag),
+          label: 'Goals',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.pie_chart),
