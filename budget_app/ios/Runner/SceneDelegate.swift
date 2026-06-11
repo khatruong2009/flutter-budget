@@ -23,9 +23,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       bundle: nil
     )
     self.flutterViewController = flutterViewController
-    
+
+    // A manually created FlutterViewController on a pre-warmed engine does not
+    // install the launch screen as its splash view, leaving a black window
+    // until the first Flutter frame. Install it explicitly so the launch
+    // screen persists until Flutter renders.
+    let launchScreen = UIStoryboard(name: "LaunchScreen", bundle: nil)
+    flutterViewController.splashScreenView =
+      launchScreen.instantiateInitialViewController()?.view
+    let launchBackground = UIColor(named: "launch-screen-background")
+    flutterViewController.view.backgroundColor = launchBackground
+
     // Create and configure the window
     window = UIWindow(windowScene: windowScene)
+    window?.backgroundColor = launchBackground
     window?.rootViewController = flutterViewController
     window?.makeKeyAndVisible()
     
