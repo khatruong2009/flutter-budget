@@ -73,12 +73,7 @@ class RecurringTransactionModel extends ChangeNotifier {
     return recurringTransactions.where((r) {
       return r.isActive &&
           (r.nextOccurrence.isBefore(asOf) ||
-              _isSameDay(r.nextOccurrence, asOf));
+              isSameDay(r.nextOccurrence, asOf));
     }).toList();
-  }
-
-  /// Helper method to check if two dates are the same day
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

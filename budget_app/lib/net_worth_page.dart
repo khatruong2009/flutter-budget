@@ -1069,7 +1069,6 @@ class _AccountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveSnapshot = entry.latestSnapshotThrough(
       endOfNetWorthMonth(month),
     );

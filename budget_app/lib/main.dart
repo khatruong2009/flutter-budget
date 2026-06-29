@@ -21,7 +21,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => TransactionModel()),
-        ChangeNotifierProvider(create: (context) => RecurringTransactionModel()),
+        ChangeNotifierProvider(
+            create: (context) => RecurringTransactionModel()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: const AppContainer(child: MyApp()),
@@ -133,24 +134,6 @@ class AppContainer extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       future: context.read<TransactionModel>().getTransactions(),
-//       builder: (BuildContext context, AsyncSnapshot snapshot) {
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           return const BudgetHomePage(title: 'Home');
-//         } else {
-//           return const Center(child: CircularProgressIndicator());
-//         }
-//       },
-//     );
-//   }
-// }
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -254,13 +237,15 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     final targetContext = navigatorKey.currentContext ?? context;
+    if (!targetContext.mounted) return;
     final transactionModel =
         Provider.of<TransactionModel>(targetContext, listen: false);
 
     void openForm(TransactionTyp type) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        showTransactionForm(targetContext, type, transactionModel.addTransaction);
+        showTransactionForm(
+            targetContext, type, transactionModel.addTransaction);
       });
     }
 
@@ -284,14 +269,18 @@ class _MyAppState extends State<MyApp> {
     if (action.isEmpty) return;
 
     await _initializationCompleter.future;
+    if (!mounted) return;
 
     final targetContext = navigatorKey.currentContext ?? context;
+    if (!targetContext.mounted) return;
     final transactionModel =
         Provider.of<TransactionModel>(targetContext, listen: false);
 
     void openForm(TransactionTyp type) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showTransactionForm(targetContext, type, transactionModel.addTransaction);
+        if (!mounted) return;
+        showTransactionForm(
+            targetContext, type, transactionModel.addTransaction);
       });
     }
 
@@ -415,83 +404,83 @@ class _OpeningScreenState extends State<_OpeningScreen>
         child: Material(
           type: MaterialType.transparency,
           child: LayoutBuilder(
-        builder: (context, constraints) {
-          final height = constraints.maxHeight;
-          return Stack(
-            children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _OpeningGlowPainter(
-                    intensity: _glow,
-                  ),
-                ),
-              ),
-              Center(
-                child: ScaleTransition(
-                  scale: _logoLift,
-                  child: Image.asset(
-                    'assets/budgie_mark.png',
-                    width: _OpeningScreen.logoSize,
-                    height: _OpeningScreen.logoSize,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: height / 2 +
-                    _OpeningScreen.logoSize / 2 +
-                    AppDesign.spacingL,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    FadeTransition(
-                      opacity: _nameFade,
-                      child: SlideTransition(
-                        position: _nameRise,
-                        child: Text(
-                          'Budgie',
-                          textAlign: TextAlign.center,
-                          style: AppTypography.displayMedium.copyWith(
-                            color: Colors.white,
-                            letterSpacing: 0,
-                          ),
-                        ),
+            builder: (context, constraints) {
+              final height = constraints.maxHeight;
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _OpeningGlowPainter(
+                        intensity: _glow,
                       ),
                     ),
-                    const SizedBox(height: AppDesign.spacingS),
-                    FadeTransition(
-                      opacity: _taglineFade,
-                      child: SlideTransition(
-                        position: _taglineRise,
-                        child: Text(
-                          'BUDGET IN BALANCE',
-                          textAlign: TextAlign.center,
-                          style: AppTypography.labelMedium.copyWith(
-                            color: Colors.white.withValues(alpha: 0.75),
-                            letterSpacing: 2.8,
-                          ),
-                        ),
+                  ),
+                  Center(
+                    child: ScaleTransition(
+                      scale: _logoLift,
+                      child: Image.asset(
+                        'assets/budgie_mark.png',
+                        width: _OpeningScreen.logoSize,
+                        height: _OpeningScreen.logoSize,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: height * 0.08,
-                left: 0,
-                right: 0,
-                child: FadeTransition(
-                  opacity: _loaderFade,
-                  child: _PulsingDots(
-                    animation: _pulse,
-                    color: Colors.white.withValues(alpha: 0.85),
                   ),
-                ),
-              ),
-            ],
-          );
-        },
+                  Positioned(
+                    top: height / 2 +
+                        _OpeningScreen.logoSize / 2 +
+                        AppDesign.spacingL,
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      children: [
+                        FadeTransition(
+                          opacity: _nameFade,
+                          child: SlideTransition(
+                            position: _nameRise,
+                            child: Text(
+                              'Budgie',
+                              textAlign: TextAlign.center,
+                              style: AppTypography.displayMedium.copyWith(
+                                color: Colors.white,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppDesign.spacingS),
+                        FadeTransition(
+                          opacity: _taglineFade,
+                          child: SlideTransition(
+                            position: _taglineRise,
+                            child: Text(
+                              'BUDGET IN BALANCE',
+                              textAlign: TextAlign.center,
+                              style: AppTypography.labelMedium.copyWith(
+                                color: Colors.white.withValues(alpha: 0.75),
+                                letterSpacing: 2.8,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: height * 0.08,
+                    left: 0,
+                    right: 0,
+                    child: FadeTransition(
+                      opacity: _loaderFade,
+                      child: _PulsingDots(
+                        animation: _pulse,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -567,8 +556,8 @@ class _PulsingDots extends StatelessWidget {
             final phase = (animation.value - i / 3) * 2 * math.pi;
             final wave = (math.sin(phase) + 1) / 2;
             return Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppDesign.spacingXS),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppDesign.spacingXS),
               child: Opacity(
                 opacity: 0.25 + 0.75 * wave,
                 child: Container(

@@ -175,3 +175,8 @@ class RecurringTransaction {
     );
   }
 }
+
+/// Returns true if [a] and [b] fall on the same calendar day.
+bool isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
+}

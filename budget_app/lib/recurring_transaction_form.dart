@@ -9,6 +9,7 @@ import 'recurring_transaction.dart';
 import 'recurring_transaction_model.dart';
 import 'common.dart';
 import 'design_system.dart';
+import 'widgets/modern_text_field.dart';
 
 /// Show the recurring transaction form dialog
 Future<void> showRecurringTransactionForm(
@@ -70,7 +71,8 @@ Future<void> showRecurringTransactionForm(
               ? expenseCategories
               : incomeCategories;
 
-          int initialCategoryIndex = categoryMap.keys.toList().indexOf(category);
+          int initialCategoryIndex =
+              categoryMap.keys.toList().indexOf(category);
           final categoryScrollController =
               FixedExtentScrollController(initialItem: initialCategoryIndex);
 
@@ -109,9 +111,11 @@ Future<void> showRecurringTransactionForm(
               }
 
               // Validate start date (not more than 1 year in past)
-              final oneYearAgo = DateTime.now().subtract(const Duration(days: 365));
+              final oneYearAgo =
+                  DateTime.now().subtract(const Duration(days: 365));
               if (startDate.isBefore(oneYearAgo)) {
-                startDateError = 'Start date cannot be more than 1 year in the past';
+                startDateError =
+                    'Start date cannot be more than 1 year in the past';
               } else {
                 startDateError = null;
               }
@@ -151,7 +155,7 @@ Future<void> showRecurringTransactionForm(
                       const SizedBox(height: AppDesign.spacingM),
 
                       // Amount Input Field
-                      _ModernTextField(
+                      ModernTextField(
                         controller: amountController,
                         focusNode: amountFocusNode,
                         label: 'Amount',
@@ -172,7 +176,7 @@ Future<void> showRecurringTransactionForm(
                       const SizedBox(height: AppDesign.spacingS),
 
                       // Description Input Field
-                      _ModernTextField(
+                      ModernTextField(
                         controller: descriptionController,
                         focusNode: descriptionFocusNode,
                         label: 'Description',
@@ -209,14 +213,16 @@ Future<void> showRecurringTransactionForm(
                         height: 90,
                         decoration: BoxDecoration(
                           color: AppDesign.getCardColor(context),
-                          borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
                           border: Border.all(
                             color: AppDesign.getBorderColor(context),
                             width: AppDesign.borderMedium,
                           ),
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
                           child: CupertinoPicker(
                             scrollController: categoryScrollController,
                             itemExtent: 32,
@@ -233,7 +239,8 @@ Future<void> showRecurringTransactionForm(
                                 child: Row(
                                   children: <Widget>[
                                     Container(
-                                      padding: const EdgeInsets.all(AppDesign.spacingXS),
+                                      padding: const EdgeInsets.all(
+                                          AppDesign.spacingXS),
                                       decoration: BoxDecoration(
                                         color: type == TransactionTyp.expense
                                             ? AppColors.expense
@@ -252,7 +259,8 @@ Future<void> showRecurringTransactionForm(
                                     Text(
                                       entry.key,
                                       style: AppTypography.bodyMedium.copyWith(
-                                        color: AppDesign.getTextPrimary(context),
+                                        color:
+                                            AppDesign.getTextPrimary(context),
                                       ),
                                     ),
                                   ],
@@ -284,17 +292,20 @@ Future<void> showRecurringTransactionForm(
                         height: 90,
                         decoration: BoxDecoration(
                           color: AppDesign.getCardColor(context),
-                          borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
                           border: Border.all(
                             color: AppDesign.getBorderColor(context),
                             width: AppDesign.borderMedium,
                           ),
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
                           child: CupertinoPicker(
                             scrollController: FixedExtentScrollController(
-                              initialItem: RecurrencePattern.values.indexOf(pattern),
+                              initialItem:
+                                  RecurrencePattern.values.indexOf(pattern),
                             ),
                             itemExtent: 32,
                             onSelectedItemChanged: (index) {
@@ -344,14 +355,16 @@ Future<void> showRecurringTransactionForm(
                           height: 90,
                           decoration: BoxDecoration(
                             color: AppDesign.getCardColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusM),
                             border: Border.all(
                               color: AppDesign.getBorderColor(context),
                               width: AppDesign.borderMedium,
                             ),
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusM),
                             child: CupertinoPicker(
                               scrollController: FixedExtentScrollController(
                                 initialItem: dayOfMonth - 1,
@@ -402,14 +415,16 @@ Future<void> showRecurringTransactionForm(
                           height: 90,
                           decoration: BoxDecoration(
                             color: AppDesign.getCardColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusM),
                             border: Border.all(
                               color: AppDesign.getBorderColor(context),
                               width: AppDesign.borderMedium,
                             ),
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusM),
                             child: CupertinoPicker(
                               scrollController: FixedExtentScrollController(
                                 initialItem: dayOfWeek - 1,
@@ -464,21 +479,21 @@ Future<void> showRecurringTransactionForm(
                           final picked = await showDatePicker(
                             context: context,
                             initialDate: startDate,
-                            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                            lastDate: DateTime.now().add(const Duration(days: 365)),
+                            firstDate: DateTime.now()
+                                .subtract(const Duration(days: 365)),
+                            lastDate:
+                                DateTime.now().add(const Duration(days: 365)),
                             builder: (context, child) {
-                              final accentColor =
-                                  type == TransactionTyp.expense
-                                      ? AppDesign.getExpenseColor(context)
-                                      : AppDesign.getIncomeColor(context);
+                              final accentColor = type == TransactionTyp.expense
+                                  ? AppDesign.getExpenseColor(context)
+                                  : AppDesign.getIncomeColor(context);
                               return Theme(
                                 data: Theme.of(context).copyWith(
-                                  colorScheme: Theme.of(context)
-                                      .colorScheme
-                                      .copyWith(
-                                        primary: accentColor,
-                                        secondary: accentColor,
-                                  ),
+                                  colorScheme:
+                                      Theme.of(context).colorScheme.copyWith(
+                                            primary: accentColor,
+                                            secondary: accentColor,
+                                          ),
                                 ),
                                 child: child!,
                               );
@@ -507,7 +522,8 @@ Future<void> showRecurringTransactionForm(
                           padding: const EdgeInsets.all(AppDesign.spacingM),
                           decoration: BoxDecoration(
                             color: AppDesign.getCardColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusM),
                             border: Border.all(
                               color: startDateError != null
                                   ? AppColors.error
@@ -562,8 +578,10 @@ Future<void> showRecurringTransactionForm(
                       Container(
                         padding: const EdgeInsets.all(AppDesign.spacingM),
                         decoration: BoxDecoration(
-                          color: AppDesign.getCardColor(context).withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                          color: AppDesign.getCardColor(context)
+                              .withValues(alpha: 0.5),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusM),
                           border: Border.all(
                             color: AppDesign.getBorderColor(context),
                             width: AppDesign.borderMedium,
@@ -645,12 +663,14 @@ Future<void> showRecurringTransactionForm(
                                     category: category,
                                     pattern: pattern,
                                     startDate: startDate,
-                                    dayOfMonth: pattern == RecurrencePattern.monthly
-                                        ? dayOfMonth
-                                        : null,
-                                    dayOfWeek: pattern != RecurrencePattern.monthly
-                                        ? dayOfWeek
-                                        : null,
+                                    dayOfMonth:
+                                        pattern == RecurrencePattern.monthly
+                                            ? dayOfMonth
+                                            : null,
+                                    dayOfWeek:
+                                        pattern != RecurrencePattern.monthly
+                                            ? dayOfWeek
+                                            : null,
                                   );
 
                                   if (templateToEdit != null) {
@@ -659,7 +679,8 @@ Future<void> showRecurringTransactionForm(
                                       recurring,
                                     );
                                   } else {
-                                    recurringModel.addRecurringTransaction(recurring);
+                                    recurringModel
+                                        .addRecurringTransaction(recurring);
                                     // Generate any due transactions immediately so
                                     // today's occurrence is logged right away
                                     final generator = TransactionGenerator(
@@ -686,163 +707,6 @@ Future<void> showRecurringTransactionForm(
       );
     },
   );
-}
-
-/// Modern text field with floating label, focus animations, and error display
-class _ModernTextField extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final String label;
-  final String hint;
-  final TextInputType? keyboardType;
-  final IconData? prefixIcon;
-  final String? errorText;
-  final ValueChanged<String>? onChanged;
-
-  const _ModernTextField({
-    required this.controller,
-    required this.focusNode,
-    required this.label,
-    required this.hint,
-    this.keyboardType,
-    this.prefixIcon,
-    this.errorText,
-    this.onChanged,
-  });
-
-  @override
-  State<_ModernTextField> createState() => _ModernTextFieldState();
-}
-
-class _ModernTextFieldState extends State<_ModernTextField> {
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.focusNode.addListener(_onFocusChange);
-  }
-
-  @override
-  void dispose() {
-    widget.focusNode.removeListener(_onFocusChange);
-    super.dispose();
-  }
-
-  void _onFocusChange() {
-    setState(() {
-      _isFocused = widget.focusNode.hasFocus;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final hasError = widget.errorText != null;
-    final borderColor = hasError
-        ? AppColors.error
-        : _isFocused
-            ? AppColors.primary
-            : AppDesign.getBorderColor(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Fixed label - always visible
-        Padding(
-          padding: const EdgeInsets.only(
-            left: AppDesign.spacingS,
-            bottom: AppDesign.spacingXS,
-          ),
-          child: Text(
-            widget.label,
-            style: AppTypography.caption.copyWith(
-              color: hasError
-                  ? AppColors.error
-                  : _isFocused
-                      ? AppColors.primary
-                      : AppDesign.getTextSecondary(context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        // Input field container
-        Container(
-          decoration: BoxDecoration(
-            color: AppDesign.getCardColor(context),
-            borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            border: Border.all(
-              color: borderColor,
-              width: _isFocused ? AppDesign.borderThick : AppDesign.borderMedium,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDesign.spacingM,
-              vertical: AppDesign.spacingS,
-            ),
-            child: Row(
-              children: [
-                if (widget.prefixIcon != null) ...[
-                  Icon(
-                    widget.prefixIcon,
-                    size: AppDesign.iconM,
-                    color: hasError
-                        ? AppColors.error
-                        : _isFocused
-                            ? AppColors.primary
-                            : AppDesign.getTextSecondary(context),
-                  ),
-                  const SizedBox(width: AppDesign.spacingS),
-                ],
-                Expanded(
-                  child: TextField(
-                    controller: widget.controller,
-                    focusNode: widget.focusNode,
-                    keyboardType: widget.keyboardType,
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppDesign.getTextPrimary(context),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: widget.hint,
-                      hintStyle: AppTypography.bodyLarge.copyWith(
-                        color: AppDesign.getTextTertiary(context),
-                      ),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    onChanged: widget.onChanged,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Error message with icon
-        if (hasError) ...[
-          const SizedBox(height: AppDesign.spacingXS),
-          Row(
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: AppDesign.iconS,
-                color: AppColors.error,
-              ),
-              const SizedBox(width: AppDesign.spacingXS),
-              Expanded(
-                child: Text(
-                  widget.errorText!,
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
 }
 
 /// Calculate preview dates based on recurrence pattern

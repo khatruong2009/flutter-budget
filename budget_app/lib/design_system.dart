@@ -11,8 +11,6 @@ export 'theme/app_colors.dart';
 export 'theme/app_typography.dart';
 export 'theme/app_animations.dart';
 export 'widgets/modern_app_bar.dart';
-export 'widgets/page_transitions.dart';
-export 'widgets/interactive_wrapper.dart';
 export 'utils/micro_interactions.dart';
 
 /// AppDesign is the central design system that consolidates all design tokens
@@ -136,13 +134,6 @@ class AppDesign {
 
   // Layout Constraints
   static const double maxContentWidth = 600.0;
-  static const double minCardHeight = 100.0;
-  static const double maxCardHeight = 200.0;
-
-  // Grid System
-  static const int gridColumnsPhone = 4;
-  static const int gridColumnsTablet = 8;
-  static const int gridColumnsDesktop = 12;
 
   // Breakpoints
   static const double breakpointPhone = 600.0;
@@ -297,7 +288,7 @@ class AppDesign {
 
 /// ElevatedCard is a reusable card component with Material Design elevation
 /// featuring solid backgrounds, shadows, and clean borders
-/// 
+///
 /// Performance optimizations:
 /// - Uses const constructor when possible for better performance
 /// - Caches computed values to avoid repeated calculations

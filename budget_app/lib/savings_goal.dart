@@ -127,19 +127,6 @@ class SavingsGoal {
     );
   }
 
-  SavingsGoal withAllocation(double amount) {
-    final nextAmount = currentAmount + amount;
-    final nextCompletedAt =
-        !isCompleted && targetAmount > 0 && nextAmount >= targetAmount
-            ? DateTime.now()
-            : completedAt;
-
-    return copyWith(
-      currentAmount: nextAmount,
-      completedAt: nextAmount < targetAmount ? null : nextCompletedAt,
-    );
-  }
-
   static String _generateId() {
     final timestamp = DateTime.now().microsecondsSinceEpoch.toRadixString(36);
     final counter = (_idCounter++).toRadixString(36);

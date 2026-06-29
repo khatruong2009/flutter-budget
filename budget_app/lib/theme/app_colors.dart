@@ -252,7 +252,7 @@ class AppColors {
   @Deprecated('Use solid colors instead')
   static Color glassSurface(double opacity) =>
       Colors.white.withValues(alpha: opacity);
-  
+
   @Deprecated('Use solid colors instead')
   static Color glassSurfaceDark(double opacity) =>
       Colors.black.withValues(alpha: opacity);
@@ -260,7 +260,7 @@ class AppColors {
   @Deprecated('Use solid colors instead')
   static Color glassBorder(double opacity) =>
       Colors.white.withValues(alpha: opacity);
-  
+
   @Deprecated('Use solid colors instead')
   static Color glassBorderDark(double opacity) =>
       Colors.white.withValues(alpha: opacity * 0.5);
@@ -268,29 +268,21 @@ class AppColors {
   // Deprecated gradient properties - kept for backward compatibility
   @Deprecated('Use solid colors instead')
   static const LinearGradient backgroundGradient = primaryGradient;
-  
+
   @Deprecated('Use solid colors instead')
   static const LinearGradient backgroundGradientDark = primaryGradientDark;
-  
+
   @Deprecated('Use solid colors instead')
   static const LinearGradient cardGradient = accentGradient;
-  
+
   @Deprecated('Use solid colors instead')
   static const LinearGradient cardGradientDark = accentGradientDark;
 
   @Deprecated('Use categoryColors instead')
-  static List<LinearGradient> get chartGradients => [primaryGradient, incomeGradient, expenseGradient];
+  static List<LinearGradient> get chartGradients =>
+      [primaryGradient, incomeGradient, expenseGradient];
 
   @Deprecated('Use categoryColors instead')
-  static List<LinearGradient> get chartGradientsDark => [primaryGradientDark, incomeGradientDark, expenseGradientDark];
-
-  // Opacity Scales
-  static const double opacityHigh = 0.87;
-  static const double opacityMedium = 0.60;
-  static const double opacityLow = 0.38;
-  static const double opacityDisabled = 0.38;
-  @Deprecated('Use opacityLow instead')
-  static const double opacityGlass = 0.15;
-  @Deprecated('Use opacityLow instead')
-  static const double opacityGlassBorder = 0.2;
+  static List<LinearGradient> get chartGradientsDark =>
+      [primaryGradientDark, incomeGradientDark, expenseGradientDark];
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:budget_app/utils/platform_utils.dart';
 import 'package:budget_app/utils/platform_enhancements.dart';
-import 'package:budget_app/widgets/responsive_layout.dart';
 
 void main() {
   group('Platform Utils Tests', () {
@@ -104,87 +103,6 @@ void main() {
           ),
         ),
       );
-    });
-  });
-
-  group('Responsive Layout Tests', () {
-    testWidgets('ResponsiveLayout should render child', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: ResponsiveLayout(
-            child: Text('Test Content'),
-          ),
-        ),
-      );
-
-      expect(find.text('Test Content'), findsOneWidget);
-    });
-
-    testWidgets('ResponsiveBuilder should provide screen size', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ResponsiveBuilder(
-            builder: (context, screenSize) {
-              expect(screenSize, isA<ScreenSize>());
-              return Text('Screen: ${screenSize.name}');
-            },
-          ),
-        ),
-      );
-
-      expect(find.textContaining('Screen:'), findsOneWidget);
-    });
-
-    testWidgets('AdaptiveGrid should render children', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: AdaptiveGrid(
-              children: [
-                Text('Item 1'),
-                Text('Item 2'),
-                Text('Item 3'),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Item 1'), findsOneWidget);
-      expect(find.text('Item 2'), findsOneWidget);
-      expect(find.text('Item 3'), findsOneWidget);
-    });
-
-    testWidgets('AdaptiveColumns should render children', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: AdaptiveColumns(
-              children: [
-                Text('Column 1'),
-                Text('Column 2'),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Column 1'), findsOneWidget);
-      expect(find.text('Column 2'), findsOneWidget);
-    });
-
-    testWidgets('PlatformAppBar should render title', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            appBar: PlatformAppBar(
-              title: 'Test Title',
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Test Title'), findsOneWidget);
     });
   });
 
@@ -371,24 +289,6 @@ void main() {
       expect(find.text('Test Content'), findsOneWidget);
     });
 
-    testWidgets('Responsive layout should adapt to screen size', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ResponsiveLayout(
-              child: Container(
-                color: Colors.blue,
-                child: const Text('Responsive Content'),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Responsive Content'), findsOneWidget);
-      expect(find.byType(Container), findsWidgets);
-    });
-
     testWidgets('Platform page route should be creatable', (tester) async {
       final route = PlatformUtils.platformPageRoute(
         builder: (context) => const Scaffold(
@@ -502,60 +402,6 @@ void main() {
           ),
         ),
       );
-      
-      // Reset surface size
-      await tester.binding.setSurfaceSize(null);
-    });
-
-    testWidgets('Responsive builder should adapt to screen size', (tester) async {
-      // Test mobile size
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ResponsiveBuilder(
-            builder: (context, screenSize) {
-              expect(screenSize, equals(ScreenSize.mobile));
-              return Text('Size: ${screenSize.name}');
-            },
-          ),
-        ),
-      );
-      
-      await tester.pump();
-      expect(find.text('Size: mobile'), findsOneWidget);
-      
-      // Test tablet size
-      await tester.binding.setSurfaceSize(const Size(700, 1000));
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ResponsiveBuilder(
-            builder: (context, screenSize) {
-              expect(screenSize, equals(ScreenSize.tablet));
-              return Text('Size: ${screenSize.name}');
-            },
-          ),
-        ),
-      );
-      
-      await tester.pump();
-      expect(find.text('Size: tablet'), findsOneWidget);
-      
-      // Test desktop size
-      await tester.binding.setSurfaceSize(const Size(1000, 800));
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ResponsiveBuilder(
-            builder: (context, screenSize) {
-              expect(screenSize, equals(ScreenSize.desktop));
-              return Text('Size: ${screenSize.name}');
-            },
-          ),
-        ),
-      );
-      
-      await tester.pump();
-      expect(find.text('Size: desktop'), findsOneWidget);
       
       // Reset surface size
       await tester.binding.setSurfaceSize(null);

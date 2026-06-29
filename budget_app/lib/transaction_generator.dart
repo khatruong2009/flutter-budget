@@ -35,9 +35,9 @@ class TransactionGenerator {
     DateTime current = recurring.nextOccurrence;
 
     // Generate transactions for all missed occurrences
-    while (current.isBefore(upTo) || _isSameDay(current, upTo)) {
+    while (current.isBefore(upTo) || isSameDay(current, upTo)) {
       // Only generate if within lookback window
-      if (current.isAfter(maxLookback) || _isSameDay(current, maxLookback)) {
+      if (current.isAfter(maxLookback) || isSameDay(current, maxLookback)) {
         final transaction = recurring.generateTransaction(current);
         transactionModel.addTransaction(
           transaction.type,
@@ -48,7 +48,7 @@ class TransactionGenerator {
           recurringTemplateId: recurring.id,
         );
       }
-      
+
       // Calculate next occurrence
       current = _calculateNextOccurrence(recurring, current);
     }
@@ -91,10 +91,5 @@ class TransactionGenerator {
     int actualDay = dayOfMonth > daysInMonth ? daysInMonth : dayOfMonth;
 
     return DateTime(nextYear, nextMonth, actualDay);
-  }
-
-  /// Helper method to check if two dates are the same day
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

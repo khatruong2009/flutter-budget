@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import 'transaction.dart';
 import 'net_worth_page.dart';
 import 'spending_page.dart';
 import 'savings_goals_page.dart';
@@ -20,12 +19,6 @@ class BudgetHomePage extends StatefulWidget {
 }
 
 class _BudgetHomePageState extends State<BudgetHomePage> {
-  double total = 0.0;
-  List<Transaction> transactions = [];
-
-  double totalIncome = 0.0;
-  double totalExpenses = 0.0;
-
   int _currentIndex = 0;
   late PageController _pageController;
 
@@ -69,7 +62,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
         children: [
           Navigator(
             onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => SpendingPage(),
+              builder: (context) => const SpendingPage(),
             ),
           ),
           Navigator(

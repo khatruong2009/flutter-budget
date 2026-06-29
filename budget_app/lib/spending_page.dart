@@ -12,11 +12,7 @@ import 'transaction_model.dart';
 import 'transaction_page.dart';
 
 class SpendingPage extends StatefulWidget {
-  final List<Transaction> transactions = [];
-
-  SpendingPage({
-    Key? key,
-  }) : super(key: key);
+  const SpendingPage({super.key});
 
   @override
   SpendingPageState createState() => SpendingPageState();
