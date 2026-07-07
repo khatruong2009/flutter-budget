@@ -48,6 +48,7 @@ class AppContainer extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,
+        fontFamily: AppTypography.fontFamily,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
           brightness: Brightness.light,
@@ -89,11 +90,12 @@ class AppContainer extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        fontFamily: AppTypography.fontFamily,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
           brightness: Brightness.dark,
-          primary: AppColors.primaryLight,
-          surface: AppColors.surfaceDark,
+          primary: AppColors.accent,
+          surface: AppColors.cardDark,
           error: AppColors.errorDarkTheme,
         ),
         scaffoldBackgroundColor: AppColors.backgroundDark,

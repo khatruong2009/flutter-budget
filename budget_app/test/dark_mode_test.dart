@@ -77,7 +77,7 @@ void main() {
                 final backgroundColor = AppDesign.getBackgroundColor(context);
                 
                 expect(backgroundColor, AppColors.backgroundDark);
-                expect(backgroundColor, const Color(0xFF111827));
+                expect(backgroundColor, const Color(0xFF0A0A12));
                 
                 return Container();
               },
@@ -113,7 +113,7 @@ void main() {
                 final cardColor = AppDesign.getCardColor(context);
                 
                 expect(cardColor, AppColors.cardDark);
-                expect(cardColor, const Color(0xFF374151));
+                expect(cardColor, const Color(0xFF13131F));
                 
                 return Container();
               },
@@ -187,7 +187,7 @@ void main() {
                 final expenseColor = AppDesign.getExpenseColor(context);
                 
                 expect(expenseColor, AppColors.expenseDarkTheme);
-                expect(expenseColor, const Color(0xFFF87171));
+                expect(expenseColor, const Color(0xFFFB7185));
                 
                 return Container();
               },
@@ -225,7 +225,7 @@ void main() {
                 final borderColor = AppDesign.getBorderColor(context);
                 
                 expect(borderColor, AppColors.borderDark);
-                expect(borderColor, const Color(0xFF4B5563));
+                expect(borderColor, const Color(0x12FFFFFF));
                 
                 return Container();
               },

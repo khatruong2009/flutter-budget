@@ -8,6 +8,82 @@ class AppColors {
   static const Color primaryDark = Color(0xFF4F46E5);
   static const Color primaryLight = Color(0xFF818CF8);
 
+  // ===== Budgie dark redesign tokens =====
+  // Glowing indigo accent; alternates: #34D399, #F0ABFC, #FBBF24.
+  static const Color accent = Color(0xFF818CF8);
+  static const Color onAccent = Color(0xFF0A0A12); // text/icons on accent fills
+  static const Color danger = Color(0xFFFB7185); // rose — expense/over-limit
+  static const Color pink = Color(0xFFF0ABFC);
+  static const Color track = Color(0xFF1B1B2C); // progress bar inset
+  static const Color trackSecondary = Color(0xFF2A2A3E); // comparison bars
+  static const Color donutRemainder = Color(0xFF3A3A52); // tail donut segment
+  static const Color dockInactiveIcon = Color(0xFF8A8AA8);
+  static const Color dockBackground = Color(0xE013131F); // rgba(19,19,31,0.88)
+  static const Color cardBorderDark = Color(0x12FFFFFF); // white 7%
+  static const Color hairlineDark = Color(0x0FFFFFFF); // white 6%
+  static const Color chipSurfaceDark =
+      Color(0xFF15151F); // elevated surface / pills
+
+  // Light-theme equivalents so Light/Auto modes stay usable with the new layout.
+  static const Color trackLight = Color(0xFFE9E9F1);
+  static const Color trackSecondaryLight = Color(0xFFD9D9E6);
+  static const Color donutRemainderLight = Color(0xFFC9C9DA);
+  static const Color cardBorderLight = Color(0x14101020); // ink 8%
+  static const Color hairlineLight = Color(0x10101020);
+  static const Color chipSurfaceLight = Color(0xFFF1F1F7);
+
+  static Color getAccent(bool isDark) => isDark ? accent : primary;
+  static Color getTextColor(bool isDark) =>
+      isDark ? textPrimaryDark : textPrimary;
+  static Color getTextSecondaryColor(bool isDark) =>
+      isDark ? textSecondaryDark : textSecondary;
+  static Color getTextTertiaryColor(bool isDark) =>
+      isDark ? textTertiaryDark : textTertiary;
+  static Color getOnAccent(bool isDark) => isDark ? onAccent : Colors.white;
+  static Color getDanger(bool isDark) => isDark ? danger : expense;
+  static Color getTrack(bool isDark) => isDark ? track : trackLight;
+  static Color getTrackSecondary(bool isDark) =>
+      isDark ? trackSecondary : trackSecondaryLight;
+  static Color getDonutRemainder(bool isDark) =>
+      isDark ? donutRemainder : donutRemainderLight;
+  static Color getCardBorder(bool isDark) =>
+      isDark ? cardBorderDark : cardBorderLight;
+  static Color getHairline(bool isDark) =>
+      isDark ? hairlineDark : hairlineLight;
+  static Color getChipSurface(bool isDark) =>
+      isDark ? chipSurfaceDark : chipSurfaceLight;
+
+  /// Signature glow shadow. In light mode the glow is dropped in favor of a
+  /// soft ambient shadow so accent elements keep their lift.
+  static List<BoxShadow> glow(Color color,
+      {double blurRadius = 24, double alpha = 0.55, bool isDark = true}) {
+    if (!isDark) {
+      return [
+        BoxShadow(
+          color: color.withValues(alpha: 0.25),
+          blurRadius: blurRadius * 0.6,
+          offset: const Offset(0, 4),
+        ),
+      ];
+    }
+    return [
+      BoxShadow(color: color.withValues(alpha: alpha), blurRadius: blurRadius),
+    ];
+  }
+
+  /// Text glow for hero numbers (`text-shadow: 0 0 48px accent@45%`).
+  /// On light backgrounds the halo reads as smudging, so it is softened.
+  static List<Shadow> textGlow(Color color,
+      {double blurRadius = 48, double alpha = 0.45, bool isDark = true}) {
+    final effectiveAlpha = isDark ? alpha : alpha * 0.4;
+    return [
+      Shadow(
+        color: color.withValues(alpha: effectiveAlpha),
+        blurRadius: blurRadius,
+      ),
+    ];
+  }
+
   // Semantic Colors - Light Theme (Solid)
   static const Color income = Color(0xFF10B981); // Green
   static const Color incomeDark = Color(0xFF059669);
@@ -15,7 +91,7 @@ class AppColors {
 
   static const Color expense = Color(0xFFEF4444); // Red
   static const Color expenseDark = Color(0xFFDC2626);
-  static const Color expenseLight = Color(0xFFF87171);
+  static const Color expenseLight = Color(0xFFFB7185);
 
   static const Color neutral = Color(0xFF3B82F6); // Blue
   static const Color success = Color(0xFF10B981);
@@ -25,11 +101,11 @@ class AppColors {
 
   // Semantic Colors - Dark Theme (Solid)
   static const Color incomeDarkTheme = Color(0xFF34D399);
-  static const Color expenseDarkTheme = Color(0xFFF87171);
+  static const Color expenseDarkTheme = Color(0xFFFB7185);
   static const Color neutralDarkTheme = Color(0xFF60A5FA);
   static const Color successDarkTheme = Color(0xFF34D399);
   static const Color warningDarkTheme = Color(0xFFFBBF24);
-  static const Color errorDarkTheme = Color(0xFFF87171);
+  static const Color errorDarkTheme = Color(0xFFFB7185);
   static const Color infoDarkTheme = Color(0xFF60A5FA);
 
   // Surface Colors (Light Theme) - Solid
@@ -38,9 +114,9 @@ class AppColors {
   static const Color cardLight = Color(0xFFFFFFFF);
 
   // Surface Colors (Dark Theme) - Solid
-  static const Color surfaceDark = Color(0xFF1F2937);
-  static const Color backgroundDark = Color(0xFF111827);
-  static const Color cardDark = Color(0xFF374151);
+  static const Color surfaceDark = Color(0xFF15151F);
+  static const Color backgroundDark = Color(0xFF0A0A12);
+  static const Color cardDark = Color(0xFF13131F);
 
   // Text Colors - Light Theme
   static const Color textPrimary = Color(0xFF111827);
@@ -49,14 +125,14 @@ class AppColors {
   static const Color textOnPrimary = Colors.white;
 
   // Text Colors - Dark Theme
-  static const Color textPrimaryDark = Color(0xFFF9FAFB);
-  static const Color textSecondaryDark = Color(0xFFD1D5DB);
-  static const Color textTertiaryDark = Color(0xFF9CA3AF);
-  static const Color textOnPrimaryDark = Color(0xFF111827);
+  static const Color textPrimaryDark = Color(0xFFF2F2FA);
+  static const Color textSecondaryDark = Color(0xFF9A9AB5);
+  static const Color textTertiaryDark = Color(0xFF5C5C78);
+  static const Color textOnPrimaryDark = Color(0xFF0A0A12);
 
   // Border Colors
   static const Color borderLight = Color(0xFFE5E7EB);
-  static const Color borderDark = Color(0xFF4B5563);
+  static const Color borderDark = Color(0x12FFFFFF); // white 7%
 
   // Gradient Definitions (kept for accents and special effects)
   static const LinearGradient primaryGradient = LinearGradient(
