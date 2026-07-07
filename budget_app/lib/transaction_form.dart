@@ -103,7 +103,7 @@ Future<void> showTransactionForm(
           backgroundColor: Colors.transparent,
           insetPadding: const EdgeInsets.symmetric(
             horizontal: AppDesign.spacingL,
-            vertical: AppDesign.spacingXL,
+            vertical: AppDesign.spacingM,
           ),
           child: Container(
             constraints: const BoxConstraints(maxWidth: 500),
@@ -112,168 +112,193 @@ Future<void> showTransactionForm(
               borderRadius: BorderRadius.circular(AppDesign.radiusXL),
               boxShadow: AppDesign.shadowXL,
             ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(AppDesign.spacingM),
-                child: Form(
-                  key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppDesign.spacingM,
+                      AppDesign.spacingM,
+                      AppDesign.spacingM,
+                      0,
+                    ),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Title
+                          Text(
+                            type == TransactionTyp.expense
+                                ? 'Add Expense'
+                                : 'Add Income',
+                            style: AppTypography.headingMedium.copyWith(
+                              color: AppDesign.getTextPrimary(context),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppDesign.spacingM),
+
+                          // Amount Input Field with floating label
+                          ModernTextField(
+                            controller: amountController,
+                            focusNode: amountFocusNode,
+                            label: 'Amount',
+                            hint: '0.00',
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            prefixIcon: Icons.attach_money,
+                            errorText: amountError,
+                            onChanged: (value) {
+                              // Clear error on change
+                              if (amountError != null) {
+                                setState(() {
+                                  amountError = null;
+                                });
+                              }
+                            },
+                          ),
+                          const SizedBox(height: AppDesign.spacingS),
+
+                          // Description Input Field with floating label
+                          ModernTextField(
+                            controller: descriptionController,
+                            focusNode: descriptionFocusNode,
+                            label: 'Description',
+                            hint: 'What was this for?',
+                            prefixIcon: Icons.description_outlined,
+                            errorText: descriptionError,
+                            onChanged: (value) {
+                              // Clear error on change
+                              if (descriptionError != null) {
+                                setState(() {
+                                  descriptionError = null;
+                                });
+                              }
+                            },
+                          ),
+                          const SizedBox(height: AppDesign.spacingS),
+
+                          // Category Picker Label
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: AppDesign.spacingS,
+                              bottom: AppDesign.spacingXS,
+                            ),
+                            child: Text(
+                              'Category',
+                              style: AppTypography.caption.copyWith(
+                                color: AppDesign.getTextSecondary(context),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+
+                          // Category Picker with modern styling
+                          Container(
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: AppDesign.getCardColor(context),
+                              borderRadius:
+                                  BorderRadius.circular(AppDesign.radiusM),
+                              border: Border.all(
+                                color: AppDesign.getBorderColor(context),
+                                width: AppDesign.borderMedium,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(AppDesign.radiusM),
+                              child: CupertinoPicker(
+                                scrollController: categoryScrollController,
+                                itemExtent: 32,
+                                onSelectedItemChanged: (index) {
+                                  MicroInteractions.selectionClick();
+                                  setState(() {
+                                    category =
+                                        categoryMap.keys.elementAt(index);
+                                  });
+                                },
+                                children: categoryMap.entries.map((entry) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppDesign.spacingM,
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Container(
+                                          padding: const EdgeInsets.all(
+                                              AppDesign.spacingXS),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                type == TransactionTyp.expense
+                                                    ? AppColors.expense
+                                                    : AppColors.income,
+                                            borderRadius: BorderRadius.circular(
+                                              AppDesign.radiusS,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            entry.value,
+                                            size: AppDesign.iconS,
+                                            color: AppColors.textOnPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            width: AppDesign.spacingM),
+                                        Text(
+                                          entry.key,
+                                          style:
+                                              AppTypography.bodyMedium.copyWith(
+                                            color: AppDesign.getTextPrimary(
+                                                context),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppDesign.spacingM),
+
+                          // Date Picker
+                          _DatePickerTile(
+                            label: 'Date',
+                            value:
+                                DateFormat('MMM dd, yyyy').format(selectedDate),
+                            onTap: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: selectedDate,
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  selectedDate = picked;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Pinned footer: action buttons stay visible above the keyboard
+                Padding(
+                  padding: const EdgeInsets.all(AppDesign.spacingM),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Title
-                      Text(
-                        type == TransactionTyp.expense
-                            ? 'Add Expense'
-                            : 'Add Income',
-                        style: AppTypography.headingMedium.copyWith(
-                          color: AppDesign.getTextPrimary(context),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-
-                      // Amount Input Field with floating label
-                      ModernTextField(
-                        controller: amountController,
-                        focusNode: amountFocusNode,
-                        label: 'Amount',
-                        hint: '0.00',
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        prefixIcon: Icons.attach_money,
-                        errorText: amountError,
-                        onChanged: (value) {
-                          // Clear error on change
-                          if (amountError != null) {
-                            setState(() {
-                              amountError = null;
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(height: AppDesign.spacingS),
-
-                      // Description Input Field with floating label
-                      ModernTextField(
-                        controller: descriptionController,
-                        focusNode: descriptionFocusNode,
-                        label: 'Description',
-                        hint: 'What was this for?',
-                        prefixIcon: Icons.description_outlined,
-                        errorText: descriptionError,
-                        onChanged: (value) {
-                          // Clear error on change
-                          if (descriptionError != null) {
-                            setState(() {
-                              descriptionError = null;
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(height: AppDesign.spacingS),
-
-                      // Category Picker Label
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: AppDesign.spacingS,
-                          bottom: AppDesign.spacingXS,
-                        ),
-                        child: Text(
-                          'Category',
-                          style: AppTypography.caption.copyWith(
-                            color: AppDesign.getTextSecondary(context),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-
-                      // Category Picker with modern styling
-                      Container(
-                        height: 90,
-                        decoration: BoxDecoration(
-                          color: AppDesign.getCardColor(context),
-                          borderRadius:
-                              BorderRadius.circular(AppDesign.radiusM),
-                          border: Border.all(
-                            color: AppDesign.getBorderColor(context),
-                            width: AppDesign.borderMedium,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(AppDesign.radiusM),
-                          child: CupertinoPicker(
-                            scrollController: categoryScrollController,
-                            itemExtent: 32,
-                            onSelectedItemChanged: (index) {
-                              MicroInteractions.selectionClick();
-                              setState(() {
-                                category = categoryMap.keys.elementAt(index);
-                              });
-                            },
-                            children: categoryMap.entries.map((entry) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppDesign.spacingM,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      padding: const EdgeInsets.all(
-                                          AppDesign.spacingXS),
-                                      decoration: BoxDecoration(
-                                        color: type == TransactionTyp.expense
-                                            ? AppColors.expense
-                                            : AppColors.income,
-                                        borderRadius: BorderRadius.circular(
-                                          AppDesign.radiusS,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        entry.value,
-                                        size: AppDesign.iconS,
-                                        color: AppColors.textOnPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(width: AppDesign.spacingM),
-                                    Text(
-                                      entry.key,
-                                      style: AppTypography.bodyMedium.copyWith(
-                                        color:
-                                            AppDesign.getTextPrimary(context),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-
-                      // Date Picker
-                      _DatePickerTile(
-                        label: 'Date',
-                        value: DateFormat('MMM dd, yyyy').format(selectedDate),
-                        onTap: () async {
-                          final picked = await showDatePicker(
-                            context: context,
-                            initialDate: selectedDate,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            setState(() {
-                              selectedDate = picked;
-                            });
-                          }
-                        },
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-
                       // Action Buttons
                       Row(
                         children: [
@@ -413,7 +438,7 @@ Future<void> showTransactionForm(
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         );
