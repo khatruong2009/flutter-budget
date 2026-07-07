@@ -113,14 +113,6 @@ class SpendingPageState extends State<SpendingPage> {
     await model.removeCategoryBudgetLimit(category);
   }
 
-  double? _parseBudgetLimit(String rawValue) {
-    final normalized = rawValue.replaceAll(RegExp(r'[^0-9.]'), '');
-    if (normalized.isEmpty) {
-      return null;
-    }
-    return double.tryParse(normalized);
-  }
-
   List<_CategoryBudgetProgress> _buildBudgetProgressItems(
     TransactionModel model,
     DateTime month,
@@ -162,171 +154,18 @@ class SpendingPageState extends State<SpendingPage> {
     TransactionModel model,
     String category,
   ) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currentLimit = _getCategoryBudgetLimit(model, category);
-    final controller = TextEditingController(
-      text: currentLimit == null
-          ? ''
-          : NumberFormat('#,##0.##', 'en_US').format(currentLimit),
-    );
-
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        var isSaving = false;
-
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            final parsedLimit = _parseBudgetLimit(controller.text);
-            final canSave = !isSaving && parsedLimit != null && parsedLimit > 0;
-
-            Future<void> saveLimit() async {
-              final limit = parsedLimit;
-              if (isSaving || limit == null || limit <= 0) {
-                return;
-              }
-              setModalState(() => isSaving = true);
-              await _setCategoryBudgetLimit(model, category, limit);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            }
-
-            Future<void> removeLimit() async {
-              setModalState(() => isSaving = true);
-              await _removeCategoryBudgetLimit(model, category);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            }
-
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.getCard(isDark),
-                  border: Border.all(color: AppColors.getCardBorder(isDark)),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(28),
-                  ),
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppDesign.spacingM),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 44,
-                            height: 4,
-                            decoration: BoxDecoration(
-                              color: AppColors.getTextTertiaryColor(isDark)
-                                  .withValues(alpha: 0.35),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppDesign.spacingM),
-                        Row(
-                          children: [
-                            IconTile(
-                              icon: expenseCategories[category] ??
-                                  CupertinoIcons.square_grid_2x2,
-                              color: AppColors.getDanger(isDark),
-                            ),
-                            const SizedBox(width: AppDesign.spacingM),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    category,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTypography.cardTitle.copyWith(
-                                      color: AppColors.getTextColor(isDark),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'Monthly spending limit',
-                                    style: AppTypography.rowSubtitle.copyWith(
-                                      color: AppColors.getTextSecondaryColor(
-                                          isDark),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppDesign.spacingL),
-                        TextField(
-                          controller: controller,
-                          autofocus: true,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          textInputAction: TextInputAction.done,
-                          onChanged: (_) => setModalState(() {}),
-                          onSubmitted: (_) => saveLimit(),
-                          style: AppTypography.numericMedium.copyWith(
-                            color: AppColors.getTextColor(isDark),
-                          ),
-                          decoration: InputDecoration(
-                            labelText: 'Limit',
-                            prefixText: '\$',
-                            hintText: '0.00',
-                            helperText:
-                                'Set a positive amount for this category.',
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(AppDesign.radiusM),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppDesign.spacingL),
-                        Row(
-                          children: [
-                            if (currentLimit != null) ...[
-                              Expanded(
-                                child: AppButton.secondary(
-                                  label: 'Remove',
-                                  icon: CupertinoIcons.trash,
-                                  onPressed: isSaving ? null : removeLimit,
-                                ),
-                              ),
-                              const SizedBox(width: AppDesign.spacingM),
-                            ],
-                            Expanded(
-                              child: AppButton.primary(
-                                label: 'Save',
-                                icon: CupertinoIcons.check_mark_circled_solid,
-                                onPressed: canSave ? saveLimit : null,
-                                isLoading: isSaving,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
+      builder: (_) => _BudgetLimitSheet(
+        category: category,
+        currentLimit: _getCategoryBudgetLimit(model, category),
+        onSave: (limit) => _setCategoryBudgetLimit(model, category, limit),
+        onRemove: () => _removeCategoryBudgetLimit(model, category),
+      ),
     );
-
-    controller.dispose();
   }
 
   /// Bound to the `EDIT` link: pick a category, then open the existing limit
@@ -340,6 +179,7 @@ class SpendingPageState extends State<SpendingPage> {
     final selected = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         return Container(
@@ -655,6 +495,200 @@ class SpendingPageState extends State<SpendingPage> {
 
 /// Restyled inline month picker, driven by the header [MonthPill]. Preserves
 /// the original expand/collapse + CupertinoPicker + selectMonth behavior.
+/// Sheet for setting/removing a category's monthly limit. Owns its
+/// TextEditingController: the route's future resolves at pop, before the
+/// exit animation finishes, so a controller disposed by the caller would
+/// still be rebuilt against while the sheet animates out.
+class _BudgetLimitSheet extends StatefulWidget {
+  final String category;
+  final double? currentLimit;
+  final Future<void> Function(double limit) onSave;
+  final Future<void> Function() onRemove;
+
+  const _BudgetLimitSheet({
+    required this.category,
+    required this.currentLimit,
+    required this.onSave,
+    required this.onRemove,
+  });
+
+  @override
+  State<_BudgetLimitSheet> createState() => _BudgetLimitSheetState();
+}
+
+class _BudgetLimitSheetState extends State<_BudgetLimitSheet> {
+  late final TextEditingController _controller;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.currentLimit == null
+          ? ''
+          : NumberFormat('#,##0.##', 'en_US').format(widget.currentLimit),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  double? _parseBudgetLimit(String rawValue) {
+    final normalized = rawValue.replaceAll(RegExp(r'[^0-9.]'), '');
+    if (normalized.isEmpty) {
+      return null;
+    }
+    return double.tryParse(normalized);
+  }
+
+  Future<void> _saveLimit() async {
+    final limit = _parseBudgetLimit(_controller.text);
+    if (_isSaving || limit == null || limit <= 0) {
+      return;
+    }
+    setState(() => _isSaving = true);
+    await widget.onSave(limit);
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _removeLimit() async {
+    setState(() => _isSaving = true);
+    await widget.onRemove();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final parsedLimit = _parseBudgetLimit(_controller.text);
+    final canSave = !_isSaving && parsedLimit != null && parsedLimit > 0;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.getCard(isDark),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(28),
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.all(AppDesign.spacingM),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.getTextTertiaryColor(isDark)
+                          .withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingM),
+                Row(
+                  children: [
+                    IconTile(
+                      icon: expenseCategories[widget.category] ??
+                          CupertinoIcons.square_grid_2x2,
+                      color: AppColors.getDanger(isDark),
+                    ),
+                    const SizedBox(width: AppDesign.spacingM),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.category,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.cardTitle.copyWith(
+                              color: AppColors.getTextColor(isDark),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Monthly spending limit',
+                            style: AppTypography.rowSubtitle.copyWith(
+                              color: AppColors.getTextSecondaryColor(isDark),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppDesign.spacingL),
+                TextField(
+                  controller: _controller,
+                  autofocus: true,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  textInputAction: TextInputAction.done,
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) => _saveLimit(),
+                  style: AppTypography.numericMedium.copyWith(
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Limit',
+                    prefixText: '\$',
+                    hintText: '0.00',
+                    helperText: 'Set a positive amount for this category.',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppDesign.spacingL),
+                Row(
+                  children: [
+                    if (widget.currentLimit != null) ...[
+                      Expanded(
+                        child: AppButton.secondary(
+                          label: 'Remove',
+                          icon: CupertinoIcons.trash,
+                          onPressed: _isSaving ? null : _removeLimit,
+                        ),
+                      ),
+                      const SizedBox(width: AppDesign.spacingM),
+                    ],
+                    Expanded(
+                      child: AppButton.primary(
+                        label: 'Save',
+                        icon: CupertinoIcons.check_mark_circled_solid,
+                        onPressed: canSave ? _saveLimit : null,
+                        isLoading: _isSaving,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _MonthPickerPanel extends StatelessWidget {
   final bool isExpanded;
   final List<String> months;

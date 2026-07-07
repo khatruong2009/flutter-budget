@@ -508,6 +508,7 @@ class _CategoryPageState extends State<CategoryPage> {
     HapticFeedback.selectionClick();
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         final isDark = Theme.of(sheetContext).brightness == Brightness.dark;

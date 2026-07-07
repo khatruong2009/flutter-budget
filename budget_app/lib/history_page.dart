@@ -453,6 +453,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
@@ -520,6 +521,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
@@ -1813,6 +1815,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
   ) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
@@ -1903,6 +1906,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
     final accent = AppColors.getAccent(isDark);
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(

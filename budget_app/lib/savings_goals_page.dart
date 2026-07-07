@@ -385,6 +385,7 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
 
     await showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         return SafeArea(
