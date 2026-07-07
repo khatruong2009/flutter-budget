@@ -13,6 +13,16 @@ export 'theme/app_animations.dart';
 export 'widgets/modern_app_bar.dart';
 export 'utils/micro_interactions.dart';
 
+// Budgie dark redesign shared widgets
+export 'widgets/glow_card.dart';
+export 'widgets/floating_dock.dart';
+export 'widgets/glow_fab.dart';
+export 'widgets/glow_progress_bar.dart';
+export 'widgets/progress_ring.dart';
+export 'widgets/pill_chip.dart';
+export 'widgets/budgie_header.dart';
+export 'widgets/budgie_page_scaffold.dart';
+
 /// AppDesign is the central design system that consolidates all design tokens
 /// including spacing, sizing, border radius, shadows, and references to
 /// colors, typography, and animations
