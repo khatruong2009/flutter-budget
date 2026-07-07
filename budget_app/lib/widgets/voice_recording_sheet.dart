@@ -44,6 +44,9 @@ Future<void> startVoiceExpenseFlow(BuildContext context) async {
 Future<Transaction?> showVoiceRecordingSheet(BuildContext context) {
   return showModalBottomSheet<Transaction>(
     context: context,
+    // The home screen draws the floating dock above the per-tab navigators;
+    // the sheet must be hosted on the root navigator to render above it.
+    useRootNavigator: true,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     isDismissible: true,
