@@ -309,7 +309,7 @@ class _MyAppState extends State<MyApp> {
 
 /// Opening screen shown while app data loads.
 ///
-/// Its first frame matches the native launch screen exactly (same app-icon
+/// Its first frame matches the native launch screen exactly (same near-black
 /// gradient, same 120pt mark dead center), so the native-to-Flutter handoff
 /// is invisible. The glow, wordmark, and loader then animate in on top.
 class _OpeningScreen extends StatefulWidget {
@@ -317,9 +317,10 @@ class _OpeningScreen extends StatefulWidget {
 
   static const double logoSize = 120;
 
-  // Vertical gradient sampled from the app icon background.
-  static const Color gradientTop = Color(0xFF0C27DF);
-  static const Color gradientBottom = Color(0xFF4C67FF);
+  // Vertical gradient matching the native launch-gradient asset
+  // (scaffold #0A0A12 with a subtle lift toward the bottom).
+  static const Color gradientTop = Color(0xFF0A0A12);
+  static const Color gradientBottom = Color(0xFF0F0F18);
 
   @override
   State<_OpeningScreen> createState() => _OpeningScreenState();
@@ -444,7 +445,7 @@ class _OpeningScreenState extends State<_OpeningScreen>
                               'Budgie',
                               textAlign: TextAlign.center,
                               style: AppTypography.displayMedium.copyWith(
-                                color: Colors.white,
+                                color: AppColors.textPrimaryDark,
                                 letterSpacing: 0,
                               ),
                             ),
@@ -458,8 +459,8 @@ class _OpeningScreenState extends State<_OpeningScreen>
                             child: Text(
                               'BUDGET IN BALANCE',
                               textAlign: TextAlign.center,
-                              style: AppTypography.labelMedium.copyWith(
-                                color: Colors.white.withValues(alpha: 0.75),
+                              style: AppTypography.eyebrow.copyWith(
+                                color: AppColors.textSecondaryDark,
                                 letterSpacing: 2.8,
                               ),
                             ),
@@ -476,7 +477,7 @@ class _OpeningScreenState extends State<_OpeningScreen>
                       opacity: _loaderFade,
                       child: _PulsingDots(
                         animation: _pulse,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: AppColors.accent,
                       ),
                     ),
                   ),
@@ -490,9 +491,9 @@ class _OpeningScreenState extends State<_OpeningScreen>
   }
 }
 
-/// Soft radial washes that ground the logo on the blue brand canvas: a warm
-/// light halo directly behind the mark, a faint sheen high on the page, and
-/// a ground shadow under the mark's feet.
+/// Soft radial washes that ground the logo on the near-black canvas: an
+/// indigo accent halo directly behind the mark, a faint sheen high on the
+/// page, and a ground shadow under the mark's feet.
 class _OpeningGlowPainter extends CustomPainter {
   final Animation<double> intensity;
 
@@ -517,13 +518,13 @@ class _OpeningGlowPainter extends CustomPainter {
       canvas.drawCircle(c, radius, paint);
     }
 
-    glow(center, base * 0.46, Colors.white, 0.14);
-    glow(center, base * 0.26, AppColors.warning, 0.18);
+    glow(center, base * 0.46, AppColors.accent, 0.16);
+    glow(center, base * 0.26, AppColors.accent, 0.20);
     glow(Offset(size.width * 0.50, -size.height * 0.06), base * 0.7,
-        Colors.white, 0.06);
+        AppColors.accent, 0.05);
 
     final shadowPaint = Paint()
-      ..color = const Color(0xFF041370).withValues(alpha: 0.30 * t)
+      ..color = Colors.black.withValues(alpha: 0.45 * t)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
     canvas.drawOval(
       Rect.fromCenter(

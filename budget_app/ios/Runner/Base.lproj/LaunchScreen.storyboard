@@ -46,7 +46,7 @@
         <image name="launch-gradient" width="4" height="1024"/>
         <image name="logo" width="120" height="120"/>
         <namedColor name="launch-screen-background">
-            <color red="0.176" green="0.255" blue="0.937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.039" green="0.039" blue="0.071" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
