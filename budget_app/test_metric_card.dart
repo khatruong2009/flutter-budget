@@ -33,7 +33,7 @@ class _MetricCardTestPageState extends State<MetricCardTestPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('AnimatedMetricCard Test'),

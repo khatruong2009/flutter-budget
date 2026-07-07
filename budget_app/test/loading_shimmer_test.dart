@@ -19,7 +19,7 @@ void main() {
 
       // Verify the shimmer is rendered
       expect(find.byType(LoadingShimmer), findsOneWidget);
-      
+
       // Pump to allow animation to start
       await tester.pump();
     });
@@ -76,7 +76,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('factory constructor for list creates correct type', (tester) async {
+    testWidgets('factory constructor for list creates correct type',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -89,7 +90,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('factory constructor for card creates correct type', (tester) async {
+    testWidgets('factory constructor for card creates correct type',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -102,7 +104,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('factory constructor for text creates correct type', (tester) async {
+    testWidgets('factory constructor for text creates correct type',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -130,10 +133,10 @@ void main() {
 
       // Initial state
       await tester.pump();
-      
+
       // Advance animation
       await tester.pump(const Duration(milliseconds: 500));
-      
+
       // Animation should be running
       expect(find.byType(LoadingShimmer), findsOneWidget);
     });
@@ -154,7 +157,8 @@ void main() {
       expect(find.text('Content'), findsOneWidget);
     });
 
-    testWidgets('uses custom base and highlight colors when provided', (tester) async {
+    testWidgets('uses custom base and highlight colors when provided',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -189,7 +193,8 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('list shimmer contains expected skeleton structure', (tester) async {
+    testWidgets('list shimmer contains expected skeleton structure',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -199,12 +204,13 @@ void main() {
       );
 
       await tester.pump();
-      
+
       // Verify ListView is present
       expect(find.byType(ListView), findsOneWidget);
     });
 
-    testWidgets('card shimmer contains expected skeleton structure', (tester) async {
+    testWidgets('card shimmer contains expected skeleton structure',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -214,12 +220,13 @@ void main() {
       );
 
       await tester.pump();
-      
+
       // Verify GridView is present
       expect(find.byType(GridView), findsOneWidget);
     });
 
-    testWidgets('text shimmer contains expected skeleton structure', (tester) async {
+    testWidgets('text shimmer contains expected skeleton structure',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -229,14 +236,14 @@ void main() {
       );
 
       await tester.pump();
-      
+
       // Verify Column is present
       expect(find.byType(Column), findsWidgets);
     });
 
     testWidgets('shimmer updates when enabled state changes', (tester) async {
       bool enabled = true;
-      
+
       await tester.pumpWidget(
         StatefulBuilder(
           builder: (context, setState) {
@@ -266,11 +273,11 @@ void main() {
 
       // Initially enabled, should show shimmer
       expect(find.byType(LoadingShimmer), findsOneWidget);
-      
+
       // Tap to disable
       await tester.tap(find.text('Toggle'));
       await tester.pumpAndSettle();
-      
+
       // Should now show content
       expect(find.text('Content'), findsOneWidget);
     });
@@ -285,10 +292,10 @@ void main() {
       );
 
       await tester.pump();
-      
+
       // Advance by shimmer duration
       await tester.pump(AppAnimations.shimmerDuration);
-      
+
       expect(find.byType(LoadingShimmer), findsOneWidget);
     });
 
@@ -331,4 +338,3 @@ void main() {
     });
   });
 }
-

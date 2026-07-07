@@ -11,8 +11,7 @@ class ChatHelper {
 
     // Convert transactions into a suitable format (e.g., a String) for API request.
     final transactionsData = convertTransactionsToString(transactions);
-    final enhancedPrompt =
-        '$prompt\n\nTransactions:\n$transactionsData';
+    final enhancedPrompt = '$prompt\n\nTransactions:\n$transactionsData';
 
     OpenAIChatCompletionModel chatCompletion =
         await OpenAI.instance.chat.create(
@@ -38,8 +37,7 @@ class ChatHelper {
     final apiKey = dotenv.env['OPEN_AI_API_KEY'];
     OpenAI.apiKey = apiKey!;
     final transactionsData = convertTransactionsToString(transactions);
-    final enhancedPrompt =
-        '$prompt\n\nTransactions:\n$transactionsData';
+    final enhancedPrompt = '$prompt\n\nTransactions:\n$transactionsData';
 
     yield* OpenAI.instance.chat.createStream(
       model: "gpt-3.5-turbo",

@@ -33,7 +33,7 @@ class AccessibilityUtils {
     final dollars = amount.floor();
     final cents = ((amount - dollars) * 100).round();
     final type = isExpense ? 'expense' : 'income';
-    
+
     if (cents == 0) {
       return '$type of $dollars dollars';
     } else {
@@ -58,7 +58,7 @@ class AccessibilityUtils {
   }) {
     final moneyLabel = formatMoneyForScreenReader(amount, isExpense: isExpense);
     final dateLabel = formatDateForScreenReader(date);
-    
+
     return '$description, $moneyLabel, category $category, on $dateLabel';
   }
 
@@ -69,8 +69,9 @@ class AccessibilityUtils {
     required double percentage,
   }) {
     final formattedValue = NumberFormat.currency(symbol: '\$').format(value);
-    final formattedPercentage = NumberFormat.percentPattern().format(percentage / 100);
-    
+    final formattedPercentage =
+        NumberFormat.percentPattern().format(percentage / 100);
+
     return '$label: $formattedValue, $formattedPercentage of total';
   }
 

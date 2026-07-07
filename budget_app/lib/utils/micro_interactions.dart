@@ -49,7 +49,7 @@ class MicroInteractions {
     // Haptic feedback is supported on iOS and Android
     // Web and desktop platforms don't support haptic feedback
     if (kIsWeb) return false;
-    
+
     try {
       return Platform.isIOS || Platform.isAndroid;
     } catch (e) {
@@ -61,7 +61,7 @@ class MicroInteractions {
   /// Checks if the current platform is desktop (macOS, Windows, Linux)
   static bool isDesktop() {
     if (kIsWeb) return false;
-    
+
     try {
       return Platform.isMacOS || Platform.isWindows || Platform.isLinux;
     } catch (e) {
@@ -72,7 +72,7 @@ class MicroInteractions {
   /// Checks if the current platform is mobile (iOS, Android)
   static bool isMobile() {
     if (kIsWeb) return false;
-    
+
     try {
       return Platform.isIOS || Platform.isAndroid;
     } catch (e) {

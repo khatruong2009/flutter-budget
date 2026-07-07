@@ -55,9 +55,11 @@ void main() {
     });
 
     test('Text input action should be appropriate', () {
-      final actionNext = PlatformTextFieldConfig.getTextInputAction(isLastField: false);
-      final actionDone = PlatformTextFieldConfig.getTextInputAction(isLastField: true);
-      
+      final actionNext =
+          PlatformTextFieldConfig.getTextInputAction(isLastField: false);
+      final actionDone =
+          PlatformTextFieldConfig.getTextInputAction(isLastField: true);
+
       expect(actionNext, equals(TextInputAction.next));
       expect(actionDone, equals(TextInputAction.done));
     });
@@ -68,9 +70,11 @@ void main() {
     });
 
     test('Capitalization should be appropriate', () {
-      final descriptionCap = PlatformTextFieldConfig.getCapitalization(isDescription: true);
-      final defaultCap = PlatformTextFieldConfig.getCapitalization(isDescription: false);
-      
+      final descriptionCap =
+          PlatformTextFieldConfig.getCapitalization(isDescription: true);
+      final defaultCap =
+          PlatformTextFieldConfig.getCapitalization(isDescription: false);
+
       expect(descriptionCap, equals(TextCapitalization.sentences));
       expect(defaultCap, equals(TextCapitalization.none));
     });
@@ -78,12 +82,15 @@ void main() {
 
   group('Platform Animation Config Tests', () {
     test('Animation duration should be positive', () {
-      final shortDuration = PlatformAnimationConfig.getAnimationDuration(isShort: true);
-      final normalDuration = PlatformAnimationConfig.getAnimationDuration(isShort: false);
-      
+      final shortDuration =
+          PlatformAnimationConfig.getAnimationDuration(isShort: true);
+      final normalDuration =
+          PlatformAnimationConfig.getAnimationDuration(isShort: false);
+
       expect(shortDuration.inMilliseconds, greaterThan(0));
       expect(normalDuration.inMilliseconds, greaterThan(0));
-      expect(shortDuration.inMilliseconds, lessThan(normalDuration.inMilliseconds));
+      expect(shortDuration.inMilliseconds,
+          lessThan(normalDuration.inMilliseconds));
     });
 
     test('Animation curve should be valid', () {
@@ -96,7 +103,8 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final shouldReduce = PlatformAnimationConfig.shouldReduceMotion(context);
+              final shouldReduce =
+                  PlatformAnimationConfig.shouldReduceMotion(context);
               expect(shouldReduce, isA<bool>());
               return Container();
             },
@@ -107,7 +115,8 @@ void main() {
   });
 
   group('Platform Utils Widget Tests', () {
-    testWidgets('getPlatformPadding should return valid padding', (tester) async {
+    testWidgets('getPlatformPadding should return valid padding',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
@@ -125,7 +134,8 @@ void main() {
       );
     });
 
-    testWidgets('getMaxContentWidth should return positive value', (tester) async {
+    testWidgets('getMaxContentWidth should return positive value',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
@@ -183,12 +193,17 @@ void main() {
       // Should find either CupertinoActivityIndicator or CircularProgressIndicator
       expect(
         find.byType(CircularProgressIndicator).evaluate().isNotEmpty ||
-        find.byWidgetPredicate((widget) => widget.runtimeType.toString().contains('Cupertino')).evaluate().isNotEmpty,
+            find
+                .byWidgetPredicate((widget) =>
+                    widget.runtimeType.toString().contains('Cupertino'))
+                .evaluate()
+                .isNotEmpty,
         isTrue,
       );
     });
 
-    testWidgets('platformLoadingIndicator with custom size should render', (tester) async {
+    testWidgets('platformLoadingIndicator with custom size should render',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -210,7 +225,8 @@ void main() {
   });
 
   group('Platform Integration with Design System', () {
-    testWidgets('Platform button should use design system colors', (tester) async {
+    testWidgets('Platform button should use design system colors',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -228,7 +244,7 @@ void main() {
 
     testWidgets('Platform switch should render correctly', (tester) async {
       bool value = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -249,7 +265,11 @@ void main() {
       // Should find either Switch or CupertinoSwitch
       expect(
         find.byType(Switch).evaluate().isNotEmpty ||
-        find.byWidgetPredicate((widget) => widget.runtimeType.toString().contains('CupertinoSwitch')).evaluate().isNotEmpty,
+            find
+                .byWidgetPredicate((widget) =>
+                    widget.runtimeType.toString().contains('CupertinoSwitch'))
+                .evaluate()
+                .isNotEmpty,
         isTrue,
       );
     });
@@ -279,7 +299,7 @@ void main() {
       );
 
       expect(find.text('Show Dialog'), findsOneWidget);
-      
+
       // Tap the button to show dialog
       await tester.tap(find.text('Show Dialog'));
       await tester.pumpAndSettle();
@@ -301,13 +321,14 @@ void main() {
   });
 
   group('Platform-Specific Styling Verification', () {
-    testWidgets('iOS/macOS should use appropriate border radius', (tester) async {
+    testWidgets('iOS/macOS should use appropriate border radius',
+        (tester) async {
       final radius = PlatformUIConstants.getBorderRadius();
-      
+
       // Border radius should be reasonable
       expect(radius, greaterThan(0));
       expect(radius, lessThanOrEqualTo(20));
-      
+
       // On iOS/macOS, should be more rounded (12), otherwise 8
       if (PlatformUtils.isIOS || PlatformUtils.isMacOS) {
         expect(radius, equals(12));
@@ -316,9 +337,10 @@ void main() {
       }
     });
 
-    testWidgets('Desktop should have appropriate button height', (tester) async {
+    testWidgets('Desktop should have appropriate button height',
+        (tester) async {
       final height = PlatformUIConstants.getButtonHeight();
-      
+
       if (PlatformUtils.isDesktop) {
         expect(height, equals(40));
       } else {
@@ -326,9 +348,10 @@ void main() {
       }
     });
 
-    testWidgets('Mobile should have appropriate list tile height', (tester) async {
+    testWidgets('Mobile should have appropriate list tile height',
+        (tester) async {
       final height = PlatformUIConstants.getListTileHeight();
-      
+
       if (PlatformUtils.isDesktop) {
         expect(height, equals(60));
       } else {
@@ -337,8 +360,9 @@ void main() {
     });
 
     test('Web should have faster animations', () {
-      final duration = PlatformAnimationConfig.getAnimationDuration(isShort: false);
-      
+      final duration =
+          PlatformAnimationConfig.getAnimationDuration(isShort: false);
+
       if (PlatformUtils.isWeb) {
         expect(duration.inMilliseconds, equals(250));
       } else {
@@ -348,7 +372,7 @@ void main() {
 
     test('iOS/macOS should use easeInOut curve', () {
       final curve = PlatformAnimationConfig.getAnimationCurve();
-      
+
       if (PlatformUtils.isIOS || PlatformUtils.isMacOS) {
         expect(curve, equals(Curves.easeInOut));
       } else {
@@ -361,48 +385,48 @@ void main() {
     testWidgets('Web should have responsive padding', (tester) async {
       // Test with different screen widths
       await tester.binding.setSurfaceSize(const Size(1400, 800));
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
             builder: (context) {
               final padding = PlatformUtils.getPlatformPadding(context);
-              
+
               if (PlatformUtils.isWeb) {
                 // Wide screen should have horizontal padding
                 expect(padding.left + padding.right, greaterThan(0));
               }
-              
+
               return Container();
             },
           ),
         ),
       );
-      
+
       // Reset surface size
       await tester.binding.setSurfaceSize(null);
     });
 
     testWidgets('Web should have max content width', (tester) async {
       await tester.binding.setSurfaceSize(const Size(1600, 900));
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
             builder: (context) {
               final maxWidth = PlatformUtils.getMaxContentWidth(context);
-              
+
               if (PlatformUtils.isWeb) {
                 // Should have a reasonable max width
                 expect(maxWidth, lessThanOrEqualTo(1200));
               }
-              
+
               return Container();
             },
           ),
         ),
       );
-      
+
       // Reset surface size
       await tester.binding.setSurfaceSize(null);
     });

@@ -14,7 +14,8 @@ import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/theme_provider.dart';
 
 void main() {
-  testWidgets('App initializes and displays home page', (WidgetTester tester) async {
+  testWidgets('App initializes and displays home page',
+      (WidgetTester tester) async {
     // Build our app with required providers
     await tester.pumpWidget(
       MultiProvider(

@@ -27,7 +27,7 @@ class _MonthSelectorState extends State<MonthSelector> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    
+
     // Scroll to selected month after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToSelectedMonth();
@@ -44,18 +44,19 @@ class _MonthSelectorState extends State<MonthSelector> {
 
   void _scrollToSelectedMonth() {
     if (widget.selectedMonth == null || widget.availableMonths.isEmpty) return;
-    
+
     final index = widget.availableMonths.indexWhere(
       (month) => _isSameMonth(month, widget.selectedMonth!),
     );
-    
+
     if (index != -1 && _scrollController.hasClients) {
       // Calculate position to center the selected month
       const itemWidth = 120.0;
       const spacing = 12.0;
       final screenWidth = MediaQuery.of(context).size.width;
-      final targetPosition = (itemWidth + spacing) * index - (screenWidth / 2) + (itemWidth / 2);
-      
+      final targetPosition =
+          (itemWidth + spacing) * index - (screenWidth / 2) + (itemWidth / 2);
+
       _scrollController.animateTo(
         targetPosition.clamp(0.0, _scrollController.position.maxScrollExtent),
         duration: AppAnimations.normal,
@@ -89,12 +90,13 @@ class _MonthSelectorState extends State<MonthSelector> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: AppDesign.spacingM),
         itemCount: widget.availableMonths.length,
-        separatorBuilder: (context, index) => const SizedBox(width: AppDesign.spacingS),
+        separatorBuilder: (context, index) =>
+            const SizedBox(width: AppDesign.spacingS),
         itemBuilder: (context, index) {
           final month = widget.availableMonths[index];
-          final isSelected = widget.selectedMonth != null && 
-                            _isSameMonth(month, widget.selectedMonth!);
-          
+          final isSelected = widget.selectedMonth != null &&
+              _isSameMonth(month, widget.selectedMonth!);
+
           return _MonthChip(
             month: month,
             isSelected: isSelected,

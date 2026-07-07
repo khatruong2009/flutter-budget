@@ -23,10 +23,12 @@ void main() {
         );
 
         final button = tester.getSize(find.byType(AppButton));
-        expect(button.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(button.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
-      testWidgets('AppButton small size meets minimum touch target', (tester) async {
+      testWidgets('AppButton small size meets minimum touch target',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -40,10 +42,12 @@ void main() {
         );
 
         final button = tester.getSize(find.byType(AppButton));
-        expect(button.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(button.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
-      testWidgets('AppButton secondary variant meets minimum touch target', (tester) async {
+      testWidgets('AppButton secondary variant meets minimum touch target',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -56,10 +60,12 @@ void main() {
         );
 
         final button = tester.getSize(find.byType(AppButton));
-        expect(button.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(button.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
-      testWidgets('Transaction list item has adequate touch target', (tester) async {
+      testWidgets('Transaction list item has adequate touch target',
+          (tester) async {
         final transaction = Transaction(
           description: 'Test',
           amount: 100.0,
@@ -81,10 +87,12 @@ void main() {
         );
 
         final item = tester.getSize(find.byType(ModernTransactionListItem));
-        expect(item.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(item.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
-      testWidgets('Empty state action button meets minimum touch target', (tester) async {
+      testWidgets('Empty state action button meets minimum touch target',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -97,10 +105,12 @@ void main() {
         );
 
         final button = tester.getSize(find.byType(AppButton));
-        expect(button.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(button.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
-      testWidgets('ElevatedCard with tap handler has adequate touch target', (tester) async {
+      testWidgets('ElevatedCard with tap handler has adequate touch target',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -120,7 +130,8 @@ void main() {
         expect(card.height, greaterThanOrEqualTo(30.0)); // Has the child size
       });
 
-      testWidgets('AnimatedMetricCard has adequate touch target', (tester) async {
+      testWidgets('AnimatedMetricCard has adequate touch target',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -136,7 +147,8 @@ void main() {
         );
 
         final card = tester.getSize(find.byType(AnimatedMetricCard));
-        expect(card.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(card.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
     });
 
@@ -166,9 +178,9 @@ void main() {
         final semanticsFinder = find.byWidgetPredicate(
           (widget) => widget is Semantics && widget.properties.label != null,
         );
-        
+
         expect(semanticsFinder, findsWidgets);
-        
+
         // Verify semantic label contains transaction info
         final semantics = tester.widget<Semantics>(semanticsFinder.first);
         expect(semantics.properties.label, contains('Grocery Shopping'));
@@ -189,7 +201,7 @@ void main() {
         final semanticsFinder = find.byWidgetPredicate(
           (widget) => widget is Semantics && widget.properties.label != null,
         );
-        
+
         expect(semanticsFinder, findsWidgets);
       });
 
@@ -205,9 +217,9 @@ void main() {
         final semanticsFinder = find.byWidgetPredicate(
           (widget) => widget is Semantics && widget.properties.label != null,
         );
-        
+
         expect(semanticsFinder, findsWidgets);
-        
+
         // Verify it's marked as a live region
         final semantics = tester.widget<Semantics>(semanticsFinder.first);
         expect(semantics.properties.liveRegion, isTrue);
@@ -281,28 +293,33 @@ void main() {
       });
 
       test('formatCountForScreenReader handles singular correctly', () {
-        final result = AccessibilityUtils.formatCountForScreenReader(1, 'transaction');
+        final result =
+            AccessibilityUtils.formatCountForScreenReader(1, 'transaction');
         expect(result, equals('1 transaction'));
       });
 
       test('formatCountForScreenReader handles plural correctly', () {
-        final result = AccessibilityUtils.formatCountForScreenReader(5, 'transaction');
+        final result =
+            AccessibilityUtils.formatCountForScreenReader(5, 'transaction');
         expect(result, equals('5 transactions'));
       });
 
       test('formatCountForScreenReader handles zero correctly', () {
-        final result = AccessibilityUtils.formatCountForScreenReader(0, 'transaction');
+        final result =
+            AccessibilityUtils.formatCountForScreenReader(0, 'transaction');
         expect(result, equals('No transaction'));
       });
     });
 
     group('Reduced Motion Tests', () {
-      testWidgets('shouldReduceMotion detects system preference', (tester) async {
+      testWidgets('shouldReduceMotion detects system preference',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Builder(
               builder: (context) {
-                final shouldReduce = AccessibilityUtils.shouldReduceMotion(context);
+                final shouldReduce =
+                    AccessibilityUtils.shouldReduceMotion(context);
                 // Default should be false in test environment
                 expect(shouldReduce, isFalse);
                 return const SizedBox();
@@ -312,7 +329,8 @@ void main() {
         );
       });
 
-      testWidgets('getAnimationDuration returns zero for reduced motion', (tester) async {
+      testWidgets('getAnimationDuration returns zero for reduced motion',
+          (tester) async {
         await tester.pumpWidget(
           MediaQuery(
             data: const MediaQueryData(disableAnimations: true),
@@ -332,7 +350,9 @@ void main() {
         );
       });
 
-      testWidgets('getAnimationDuration returns normal duration when not reduced', (tester) async {
+      testWidgets(
+          'getAnimationDuration returns normal duration when not reduced',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Builder(
@@ -355,122 +375,130 @@ void main() {
       double calculateContrastRatio(Color foreground, Color background) {
         final fgLuminance = foreground.computeLuminance();
         final bgLuminance = background.computeLuminance();
-        
+
         final lighter = fgLuminance > bgLuminance ? fgLuminance : bgLuminance;
         final darker = fgLuminance > bgLuminance ? bgLuminance : fgLuminance;
-        
+
         return (lighter + 0.05) / (darker + 0.05);
       }
 
       test('Income color has sufficient contrast on light background', () {
         const incomeColor = AppColors.income;
         const backgroundColor = AppColors.surfaceLight;
-        
+
         final contrast = calculateContrastRatio(incomeColor, backgroundColor);
-        
+
         // Income amounts are displayed in large text, so 2.5:1 is acceptable
         // Note: Green on white naturally has lower contrast but is still readable
-        expect(contrast, greaterThanOrEqualTo(2.5), 
-          reason: 'Income color should have at least 2.5:1 contrast ratio for large financial text');
+        expect(contrast, greaterThanOrEqualTo(2.5),
+            reason:
+                'Income color should have at least 2.5:1 contrast ratio for large financial text');
       });
 
       test('Expense color has sufficient contrast on light background', () {
         const expenseColor = AppColors.expense;
         const backgroundColor = AppColors.surfaceLight;
-        
+
         final contrast = calculateContrastRatio(expenseColor, backgroundColor);
-        
+
         // Expense amounts are displayed in large text
         expect(contrast, greaterThanOrEqualTo(3.0),
-          reason: 'Expense color should have at least 3:1 contrast ratio for large text');
+            reason:
+                'Expense color should have at least 3:1 contrast ratio for large text');
       });
 
       test('Income color has sufficient contrast on dark background', () {
         const incomeColor = AppColors.incomeLight;
         const backgroundColor = AppColors.surfaceDark;
-        
+
         final contrast = calculateContrastRatio(incomeColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(3.0),
-          reason: 'Income color should have at least 3:1 contrast ratio in dark mode');
+            reason:
+                'Income color should have at least 3:1 contrast ratio in dark mode');
       });
 
       test('Expense color has sufficient contrast on dark background', () {
         const expenseColor = AppColors.expenseLight;
         const backgroundColor = AppColors.surfaceDark;
-        
+
         final contrast = calculateContrastRatio(expenseColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(3.0),
-          reason: 'Expense color should have at least 3:1 contrast ratio in dark mode');
+            reason:
+                'Expense color should have at least 3:1 contrast ratio in dark mode');
       });
 
       test('Primary text has sufficient contrast on light background', () {
         const textColor = AppColors.textPrimary;
         const backgroundColor = AppColors.surfaceLight;
-        
+
         final contrast = calculateContrastRatio(textColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(4.5),
-          reason: 'Primary text should meet WCAG AA standard (4.5:1)');
+            reason: 'Primary text should meet WCAG AA standard (4.5:1)');
       });
 
       test('Primary text has sufficient contrast on dark background', () {
         const textColor = AppColors.textPrimaryDark;
         const backgroundColor = AppColors.surfaceDark;
-        
+
         final contrast = calculateContrastRatio(textColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(4.5),
-          reason: 'Primary text should meet WCAG AA standard (4.5:1) in dark mode');
+            reason:
+                'Primary text should meet WCAG AA standard (4.5:1) in dark mode');
       });
 
       test('Secondary text has sufficient contrast on light background', () {
         const textColor = AppColors.textSecondary;
         const backgroundColor = AppColors.surfaceLight;
-        
+
         final contrast = calculateContrastRatio(textColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(4.5),
-          reason: 'Secondary text should meet WCAG AA standard (4.5:1)');
+            reason: 'Secondary text should meet WCAG AA standard (4.5:1)');
       });
 
       test('Secondary text has sufficient contrast on dark background', () {
         const textColor = AppColors.textSecondaryDark;
         const backgroundColor = AppColors.surfaceDark;
-        
+
         final contrast = calculateContrastRatio(textColor, backgroundColor);
-        
+
         expect(contrast, greaterThanOrEqualTo(4.5),
-          reason: 'Secondary text should meet WCAG AA standard (4.5:1) in dark mode');
+            reason:
+                'Secondary text should meet WCAG AA standard (4.5:1) in dark mode');
       });
 
       test('Primary button text has sufficient contrast', () {
         const textColor = AppColors.textOnPrimary;
         const backgroundColor = AppColors.primary;
-        
+
         final contrast = calculateContrastRatio(textColor, backgroundColor);
-        
+
         // Button text should be close to WCAG AA standard
         expect(contrast, greaterThanOrEqualTo(4.4),
-          reason: 'Button text should have high contrast (close to WCAG AA 4.5:1)');
+            reason:
+                'Button text should have high contrast (close to WCAG AA 4.5:1)');
       });
 
       test('Card background has sufficient contrast with surface', () {
         const cardColor = AppColors.cardLight;
         const backgroundColor = AppColors.backgroundLight;
-        
+
         final contrast = calculateContrastRatio(cardColor, backgroundColor);
-        
+
         // Cards use elevation shadows for distinction, not just color contrast
         // A subtle difference is acceptable since shadows provide the main visual cue
         expect(contrast, greaterThanOrEqualTo(1.0),
-          reason: 'Cards use elevation shadows for visual distinction');
+            reason: 'Cards use elevation shadows for visual distinction');
       });
 
-      test('Primary chart colors have sufficient contrast on light background', () {
+      test('Primary chart colors have sufficient contrast on light background',
+          () {
         const backgroundColor = AppColors.surfaceLight;
-        
+
         // Test the most commonly used chart colors (primary, income, expense)
         const primaryChartColors = [
           AppColors.primary,
@@ -479,23 +507,25 @@ void main() {
           AppColors.neutral,
           AppColors.warning,
         ];
-        
+
         for (final color in primaryChartColors) {
           final contrast = calculateContrastRatio(color, backgroundColor);
           // Chart colors are used for large visual elements with borders
           expect(contrast, greaterThanOrEqualTo(2.0),
-            reason: 'Primary chart color ${color.toARGB32().toRadixString(16)} should have at least 2:1 contrast');
+              reason:
+                  'Primary chart color ${color.toARGB32().toRadixString(16)} should have at least 2:1 contrast');
         }
       });
 
       test('All chart colors have sufficient contrast on dark background', () {
         const backgroundColor = AppColors.surfaceDark;
         final chartColors = AppColors.getChartColors(true);
-        
+
         for (final color in chartColors) {
           final contrast = calculateContrastRatio(color, backgroundColor);
           expect(contrast, greaterThanOrEqualTo(3.0),
-            reason: 'Chart color ${color.toARGB32().toRadixString(16)} should have at least 3:1 contrast in dark mode');
+              reason:
+                  'Chart color ${color.toARGB32().toRadixString(16)} should have at least 3:1 contrast in dark mode');
         }
       });
     });
@@ -503,7 +533,7 @@ void main() {
     group('Keyboard Navigation Tests', () {
       testWidgets('Buttons are focusable', (tester) async {
         final focusNode = FocusNode();
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -523,7 +553,7 @@ void main() {
         await tester.pump();
 
         expect(focusNode.hasFocus, isTrue);
-        
+
         focusNode.dispose();
       });
 
@@ -581,13 +611,13 @@ void main() {
         await tester.pump();
 
         expect(focusNode.hasFocus, isTrue);
-        
+
         focusNode.dispose();
       });
 
       testWidgets('Disabled buttons are not focusable', (tester) async {
         final focusNode = FocusNode();
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -609,11 +639,12 @@ void main() {
         // Focus node can have focus, but the button won't respond
         // This is expected behavior for disabled buttons
         expect(find.byType(AppButton), findsOneWidget);
-        
+
         focusNode.dispose();
       });
 
-      testWidgets('Transaction list items are keyboard accessible', (tester) async {
+      testWidgets('Transaction list items are keyboard accessible',
+          (tester) async {
         final transaction = Transaction(
           description: 'Test Transaction',
           amount: 50.0,
@@ -643,7 +674,8 @@ void main() {
         expect(itemTapped, isTrue);
       });
 
-      testWidgets('Empty state action button is keyboard accessible', (tester) async {
+      testWidgets('Empty state action button is keyboard accessible',
+          (tester) async {
         bool actionPressed = false;
 
         await tester.pumpWidget(
@@ -722,7 +754,8 @@ void main() {
             child: MaterialApp(
               home: Builder(
                 builder: (context) {
-                  final isHighContrast = AccessibilityUtils.isHighContrastMode(context);
+                  final isHighContrast =
+                      AccessibilityUtils.isHighContrastMode(context);
                   expect(isHighContrast, isTrue);
                   return const SizedBox();
                 },
@@ -732,7 +765,8 @@ void main() {
         );
       });
 
-      testWidgets('getContrastAwareColor returns high contrast color', (tester) async {
+      testWidgets('getContrastAwareColor returns high contrast color',
+          (tester) async {
         const normalColor = Colors.grey;
         const highContrastColor = Colors.black;
 
@@ -771,10 +805,12 @@ void main() {
         );
 
         final material = tester.widget<Material>(
-          find.descendant(
-            of: find.byType(ElevatedCard),
-            matching: find.byType(Material),
-          ).first,
+          find
+              .descendant(
+                of: find.byType(ElevatedCard),
+                matching: find.byType(Material),
+              )
+              .first,
         );
 
         expect(material.elevation, equals(4.0));
@@ -793,16 +829,19 @@ void main() {
         );
 
         final material = tester.widget<Material>(
-          find.descendant(
-            of: find.byType(ElevatedCard),
-            matching: find.byType(Material),
-          ).first,
+          find
+              .descendant(
+                of: find.byType(ElevatedCard),
+                matching: find.byType(Material),
+              )
+              .first,
         );
 
         expect(material.borderRadius, equals(BorderRadius.circular(12.0)));
       });
 
-      testWidgets('ElevatedCard with onTap provides haptic feedback', (tester) async {
+      testWidgets('ElevatedCard with onTap provides haptic feedback',
+          (tester) async {
         bool tapped = false;
 
         await tester.pumpWidget(
@@ -822,7 +861,8 @@ void main() {
         expect(tapped, isTrue);
       });
 
-      testWidgets('ElevatedCard without onTap is not interactive', (tester) async {
+      testWidgets('ElevatedCard without onTap is not interactive',
+          (tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
@@ -867,7 +907,8 @@ void main() {
         expect(padding.padding, equals(customPadding));
       });
 
-      testWidgets('ElevatedCard uses theme card color by default', (tester) async {
+      testWidgets('ElevatedCard uses theme card color by default',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData.light(),
@@ -880,17 +921,20 @@ void main() {
         );
 
         final material = tester.widget<Material>(
-          find.descendant(
-            of: find.byType(ElevatedCard),
-            matching: find.byType(Material),
-          ).first,
+          find
+              .descendant(
+                of: find.byType(ElevatedCard),
+                matching: find.byType(Material),
+              )
+              .first,
         );
 
         // Should use light theme card color
         expect(material.color, equals(AppColors.cardLight));
       });
 
-      testWidgets('ElevatedCard uses dark theme card color in dark mode', (tester) async {
+      testWidgets('ElevatedCard uses dark theme card color in dark mode',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData.dark(),
@@ -903,10 +947,12 @@ void main() {
         );
 
         final material = tester.widget<Material>(
-          find.descendant(
-            of: find.byType(ElevatedCard),
-            matching: find.byType(Material),
-          ).first,
+          find
+              .descendant(
+                of: find.byType(ElevatedCard),
+                matching: find.byType(Material),
+              )
+              .first,
         );
 
         // Should use dark theme card color
@@ -915,7 +961,8 @@ void main() {
     });
 
     group('AnimatedMetricCard Accessibility Tests', () {
-      testWidgets('AnimatedMetricCard displays semantic content', (tester) async {
+      testWidgets('AnimatedMetricCard displays semantic content',
+          (tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
@@ -933,7 +980,8 @@ void main() {
         expect(find.byIcon(Icons.attach_money), findsOneWidget);
       });
 
-      testWidgets('AnimatedMetricCard icon has proper color contrast', (tester) async {
+      testWidgets('AnimatedMetricCard icon has proper color contrast',
+          (tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
@@ -948,12 +996,13 @@ void main() {
         );
 
         final icon = tester.widget<Icon>(find.byIcon(Icons.attach_money));
-        
+
         // Icon should be white on colored background
         expect(icon.color, equals(AppColors.textOnPrimary));
       });
 
-      testWidgets('AnimatedMetricCard is tappable when onTap provided', (tester) async {
+      testWidgets('AnimatedMetricCard is tappable when onTap provided',
+          (tester) async {
         bool tapped = false;
 
         await tester.pumpWidget(
@@ -994,9 +1043,10 @@ void main() {
         );
 
         final button = tester.getSize(find.byType(AppButton));
-        
+
         // Button should still meet minimum touch target even with large text
-        expect(button.height, greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
+        expect(button.height,
+            greaterThanOrEqualTo(AccessibilityUtils.minimumTouchTarget));
       });
 
       testWidgets('Cards adapt to large text', (tester) async {

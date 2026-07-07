@@ -128,11 +128,12 @@ class InsightsPageState extends State<InsightsPage> {
           child: Consumer<TransactionModel>(
             builder: (context, model, child) {
               final hasTransactions = model.currentMonthTransactions.isNotEmpty;
-              
+
               if (!hasTransactions) {
                 return EmptyState.noData(
                   title: 'No Data Available',
-                  message: 'Add some transactions to see insights and ask questions about your finances',
+                  message:
+                      'Add some transactions to see insights and ask questions about your finances',
                   icon: CupertinoIcons.chart_bar,
                 );
               }
@@ -215,7 +216,7 @@ class InsightsPageState extends State<InsightsPage> {
     final transactionCount = model.currentMonthTransactions.length;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Column(
       children: [
         Row(
@@ -273,7 +274,7 @@ class InsightsPageState extends State<InsightsPage> {
 
   Widget _buildChatInterface() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return ElevatedCard(
       elevation: AppDesign.elevationS,
       child: Column(
@@ -289,13 +290,15 @@ class InsightsPageState extends State<InsightsPage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppDesign.radiusM),
                 borderSide: BorderSide(
-                  color: AppDesign.getTextSecondary(context).withValues(alpha: 0.3),
+                  color: AppDesign.getTextSecondary(context)
+                      .withValues(alpha: 0.3),
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppDesign.radiusM),
                 borderSide: BorderSide(
-                  color: AppDesign.getTextSecondary(context).withValues(alpha: 0.3),
+                  color: AppDesign.getTextSecondary(context)
+                      .withValues(alpha: 0.3),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
@@ -339,7 +342,7 @@ class InsightsPageState extends State<InsightsPage> {
 
   Widget _buildResponseCard() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return ElevatedCard(
       elevation: AppDesign.elevationS,
       child: Column(

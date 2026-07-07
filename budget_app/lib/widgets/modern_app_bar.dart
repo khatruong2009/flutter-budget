@@ -7,25 +7,25 @@ import '../design_system.dart';
 class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// The title text to display
   final String title;
-  
+
   /// Optional leading widget (back button, menu, etc.)
   final Widget? leading;
-  
+
   /// Optional actions to display on the right
   final List<Widget>? actions;
-  
+
   /// Whether to show a gradient background (default: true)
   final bool showGradient;
-  
+
   /// Whether to use glassmorphism effect (default: true)
   final bool useGlassEffect;
-  
+
   /// Optional custom gradient (overrides default)
   final Gradient? gradient;
-  
+
   /// Whether to center the title (default: true)
   final bool centerTitle;
-  
+
   /// Optional subtitle text
   final String? subtitle;
 
@@ -47,7 +47,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     Widget appBarContent = AppBar(
       leading: leading,
       title: subtitle != null
@@ -89,9 +89,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       iconTheme: IconThemeData(
-        color: showGradient
-            ? Colors.white
-            : AppDesign.getTextPrimary(context),
+        color: showGradient ? Colors.white : AppDesign.getTextPrimary(context),
       ),
     );
 
@@ -120,10 +118,12 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
                   decoration: BoxDecoration(
                     color: showGradient
                         ? Colors.transparent
-                        : AppDesign.getSurfaceColor(context).withValues(alpha: 0.9),
+                        : AppDesign.getSurfaceColor(context)
+                            .withValues(alpha: 0.9),
                     border: Border(
                       bottom: BorderSide(
-                        color: AppDesign.getBorderColor(context).withValues(alpha: 0.7),
+                        color: AppDesign.getBorderColor(context)
+                            .withValues(alpha: 0.7),
                         width: AppDesign.borderThin,
                       ),
                     ),
@@ -135,7 +135,6 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
           : appBarContent,
     );
   }
-
 }
 
 /// ModernSliverAppBar is an enhanced SliverAppBar with gradient background
@@ -143,25 +142,25 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
 class ModernSliverAppBar extends StatelessWidget {
   /// The title text to display
   final String title;
-  
+
   /// Optional leading widget
   final Widget? leading;
-  
+
   /// Optional actions
   final List<Widget>? actions;
-  
+
   /// Whether the app bar should remain visible at the top
   final bool pinned;
-  
+
   /// Whether the app bar should float above the content
   final bool floating;
-  
+
   /// The expanded height of the app bar
   final double expandedHeight;
-  
+
   /// Optional flexible space widget
   final Widget? flexibleSpace;
-  
+
   /// Optional custom gradient
   final Gradient? gradient;
 
@@ -180,7 +179,7 @@ class ModernSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return SliverAppBar(
       leading: leading,
       title: Text(

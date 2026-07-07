@@ -18,22 +18,22 @@ void main() {
         MicroInteractions.lightImpact(),
         completes,
       );
-      
+
       await expectLater(
         MicroInteractions.mediumImpact(),
         completes,
       );
-      
+
       await expectLater(
         MicroInteractions.heavyImpact(),
         completes,
       );
-      
+
       await expectLater(
         MicroInteractions.selectionClick(),
         completes,
       );
-      
+
       await expectLater(
         MicroInteractions.vibrate(),
         completes,
@@ -45,7 +45,7 @@ void main() {
       final isDesktop = MicroInteractions.isDesktop();
       final isMobile = MicroInteractions.isMobile();
       final isWeb = MicroInteractions.isWeb();
-      
+
       // At most one should be true (could all be false in test environment)
       final trueCount = [isDesktop, isMobile, isWeb].where((v) => v).length;
       expect(trueCount, lessThanOrEqualTo(1));
@@ -55,7 +55,7 @@ void main() {
       final shouldEnableHover = MicroInteractions.shouldEnableHover();
       final isDesktop = MicroInteractions.isDesktop();
       final isWeb = MicroInteractions.isWeb();
-      
+
       // Hover should be enabled if desktop or web
       if (isDesktop || isWeb) {
         expect(shouldEnableHover, isTrue);

@@ -235,7 +235,7 @@ class PlatformUtils {
   /// Returns appropriate padding for safe areas based on platform
   static EdgeInsets getPlatformPadding(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    
+
     if (isMobile) {
       // Mobile devices need safe area padding
       return EdgeInsets.only(

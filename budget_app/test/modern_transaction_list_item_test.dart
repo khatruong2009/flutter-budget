@@ -81,7 +81,8 @@ void main() {
       expect(find.textContaining('Salary'), findsOneWidget);
     });
 
-    testWidgets('displays category icon with gradient background', (tester) async {
+    testWidgets('displays category icon with gradient background',
+        (tester) async {
       final transaction = Transaction(
         type: TransactionTyp.expense,
         description: 'Test',
@@ -138,7 +139,8 @@ void main() {
       expect(find.textContaining('Mar'), findsOneWidget);
     });
 
-    testWidgets('displays recurrence indicator for recurring transactions', (tester) async {
+    testWidgets('displays recurrence indicator for recurring transactions',
+        (tester) async {
       // Create a recurring transaction
       final recurringTransaction = Transaction(
         type: TransactionTyp.expense,
@@ -165,7 +167,9 @@ void main() {
       expect(find.byType(RecurrenceIndicator), findsOneWidget);
     });
 
-    testWidgets('does not display recurrence indicator for non-recurring transactions', (tester) async {
+    testWidgets(
+        'does not display recurrence indicator for non-recurring transactions',
+        (tester) async {
       // Create a non-recurring transaction
       final transaction = Transaction(
         type: TransactionTyp.expense,

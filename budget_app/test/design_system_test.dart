@@ -169,7 +169,8 @@ void main() {
   });
 
   group('AppButton Component Tests', () {
-    testWidgets('AppButton.primary renders with gradient and shadow', (tester) async {
+    testWidgets('AppButton.primary renders with gradient and shadow',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -185,7 +186,8 @@ void main() {
       expect(find.byType(AppButton), findsOneWidget);
     });
 
-    testWidgets('AppButton.secondary renders with transparent background', (tester) async {
+    testWidgets('AppButton.secondary renders with transparent background',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -203,7 +205,7 @@ void main() {
 
     testWidgets('AppButton handles tap interactions', (tester) async {
       var tapped = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -217,11 +219,12 @@ void main() {
 
       await tester.tap(find.text('Tap Me'));
       await tester.pump();
-      
+
       expect(tapped, isTrue);
     });
 
-    testWidgets('AppButton shows loading indicator when isLoading is true', (tester) async {
+    testWidgets('AppButton shows loading indicator when isLoading is true',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -254,7 +257,8 @@ void main() {
       expect(find.text('With Icon'), findsOneWidget);
     });
 
-    testWidgets('AppButton applies reduced opacity when disabled', (tester) async {
+    testWidgets('AppButton applies reduced opacity when disabled',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -272,7 +276,7 @@ void main() {
           matching: find.byType(Opacity),
         ),
       );
-      
+
       expect(opacity.opacity, AppDesign.opacityDisabled);
     });
 
@@ -308,7 +312,8 @@ void main() {
       expect(find.text('Large'), findsOneWidget);
     });
 
-    testWidgets('AppButton expands to fill width when expanded is true', (tester) async {
+    testWidgets('AppButton expands to fill width when expanded is true',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -322,16 +327,19 @@ void main() {
       );
 
       final sizedBox = tester.widget<SizedBox>(
-        find.descendant(
-          of: find.byType(AppButton),
-          matching: find.byType(SizedBox),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(AppButton),
+              matching: find.byType(SizedBox),
+            )
+            .first,
       );
-      
+
       expect(sizedBox.width, double.infinity);
     });
 
-    testWidgets('AppButton maintains minimum touch target size', (tester) async {
+    testWidgets('AppButton maintains minimum touch target size',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -351,21 +359,22 @@ void main() {
           matching: find.byType(Container),
         ),
       );
-      
+
       // Find the container with constraints (the button container)
       final buttonContainer = containers.firstWhere(
         (container) => container.constraints != null,
         orElse: () => throw Exception('No container with constraints found'),
       );
-      
+
       expect(buttonContainer.constraints?.minWidth, greaterThanOrEqualTo(44.0));
     });
 
-    testWidgets('AppButton applies custom gradient when provided', (tester) async {
+    testWidgets('AppButton applies custom gradient when provided',
+        (tester) async {
       const customGradient = LinearGradient(
         colors: [Colors.red, Colors.blue],
       );
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -381,9 +390,10 @@ void main() {
       expect(find.text('Custom Gradient'), findsOneWidget);
     });
 
-    testWidgets('AppButton does not trigger onPressed when loading', (tester) async {
+    testWidgets('AppButton does not trigger onPressed when loading',
+        (tester) async {
       var tapped = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -398,7 +408,7 @@ void main() {
 
       await tester.tap(find.byType(AppButton));
       await tester.pump();
-      
+
       expect(tapped, isFalse);
     });
 
@@ -422,9 +432,10 @@ void main() {
           matching: find.byType(SizedBox),
         ),
       );
-      
+
       // Should have at least one SizedBox for spacing
-      expect(spacingBoxes.any((box) => box.width == AppDesign.spacingS), isTrue);
+      expect(
+          spacingBoxes.any((box) => box.width == AppDesign.spacingS), isTrue);
     });
 
     testWidgets('AppButton contains InkWell for ripple effect', (tester) async {
@@ -442,7 +453,8 @@ void main() {
       expect(find.byType(InkWell), findsOneWidget);
     });
 
-    testWidgets('AppButton primary variant has gradient decoration', (tester) async {
+    testWidgets('AppButton primary variant has gradient decoration',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -461,13 +473,13 @@ void main() {
           matching: find.byType(Container),
         ),
       );
-      
+
       // Find the container with BoxDecoration (the button container)
       final buttonContainer = containers.firstWhere(
         (container) => container.decoration is BoxDecoration,
         orElse: () => throw Exception('No container with BoxDecoration found'),
       );
-      
+
       expect(buttonContainer.decoration, isA<BoxDecoration>());
       final decoration = buttonContainer.decoration as BoxDecoration;
       expect(decoration.gradient, isNotNull);
@@ -492,13 +504,13 @@ void main() {
           matching: find.byType(Container),
         ),
       );
-      
+
       // Find the container with BoxDecoration (the button container)
       final buttonContainer = containers.firstWhere(
         (container) => container.decoration is BoxDecoration,
         orElse: () => throw Exception('No container with BoxDecoration found'),
       );
-      
+
       expect(buttonContainer.decoration, isA<BoxDecoration>());
       final decoration = buttonContainer.decoration as BoxDecoration;
       expect(decoration.border, isNotNull);
@@ -506,7 +518,8 @@ void main() {
   });
 
   group('AnimatedMetricCard Component Tests', () {
-    testWidgets('AnimatedMetricCard renders with required properties', (tester) async {
+    testWidgets('AnimatedMetricCard renders with required properties',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -525,7 +538,8 @@ void main() {
       expect(find.byType(AnimatedDigitWidget), findsOneWidget);
     });
 
-    testWidgets('AnimatedMetricCard applies scale animation on init', (tester) async {
+    testWidgets('AnimatedMetricCard applies scale animation on init',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -541,11 +555,11 @@ void main() {
 
       // Verify AnimatedMetricCard is rendered
       expect(find.byType(AnimatedMetricCard), findsOneWidget);
-      
+
       // Pump animation to completion
       await tester.pump();
       await tester.pump(AppAnimations.normal);
-      
+
       // Animation should complete and widget should still be present
       expect(find.byType(AnimatedMetricCard), findsOneWidget);
     });
@@ -567,7 +581,8 @@ void main() {
       expect(find.byType(ElevatedCard), findsOneWidget);
     });
 
-    testWidgets('AnimatedMetricCard displays icon in gradient container', (tester) async {
+    testWidgets('AnimatedMetricCard displays icon in gradient container',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -584,17 +599,18 @@ void main() {
       // Find the container with solid color
       final containers = tester.widgetList<Container>(find.byType(Container));
       final colorContainer = containers.firstWhere(
-        (container) => container.decoration is BoxDecoration &&
+        (container) =>
+            container.decoration is BoxDecoration &&
             (container.decoration as BoxDecoration).color != null,
       );
-      
+
       expect(colorContainer, isNotNull);
       expect(find.byIcon(Icons.trending_down), findsOneWidget);
     });
 
     testWidgets('AnimatedMetricCard handles tap interactions', (tester) async {
       var tapped = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -611,11 +627,12 @@ void main() {
 
       await tester.tap(find.byType(ElevatedCard));
       await tester.pump();
-      
+
       expect(tapped, isTrue);
     });
 
-    testWidgets('AnimatedMetricCard displays value with AnimatedDigitWidget', (tester) async {
+    testWidgets('AnimatedMetricCard displays value with AnimatedDigitWidget',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -633,13 +650,14 @@ void main() {
       final animatedDigit = tester.widget<AnimatedDigitWidget>(
         find.byType(AnimatedDigitWidget),
       );
-      
+
       expect(animatedDigit.value, 9876.54);
       expect(animatedDigit.fractionDigits, 2);
       expect(animatedDigit.enableSeparator, isTrue);
     });
 
-    testWidgets('AnimatedMetricCard respects fractionDigits parameter', (tester) async {
+    testWidgets('AnimatedMetricCard respects fractionDigits parameter',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -657,11 +675,12 @@ void main() {
       final animatedDigit = tester.widget<AnimatedDigitWidget>(
         find.byType(AnimatedDigitWidget),
       );
-      
+
       expect(animatedDigit.fractionDigits, 0);
     });
 
-    testWidgets('AnimatedMetricCard displays prefix when provided', (tester) async {
+    testWidgets('AnimatedMetricCard displays prefix when provided',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -679,7 +698,8 @@ void main() {
       expect(find.text('\$'), findsOneWidget);
     });
 
-    testWidgets('AnimatedMetricCard displays suffix when provided', (tester) async {
+    testWidgets('AnimatedMetricCard displays suffix when provided',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -697,7 +717,8 @@ void main() {
       expect(find.text('%'), findsOneWidget);
     });
 
-    testWidgets('AnimatedMetricCard icon container has proper padding', (tester) async {
+    testWidgets('AnimatedMetricCard icon container has proper padding',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -714,16 +735,17 @@ void main() {
       // Find the container with solid color that contains the icon
       final containers = tester.widgetList<Container>(find.byType(Container));
       final iconContainer = containers.firstWhere(
-        (container) => 
+        (container) =>
             container.padding == const EdgeInsets.all(AppDesign.spacingS) &&
             container.decoration is BoxDecoration &&
             (container.decoration as BoxDecoration).color != null,
       );
-      
+
       expect(iconContainer.padding, const EdgeInsets.all(AppDesign.spacingS));
     });
 
-    testWidgets('AnimatedMetricCard icon container has rounded corners', (tester) async {
+    testWidgets('AnimatedMetricCard icon container has rounded corners',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -740,15 +762,17 @@ void main() {
       // Find the container with solid color
       final containers = tester.widgetList<Container>(find.byType(Container));
       final iconContainer = containers.firstWhere(
-        (container) => container.decoration is BoxDecoration &&
+        (container) =>
+            container.decoration is BoxDecoration &&
             (container.decoration as BoxDecoration).color != null,
       );
-      
+
       final decoration = iconContainer.decoration as BoxDecoration;
       expect(decoration.borderRadius, BorderRadius.circular(AppDesign.radiusS));
     });
 
-    testWidgets('AnimatedMetricCard label uses secondary text color', (tester) async {
+    testWidgets('AnimatedMetricCard label uses secondary text color',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -764,11 +788,13 @@ void main() {
 
       final textWidgets = tester.widgetList<Text>(find.text('Test Label'));
       final labelText = textWidgets.first;
-      
+
       expect(labelText.style?.color, AppDesign.textPrimary);
     });
 
-    testWidgets('AnimatedMetricCard contains AnimatedDigitWidget for value display', (tester) async {
+    testWidgets(
+        'AnimatedMetricCard contains AnimatedDigitWidget for value display',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -786,7 +812,8 @@ void main() {
       expect(find.byType(AnimatedDigitWidget), findsOneWidget);
     });
 
-    testWidgets('AnimatedMetricCard has proper spacing between elements', (tester) async {
+    testWidgets('AnimatedMetricCard has proper spacing between elements',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -802,10 +829,10 @@ void main() {
 
       // Find SizedBox widgets for spacing
       final sizedBoxes = tester.widgetList<SizedBox>(find.byType(SizedBox));
-      
+
       // Should have spacing between icon and label (spacingM)
       expect(sizedBoxes.any((box) => box.width == AppDesign.spacingM), isTrue);
-      
+
       // Should have spacing between label row and value (spacingM)
       expect(sizedBoxes.any((box) => box.height == AppDesign.spacingM), isTrue);
     });
@@ -829,7 +856,8 @@ void main() {
       expect(icon.color, AppColors.textOnPrimary);
     });
 
-    testWidgets('AnimatedMetricCard uses correct typography for label', (tester) async {
+    testWidgets('AnimatedMetricCard uses correct typography for label',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -845,7 +873,7 @@ void main() {
 
       final textWidgets = tester.widgetList<Text>(find.text('Test Label'));
       final labelText = textWidgets.first;
-      
+
       expect(labelText.style?.fontSize, AppTypography.bodyMedium.fontSize);
     });
 
@@ -867,11 +895,12 @@ void main() {
       final animatedDigit = tester.widget<AnimatedDigitWidget>(
         find.byType(AnimatedDigitWidget),
       );
-      
+
       expect(animatedDigit.value, 500.0);
     });
 
-    testWidgets('AnimatedMetricCard disposes animation controller', (tester) async {
+    testWidgets('AnimatedMetricCard disposes animation controller',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(

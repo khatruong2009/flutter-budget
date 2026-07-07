@@ -5,7 +5,7 @@ import '../utils/accessibility_utils.dart';
 /// LoadingShimmer is a reusable component for displaying loading states
 /// with an animated shimmer effect that provides visual feedback while
 /// content is being loaded.
-/// 
+///
 /// Supports different skeleton layouts for various content types:
 /// - list: For list items with icon and text
 /// - card: For card-based content
@@ -14,25 +14,25 @@ import '../utils/accessibility_utils.dart';
 class LoadingShimmer extends StatefulWidget {
   /// The type of skeleton layout to display
   final ShimmerType type;
-  
+
   /// Number of skeleton items to display (for list/card types)
   final int itemCount;
-  
+
   /// Optional custom child widget for custom skeleton layouts
   final Widget? child;
-  
+
   /// Optional height for the shimmer container
   final double? height;
-  
+
   /// Optional width for the shimmer container
   final double? width;
-  
+
   /// Whether to show the shimmer animation (default: true)
   final bool enabled;
-  
+
   /// Base color for the shimmer effect
   final Color? baseColor;
-  
+
   /// Highlight color for the shimmer effect
   final Color? highlightColor;
 
@@ -116,7 +116,7 @@ class _LoadingShimmerState extends State<LoadingShimmer>
       duration: AppAnimations.shimmerDuration,
       vsync: this,
     );
-    
+
     _animation = Tween<double>(
       begin: -2.0,
       end: 2.0,
@@ -155,7 +155,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
     }
 
     // Add semantic label for screen readers
-    final semanticLabel = AccessibilityUtils.formatLoadingStateForScreenReader(null);
+    final semanticLabel =
+        AccessibilityUtils.formatLoadingStateForScreenReader(null);
 
     // Wrap in RepaintBoundary to optimize animation performance
     return Semantics(
@@ -193,7 +194,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.itemCount,
-      separatorBuilder: (context, index) => const SizedBox(height: AppDesign.spacingM),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppDesign.spacingM),
       itemBuilder: (context, index) {
         return _ShimmerBox(
           animation: _animation,
@@ -232,7 +234,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: _getBaseColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusS),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusS),
                           ),
                         ),
                       ),
@@ -246,7 +249,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
                           width: 120,
                           decoration: BoxDecoration(
                             color: _getBaseColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusS),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusS),
                           ),
                         ),
                       ),
@@ -312,7 +316,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
                         height: 32,
                         decoration: BoxDecoration(
                           color: _getHighlightColor(context),
-                          borderRadius: BorderRadius.circular(AppDesign.radiusS),
+                          borderRadius:
+                              BorderRadius.circular(AppDesign.radiusS),
                         ),
                       ),
                     ),
@@ -326,7 +331,8 @@ class _LoadingShimmerState extends State<LoadingShimmer>
                           height: 12,
                           decoration: BoxDecoration(
                             color: _getHighlightColor(context),
-                            borderRadius: BorderRadius.circular(AppDesign.radiusS),
+                            borderRadius:
+                                BorderRadius.circular(AppDesign.radiusS),
                           ),
                         ),
                       ),
@@ -391,7 +397,7 @@ class _LoadingShimmerState extends State<LoadingShimmer>
 
   Color _getBaseColor(BuildContext context) {
     if (widget.baseColor != null) return widget.baseColor!;
-    
+
     return Theme.of(context).brightness == Brightness.dark
         ? Colors.grey[800]!
         : Colors.grey[300]!;
@@ -399,7 +405,7 @@ class _LoadingShimmerState extends State<LoadingShimmer>
 
   Color _getHighlightColor(BuildContext context) {
     if (widget.highlightColor != null) return widget.highlightColor!;
-    
+
     return Theme.of(context).brightness == Brightness.dark
         ? Colors.grey[700]!
         : Colors.grey[100]!;
@@ -423,7 +429,8 @@ class _ShimmerBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveBaseColor = baseColor ?? _getBaseColor(context);
-    final effectiveHighlightColor = highlightColor ?? _getHighlightColor(context);
+    final effectiveHighlightColor =
+        highlightColor ?? _getHighlightColor(context);
 
     // Wrap in RepaintBoundary to isolate shimmer repaints
     return RepaintBoundary(
@@ -482,14 +489,13 @@ class _SlidingGradientTransform extends GradientTransform {
 enum ShimmerType {
   /// List item skeleton with icon and text
   list,
-  
+
   /// Card skeleton for metric cards
   card,
-  
+
   /// Text-only skeleton
   text,
-  
+
   /// Custom skeleton layout
   custom,
 }
-

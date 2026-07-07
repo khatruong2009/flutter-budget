@@ -12,10 +12,10 @@ import 'recurrence_indicator.dart';
 class ModernTransactionListItem extends StatelessWidget {
   /// The transaction to display
   final Transaction transaction;
-  
+
   /// Callback when the item is tapped (for editing)
   final VoidCallback onTap;
-  
+
   /// Callback when the item is deleted via swipe
   final VoidCallback onDelete;
 
@@ -49,105 +49,105 @@ class ModernTransactionListItem extends StatelessWidget {
         hint: 'Double tap to edit, swipe left to delete',
         button: true,
         child: Dismissible(
-      key: ValueKey(transaction.description + transaction.date.toString()),
-      direction: DismissDirection.endToStart,
-      confirmDismiss: (direction) async {
-        // Trigger haptic feedback when swipe threshold is reached
-        await MicroInteractions.mediumImpact();
-        if (!context.mounted) return false;
-        return _showDeleteConfirmation(context);
-      },
-      onDismissed: (direction) {
-        // Trigger heavy haptic feedback on delete
-        MicroInteractions.heavyImpact();
-        onDelete();
-      },
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: AppDesign.spacingL),
-        decoration: BoxDecoration(
-          color: AppDesign.getExpenseColor(context),
-          borderRadius: BorderRadius.circular(AppDesign.radiusM),
-        ),
-        child: Semantics(
-          label: 'Delete transaction',
-          child: const Icon(
-            CupertinoIcons.delete,
-            color: Colors.white,
-            size: AppDesign.iconM,
-          ),
-        ),
-      ),
-      child: ElevatedCard(
-        elevation: AppDesign.elevationS,
-        onTap: onTap,
-        padding: const EdgeInsets.all(AppDesign.spacingM),
-        child: ExcludeSemantics(
-          // Exclude individual elements since we have a parent semantic label
-          child: Row(
-            children: [
-              // Category icon with solid color background
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: categoryColor,
-                  borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                ),
-                child: Icon(
-                  _getCategoryIcon(transaction.category, isExpense),
-                  color: AppColors.textOnPrimary,
-                  size: AppDesign.iconM,
-                ),
+          key: ValueKey(transaction.description + transaction.date.toString()),
+          direction: DismissDirection.endToStart,
+          confirmDismiss: (direction) async {
+            // Trigger haptic feedback when swipe threshold is reached
+            await MicroInteractions.mediumImpact();
+            if (!context.mounted) return false;
+            return _showDeleteConfirmation(context);
+          },
+          onDismissed: (direction) {
+            // Trigger heavy haptic feedback on delete
+            MicroInteractions.heavyImpact();
+            onDelete();
+          },
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: AppDesign.spacingL),
+            decoration: BoxDecoration(
+              color: AppDesign.getExpenseColor(context),
+              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+            ),
+            child: Semantics(
+              label: 'Delete transaction',
+              child: const Icon(
+                CupertinoIcons.delete,
+                color: Colors.white,
+                size: AppDesign.iconM,
               ),
-            const SizedBox(width: AppDesign.spacingM),
-            // Transaction details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+          child: ElevatedCard(
+            elevation: AppDesign.elevationS,
+            onTap: onTap,
+            padding: const EdgeInsets.all(AppDesign.spacingM),
+            child: ExcludeSemantics(
+              // Exclude individual elements since we have a parent semantic label
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          transaction.description,
-                          style: AppTypography.bodyLarge.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppDesign.getTextPrimary(context),
+                  // Category icon with solid color background
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: categoryColor,
+                      borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                    ),
+                    child: Icon(
+                      _getCategoryIcon(transaction.category, isExpense),
+                      color: AppColors.textOnPrimary,
+                      size: AppDesign.iconM,
+                    ),
+                  ),
+                  const SizedBox(width: AppDesign.spacingM),
+                  // Transaction details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                transaction.description,
+                                style: AppTypography.bodyLarge.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppDesign.getTextPrimary(context),
+                                ),
+                              ),
+                            ),
+                            if (transaction.isRecurring) ...[
+                              const SizedBox(width: 6),
+                              const RecurrenceIndicator(size: 16.0),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${transaction.category} • ${DateFormat.MMMd().format(transaction.date)}',
+                          style: AppTypography.caption.copyWith(
+                            color: AppDesign.getTextTertiary(context),
                           ),
                         ),
-                      ),
-                      if (transaction.isRecurring) ...[
-                        const SizedBox(width: 6),
-                        const RecurrenceIndicator(size: 16.0),
                       ],
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 4),
+                  // Transaction amount
                   Text(
-                    '${transaction.category} • ${DateFormat.MMMd().format(transaction.date)}',
-                    style: AppTypography.caption.copyWith(
-                      color: AppDesign.getTextTertiary(context),
+                    '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
+                    style: AppTypography.headingMedium.copyWith(
+                      color: isExpense
+                          ? AppDesign.getExpenseColor(context)
+                          : AppDesign.getIncomeColor(context),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-            // Transaction amount
-            Text(
-              '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
-              style: AppTypography.headingMedium.copyWith(
-                color: isExpense 
-                    ? AppDesign.getExpenseColor(context)
-                    : AppDesign.getIncomeColor(context),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+          ),
         ),
-        ),
-      ),
-      ),
       ),
     );
   }

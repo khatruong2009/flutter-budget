@@ -21,7 +21,7 @@ class AppAnimations {
   static const Curve fastOutSlowIn = Curves.fastOutSlowIn;
 
   // Page Transition Builders
-  
+
   /// Slide transition from right to left
   static Widget slideTransition(
     BuildContext context,
@@ -128,7 +128,8 @@ class AppAnimations {
     required Duration delay,
     Curve curve = Curves.easeOut,
   }) {
-    final delaySeconds = delay.inMilliseconds / controller.duration!.inMilliseconds;
+    final delaySeconds =
+        delay.inMilliseconds / controller.duration!.inMilliseconds;
     return CurvedAnimation(
       parent: controller,
       curve: Interval(
@@ -149,7 +150,7 @@ class AppAnimations {
     const staggerDelay = 0.05; // 5% delay between items
     final start = (index * staggerDelay).clamp(0.0, 0.5);
     final end = (start + 0.5).clamp(0.0, 1.0);
-    
+
     return CurvedAnimation(
       parent: controller,
       curve: Interval(

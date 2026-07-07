@@ -39,9 +39,8 @@ class PillChip extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: outlined ? null : color.withValues(alpha: 0.14),
-        border: outlined
-            ? Border.all(color: color.withValues(alpha: 0.4))
-            : null,
+        border:
+            outlined ? Border.all(color: color.withValues(alpha: 0.4)) : null,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -51,7 +50,8 @@ class PillChip extends StatelessWidget {
             Icon(icon, size: 15, weight: 500, color: color),
             const SizedBox(width: 6),
           ],
-          Text(label, style: (textStyle ?? AppTypography.badge).copyWith(color: color)),
+          Text(label,
+              style: (textStyle ?? AppTypography.badge).copyWith(color: color)),
         ],
       ),
     );
@@ -136,8 +136,10 @@ class _PillButtonState extends State<PillButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, size: widget.filled ? 18 : 20,
-                    weight: 500, color: foreground),
+                Icon(widget.icon,
+                    size: widget.filled ? 18 : 20,
+                    weight: 500,
+                    color: foreground),
                 SizedBox(width: widget.filled ? 6 : 8),
               ],
               Text(

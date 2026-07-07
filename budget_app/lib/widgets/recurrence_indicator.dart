@@ -55,7 +55,7 @@ class _RecurrenceIconPainter extends CustomPainter {
     topPath.cubicTo(
       leftX + arrowSize * 0.5, height * 0.05, // Control point 1
       rightX - arrowSize * 0.5, height * 0.05, // Control point 2
-      rightX - arrowSize * 0.5, centerY,       // End point (before arrow)
+      rightX - arrowSize * 0.5, centerY, // End point (before arrow)
     );
     canvas.drawPath(topPath, paint);
 
@@ -71,8 +71,8 @@ class _RecurrenceIconPainter extends CustomPainter {
     bottomPath.moveTo(rightX - arrowSize * 0.5, centerY);
     bottomPath.cubicTo(
       rightX - arrowSize * 0.5, height * 0.95, // Control point 1
-      leftX + arrowSize * 0.5, height * 0.95,  // Control point 2
-      leftX + arrowSize * 0.5, centerY,        // End point (before arrow)
+      leftX + arrowSize * 0.5, height * 0.95, // Control point 2
+      leftX + arrowSize * 0.5, centerY, // End point (before arrow)
     );
     canvas.drawPath(bottomPath, paint);
 

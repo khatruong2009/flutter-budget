@@ -4,39 +4,39 @@ import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'platform_utils.dart';
 
-  /// Mixin that provides platform-specific enhancements to widgets
-  mixin PlatformEnhancements<T extends StatefulWidget> on State<T> {
-    /// Handles keyboard shortcuts for desktop platforms
-    void handleKeyboardShortcut(KeyEvent event) {
-      if (!PlatformUtils.supportsKeyboardShortcuts) return;
+/// Mixin that provides platform-specific enhancements to widgets
+mixin PlatformEnhancements<T extends StatefulWidget> on State<T> {
+  /// Handles keyboard shortcuts for desktop platforms
+  void handleKeyboardShortcut(KeyEvent event) {
+    if (!PlatformUtils.supportsKeyboardShortcuts) return;
 
-      final isControlPressed = HardwareKeyboard.instance.isControlPressed;
-      final isMetaPressed = HardwareKeyboard.instance.isMetaPressed;
-      final logicalKey = event.logicalKey;
+    final isControlPressed = HardwareKeyboard.instance.isControlPressed;
+    final isMetaPressed = HardwareKeyboard.instance.isMetaPressed;
+    final logicalKey = event.logicalKey;
 
-      // Ctrl/Cmd + N: New transaction
-      if (isControlPressed || isMetaPressed) {
-        if (logicalKey == LogicalKeyboardKey.keyN) {
-          onNewTransaction();
-        }
-        // Ctrl/Cmd + S: Save/Settings
-        else if (logicalKey == LogicalKeyboardKey.keyS) {
-          onSave();
-        }
-        // Ctrl/Cmd + F: Search/Filter
-        else if (logicalKey == LogicalKeyboardKey.keyF) {
-          onSearch();
-        }
-        // Ctrl/Cmd + W: Close
-        else if (logicalKey == LogicalKeyboardKey.keyW) {
-          onClose();
-        }
+    // Ctrl/Cmd + N: New transaction
+    if (isControlPressed || isMetaPressed) {
+      if (logicalKey == LogicalKeyboardKey.keyN) {
+        onNewTransaction();
       }
-      // Escape: Cancel/Close
-      else if (logicalKey == LogicalKeyboardKey.escape) {
-        onCancel();
+      // Ctrl/Cmd + S: Save/Settings
+      else if (logicalKey == LogicalKeyboardKey.keyS) {
+        onSave();
+      }
+      // Ctrl/Cmd + F: Search/Filter
+      else if (logicalKey == LogicalKeyboardKey.keyF) {
+        onSearch();
+      }
+      // Ctrl/Cmd + W: Close
+      else if (logicalKey == LogicalKeyboardKey.keyW) {
+        onClose();
       }
     }
+    // Escape: Cancel/Close
+    else if (logicalKey == LogicalKeyboardKey.escape) {
+      onCancel();
+    }
+  }
 
   /// Override these methods in your widget to handle shortcuts
   void onNewTransaction() {}
@@ -74,7 +74,8 @@ class PlatformScrollBehavior extends MaterialScrollBehavior {
   const PlatformScrollBehavior();
 
   @override
-  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
     if (PlatformUtils.isDesktop || PlatformUtils.isWeb) {
       return Scrollbar(
         controller: details.controller,
@@ -100,7 +101,8 @@ class PlatformTextFieldConfig {
   /// Returns appropriate keyboard type for amount input
   static TextInputType getAmountKeyboardType() {
     if (PlatformUtils.isIOS) {
-      return const TextInputType.numberWithOptions(decimal: true, signed: false);
+      return const TextInputType.numberWithOptions(
+          decimal: true, signed: false);
     }
     return TextInputType.number;
   }
@@ -134,9 +136,13 @@ class PlatformAnimationConfig {
   static Duration getAnimationDuration({bool isShort = false}) {
     if (PlatformUtils.isWeb) {
       // Slightly faster animations on web
-      return isShort ? const Duration(milliseconds: 120) : const Duration(milliseconds: 250);
+      return isShort
+          ? const Duration(milliseconds: 120)
+          : const Duration(milliseconds: 250);
     }
-    return isShort ? const Duration(milliseconds: 150) : const Duration(milliseconds: 300);
+    return isShort
+        ? const Duration(milliseconds: 150)
+        : const Duration(milliseconds: 300);
   }
 
   /// Returns appropriate curve based on platform

@@ -4,7 +4,7 @@ import '../utils/accessibility_utils.dart';
 
 /// EmptyState is a reusable component for displaying empty states
 /// with an icon, message, and optional call-to-action button.
-/// 
+///
 /// Supports different types of empty states:
 /// - noData: When there's no data to display
 /// - noResults: When a search/filter returns no results
@@ -12,28 +12,28 @@ import '../utils/accessibility_utils.dart';
 class EmptyState extends StatelessWidget {
   /// The type of empty state to display
   final EmptyStateType type;
-  
+
   /// Optional custom icon (overrides type default)
   final IconData? icon;
-  
+
   /// Optional custom title (overrides type default)
   final String? title;
-  
+
   /// Optional custom message (overrides type default)
   final String? message;
-  
+
   /// Optional call-to-action button label
   final String? actionLabel;
-  
+
   /// Optional callback when action button is pressed
   final VoidCallback? onAction;
-  
+
   /// Optional icon size (default: AppDesign.iconXXL)
   final double? iconSize;
-  
+
   /// Optional icon color (overrides type default)
   final Color? iconColor;
-  
+
   /// Optional icon gradient (overrides solid color)
   final Gradient? iconGradient;
 
@@ -139,7 +139,7 @@ class EmptyState extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppDesign.spacingL),
-              
+
               // Title
               Semantics(
                 header: true,
@@ -152,7 +152,7 @@ class EmptyState extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppDesign.spacingS),
-              
+
               // Message
               Text(
                 effectiveMessage,
@@ -161,7 +161,7 @@ class EmptyState extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               // Action Button
               if (actionLabel != null && onAction != null) ...[
                 const SizedBox(height: AppDesign.spacingXL),
@@ -269,10 +269,10 @@ class EmptyState extends StatelessWidget {
 enum EmptyStateType {
   /// No data exists yet (e.g., empty transaction list)
   noData,
-  
+
   /// Search or filter returned no results
   noResults,
-  
+
   /// An error occurred
   error,
 }
