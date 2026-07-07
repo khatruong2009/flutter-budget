@@ -1,7 +1,2 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
-
-// Flutter's icon tree-shaking (font-subset) emits a MaterialSymbolsRounded.ttf whose
-// glyphs iOS CoreText partially refuses to render (icons invisible on device in release),
-// so tree-shaking is disabled. Must stay after Generated.xcconfig to override its TREE_SHAKE_ICONS=true.
-TREE_SHAKE_ICONS=false
