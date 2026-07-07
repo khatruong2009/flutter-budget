@@ -82,6 +82,61 @@ struct BudgetQuickActionsWidget: Widget {
     .supportedFamilies([.systemSmall])
   }
 }
+
+struct BudgetVoiceAddEntry: TimelineEntry {
+  let date: Date
+}
+
+struct BudgetVoiceAddProvider: TimelineProvider {
+  func placeholder(in context: Context) -> BudgetVoiceAddEntry {
+    BudgetVoiceAddEntry(date: Date())
+  }
+
+  func getSnapshot(in context: Context, completion: @escaping (BudgetVoiceAddEntry) -> Void) {
+    completion(BudgetVoiceAddEntry(date: Date()))
+  }
+
+  func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetVoiceAddEntry>) -> Void) {
+    let entry = BudgetVoiceAddEntry(date: Date())
+    completion(Timeline(entries: [entry], policy: .never))
+  }
+}
+
+struct BudgetVoiceAddEntryView: View {
+  var entry: BudgetVoiceAddProvider.Entry
+
+  private let accentColor = Color(red: 0.51, green: 0.55, blue: 0.97)
+
+  var body: some View {
+    VStack {
+      Image(systemName: "mic.fill")
+        .font(.system(size: 28))
+        .foregroundColor(.white)
+        .frame(width: 56, height: 56)
+        .background(
+          Circle()
+            .fill(accentColor)
+        )
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .modifier(BackgroundForVersion())
+  }
+}
+
+struct BudgetVoiceAddWidget: Widget {
+  let kind: String = "BudgetVoiceAdd"
+
+  var body: some WidgetConfiguration {
+    StaticConfiguration(kind: kind, provider: BudgetVoiceAddProvider()) { entry in
+      BudgetVoiceAddEntryView(entry: entry)
+        .widgetURL(URL(string: "budgetapp://voice-add")!)
+    }
+    .configurationDisplayName("Voice Add")
+    .description("Speak an expense and Budgie logs it.")
+    .supportedFamilies([.systemSmall])
+  }
+}
+
 struct BackgroundForVersion: ViewModifier {
   func body(content: Content) -> some View {
     if #available(iOS 17.0, *) {

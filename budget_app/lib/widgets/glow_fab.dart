@@ -14,12 +14,14 @@ class GlowFab extends StatefulWidget {
   final VoidCallback onPressed;
   final IconData icon;
   final String? semanticLabel;
+  final double size;
 
   const GlowFab({
     super.key,
     required this.onPressed,
     this.icon = Symbols.add_rounded,
     this.semanticLabel,
+    this.size = 54,
   });
 
   @override
@@ -99,8 +101,8 @@ class _GlowFabState extends State<GlowFab> with TickerProviderStateMixin {
                           child: Transform.scale(
                             scale: 1 + 0.7 * ping,
                             child: Container(
-                              width: 54,
-                              height: 54,
+                              width: widget.size,
+                              height: widget.size,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
@@ -114,8 +116,8 @@ class _GlowFabState extends State<GlowFab> with TickerProviderStateMixin {
                           ),
                         ),
                       Container(
-                        width: 54,
-                        height: 54,
+                        width: widget.size,
+                        height: widget.size,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: accent,
@@ -144,7 +146,7 @@ class _GlowFabState extends State<GlowFab> with TickerProviderStateMixin {
                 },
                 child: Icon(
                   widget.icon,
-                  size: 26,
+                  size: (widget.size * 0.48).round().toDouble(),
                   weight: 500,
                   color: AppColors.getOnAccent(isDark),
                 ),

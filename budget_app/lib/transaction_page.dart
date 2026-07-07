@@ -185,7 +185,7 @@ class _TransactionPageState extends State<TransactionPage> {
                               context,
                               transaction.type,
                               transactionModel.addTransaction,
-                              transaction,
+                              transactionToEdit: transaction,
                             );
                           },
                           onDelete: () {

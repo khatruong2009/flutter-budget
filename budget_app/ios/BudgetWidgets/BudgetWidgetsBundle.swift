@@ -5,5 +5,6 @@ import WidgetKit
 struct BudgetWidgetsBundle: WidgetBundle {
   var body: some Widget {
     BudgetQuickActionsWidget()
+    BudgetVoiceAddWidget()
   }
 }

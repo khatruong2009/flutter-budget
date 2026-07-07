@@ -13,6 +13,7 @@ import 'transaction_form.dart';
 import 'transaction.dart';
 import 'utils/platform_enhancements.dart';
 import 'design_system.dart';
+import 'widgets/voice_recording_sheet.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -171,6 +172,11 @@ class _MyAppState extends State<MyApp> {
         localizedTitle: 'Add Income',
         icon: 'plus.circle.fill',
       ),
+      const ShortcutItem(
+        type: 'action_voice_add',
+        localizedTitle: 'Add by Voice',
+        icon: 'mic.circle.fill',
+      ),
     ]);
   }
 
@@ -255,6 +261,11 @@ class _MyAppState extends State<MyApp> {
       openForm(TransactionTyp.expense);
     } else if (shortcutType == 'action_add_income') {
       openForm(TransactionTyp.income);
+    } else if (shortcutType == 'action_voice_add') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        startVoiceExpenseFlow(targetContext);
+      });
     }
   }
 
@@ -290,6 +301,11 @@ class _MyAppState extends State<MyApp> {
       openForm(TransactionTyp.income);
     } else if (action == 'add-expense' || action == 'add_expense') {
       openForm(TransactionTyp.expense);
+    } else if (action == 'voice-add' || action == 'voice_add') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        startVoiceExpenseFlow(targetContext);
+      });
     }
   }
 

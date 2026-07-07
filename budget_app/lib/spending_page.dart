@@ -11,6 +11,8 @@ import 'transaction.dart';
 import 'transaction_form.dart';
 import 'transaction_model.dart';
 import 'transaction_page.dart';
+import 'utils/platform_utils.dart';
+import 'widgets/voice_recording_sheet.dart';
 
 class SpendingPage extends StatefulWidget {
   const SpendingPage({super.key});
@@ -468,13 +470,27 @@ class SpendingPageState extends State<SpendingPage> {
             _buildBudgetProgressItems(transactionModel, selectedBudgetMonth);
 
         return BudgiePageScaffold(
-          fab: GlowFab(
-            onPressed: () => showTransactionForm(
-              context,
-              TransactionTyp.expense,
-              transactionModel.addTransaction,
-            ),
-            semanticLabel: 'Add transaction',
+          fab: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (PlatformUtils.isMobile) ...[
+                GlowFab(
+                  size: 44,
+                  icon: Symbols.mic_rounded,
+                  semanticLabel: 'Add by voice',
+                  onPressed: () => startVoiceExpenseFlow(context),
+                ),
+                const SizedBox(height: 12),
+              ],
+              GlowFab(
+                onPressed: () => showTransactionForm(
+                  context,
+                  TransactionTyp.expense,
+                  transactionModel.addTransaction,
+                ),
+                semanticLabel: 'Add transaction',
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.only(
