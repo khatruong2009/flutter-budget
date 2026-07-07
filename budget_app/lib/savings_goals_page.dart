@@ -3,10 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'design_system.dart';
 import 'savings_goal.dart';
-import 'widgets/empty_state.dart';
 
 typedef AddSavingsGoalCallback = Future<void> Function({
   required String name,
@@ -20,6 +20,9 @@ typedef AllocateSavingsGoalCallback = Future<void> Function(
   String goalId,
   double amount,
 );
+
+/// Status a goal falls into for the redesigned card badge / pace copy.
+enum _GoalStatus { onTrack, behind, complete }
 
 class SavingsGoalsPage extends StatefulWidget {
   final Object? model;
@@ -54,7 +57,18 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
     symbol: r'$',
     decimalDigits: 2,
   );
+
+  /// Whole-dollar formatter for the compact amounts in the redesign
+  /// (`$8,200 of $10,000`, `$15,520`).
+  final NumberFormat _currencyWhole = NumberFormat.currency(
+    locale: 'en_US',
+    symbol: r'$',
+    decimalDigits: 0,
+  );
   final DateFormat _dateFormat = DateFormat.yMMMd();
+
+  /// Compact date used in the pace/funded copy (e.g. `Nov 30`).
+  final DateFormat _shortDate = DateFormat.MMMd();
 
   @override
   void initState() {
@@ -80,24 +94,36 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
 
   @override
   Widget build(BuildContext context) {
-    final goals = _goals;
+    final goals = _sortedGoals(_goals);
 
-    return Scaffold(
-      backgroundColor: AppDesign.getBackgroundColor(context),
-      appBar: ModernAppBar(
-        title: 'Savings Goals',
-        showGradient: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add savings goal',
-            onPressed: _isBusy ? null : () => _showGoalForm(context),
-          ),
-        ],
+    return BudgiePageScaffold(
+      fab: GlowFab(
+        onPressed: _isBusy ? _noop : () => _showGoalForm(context),
+        icon: Symbols.add_rounded,
+        semanticLabel: 'Add savings goal',
       ),
       body: Stack(
         children: [
-          goals.isEmpty ? _buildEmptyState(context) : _buildGoalsList(goals),
+          Positioned.fill(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: DockMetrics.contentBottomPadding(context),
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const BudgieHeader(title: 'Goals'),
+                    if (goals.isEmpty)
+                      _buildEmptyState(context)
+                    else
+                      _buildGoalsContent(goals),
+                  ],
+                ),
+              ),
+            ),
+          ),
           if (_celebrationGoalName != null)
             Positioned.fill(
               child: _CompletionCelebration(
@@ -107,15 +133,10 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isBusy ? null : () => _showGoalForm(context),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textOnPrimary,
-        tooltip: 'Add savings goal',
-        child: const Icon(Icons.add),
-      ),
     );
   }
+
+  void _noop() {}
 
   List<SavingsGoal> get _goals {
     if (widget.savingsGoals != null) {
@@ -142,80 +163,132 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
     return const [];
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return EmptyState.noData(
-      icon: Icons.savings_outlined,
-      title: 'No Savings Goals Yet',
-      message:
-          'Create a goal, set a target date, and track progress as you set money aside.',
-      actionLabel: 'Add Goal',
-      onAction: _isBusy ? null : () => _showGoalForm(context),
-    );
-  }
-
-  Widget _buildGoalsList(List<SavingsGoal> goals) {
-    final sortedGoals = List<SavingsGoal>.from(goals)
+  List<SavingsGoal> _sortedGoals(List<SavingsGoal> goals) {
+    return List<SavingsGoal>.from(goals)
       ..sort((a, b) {
         if (a.isCompleted != b.isCompleted) {
           return a.isCompleted ? 1 : -1;
         }
         return a.targetDate.compareTo(b.targetDate);
       });
+  }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final horizontalPadding = AppDesign.getResponsiveSpacing(
-          context,
-          phone: AppDesign.spacingM,
-          tablet: AppDesign.spacingL,
-          desktop: AppDesign.spacingXL,
-        );
+  Widget _buildEmptyState(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
 
-        return ListView.separated(
-          padding: EdgeInsets.fromLTRB(
-            horizontalPadding,
-            AppDesign.spacingM,
-            horizontalPadding,
-            AppDesign.spacingXXL,
-          ),
-          itemCount: sortedGoals.length + 1,
-          separatorBuilder: (context, index) =>
-              const SizedBox(height: AppDesign.spacingM),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: AppDesign.maxContentWidth,
-                  ),
-                  child: _SavingsGoalsSummary(
-                    goals: sortedGoals,
-                    currency: _currency,
-                  ),
-                ),
-              );
-            }
-
-            final goal = sortedGoals[index - 1];
-            return Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: AppDesign.maxContentWidth,
-                ),
-                child: _SavingsGoalCard(
-                  goal: goal,
-                  currency: _currency,
-                  dateFormat: _dateFormat,
-                  onAllocate: () => _showAllocationForm(context, goal),
-                  onEdit: () => _showGoalForm(context, goal: goal),
-                  onDelete: () => _confirmDelete(context, goal),
-                ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 48, 20, 0),
+      child: GlowCard(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          children: [
+            IconTile(
+              icon: Symbols.savings_rounded,
+              color: accent,
+              size: 56,
+              iconSize: 28,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'No savings goals yet',
+              style: AppTypography.sectionHeader.copyWith(
+                color: AppColors.getTextColor(isDark),
               ),
-            );
-          },
-        );
-      },
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Create a goal, set a target date, and track progress '
+              'as you set money aside.',
+              style: AppTypography.rowSubtitle.copyWith(
+                fontSize: 13,
+                color: AppColors.getTextSecondaryColor(isDark),
+                height: 1.45,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            PillButton(
+              label: 'Add goal',
+              icon: Symbols.add_rounded,
+              color: accent,
+              filled: true,
+              height: 44,
+              onPressed: _isBusy ? _noop : () => _showGoalForm(context),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Widget _buildGoalsContent(List<SavingsGoal> goals) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+          child: _SavingsGoalsSummary(
+            goals: goals,
+            currency: _currencyWhole,
+          ),
+        ),
+        for (final goal in goals)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: _SavingsGoalCard(
+              goal: goal,
+              status: _statusFor(goal),
+              currency: _currencyWhole,
+              shortDate: _shortDate,
+              paceCopy: _paceCopyFor(goal),
+              onAddMoney: goal.isCompleted
+                  ? null
+                  : () => _showAllocationForm(context, goal),
+              onMore: () => _showGoalActions(context, goal),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Pace/status for a goal, derived from the existing model logic
+  /// (`isCompleted`, `isOverdue`, expected vs actual progress across the goal
+  /// lifespan). A goal is "behind" when it is overdue, or when actual progress
+  /// trails the time-elapsed pace toward the deadline.
+  _GoalStatus _statusFor(SavingsGoal goal) {
+    if (goal.isCompleted) {
+      return _GoalStatus.complete;
+    }
+    if (goal.isOverdue) {
+      return _GoalStatus.behind;
+    }
+
+    final now = DateTime.now();
+    final start = goal.createdAt;
+    final totalSpan = goal.targetDate.difference(start).inMilliseconds;
+    if (totalSpan <= 0) {
+      // Same-day (or inverted) deadline: only on track once fully funded.
+      return goal.progress >= 1.0 ? _GoalStatus.onTrack : _GoalStatus.behind;
+    }
+
+    final elapsed = now.difference(start).inMilliseconds;
+    final expected = (elapsed / totalSpan).clamp(0.0, 1.0);
+    return goal.progress + 1e-9 >= expected
+        ? _GoalStatus.onTrack
+        : _GoalStatus.behind;
+  }
+
+  /// Sub-copy under the goal amount, e.g. `Nov 30 · $360/mo keeps you on pace`
+  /// or `Mar 15 · bump to $435/mo to catch up`.
+  String _paceCopyFor(SavingsGoal goal) {
+    final date = _shortDate.format(goal.targetDate);
+    final monthly = _currencyWhole.format(goal.suggestedMonthlyContribution);
+    if (_statusFor(goal) == _GoalStatus.behind) {
+      return '$date · bump to $monthly/mo to catch up';
+    }
+    return '$date · $monthly/mo keeps you on pace';
   }
 
   Future<void> _showGoalForm(
@@ -228,7 +301,6 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
       builder: (dialogContext) {
         return _GoalFormDialog(
           goal: goal,
-          currency: _currency,
           dateFormat: _dateFormat,
         );
       },
@@ -294,57 +366,132 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
       successMessage: 'Allocation added',
     );
 
-    if (willComplete && mounted) {
+    if (willComplete && mounted && context.mounted) {
       HapticFeedback.mediumImpact();
-      setState(() {
-        _celebrationGoalName = goal.name;
-      });
-      _celebrationController.forward(from: 0);
+      // Under reduced motion, skip the confetti overlay entirely — the
+      // haptic and success snackbar already confirm the completion.
+      if (!MediaQuery.disableAnimationsOf(context)) {
+        setState(() {
+          _celebrationGoalName = goal.name;
+        });
+        _celebrationController.forward(from: 0);
+      }
     }
   }
 
+  /// Bottom sheet opened by the `⋯` circle: edit / delete the goal.
+  Future<void> _showGoalActions(BuildContext context, SavingsGoal goal) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: GlowCard(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            goal.name,
+                            style: AppTypography.goalTitle.copyWith(
+                              color: AppColors.getTextColor(isDark),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _GoalActionTile(
+                    icon: Symbols.edit_rounded,
+                    label: 'Edit goal',
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      _showGoalForm(context, goal: goal);
+                    },
+                  ),
+                  _GoalActionTile(
+                    icon: Symbols.delete_rounded,
+                    label: 'Delete goal',
+                    color: AppColors.getDanger(isDark),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      _confirmDelete(context, goal);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _confirmDelete(BuildContext context, SavingsGoal goal) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: AppDesign.getCardColor(context),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDesign.radiusL),
-          ),
-          title: Text(
-            'Delete Savings Goal?',
-            style: AppTypography.headingMedium.copyWith(
-              color: AppDesign.getTextPrimary(context),
-            ),
-          ),
-          content: Text(
-            'This removes "${goal.name}" and its saved progress from your goals.',
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppDesign.getTextSecondary(context),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(
-                'Cancel',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppDesign.getTextSecondary(context),
+        return _DarkDialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Delete savings goal?',
+                style: AppTypography.goalTitle.copyWith(
+                  color: AppColors.getTextColor(isDark),
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(
-                'Delete',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppDesign.getErrorColor(context),
-                  fontWeight: FontWeight.w600,
+              const SizedBox(height: 12),
+              Text(
+                'This removes "${goal.name}" and its saved progress '
+                'from your goals.',
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontSize: 13,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                  height: 1.45,
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: PillButton(
+                      label: 'Cancel',
+                      color: AppColors.getTextSecondaryColor(isDark),
+                      height: 44,
+                      onPressed: () => Navigator.of(dialogContext).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PillButton(
+                      label: 'Delete',
+                      color: AppColors.getDanger(isDark),
+                      filled: true,
+                      height: 44,
+                      onPressed: () => Navigator.of(dialogContext).pop(true),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -382,7 +529,9 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
         _showSnackBar(
           context,
           successMessage,
-          AppDesign.getSuccessColor(context),
+          AppColors.getSuccess(
+            Theme.of(context).brightness == Brightness.dark,
+          ),
         );
       }
     } catch (error) {
@@ -390,7 +539,9 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
         _showSnackBar(
           context,
           'Savings goal action failed',
-          AppDesign.getErrorColor(context),
+          AppColors.getDanger(
+            Theme.of(context).brightness == Brightness.dark,
+          ),
         );
       }
     } finally {
@@ -464,6 +615,7 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
   }
 }
 
+/// Summary strip: 72px accent progress ring + saved-so-far aggregates.
 class _SavingsGoalsSummary extends StatelessWidget {
   final List<SavingsGoal> goals;
   final NumberFormat currency;
@@ -475,6 +627,9 @@ class _SavingsGoalsSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+
     final totalSaved = goals.fold<double>(
       0,
       (sum, goal) => sum + goal.currentAmount,
@@ -484,44 +639,55 @@ class _SavingsGoalsSummary extends StatelessWidget {
       (sum, goal) => sum + goal.targetAmount,
     );
     final completedCount = goals.where((goal) => goal.isCompleted).length;
-    final totalProgress = totalTarget <= 0 ? 0.0 : totalSaved / totalTarget;
+    final totalProgress =
+        (totalTarget <= 0 ? 0.0 : totalSaved / totalTarget).clamp(0.0, 1.0);
+    final percentLabel = '${(totalProgress * 100).round()}%';
 
-    return ElevatedCard(
-      elevation: AppDesign.elevationS,
-      padding: const EdgeInsets.all(AppDesign.spacingM),
+    return GlowCard(
       child: Row(
         children: [
-          _ProgressRing(
-            progress: totalProgress.clamp(0.0, 1.0),
-            color: AppDesign.getIncomeColor(context),
+          ProgressRing(
+            value: totalProgress,
             size: 72,
-            strokeWidth: 8,
-            label: '${(totalProgress.clamp(0.0, 1.0) * 100).round()}%',
+            thickness: 8,
+            color: accent,
+            glowAlpha: 0.35,
+            child: Text(
+              percentLabel,
+              style: AppTypography.badgeSmall.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: AppColors.getTextColor(isDark),
+              ),
+            ),
           ),
-          const SizedBox(width: AppDesign.spacingM),
+          const SizedBox(width: 18),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total saved',
-                  style: AppTypography.caption.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                    fontWeight: FontWeight.w600,
+                  'SAVED SO FAR',
+                  style: AppTypography.eyebrowTight.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
                   ),
                 ),
-                const SizedBox(height: AppDesign.spacingXS),
+                const SizedBox(height: 6),
                 Text(
                   currency.format(totalSaved),
-                  style: AppTypography.numericMedium.copyWith(
-                    color: AppDesign.getTextPrimary(context),
+                  style: AppTypography.heroSmall.copyWith(
+                    fontSize: 28,
+                    letterSpacing: -0.8,
+                    color: AppColors.getTextColor(isDark),
                   ),
                 ),
-                const SizedBox(height: AppDesign.spacingXS),
+                const SizedBox(height: 2),
                 Text(
-                  '${currency.format(totalTarget)} target • $completedCount of ${goals.length} complete',
-                  style: AppTypography.caption.copyWith(
-                    color: AppDesign.getTextSecondary(context),
+                  'of ${currency.format(totalTarget)} · '
+                  '$completedCount of ${goals.length} complete',
+                  style: AppTypography.rowSubtitle.copyWith(
+                    fontSize: 13,
+                    color: AppColors.getTextSecondaryColor(isDark),
                   ),
                 ),
               ],
@@ -533,79 +699,123 @@ class _SavingsGoalsSummary extends StatelessWidget {
   }
 }
 
+/// Single goal card: 84px ring + title/status/amount/pace, and either an
+/// action row (Add money + more) or a completed-state green-tint card.
 class _SavingsGoalCard extends StatelessWidget {
   final SavingsGoal goal;
+  final _GoalStatus status;
   final NumberFormat currency;
-  final DateFormat dateFormat;
-  final VoidCallback onAllocate;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final DateFormat shortDate;
+  final String paceCopy;
+
+  /// Opens the allocation flow. Null when the goal is complete.
+  final VoidCallback? onAddMoney;
+
+  /// Opens the edit/delete actions sheet.
+  final VoidCallback onMore;
 
   const _SavingsGoalCard({
     required this.goal,
+    required this.status,
     required this.currency,
-    required this.dateFormat,
-    required this.onAllocate,
-    required this.onEdit,
-    required this.onDelete,
+    required this.shortDate,
+    required this.paceCopy,
+    required this.onAddMoney,
+    required this.onMore,
   });
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = goal.isCompleted
-        ? AppDesign.getSuccessColor(context)
-        : goal.isOverdue
-            ? AppDesign.getWarningColor(context)
-            : AppColors.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+    final success = AppColors.getSuccess(isDark);
+    final warning = AppColors.getWarning(isDark);
+    final isComplete = status == _GoalStatus.complete;
 
-    return ElevatedCard(
-      elevation: AppDesign.elevationS,
-      padding: const EdgeInsets.all(AppDesign.spacingM),
-      onTap: onAllocate,
+    final ringColor = switch (status) {
+      _GoalStatus.complete => success,
+      _GoalStatus.behind => warning,
+      _GoalStatus.onTrack => accent,
+    };
+
+    final gradient = isComplete
+        ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              success.withValues(alpha: 0.10),
+              success.withValues(alpha: 0.02),
+            ],
+          )
+        : null;
+    final border =
+        isComplete ? Border.all(color: success.withValues(alpha: 0.30)) : null;
+
+    return GlowCard(
+      gradient: gradient,
+      border: border,
+      // Completed cards drop the action row, so keep Edit/Delete reachable
+      // via long-press on the card itself.
+      onLongPress: isComplete ? onMore : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _ProgressRing(
-                progress: goal.progress,
-                color: accentColor,
-                size: 76,
-                strokeWidth: 8,
-                label: '${goal.progressPercent}%',
+              ProgressRing(
+                value: isComplete ? 1.0 : goal.progress,
+                size: 84,
+                thickness: 9,
+                color: ringColor,
+                glowAlpha: isComplete ? 0.45 : 0.4,
+                child: isComplete
+                    ? Icon(
+                        Symbols.check_rounded,
+                        size: 28,
+                        weight: 500,
+                        fill: 1,
+                        color: success,
+                      )
+                    : Text(
+                        '${goal.progressPercent}%',
+                        style: AppTypography.badgeSmall.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.getTextColor(isDark),
+                        ),
+                      ),
               ),
-              const SizedBox(width: AppDesign.spacingM),
+              const SizedBox(width: 18),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(
                             goal.name,
-                            style: AppTypography.headingSmall.copyWith(
-                              color: AppDesign.getTextPrimary(context),
+                            style: AppTypography.goalTitle.copyWith(
+                              color: AppColors.getTextColor(isDark),
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        _StatusPill(goal: goal),
+                        const SizedBox(width: 8),
+                        _StatusPill(status: status),
                       ],
                     ),
-                    const SizedBox(height: AppDesign.spacingS),
+                    const SizedBox(height: 6),
+                    _amountLine(context, isDark, isComplete),
+                    const SizedBox(height: 4),
                     Text(
-                      '${currency.format(goal.currentAmount)} saved of ${currency.format(goal.targetAmount)}',
-                      style: AppTypography.numericSmall.copyWith(
-                        color: AppDesign.getTextPrimary(context),
-                      ),
-                    ),
-                    const SizedBox(height: AppDesign.spacingXS),
-                    Text(
-                      _supportingText,
-                      style: AppTypography.caption.copyWith(
-                        color: AppDesign.getTextSecondary(context),
+                      isComplete ? _fundedCopy() : paceCopy,
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: isComplete
+                            ? success
+                            : AppColors.getTextSecondaryColor(isDark),
                       ),
                     ),
                   ],
@@ -613,43 +823,24 @@ class _SavingsGoalCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppDesign.spacingM),
-          _GoalDetailRow(
-            icon: Icons.flag_outlined,
-            label: 'Remaining',
-            value: currency.format(goal.remainingAmount),
-          ),
-          const SizedBox(height: AppDesign.spacingS),
-          _GoalDetailRow(
-            icon: Icons.event_outlined,
-            label: 'Target date',
-            value: dateFormat.format(goal.targetDate),
-          ),
-          const SizedBox(height: AppDesign.spacingM),
+          const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(
-                child: AppButton.primary(
-                  label: 'Allocate',
-                  icon: Icons.add_card_outlined,
-                  size: AppButtonSize.small,
-                  onPressed: goal.isCompleted ? null : onAllocate,
-                  gradient: AppDesign.getIncomeGradient(context),
+              if (!isComplete) ...[
+                Expanded(
+                  child: PillButton(
+                    label: 'Add money',
+                    icon: Symbols.add_rounded,
+                    color: accent,
+                    filled: true,
+                    height: 44,
+                    onPressed: onAddMoney ?? _noop,
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppDesign.spacingS),
-              _IconActionButton(
-                icon: Icons.edit_outlined,
-                tooltip: 'Edit goal',
-                onPressed: onEdit,
-              ),
-              const SizedBox(width: AppDesign.spacingS),
-              _IconActionButton(
-                icon: Icons.delete_outline,
-                tooltip: 'Delete goal',
-                color: AppDesign.getErrorColor(context),
-                onPressed: onDelete,
-              ),
+                const SizedBox(width: 8),
+              ] else
+                const Spacer(),
+              _MoreButton(onTap: onMore),
             ],
           ),
         ],
@@ -657,246 +848,191 @@ class _SavingsGoalCard extends StatelessWidget {
     );
   }
 
-  String get _supportingText {
-    if (goal.isCompleted) {
-      return 'Completed goal';
+  static void _noop() {}
+
+  Widget _amountLine(BuildContext context, bool isDark, bool isComplete) {
+    final primary = AppColors.getTextColor(isDark);
+    final secondary = AppColors.getTextSecondaryColor(isDark);
+    final base = AppTypography.rowTitle.copyWith(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      color: primary,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
+
+    if (isComplete) {
+      return Text.rich(
+        TextSpan(
+          style: base,
+          children: [
+            TextSpan(text: currency.format(goal.currentAmount)),
+            TextSpan(
+              text: ' saved',
+              style: TextStyle(color: secondary, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      );
     }
-    if (goal.isOverdue) {
-      return '${goal.daysRemaining.abs()} days past target';
-    }
-    if (goal.daysRemaining == 0) {
-      return 'Due today';
-    }
-    return '${goal.daysRemaining} days left • ${currency.format(goal.suggestedMonthlyContribution)}/mo suggested';
+
+    return Text.rich(
+      TextSpan(
+        style: base,
+        children: [
+          TextSpan(text: currency.format(goal.currentAmount)),
+          TextSpan(
+            text: ' of ${currency.format(goal.targetAmount)}',
+            style: TextStyle(color: secondary, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _fundedCopy() {
+    final date = shortDate.format(goal.completedAt ?? goal.targetDate);
+    return 'Fully funded on $date — nice work';
   }
 }
 
+/// Status badge: `On track` (accent tint) / `Behind` (warning) / `Complete`
+/// (success).
 class _StatusPill extends StatelessWidget {
-  final SavingsGoal goal;
+  final _GoalStatus status;
 
-  const _StatusPill({required this.goal});
+  const _StatusPill({required this.status});
 
   @override
   Widget build(BuildContext context) {
-    final color = goal.isCompleted
-        ? AppDesign.getSuccessColor(context)
-        : goal.isOverdue
-            ? AppDesign.getWarningColor(context)
-            : AppDesign.getInfoColor(context);
-    final label = goal.isCompleted
-        ? 'Done'
-        : goal.isOverdue
-            ? 'Overdue'
-            : 'Active';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final (color, label) = switch (status) {
+      _GoalStatus.complete => (AppColors.getSuccess(isDark), 'Complete'),
+      _GoalStatus.behind => (AppColors.getWarning(isDark), 'Behind'),
+      _GoalStatus.onTrack => (AppColors.getAccent(isDark), 'On track'),
+    };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingS,
-        vertical: AppDesign.spacingXS,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppDesign.radiusRound),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
-      child: Text(
-        label,
-        style: AppTypography.captionSmall.copyWith(
-          color: color,
-          fontWeight: FontWeight.w700,
+    return PillChip(
+      label: label,
+      color: color,
+      textStyle: AppTypography.badgeSmall,
+    );
+  }
+}
+
+/// 44px outlined circle housing the `⋯` more action.
+class _MoreButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _MoreButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Semantics(
+      button: true,
+      label: 'More goal actions',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          MicroInteractions.lightImpact();
+          onTap();
+        },
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.10)
+                  : Colors.black.withValues(alpha: 0.10),
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Symbols.more_horiz_rounded,
+            size: 18,
+            weight: 500,
+            color: AppColors.getTextSecondaryColor(isDark),
+          ),
         ),
       ),
     );
   }
 }
 
-class _GoalDetailRow extends StatelessWidget {
+/// Row inside the goal actions sheet.
+class _GoalActionTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String value;
+  final Color? color;
+  final VoidCallback onTap;
 
-  const _GoalDetailRow({
+  const _GoalActionTile({
     required this.icon,
     required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: AppDesign.iconS,
-          color: AppDesign.getTextSecondary(context),
-        ),
-        const SizedBox(width: AppDesign.spacingS),
-        Text(
-          label,
-          style: AppTypography.caption.copyWith(
-            color: AppDesign.getTextSecondary(context),
-          ),
-        ),
-        const Spacer(),
-        Text(
-          value,
-          style: AppTypography.labelSmall.copyWith(
-            color: AppDesign.getTextPrimary(context),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _IconActionButton extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final Color? color;
-  final VoidCallback onPressed;
-
-  const _IconActionButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
+    required this.onTap,
     this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = color ?? AppDesign.getTextPrimary(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tint = color ?? AppColors.getTextColor(isDark);
 
-    return SizedBox(
-      width: AppDesign.touchTargetS,
-      height: AppDesign.touchTargetS,
-      child: Tooltip(
-        message: tooltip,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            border: Border.all(
-              color: AppDesign.getBorderColor(context),
-              width: AppDesign.borderThin,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Row(
+          children: [
+            IconTile(icon: icon, color: tint, size: 40, iconSize: 20),
+            const SizedBox(width: 14),
+            Text(
+              label,
+              style: AppTypography.rowTitle.copyWith(color: tint),
             ),
-          ),
-          child: IconButton(
-            icon: Icon(icon),
-            iconSize: AppDesign.iconS,
-            color: iconColor,
-            tooltip: tooltip,
-            onPressed: onPressed,
-          ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ProgressRing extends StatelessWidget {
-  final double progress;
-  final Color color;
-  final double size;
-  final double strokeWidth;
-  final String label;
+/// Dark, token-styled dialog shell shared by the form / delete dialogs.
+class _DarkDialog extends StatelessWidget {
+  final Widget child;
+  final double maxWidth;
 
-  const _ProgressRing({
-    required this.progress,
-    required this.color,
-    required this.size,
-    required this.strokeWidth,
-    required this.label,
-  });
+  const _DarkDialog({required this.child, this.maxWidth = 500});
 
   @override
   Widget build(BuildContext context) {
-    final normalizedProgress = progress.clamp(0.0, 1.0);
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(end: normalizedProgress),
-      duration: const Duration(milliseconds: 450),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return SizedBox(
-          width: size,
-          height: size,
-          child: CustomPaint(
-            painter: _ProgressRingPainter(
-              progress: value,
-              color: color,
-              trackColor: AppDesign.getBorderColor(context),
-              strokeWidth: strokeWidth,
-            ),
-            child: Center(
-              child: Text(
-                label,
-                style: AppTypography.labelSmall.copyWith(
-                  color: AppDesign.getTextPrimary(context),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: GlowCard(
+          padding: const EdgeInsets.all(20),
+          child: child,
+        ),
+      ),
     );
-  }
-}
-
-class _ProgressRingPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-  final Color trackColor;
-  final double strokeWidth;
-
-  const _ProgressRingPainter({
-    required this.progress,
-    required this.color,
-    required this.trackColor,
-    required this.strokeWidth,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (math.min(size.width, size.height) - strokeWidth) / 2;
-    final rect = Rect.fromCircle(center: center, radius: radius);
-    final trackPaint = Paint()
-      ..color = trackColor.withValues(alpha: 0.75)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-    final progressPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, trackPaint);
-    canvas.drawArc(
-      rect,
-      -math.pi / 2,
-      progress * math.pi * 2,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ProgressRingPainter oldDelegate) {
-    return oldDelegate.progress != progress ||
-        oldDelegate.color != color ||
-        oldDelegate.trackColor != trackColor ||
-        oldDelegate.strokeWidth != strokeWidth;
   }
 }
 
 class _GoalFormDialog extends StatefulWidget {
   final SavingsGoal? goal;
-  final NumberFormat currency;
   final DateFormat dateFormat;
 
   const _GoalFormDialog({
     required this.goal,
-    required this.currency,
     required this.dateFormat,
   });
 
@@ -942,114 +1078,107 @@ class _GoalFormDialogState extends State<_GoalFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingL,
-        vertical: AppDesign.spacingXL,
-      ),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        decoration: BoxDecoration(
-          color: AppDesign.getCardColor(context),
-          borderRadius: BorderRadius.circular(AppDesign.radiusXL),
-          boxShadow: AppDesign.shadowXL,
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDesign.spacingM),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  _isEditing ? 'Edit Savings Goal' : 'Add Savings Goal',
-                  style: AppTypography.headingMedium.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                  ),
-                  textAlign: TextAlign.center,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+
+    return _DarkDialog(
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                _isEditing ? 'Edit savings goal' : 'Add savings goal',
+                style: AppTypography.goalTitle.copyWith(
+                  color: AppColors.getTextColor(isDark),
                 ),
-                const SizedBox(height: AppDesign.spacingM),
-                _SavingsTextField(
-                  controller: _nameController,
-                  label: 'Goal name',
-                  hint: 'Vacation, emergency fund, new car',
-                  icon: Icons.flag_outlined,
-                  textCapitalization: TextCapitalization.sentences,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Name is required';
-                    }
-                    return null;
-                  },
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              _SavingsTextField(
+                controller: _nameController,
+                label: 'Goal name',
+                hint: 'Vacation, emergency fund, new car',
+                icon: Symbols.flag_rounded,
+                textCapitalization: TextCapitalization.sentences,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Name is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              _SavingsTextField(
+                controller: _targetAmountController,
+                label: 'Target amount',
+                hint: '0.00',
+                icon: Symbols.attach_money_rounded,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
                 ),
-                const SizedBox(height: AppDesign.spacingS),
+                validator: (value) {
+                  final amount = _parseAmount(value);
+                  if (amount == null || amount <= 0) {
+                    return 'Enter a target greater than 0';
+                  }
+                  return null;
+                },
+              ),
+              if (_isEditing) ...[
+                const SizedBox(height: 12),
                 _SavingsTextField(
-                  controller: _targetAmountController,
-                  label: 'Target amount',
+                  controller: _currentAmountController,
+                  label: 'Saved so far',
                   hint: '0.00',
-                  icon: Icons.attach_money,
+                  icon: Symbols.savings_rounded,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
                   validator: (value) {
                     final amount = _parseAmount(value);
-                    if (amount == null || amount <= 0) {
-                      return 'Enter a target greater than 0';
+                    if (amount == null || amount < 0) {
+                      return 'Enter 0 or more';
                     }
                     return null;
                   },
                 ),
-                if (_isEditing) ...[
-                  const SizedBox(height: AppDesign.spacingS),
-                  _SavingsTextField(
-                    controller: _currentAmountController,
-                    label: 'Saved so far',
-                    hint: '0.00',
-                    icon: Icons.savings_outlined,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
+              ],
+              const SizedBox(height: 16),
+              _DatePickerTile(
+                label: 'Target date',
+                value: widget.dateFormat.format(_targetDate),
+                onTap: _pickTargetDate,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: PillButton(
+                      label: 'Cancel',
+                      color: AppColors.getTextSecondaryColor(isDark),
+                      height: 44,
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                    validator: (value) {
-                      final amount = _parseAmount(value);
-                      if (amount == null || amount < 0) {
-                        return 'Enter 0 or more';
-                      }
-                      return null;
-                    },
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PillButton(
+                      label: _isEditing ? 'Update' : 'Add',
+                      icon: _isEditing
+                          ? Symbols.check_rounded
+                          : Symbols.add_rounded,
+                      color: accent,
+                      filled: true,
+                      height: 44,
+                      onPressed: _submit,
+                    ),
                   ),
                 ],
-                const SizedBox(height: AppDesign.spacingM),
-                _DatePickerTile(
-                  label: 'Target date',
-                  value: widget.dateFormat.format(_targetDate),
-                  onTap: _pickTargetDate,
-                ),
-                const SizedBox(height: AppDesign.spacingL),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton.secondary(
-                        label: 'Cancel',
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ),
-                    const SizedBox(width: AppDesign.spacingM),
-                    Expanded(
-                      child: AppButton.primary(
-                        label: _isEditing ? 'Update' : 'Add',
-                        icon: _isEditing
-                            ? Icons.check_outlined
-                            : Icons.add_outlined,
-                        onPressed: _submit,
-                        gradient: AppDesign.getPrimaryGradient(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1066,6 +1195,7 @@ class _GoalFormDialogState extends State<_GoalFormDialog> {
     );
 
     if (picked != null && mounted) {
+      MicroInteractions.selectionClick();
       setState(() {
         _targetDate = picked;
       });
@@ -1121,106 +1251,99 @@ class _AllocationDialogState extends State<_AllocationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingL,
-        vertical: AppDesign.spacingXL,
-      ),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 460),
-        decoration: BoxDecoration(
-          color: AppDesign.getCardColor(context),
-          borderRadius: BorderRadius.circular(AppDesign.radiusXL),
-          boxShadow: AppDesign.shadowXL,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDesign.spacingM),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+
+    return _DarkDialog(
+      maxWidth: 460,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Add money',
+              style: AppTypography.goalTitle.copyWith(
+                color: AppColors.getTextColor(isDark),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              widget.goal.name,
+              style: AppTypography.rowSubtitle.copyWith(
+                fontSize: 13,
+                color: AppColors.getTextSecondaryColor(isDark),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            _SavingsTextField(
+              controller: _amountController,
+              label: 'Allocation amount',
+              hint: '0.00',
+              icon: Symbols.attach_money_rounded,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              autofocus: true,
+              validator: (value) {
+                final amount = _parseAmount(value);
+                if (amount == null || amount <= 0) {
+                  return 'Enter an amount greater than 0';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Text(
-                  'Allocate to Goal',
-                  style: AppTypography.headingMedium.copyWith(
-                    color: AppDesign.getTextPrimary(context),
+                _QuickAmountChip(
+                  label: widget.currency.format(25),
+                  amount: 25,
+                  onSelected: _setAmount,
+                ),
+                _QuickAmountChip(
+                  label: widget.currency.format(100),
+                  amount: 100,
+                  onSelected: _setAmount,
+                ),
+                if (widget.goal.remainingAmount > 0)
+                  _QuickAmountChip(
+                    label: 'Finish goal',
+                    amount: widget.goal.remainingAmount,
+                    onSelected: _setAmount,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppDesign.spacingS),
-                Text(
-                  widget.goal.name,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppDesign.getTextSecondary(context),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: PillButton(
+                    label: 'Cancel',
+                    color: AppColors.getTextSecondaryColor(isDark),
+                    height: 44,
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppDesign.spacingM),
-                _SavingsTextField(
-                  controller: _amountController,
-                  label: 'Allocation amount',
-                  hint: '0.00',
-                  icon: Icons.attach_money,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: PillButton(
+                    label: 'Add money',
+                    icon: Symbols.add_rounded,
+                    color: accent,
+                    filled: true,
+                    height: 44,
+                    onPressed: _submit,
                   ),
-                  autofocus: true,
-                  validator: (value) {
-                    final amount = _parseAmount(value);
-                    if (amount == null || amount <= 0) {
-                      return 'Enter an amount greater than 0';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppDesign.spacingS),
-                Wrap(
-                  spacing: AppDesign.spacingS,
-                  runSpacing: AppDesign.spacingS,
-                  children: [
-                    _QuickAmountChip(
-                      label: widget.currency.format(25),
-                      amount: 25,
-                      onSelected: _setAmount,
-                    ),
-                    _QuickAmountChip(
-                      label: widget.currency.format(100),
-                      amount: 100,
-                      onSelected: _setAmount,
-                    ),
-                    if (widget.goal.remainingAmount > 0)
-                      _QuickAmountChip(
-                        label: 'Finish goal',
-                        amount: widget.goal.remainingAmount,
-                        onSelected: _setAmount,
-                      ),
-                  ],
-                ),
-                const SizedBox(height: AppDesign.spacingL),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton.secondary(
-                        label: 'Cancel',
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ),
-                    const SizedBox(width: AppDesign.spacingM),
-                    Expanded(
-                      child: AppButton.primary(
-                        label: 'Allocate',
-                        icon: Icons.add_card_outlined,
-                        onPressed: _submit,
-                        gradient: AppDesign.getIncomeGradient(context),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -1254,14 +1377,29 @@ class _QuickAmountChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      label: Text(label),
-      onPressed: () => onSelected(amount),
-      backgroundColor: AppDesign.getSurfaceColor(context),
-      side: BorderSide(color: AppDesign.getBorderColor(context)),
-      labelStyle: AppTypography.caption.copyWith(
-        color: AppDesign.getTextPrimary(context),
-        fontWeight: FontWeight.w600,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.selectionClick();
+        onSelected(amount);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: AppColors.getChipSurface(isDark),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: AppTypography.rowSubtitle.copyWith(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.getTextColor(isDark),
+          ),
+        ),
       ),
     );
   }
@@ -1290,41 +1428,40 @@ class _SavingsTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+    final secondary = AppColors.getTextSecondaryColor(isDark);
+
+    OutlineInputBorder outline(Color color, double width) => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: color, width: width),
+        );
+
     return TextFormField(
       controller: controller,
       autofocus: autofocus,
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
-      style: AppTypography.bodyMedium.copyWith(
-        color: AppDesign.getTextPrimary(context),
+      style: AppTypography.rowTitle.copyWith(
+        color: AppColors.getTextColor(isDark),
       ),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixIcon: Icon(icon, color: AppDesign.getTextSecondary(context)),
+        labelStyle: AppTypography.rowSubtitle.copyWith(
+          fontSize: 13,
+          color: secondary,
+        ),
+        hintStyle: AppTypography.rowSubtitle.copyWith(
+          fontSize: 13,
+          color: AppColors.getTextTertiaryColor(isDark),
+        ),
+        prefixIcon: Icon(icon, size: 20, weight: 500, color: secondary),
         filled: true,
-        fillColor: AppDesign.getSurfaceColor(context),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesign.radiusM),
-          borderSide: BorderSide(
-            color: AppDesign.getBorderColor(context),
-            width: AppDesign.borderThin,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesign.radiusM),
-          borderSide: BorderSide(
-            color: AppDesign.getBorderColor(context),
-            width: AppDesign.borderThin,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesign.radiusM),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: AppDesign.borderMedium,
-          ),
-        ),
+        fillColor: AppColors.getChipSurface(isDark),
+        border: outline(AppColors.getCardBorder(isDark), 1),
+        enabledBorder: outline(AppColors.getCardBorder(isDark), 1),
+        focusedBorder: outline(accent, 1.5),
       ),
       validator: validator,
     );
@@ -1344,55 +1481,55 @@ class _DatePickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppDesign.getSurfaceColor(context),
-      borderRadius: BorderRadius.circular(AppDesign.radiusM),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDesign.radiusM),
-        child: Container(
-          padding: const EdgeInsets.all(AppDesign.spacingM),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppDesign.radiusM),
-            border: Border.all(
-              color: AppDesign.getBorderColor(context),
-              width: AppDesign.borderThin,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondary = AppColors.getTextSecondaryColor(isDark);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.getChipSurface(isDark),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+        ),
+        child: Row(
+          children: [
+            Icon(Symbols.event_rounded,
+                size: 20, weight: 500, color: secondary),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: AppTypography.rowSubtitle.copyWith(
+                      fontSize: 12,
+                      color: secondary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: AppTypography.rowTitle.copyWith(
+                      color: AppColors.getTextColor(isDark),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.event_outlined,
-                color: AppDesign.getTextSecondary(context),
-              ),
-              const SizedBox(width: AppDesign.spacingM),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: AppTypography.caption.copyWith(
-                        color: AppDesign.getTextSecondary(context),
-                      ),
-                    ),
-                    const SizedBox(height: AppDesign.spacingXXS),
-                    Text(
-                      value,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppDesign.getTextPrimary(context),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                color: AppDesign.getTextSecondary(context),
-              ),
-            ],
-          ),
+            Icon(
+              Symbols.chevron_right_rounded,
+              size: 20,
+              weight: 500,
+              color: secondary,
+            ),
+          ],
         ),
       ),
     );
@@ -1424,6 +1561,10 @@ class _CompletionCelebration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final success = AppColors.getSuccess(isDark);
+    final accent = AppColors.getAccent(isDark);
+
     return IgnorePointer(
       child: AnimatedBuilder(
         animation: animation,
@@ -1439,7 +1580,7 @@ class _CompletionCelebration extends StatelessWidget {
             opacity: fade,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.22 * fade),
+                color: Colors.black.withValues(alpha: 0.34 * fade),
               ),
               child: Stack(
                 alignment: Alignment.center,
@@ -1447,19 +1588,20 @@ class _CompletionCelebration extends StatelessWidget {
                   CustomPaint(
                     painter: _CelebrationPainter(
                       progress: animation.value,
-                      color: AppDesign.getSuccessColor(context),
+                      color: success,
+                      secondaryColor: accent,
                     ),
                     size: Size.infinite,
                   ),
                   Transform.scale(
                     scale: 0.7 + (0.3 * curved),
-                    child: Container(
-                      width: 260,
-                      padding: const EdgeInsets.all(AppDesign.spacingL),
-                      decoration: BoxDecoration(
-                        color: AppDesign.getCardColor(context),
-                        borderRadius: BorderRadius.circular(AppDesign.radiusXL),
-                        boxShadow: AppDesign.shadowXL,
+                    child: GlowCard(
+                      padding: const EdgeInsets.all(24),
+                      boxShadow: AppColors.glow(
+                        success,
+                        blurRadius: 40,
+                        alpha: 0.35,
+                        isDark: isDark,
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -1468,28 +1610,38 @@ class _CompletionCelebration extends StatelessWidget {
                             width: 72,
                             height: 72,
                             decoration: BoxDecoration(
-                              gradient: AppDesign.getIncomeGradient(context),
+                              color: success,
                               shape: BoxShape.circle,
+                              boxShadow: AppColors.glow(
+                                success,
+                                blurRadius: 28,
+                                alpha: 0.55,
+                                isDark: isDark,
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.check,
-                              color: AppColors.textOnPrimary,
-                              size: AppDesign.iconL,
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Symbols.check_rounded,
+                              size: 34,
+                              weight: 500,
+                              fill: 1,
+                              color: AppColors.getOnAccent(isDark),
                             ),
                           ),
-                          const SizedBox(height: AppDesign.spacingM),
+                          const SizedBox(height: 16),
                           Text(
-                            'Goal Complete',
-                            style: AppTypography.headingMedium.copyWith(
-                              color: AppDesign.getTextPrimary(context),
+                            'Goal complete',
+                            style: AppTypography.goalTitle.copyWith(
+                              color: AppColors.getTextColor(isDark),
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: AppDesign.spacingS),
+                          const SizedBox(height: 6),
                           Text(
                             goalName,
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: AppDesign.getTextSecondary(context),
+                            style: AppTypography.rowSubtitle.copyWith(
+                              fontSize: 13,
+                              color: AppColors.getTextSecondaryColor(isDark),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -1510,10 +1662,12 @@ class _CompletionCelebration extends StatelessWidget {
 class _CelebrationPainter extends CustomPainter {
   final double progress;
   final Color color;
+  final Color secondaryColor;
 
   const _CelebrationPainter({
     required this.progress,
     required this.color,
+    required this.secondaryColor,
   });
 
   @override
@@ -1528,7 +1682,7 @@ class _CelebrationPainter extends CustomPainter {
       final y = center.dy + math.sin(angle) * distance;
       final alpha = (1 - progress).clamp(0.0, 1.0);
       final radius = 3.0 + ((i % 3) * 1.5);
-      paint.color = (i.isEven ? color : AppColors.primary).withValues(
+      paint.color = (i.isEven ? color : secondaryColor).withValues(
         alpha: alpha,
       );
       canvas.drawCircle(Offset(x, y), radius, paint);
@@ -1537,7 +1691,9 @@ class _CelebrationPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CelebrationPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.color != color;
+    return oldDelegate.progress != progress ||
+        oldDelegate.color != color ||
+        oldDelegate.secondaryColor != secondaryColor;
   }
 }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import 'net_worth_page.dart';
@@ -21,6 +21,39 @@ class BudgetHomePage extends StatefulWidget {
 class _BudgetHomePageState extends State<BudgetHomePage> {
   int _currentIndex = 0;
   late PageController _pageController;
+
+  static const List<DockItem> _dockItems = [
+    DockItem(
+      icon: Symbols.paid_rounded,
+      filledIcon: Symbols.paid_rounded,
+      label: 'Home',
+    ),
+    DockItem(
+      icon: Symbols.donut_small_rounded,
+      filledIcon: Symbols.donut_small_rounded,
+      label: 'Worth',
+    ),
+    DockItem(
+      icon: Symbols.flag_rounded,
+      filledIcon: Symbols.flag_rounded,
+      label: 'Goals',
+    ),
+    DockItem(
+      icon: Symbols.pie_chart_rounded,
+      filledIcon: Symbols.pie_chart_rounded,
+      label: 'Spend',
+    ),
+    DockItem(
+      icon: Symbols.bar_chart_rounded,
+      filledIcon: Symbols.bar_chart_rounded,
+      label: 'Flow',
+    ),
+    DockItem(
+      icon: Symbols.settings_rounded,
+      filledIcon: Symbols.settings_rounded,
+      label: 'More',
+    ),
+  ];
 
   @override
   void initState() {
@@ -51,86 +84,65 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+      body: Stack(
         children: [
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const SpendingPage(),
-            ),
-          ),
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const NetWorthPage(),
-            ),
-          ),
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => SavingsGoalsPage(
-                model: context.watch<TransactionModel>(),
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            children: [
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => const SpendingPage(),
+                ),
               ),
-            ),
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => const NetWorthPage(),
+                ),
+              ),
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => SavingsGoalsPage(
+                    model: context.watch<TransactionModel>(),
+                  ),
+                ),
+              ),
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => const CategoryPage(),
+                ),
+              ),
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => const HistoryPage(),
+                ),
+              ),
+              Navigator(
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              ),
+            ],
           ),
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const CategoryPage(),
-            ),
-          ),
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const HistoryPage(),
-            ),
-          ),
-          Navigator(
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              builder: (context) => const SettingsPage(),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: DockMetrics.bottomOffset(context),
+            child: Center(
+              child: FloatingDock(
+                items: _dockItems,
+                currentIndex: _currentIndex,
+                onTap: _onTabTapped,
+              ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: _buildModernTabBar(context),
-    );
-  }
-
-  Widget _buildModernTabBar(BuildContext context) {
-    return CupertinoTabBar(
-      backgroundColor: AppDesign.getSurfaceColor(context),
-      activeColor: AppColors.primary,
-      inactiveColor: AppDesign.getTextSecondary(context),
-      currentIndex: _currentIndex,
-      onTap: _onTabTapped,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.money_dollar_circle),
-          label: 'Spending',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.chart_pie),
-          label: 'Net Worth',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.flag),
-          label: 'Goals',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart),
-          label: 'Categories',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.chart_bar),
-          label: 'Cash Flow',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.gear),
-          label: 'Settings',
-        ),
-      ],
     );
   }
 }

@@ -23,11 +23,13 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Add Account'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Add Account'), findsWidgets);
-    expect(find.text('Balance Month'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Add account').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add account'), findsWidgets);
+    expect(find.text('Balance month'), findsOneWidget);
     expect(find.text('Cancel'), findsOneWidget);
 
     await tester.tap(find.text('Cancel'));
@@ -77,8 +79,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('78.9%'), findsOneWidget);
+    expect(find.text('78.9% of assets'), findsOneWidget);
     expect(find.text('+78.9%'), findsNothing);
-    expect(find.text('+50.0% vs prior'), findsOneWidget);
+    expect(find.text('+50.0%'), findsOneWidget);
   });
 }

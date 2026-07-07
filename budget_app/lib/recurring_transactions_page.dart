@@ -40,7 +40,13 @@ class RecurringTransactionsPage extends StatelessWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(AppDesign.spacingM),
+            // Bottom padding clears the floating dock overlay.
+            padding: EdgeInsets.fromLTRB(
+              AppDesign.spacingM,
+              AppDesign.spacingM,
+              AppDesign.spacingM,
+              DockMetrics.contentBottomPadding(context),
+            ),
             itemCount: recurring.length,
             separatorBuilder: (context, index) =>
                 const SizedBox(height: AppDesign.spacingS),
@@ -111,20 +117,23 @@ class RecurringTransactionsPage extends StatelessWidget {
 
   /// Manually trigger generation of due transactions
   Future<void> _generateDueTransactions(BuildContext context) async {
-    final transactionModel = Provider.of<TransactionModel>(context, listen: false);
-    final recurringModel = Provider.of<RecurringTransactionModel>(context, listen: false);
-    
+    final transactionModel =
+        Provider.of<TransactionModel>(context, listen: false);
+    final recurringModel =
+        Provider.of<RecurringTransactionModel>(context, listen: false);
+
     final generator = TransactionGenerator(
       transactionModel: transactionModel,
       recurringModel: recurringModel,
     );
-    
+
     await generator.generateDueTransactions();
-    
+
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Due transactions generated and next occurrences updated'),
+          content: const Text(
+              'Due transactions generated and next occurrences updated'),
           backgroundColor: AppColors.income,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -320,7 +329,8 @@ class _RecurringTransactionListItem extends StatelessWidget {
                   context,
                   icon: Icons.calendar_today,
                   label: 'Next Occurrence',
-                  value: DateFormat('MMM dd, yyyy').format(recurring.nextOccurrence),
+                  value: DateFormat('MMM dd, yyyy')
+                      .format(recurring.nextOccurrence),
                 ),
               ),
             ],

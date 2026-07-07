@@ -25,6 +25,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         List<DateTime> availableMonths = transactionModel.getAvailableMonths();
 
         // Set initial selected month to most recent month if not set
@@ -33,25 +34,28 @@ class _TransactionPageState extends State<TransactionPage> {
         }
 
         return Scaffold(
+          backgroundColor: AppColors.getBackground(isDark),
           appBar: AppBar(
             title: Text(
               'Transactions',
-              style: AppTypography.headingMedium.copyWith(
-                color: AppDesign.getTextPrimary(context),
+              style: AppTypography.sectionHeader.copyWith(
+                color: AppColors.getTextColor(isDark),
               ),
             ),
             centerTitle: true,
-            backgroundColor: AppDesign.getBackgroundColor(context),
+            backgroundColor: AppColors.getBackground(isDark),
             elevation: 0,
             surfaceTintColor: Colors.transparent,
+            iconTheme: IconThemeData(color: AppColors.getTextColor(isDark)),
           ),
           extendBodyBehindAppBar: false,
           body: Container(
-            color: AppDesign.getBackgroundColor(context),
+            color: AppColors.getBackground(isDark),
             child: availableMonths.isEmpty
                 ? EmptyState.noData(
                     title: 'No Transactions Yet',
-                    message: 'Start tracking your finances by adding your first transaction',
+                    message:
+                        'Start tracking your finances by adding your first transaction',
                     actionLabel: 'Add Transaction',
                     onAction: () {
                       showTransactionForm(
@@ -81,11 +85,9 @@ class _TransactionPageState extends State<TransactionPage> {
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppDesign.spacingM,
                           ),
-                          child: ElevatedCard(
-                            elevation: AppDesign.elevationS,
-                            child: _buildMonthlySummary(
-                              transactionModel.getMonthlySummary(selectedMonth!),
-                            ),
+                          child: _MonthlySummaryCard(
+                            summary: transactionModel
+                                .getMonthlySummary(selectedMonth!),
                           ),
                         ),
 
@@ -97,14 +99,17 @@ class _TransactionPageState extends State<TransactionPage> {
                             ? Center(
                                 child: Text(
                                   'Select a month',
-                                  style: AppTypography.bodyLarge.copyWith(
-                                    color: AppDesign.getTextSecondary(context),
+                                  style: AppTypography.rowTitle.copyWith(
+                                    fontSize: 16,
+                                    color:
+                                        AppColors.getTextSecondaryColor(isDark),
                                   ),
                                 ),
                               )
                             : _buildGroupedTransactionList(
                                 transactionModel,
-                                transactionModel.getTransactionsForMonth(selectedMonth!),
+                                transactionModel
+                                    .getTransactionsForMonth(selectedMonth!),
                               ),
                       ),
                     ],
@@ -112,79 +117,6 @@ class _TransactionPageState extends State<TransactionPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildMonthlySummary(Map<String, double> summary) {
-    double income = summary['income'] ?? 0.0;
-    double expenses = summary['expenses'] ?? 0.0;
-    double net = summary['net'] ?? 0.0;
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildSummaryItem('Income', income, AppColors.income),
-            _buildSummaryItem('Expenses', expenses, AppColors.expense),
-          ],
-        ),
-        Divider(
-          height: AppDesign.spacingL,
-          color: AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                'Net Cash Flow',
-                style: AppTypography.bodyLarge.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppDesign.getTextPrimary(context),
-                ),
-              ),
-            ),
-            const SizedBox(width: AppDesign.spacingS),
-            Flexible(
-              child: Text(
-                '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
-                style: AppTypography.headingMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: net >= 0 ? AppColors.income : AppColors.expense,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSummaryItem(String label, double amount, Color color) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: AppTypography.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppDesign.getTextSecondary(context),
-            ),
-          ),
-          const SizedBox(height: AppDesign.spacingXS),
-          Text(
-            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
-            style: AppTypography.headingMedium.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 
@@ -258,13 +190,16 @@ class _TransactionPageState extends State<TransactionPage> {
                           },
                           onDelete: () {
                             transactionModel.deleteTransaction(transaction);
+                            final isDark =
+                                Theme.of(context).brightness == Brightness.dark;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text('Transaction deleted'),
-                                backgroundColor: AppColors.expense,
+                                backgroundColor: AppColors.getDanger(isDark),
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(AppDesign.radiusM),
+                                  borderRadius:
+                                      BorderRadius.circular(AppDesign.radiusM),
                                 ),
                               ),
                             );
@@ -282,11 +217,104 @@ class _TransactionPageState extends State<TransactionPage> {
             ],
           );
         }),
-        // Bottom padding
-        const SliverPadding(
-          padding: EdgeInsets.only(bottom: AppDesign.spacingL),
+        // Bottom padding clears the floating dock.
+        SliverPadding(
+          padding: EdgeInsets.only(
+            bottom: DockMetrics.contentBottomPadding(context),
+          ),
         ),
       ],
+    );
+  }
+}
+
+/// Monthly income / expenses / net summary styled to the dark token system.
+class _MonthlySummaryCard extends StatelessWidget {
+  final Map<String, double> summary;
+
+  const _MonthlySummaryCard({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final income = summary['income'] ?? 0.0;
+    final expenses = summary['expenses'] ?? 0.0;
+    final net = summary['net'] ?? 0.0;
+
+    return GlowCard(
+      padding: const EdgeInsets.all(AppDesign.spacingM),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _summaryItem(
+                  'Income', income, AppColors.getIncome(isDark), isDark),
+              _summaryItem(
+                  'Expenses', expenses, AppColors.getDanger(isDark), isDark),
+            ],
+          ),
+          Divider(
+            height: AppDesign.spacingL,
+            color: AppColors.getHairline(isDark),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  'Net Cash Flow',
+                  style: AppTypography.rowTitle.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppDesign.spacingS),
+              Flexible(
+                child: Text(
+                  '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
+                  style: AppTypography.amount.copyWith(
+                    fontSize: 20,
+                    color: net >= 0
+                        ? AppColors.getIncome(isDark)
+                        : AppColors.getDanger(isDark),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryItem(String label, double amount, Color color, bool isDark) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.rowSubtitle.copyWith(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.getTextSecondaryColor(isDark),
+            ),
+          ),
+          const SizedBox(height: AppDesign.spacingXS),
+          Text(
+            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
+            style: AppTypography.amount.copyWith(
+              fontSize: 20,
+              color: color,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -313,13 +341,16 @@ class _DateHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Must fill the declared min/maxExtent exactly — a shorter child makes
+    // the pinned sliver's geometry invalid and blanks the whole list.
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingM,
-        vertical: AppDesign.spacingS,
-      ),
-      color: AppDesign.getBackgroundColor(context),
+      height: maxExtent,
+      padding: const EdgeInsets.symmetric(horizontal: AppDesign.spacingM),
+      color: AppColors.getBackground(isDark),
+      alignment: Alignment.centerLeft,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(
@@ -327,18 +358,16 @@ class _DateHeaderDelegate extends SliverPersistentHeaderDelegate {
               vertical: AppDesign.spacingXS,
             ),
             decoration: BoxDecoration(
-              color: AppDesign.getSurfaceColor(context),
-              borderRadius: BorderRadius.circular(AppDesign.radiusS),
+              color: AppColors.getChipSurface(isDark),
+              borderRadius: BorderRadius.circular(999),
               border: Border.all(
-                color: AppDesign.getBorderColor(context),
-                width: AppDesign.borderThin,
+                color: AppColors.getCardBorder(isDark),
               ),
             ),
             child: Text(
               dateKey,
-              style: AppTypography.bodyMedium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppDesign.getTextPrimary(context),
+              style: AppTypography.monoLabel.copyWith(
+                color: AppColors.getTextSecondaryColor(isDark),
               ),
             ),
           ),

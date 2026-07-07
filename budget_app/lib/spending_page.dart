@@ -2,6 +2,7 @@ import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 import 'common.dart';
@@ -44,6 +45,12 @@ class SpendingPageState extends State<SpendingPage> {
     super.initState();
     scrollController =
         FixedExtentScrollController(initialItem: currentMonthIndex);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   // calculate total income
@@ -153,6 +160,7 @@ class SpendingPageState extends State<SpendingPage> {
     TransactionModel model,
     String category,
   ) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentLimit = _getCategoryBudgetLimit(model, category);
     final controller = TextEditingController(
       text: currentLimit == null
@@ -198,9 +206,10 @@ class SpendingPageState extends State<SpendingPage> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppDesign.getCardColor(context),
+                  color: AppColors.getCard(isDark),
+                  border: Border.all(color: AppColors.getCardBorder(isDark)),
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppDesign.radiusXL),
+                    top: Radius.circular(28),
                   ),
                 ),
                 child: SafeArea(
@@ -216,20 +225,19 @@ class SpendingPageState extends State<SpendingPage> {
                             width: 44,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: AppDesign.getTextTertiary(context)
+                              color: AppColors.getTextTertiaryColor(isDark)
                                   .withValues(alpha: 0.35),
-                              borderRadius:
-                                  BorderRadius.circular(AppDesign.radiusRound),
+                              borderRadius: BorderRadius.circular(999),
                             ),
                           ),
                         ),
                         const SizedBox(height: AppDesign.spacingM),
                         Row(
                           children: [
-                            _CategoryIcon(
+                            IconTile(
                               icon: expenseCategories[category] ??
                                   CupertinoIcons.square_grid_2x2,
-                              color: AppDesign.getExpenseColor(context),
+                              color: AppColors.getDanger(isDark),
                             ),
                             const SizedBox(width: AppDesign.spacingM),
                             Expanded(
@@ -240,18 +248,16 @@ class SpendingPageState extends State<SpendingPage> {
                                     category,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTypography.headingSmall.copyWith(
-                                      color: AppDesign.getTextPrimary(context),
+                                    style: AppTypography.cardTitle.copyWith(
+                                      color: AppColors.getTextColor(isDark),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: AppDesign.spacingXXS,
-                                  ),
+                                  const SizedBox(height: 2),
                                   Text(
                                     'Monthly spending limit',
-                                    style: AppTypography.bodySmall.copyWith(
-                                      color:
-                                          AppDesign.getTextSecondary(context),
+                                    style: AppTypography.rowSubtitle.copyWith(
+                                      color: AppColors.getTextSecondaryColor(
+                                          isDark),
                                     ),
                                   ),
                                 ],
@@ -270,7 +276,7 @@ class SpendingPageState extends State<SpendingPage> {
                           onChanged: (_) => setModalState(() {}),
                           onSubmitted: (_) => saveLimit(),
                           style: AppTypography.numericMedium.copyWith(
-                            color: AppDesign.getTextPrimary(context),
+                            color: AppColors.getTextColor(isDark),
                           ),
                           decoration: InputDecoration(
                             labelText: 'Limit',
@@ -321,15 +327,121 @@ class SpendingPageState extends State<SpendingPage> {
     controller.dispose();
   }
 
+  /// Bound to the `EDIT` link: pick a category, then open the existing limit
+  /// sheet for it. Categories with a limit already set are marked.
+  Future<void> _showEditBudgetsSheet(
+    BuildContext context,
+    TransactionModel model,
+  ) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.getCard(isDark),
+            border: Border.all(color: AppColors.getCardBorder(isDark)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.getTextTertiaryColor(isDark)
+                          .withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                  child: Text(
+                    'Edit budgets',
+                    style: AppTypography.sectionHeader.copyWith(
+                      color: AppColors.getTextColor(isDark),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+                  child: Text(
+                    'Choose a category to set or change its monthly limit.',
+                    style: AppTypography.rowSubtitle.copyWith(
+                      color: AppColors.getTextSecondaryColor(isDark),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                    children: [
+                      for (final category in expenseCategories.keys)
+                        _EditBudgetCategoryTile(
+                          category: category,
+                          icon: expenseCategories[category] ??
+                              CupertinoIcons.square_grid_2x2,
+                          limit: model.getCategoryBudgetLimit(category),
+                          onTap: () => Navigator.of(sheetContext).pop(category),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selected != null && context.mounted) {
+      await _showBudgetLimitSheet(context, model, selected);
+    }
+  }
+
+  /// Days remaining in the selected month. For the current calendar month this
+  /// is days after today; for any other month it is the month's total length.
+  int _daysLeftInMonth(DateTime month) {
+    final now = DateTime.now();
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
+    if (month.year == now.year && month.month == now.month) {
+      return (daysInMonth - now.day).clamp(0, daysInMonth);
+    }
+    return daysInMonth;
+  }
+
+  /// Percent change vs the previous month, guarding division by zero.
+  /// Returns null when there is no meaningful baseline to compare against.
+  double? _percentDelta(double current, double previous) {
+    if (previous == 0) {
+      if (current == 0) return null;
+      return 100;
+    }
+    return (current - previous) / previous * 100;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
         final totalIncome =
             calculateTotalIncome(transactionModel.currentMonthTransactions);
         final totalExpenses =
             calculateTotalExpenses(transactionModel.currentMonthTransactions);
-        final netDifference = totalIncome - totalExpenses;
+        final safeToSpend = totalIncome - totalExpenses;
         final recentTransactions =
             transactionModel.getAllTransactionsSorted().take(3).toList();
         final selectedBudgetMonth = DateTime(
@@ -337,448 +449,852 @@ class SpendingPageState extends State<SpendingPage> {
           transactionModel.selectedMonth.month,
         );
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Spending',
-              style: AppTypography.headingLarge.copyWith(
-                color: AppDesign.getTextPrimary(context),
-              ),
+        // Previous month figures for the delta lines.
+        final previousMonth = DateTime(
+          selectedBudgetMonth.year,
+          selectedBudgetMonth.month - 1,
+        );
+        final previousSummary =
+            transactionModel.getMonthlySummary(previousMonth);
+        final previousIncome = previousSummary['income'] ?? 0.0;
+        final previousExpenses = previousSummary['expenses'] ?? 0.0;
+        final incomeDelta = _percentDelta(totalIncome, previousIncome);
+        final expenseDelta = _percentDelta(totalExpenses, previousExpenses);
+        final previousMonthLabel = DateFormat.MMMM().format(previousMonth);
+
+        final daysLeft = _daysLeftInMonth(selectedBudgetMonth);
+
+        final budgets =
+            _buildBudgetProgressItems(transactionModel, selectedBudgetMonth);
+
+        return BudgiePageScaffold(
+          fab: GlowFab(
+            onPressed: () => showTransactionForm(
+              context,
+              TransactionTyp.expense,
+              transactionModel.addTransaction,
             ),
-            centerTitle: true,
-            backgroundColor: AppDesign.getBackgroundColor(context),
-            elevation: 0,
+            semanticLabel: 'Add transaction',
           ),
-          backgroundColor: AppDesign.getBackgroundColor(context),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(AppDesign.spacingM),
-              child: LayoutBuilder(
-                builder: (context, _) {
-                  final isDark =
-                      Theme.of(context).brightness == Brightness.dark;
-
-                  return Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(
-                            bottom: AppDesign.spacingS,
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AnimatedMetricCard(
-                                      label: 'Income',
-                                      value: totalIncome,
-                                      icon:
-                                          CupertinoIcons.arrow_down_circle_fill,
-                                      color: AppColors.getIncome(isDark),
-                                      prefix: '\$',
-                                    ),
-                                  ),
-                                  const SizedBox(width: AppDesign.spacingM),
-                                  Expanded(
-                                    child: AnimatedMetricCard(
-                                      label: 'Expenses',
-                                      value: totalExpenses,
-                                      icon: CupertinoIcons.arrow_up_circle_fill,
-                                      color: AppColors.getExpense(isDark),
-                                      prefix: '\$',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppDesign.spacingM),
-                              ElevatedCard(
-                                elevation: AppDesign.elevationM,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppDesign.spacingM,
-                                  vertical: AppDesign.spacingS,
-                                ),
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          isExpanded = !isExpanded;
-                                        });
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            months[currentMonthIndex],
-                                            style: AppTypography.bodyMedium
-                                                .copyWith(
-                                              color: AppDesign.getTextPrimary(
-                                                  context),
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          AnimatedRotation(
-                                            turns: isExpanded ? 0.5 : 0,
-                                            duration: AppAnimations.normal,
-                                            curve: AppAnimations.easeInOut,
-                                            child: Icon(
-                                              CupertinoIcons.chevron_down,
-                                              size: AppDesign.iconS,
-                                              color: AppDesign.getTextSecondary(
-                                                  context),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    AnimatedContainer(
-                                      height: isExpanded ? 120 : 0,
-                                      duration: AppAnimations.normal,
-                                      curve: AppAnimations.easeInOut,
-                                      child: isExpanded
-                                          ? ClipRect(
-                                              child: Column(
-                                                children: [
-                                                  const SizedBox(
-                                                    height: AppDesign.spacingS,
-                                                  ),
-                                                  Expanded(
-                                                    child: CupertinoPicker(
-                                                      scrollController:
-                                                          scrollController,
-                                                      itemExtent: 32,
-                                                      onSelectedItemChanged:
-                                                          (int index) {
-                                                        setState(() {
-                                                          currentMonthIndex =
-                                                              index;
-                                                        });
-                                                        transactionModel
-                                                            .selectMonth(
-                                                          DateTime(
-                                                            DateTime.now().year,
-                                                            index + 1,
-                                                          ),
-                                                        );
-                                                      },
-                                                      children: months
-                                                          .map((String month) {
-                                                        return Center(
-                                                          child: Text(
-                                                            month,
-                                                            style: AppTypography
-                                                                .bodyMedium
-                                                                .copyWith(
-                                                              color: AppDesign
-                                                                  .getTextPrimary(
-                                                                      context),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          : const SizedBox.shrink(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: AppDesign.spacingM),
-                              ElevatedCard(
-                                elevation: AppDesign.elevationM,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          CupertinoIcons.chart_bar_alt_fill,
-                                          size: AppDesign.iconM,
-                                          color: AppDesign.getTextSecondary(
-                                            context,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: AppDesign.spacingS,
-                                        ),
-                                        Text(
-                                          'Cash Flow',
-                                          style: AppTypography.headingMedium
-                                              .copyWith(
-                                            color: AppDesign.getTextSecondary(
-                                              context,
-                                            ),
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: AppDesign.spacingL),
-                                    Builder(
-                                      builder: (context) {
-                                        final isPositive = netDifference >= 0;
-                                        final displayColor = isPositive
-                                            ? AppDesign.getIncomeColor(context)
-                                            : AppDesign.getExpenseColor(
-                                                context,
-                                              );
-
-                                        return Column(
-                                          children: [
-                                            AnimatedContainer(
-                                              duration: AppAnimations.normal,
-                                              curve: AppAnimations.easeInOut,
-                                              width: 60,
-                                              height: 4,
-                                              decoration: BoxDecoration(
-                                                color: displayColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  AppDesign.radiusS,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: AppDesign.spacingM,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                AnimatedDefaultTextStyle(
-                                                  duration:
-                                                      AppAnimations.normal,
-                                                  curve:
-                                                      AppAnimations.easeInOut,
-                                                  style: AppTypography
-                                                      .displayLarge
-                                                      .copyWith(
-                                                    color: displayColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  child: const Text('\$'),
-                                                ),
-                                                Flexible(
-                                                  child: FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: AnimatedDigitWidget(
-                                                      key: ValueKey<int>(
-                                                        netDifference.sign
-                                                            .toInt(),
-                                                      ),
-                                                      fractionDigits: 2,
-                                                      value:
-                                                          netDifference.abs(),
-                                                      textStyle: AppTypography
-                                                          .displayLarge
-                                                          .copyWith(
-                                                        color: displayColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                      enableSeparator: true,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: AppDesign.spacingS,
-                                            ),
-                                            AnimatedSwitcher(
-                                              duration: AppAnimations.normal,
-                                              child: Text(
-                                                isPositive
-                                                    ? 'Surplus'
-                                                    : 'Deficit',
-                                                key: ValueKey<bool>(
-                                                  isPositive,
-                                                ),
-                                                style: AppTypography.bodyMedium
-                                                    .copyWith(
-                                                  color: AppDesign
-                                                      .getTextSecondary(
-                                                    context,
-                                                  ),
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: AppDesign.spacingM),
-                              ElevatedCard(
-                                elevation: AppDesign.elevationM,
-                                onTap: () => _openTransactionsPage(context),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Transactions',
-                                                style: AppTypography
-                                                    .headingMedium
-                                                    .copyWith(
-                                                  color:
-                                                      AppDesign.getTextPrimary(
-                                                    context,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: AppDesign.spacingXXS,
-                                              ),
-                                              Text(
-                                                'Tap to view the full list.',
-                                                style: AppTypography.bodySmall
-                                                    .copyWith(
-                                                  color: AppDesign
-                                                      .getTextSecondary(
-                                                    context,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Icon(
-                                          CupertinoIcons.chevron_right,
-                                          size: AppDesign.iconS,
-                                          color: AppDesign.getTextTertiary(
-                                            context,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: AppDesign.spacingM),
-                                    if (recentTransactions.isEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: AppDesign.spacingL,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'No transactions yet.',
-                                            style: AppTypography.bodyMedium
-                                                .copyWith(
-                                              color: AppDesign.getTextSecondary(
-                                                  context),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    else
-                                      Column(
-                                        children: [
-                                          for (int index = 0;
-                                              index < recentTransactions.length;
-                                              index++) ...[
-                                            SizedBox(
-                                              height: 52,
-                                              child: _RecentTransactionRow(
-                                                transaction:
-                                                    recentTransactions[index],
-                                              ),
-                                            ),
-                                            if (index <
-                                                recentTransactions.length - 1)
-                                              Divider(
-                                                height: AppDesign.spacingS,
-                                                color: AppDesign.getBorderColor(
-                                                  context,
-                                                ),
-                                              ),
-                                          ],
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: AppDesign.spacingM),
-                              SizedBox(
-                                width: double.infinity,
-                                child: _BudgetProgressSection(
-                                  month: selectedBudgetMonth,
-                                  budgets: _buildBudgetProgressItems(
-                                    transactionModel,
-                                    selectedBudgetMonth,
-                                  ),
-                                  onEditCategory: (category) =>
-                                      _showBudgetLimitSheet(
-                                    context,
-                                    transactionModel,
-                                    category,
-                                  ),
-                                ),
-                              ),
-                            ],
+          body: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: DockMetrics.contentBottomPadding(context),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  BudgieHeader(
+                    showLogo: true,
+                    centerTrailing: true,
+                    trailing: MonthPill(
+                      label: DateFormat.yMMMM()
+                          .format(transactionModel.selectedMonth),
+                      onTap: () => setState(() => isExpanded = !isExpanded),
+                    ),
+                  ),
+                  _MonthPickerPanel(
+                    isExpanded: isExpanded,
+                    months: months,
+                    scrollController: scrollController,
+                    onSelected: (index) {
+                      setState(() => currentMonthIndex = index);
+                      transactionModel.selectMonth(
+                        DateTime(
+                          transactionModel.selectedMonth.year,
+                          index + 1,
+                        ),
+                      );
+                    },
+                  ),
+                  _HeroSafeToSpend(
+                    amount: safeToSpend,
+                    income: totalIncome,
+                    daysLeft: daysLeft,
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _SpendGauge(
+                      spent: totalExpenses,
+                      income: totalIncome,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _FlowChip(
+                            label: 'Income',
+                            amount: totalIncome,
+                            dotColor: AppColors.getIncome(isDark),
+                            delta: incomeDelta,
+                            deltaColor: AppColors.getIncome(isDark),
+                            previousMonthLabel: previousMonthLabel,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: AppDesign.spacingM),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: AppButton.primary(
-                              label: 'Add Expense',
-                              icon: CupertinoIcons.minus_circle_fill,
-                              gradient: AppDesign.getExpenseGradient(context),
-                              onPressed: () {
-                                showTransactionForm(
-                                  context,
-                                  TransactionTyp.expense,
-                                  transactionModel.addTransaction,
-                                );
-                              },
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _FlowChip(
+                            label: 'Expenses',
+                            amount: totalExpenses,
+                            dotColor: AppColors.getDanger(isDark),
+                            delta: expenseDelta,
+                            deltaColor: AppColors.getDanger(isDark),
+                            previousMonthLabel: previousMonthLabel,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SectionHeader(
+                          title: 'Budgets',
+                          linkLabel: 'EDIT',
+                          onLinkTap: () => _showEditBudgetsSheet(
+                            context,
+                            transactionModel,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _BudgetsCard(
+                          budgets: budgets,
+                          onRowTap: (category) => _showBudgetLimitSheet(
+                            context,
+                            transactionModel,
+                            category,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SectionHeader(
+                          title: 'Recent activity',
+                          linkLabel: 'SEE ALL',
+                          onLinkTap: () => _openTransactionsPage(context),
+                        ),
+                        const SizedBox(height: 12),
+                        _RecentActivityCard(
+                          transactions: recentTransactions,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: PillButton(
+                            label: 'Expense',
+                            icon: Symbols.remove_rounded,
+                            color: AppColors.getDanger(isDark),
+                            onPressed: () => showTransactionForm(
+                              context,
+                              TransactionTyp.expense,
+                              transactionModel.addTransaction,
                             ),
                           ),
-                          const SizedBox(width: AppDesign.spacingM),
-                          Expanded(
-                            child: AppButton.primary(
-                              label: 'Add Income',
-                              icon: CupertinoIcons.plus_circle_fill,
-                              gradient: AppDesign.getIncomeGradient(context),
-                              onPressed: () {
-                                showTransactionForm(
-                                  context,
-                                  TransactionTyp.income,
-                                  transactionModel.addTransaction,
-                                );
-                              },
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: PillButton(
+                            label: 'Income',
+                            icon: Symbols.add_rounded,
+                            color: AppColors.getIncome(isDark),
+                            onPressed: () => showTransactionForm(
+                              context,
+                              TransactionTyp.income,
+                              transactionModel.addTransaction,
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+/// Restyled inline month picker, driven by the header [MonthPill]. Preserves
+/// the original expand/collapse + CupertinoPicker + selectMonth behavior.
+class _MonthPickerPanel extends StatelessWidget {
+  final bool isExpanded;
+  final List<String> months;
+  final FixedExtentScrollController scrollController;
+  final ValueChanged<int> onSelected;
+
+  const _MonthPickerPanel({
+    required this.isExpanded,
+    required this.months,
+    required this.scrollController,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    return AnimatedSize(
+      duration:
+          reduceMotion ? Duration.zero : const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      child: isExpanded
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+              child: GlowCard(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: SizedBox(
+                  height: 128,
+                  child: CupertinoPicker(
+                    scrollController: scrollController,
+                    itemExtent: 34,
+                    onSelectedItemChanged: onSelected,
+                    children: months
+                        .map(
+                          (month) => Center(
+                            child: Text(
+                              month,
+                              style: AppTypography.rowTitle.copyWith(
+                                fontSize: 16,
+                                color: AppColors.getTextColor(isDark),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+}
+
+/// Centered hero: `SAFE TO SPEND` eyebrow, two-tone amount with accent glow
+/// (danger tint + glow when negative), and the income / days-left subline.
+class _HeroSafeToSpend extends StatelessWidget {
+  final double amount;
+  final double income;
+  final int daysLeft;
+
+  const _HeroSafeToSpend({
+    required this.amount,
+    required this.income,
+    required this.daysLeft,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isNegative = amount < 0;
+    final glowColor =
+        isNegative ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
+    final integerColor = isNegative
+        ? AppColors.getDanger(isDark)
+        : AppColors.getTextColor(isDark);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    // Round once at the cent boundary so cents stay in [0, 99] and whole-
+    // dollar carries land in the integer part (float sums like 12874.999...
+    // must render as $12,875.00, not $12,874.100).
+    final totalCents = (amount.abs() * 100).round();
+    final integerPart = totalCents ~/ 100;
+    final decimalString = (totalCents % 100).toString().padLeft(2, '0');
+
+    final incomeLabel =
+        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
+            .format(income);
+    final daysLabel = daysLeft == 1 ? '1 day left' : '$daysLeft days left';
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
+      child: Column(
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              'SAFE TO SPEND',
+              textAlign: TextAlign.center,
+              style: AppTypography.eyebrow.copyWith(
+                color: AppColors.getTextSecondaryColor(isDark),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Semantics(
+            label:
+                'Safe to spend ${isNegative ? 'negative ' : ''}\$$integerPart.$decimalString',
+            child: ExcludeSemantics(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    isNegative ? '-\$' : '\$',
+                    style: AppTypography.hero.copyWith(
+                      color: integerColor,
+                      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+                    ),
+                  ),
+                  AnimatedDigitWidget(
+                    value: integerPart,
+                    enableSeparator: true,
+                    animateAutoSize: false,
+                    duration: reduceMotion
+                        ? Duration.zero
+                        : const Duration(milliseconds: 900),
+                    textStyle: AppTypography.hero.copyWith(
+                      color: integerColor,
+                      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 1),
+                    child: Text(
+                      '.$decimalString',
+                      style: AppTypography.heroDecimals.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'of $incomeLabel income   ·   $daysLabel',
+            textAlign: TextAlign.center,
+            style: AppTypography.rowSubtitle.copyWith(
+              fontSize: 14,
+              color: AppColors.getTextSecondaryColor(isDark),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 14px accent-gradient spend gauge with thumb + justified mono labels.
+class _SpendGauge extends StatelessWidget {
+  final double spent;
+  final double income;
+
+  const _SpendGauge({required this.spent, required this.income});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+    final value = income <= 0 ? 0.0 : spent / income;
+
+    final spentLabel =
+        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
+            .format(spent);
+    final incomeLabel =
+        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
+            .format(income);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GlowProgressBar(
+          value: value,
+          color: accent,
+          height: 14,
+          fillInset: 2,
+          showThumb: true,
+          trackColor: AppColors.getChipSurface(isDark),
+          trackBorder: Border.all(color: AppColors.getHairline(isDark)),
+          gradient: LinearGradient(
+            colors: [
+              Color.alphaBlend(
+                accent.withValues(alpha: 0.55),
+                AppColors.getBackground(isDark),
+              ),
+              accent,
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _GaugeLabel(prefix: 'SPENT', value: spentLabel),
+            _GaugeLabel(prefix: 'INCOME', value: incomeLabel),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _GaugeLabel extends StatelessWidget {
+  final String prefix;
+  final String value;
+
+  const _GaugeLabel({required this.prefix, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text.rich(
+      TextSpan(
+        style: AppTypography.monoLabel.copyWith(
+          color: AppColors.getTextTertiaryColor(isDark),
+        ),
+        children: [
+          TextSpan(text: '$prefix  '),
+          TextSpan(
+            text: value,
+            style: TextStyle(color: AppColors.getTextColor(isDark)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Income / Expenses stat chip: glowing dot + label, amount, and the real
+/// month-over-month delta line.
+class _FlowChip extends StatelessWidget {
+  final String label;
+  final double amount;
+  final Color dotColor;
+  final double? delta;
+  final Color deltaColor;
+  final String previousMonthLabel;
+
+  const _FlowChip({
+    required this.label,
+    required this.amount,
+    required this.dotColor,
+    required this.delta,
+    required this.deltaColor,
+    required this.previousMonthLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final amountLabel =
+        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
+            .format(amount);
+
+    final String deltaLabel;
+    if (delta == null) {
+      deltaLabel = 'No $previousMonthLabel data';
+    } else {
+      final sign = delta! >= 0 ? '+' : '';
+      deltaLabel = '$sign${delta!.toStringAsFixed(1)}% vs $previousMonthLabel';
+    }
+
+    return GlowCard(
+      radius: 22,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: dotColor,
+                  shape: BoxShape.circle,
+                  boxShadow: AppColors.glow(dotColor,
+                      blurRadius: 10, alpha: 0.8, isDark: isDark),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              amountLabel,
+              style: AppTypography.chipAmount.copyWith(
+                color: AppColors.getTextColor(isDark),
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            deltaLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTypography.rowSubtitle.copyWith(
+              color: delta == null
+                  ? AppColors.getTextTertiaryColor(isDark)
+                  : deltaColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Budgets list card: one row per expense category with an IconTile, name,
+/// sub, status pill, and a glowing progress bar underneath.
+class _BudgetsCard extends StatelessWidget {
+  final List<_CategoryBudgetProgress> budgets;
+  final ValueChanged<String> onRowTap;
+
+  const _BudgetsCard({required this.budgets, required this.onRowTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GlowListCard(
+      children: [
+        for (final budget in budgets)
+          _BudgetRow(
+            budget: budget,
+            onTap: () => onRowTap(budget.category),
+          ),
+      ],
+    );
+  }
+}
+
+class _BudgetRow extends StatelessWidget {
+  final _CategoryBudgetProgress budget;
+  final VoidCallback onTap;
+
+  const _BudgetRow({required this.budget, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final statusColor = _statusColor(isDark);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                IconTile(icon: budget.icon, color: statusColor),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        budget.category,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.rowTitle.copyWith(
+                          color: AppColors.getTextColor(isDark),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        _subtitle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.rowSubtitle.copyWith(
+                          color: AppColors.getTextSecondaryColor(isDark),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _statusChip(isDark, statusColor),
+              ],
+            ),
+            const SizedBox(height: 10),
+            GlowProgressBar(
+              value: budget.hasLimit ? budget.progress : 0,
+              color: statusColor,
+              height: 8,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _statusChip(bool isDark, Color statusColor) {
+    if (!budget.hasLimit) {
+      return PillChip(
+        label: 'Set limit',
+        color: AppColors.getAccent(isDark),
+        outlined: true,
+      );
+    }
+    if (budget.isOverBudget) {
+      return PillChip(
+        label: '${_formatCurrency(budget.remaining.abs())} over',
+        color: statusColor,
+      );
+    }
+    return PillChip(
+      label: '${_formatCurrency(budget.remaining)} left',
+      color: statusColor,
+    );
+  }
+
+  Color _statusColor(bool isDark) {
+    if (!budget.hasLimit) {
+      return AppColors.getAccent(isDark);
+    }
+    if (budget.isOverBudget) {
+      return AppColors.getDanger(isDark);
+    }
+    if (budget.progress >= 0.85) {
+      return AppColors.getWarning(isDark);
+    }
+    return AppColors.getIncome(isDark);
+  }
+
+  String _subtitle() {
+    if (!budget.hasLimit) {
+      if (budget.spent == 0) {
+        return 'No spending · no limit';
+      }
+      return '${_formatCurrency(budget.spent)} spent · no limit';
+    }
+    return '${_formatCurrency(budget.spent)} of ${_formatCurrency(budget.limit!)}';
+  }
+
+  String _formatCurrency(double value) {
+    return NumberFormat.currency(
+      locale: 'en_US',
+      symbol: '\$',
+      decimalDigits: value.abs() >= 100 ? 0 : 2,
+    ).format(value);
+  }
+}
+
+/// Recent activity list card: 3 latest transactions. Income rows use a green
+/// south_west tile and colored `+` amount; expenses use the category icon in a
+/// primary-tinted tile and a primary-text `−` amount.
+class _RecentActivityCard extends StatelessWidget {
+  final List<Transaction> transactions;
+
+  const _RecentActivityCard({required this.transactions});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (transactions.isEmpty) {
+      return GlowCard(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Center(
+            child: Text(
+              'No transactions yet.',
+              style: AppTypography.rowSubtitle.copyWith(
+                fontSize: 14,
+                color: AppColors.getTextSecondaryColor(isDark),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return GlowListCard(
+      children: [
+        for (final transaction in transactions)
+          _RecentActivityRow(transaction: transaction),
+      ],
+    );
+  }
+}
+
+class _RecentActivityRow extends StatelessWidget {
+  final Transaction transaction;
+
+  const _RecentActivityRow({required this.transaction});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isExpense = transaction.type == TransactionTyp.expense;
+    final income = AppColors.getIncome(isDark);
+    final accent = AppColors.getAccent(isDark);
+
+    final tileColor = isExpense ? accent : income;
+    final tileIcon = isExpense
+        ? (expenseCategories[transaction.category] ??
+            CupertinoIcons.square_grid_2x2)
+        : Symbols.south_west_rounded;
+
+    final amountColor = isExpense ? AppColors.getTextColor(isDark) : income;
+    final sign = isExpense ? '−' : '+';
+    final amountLabel =
+        '$sign\$${NumberFormat('#,##0.00', 'en_US').format(transaction.amount)}';
+
+    final description = transaction.description.isEmpty
+        ? 'Transaction'
+        : transaction.description;
+
+    return Semantics(
+      label:
+          '$description, ${transaction.category}, ${DateFormat.MMMd().format(transaction.date)}, '
+          '${isExpense ? 'expense' : 'income'} '
+          '\$${NumberFormat('#,##0.00', 'en_US').format(transaction.amount)}',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              IconTile(icon: tileIcon, color: tileColor),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.rowTitle.copyWith(
+                        color: AppColors.getTextColor(isDark),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${transaction.category} · ${DateFormat.MMMd().format(transaction.date)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                amountLabel,
+                style: AppTypography.amountSmall.copyWith(color: amountColor),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A category row in the `EDIT` picker sheet.
+class _EditBudgetCategoryTile extends StatelessWidget {
+  final String category;
+  final IconData icon;
+  final double? limit;
+  final VoidCallback onTap;
+
+  const _EditBudgetCategoryTile({
+    required this.category,
+    required this.icon,
+    required this.limit,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hasLimit = limit != null && limit! > 0;
+    final subtitle = hasLimit
+        ? '${NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0).format(limit)} limit'
+        : 'No limit set';
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Row(
+          children: [
+            IconTile(
+              icon: icon,
+              color: hasLimit
+                  ? AppColors.getAccent(isDark)
+                  : AppColors.getTextSecondaryColor(isDark),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.rowTitle.copyWith(
+                      color: AppColors.getTextColor(isDark),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppTypography.rowSubtitle.copyWith(
+                      color: AppColors.getTextSecondaryColor(isDark),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Symbols.chevron_right_rounded,
+              size: 20,
+              weight: 500,
+              color: AppColors.getTextTertiaryColor(isDark),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -803,486 +1319,4 @@ class _CategoryBudgetProgress {
   bool get isOverBudget => hasLimit && remaining < 0;
 
   double get progress => hasLimit ? spent / limit! : 0;
-}
-
-class _BudgetProgressSection extends StatelessWidget {
-  final DateTime month;
-  final List<_CategoryBudgetProgress> budgets;
-  final ValueChanged<String> onEditCategory;
-
-  const _BudgetProgressSection({
-    required this.month,
-    required this.budgets,
-    required this.onEditCategory,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final activeBudgets = budgets.where((budget) => budget.hasLimit).toList();
-    final totalLimit = activeBudgets.fold<double>(
-      0,
-      (total, budget) => total + (budget.limit ?? 0),
-    );
-    final totalSpent = activeBudgets.fold<double>(
-      0,
-      (total, budget) => total + budget.spent,
-    );
-    final remaining = totalLimit - totalSpent;
-    final overBudgetCount =
-        activeBudgets.where((budget) => budget.isOverBudget).length;
-    final statusColor = overBudgetCount > 0
-        ? AppDesign.getErrorColor(context)
-        : AppDesign.getIncomeColor(context);
-
-    return ElevatedCard(
-      elevation: AppDesign.elevationM,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _CategoryIcon(
-                icon: CupertinoIcons.speedometer,
-                color: statusColor,
-              ),
-              const SizedBox(width: AppDesign.spacingM),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Budget Limits',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.headingMedium.copyWith(
-                        color: AppDesign.getTextPrimary(context),
-                      ),
-                    ),
-                    const SizedBox(height: AppDesign.spacingXXS),
-                    Text(
-                      DateFormat.yMMMM().format(month),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppDesign.getTextSecondary(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesign.spacingM),
-          if (activeBudgets.isEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppDesign.spacingM),
-              decoration: BoxDecoration(
-                color:
-                    AppDesign.getSurfaceColor(context).withValues(alpha: 0.55),
-                borderRadius: BorderRadius.circular(AppDesign.radiusM),
-                border: Border.all(
-                  color: AppDesign.getBorderColor(context),
-                ),
-              ),
-              child: Text(
-                'Set category limits to track monthly spending progress.',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppDesign.getTextSecondary(context),
-                ),
-              ),
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                  child: _BudgetSummaryMetric(
-                    label: 'Spent',
-                    value: totalSpent,
-                    color: AppDesign.getExpenseColor(context),
-                  ),
-                ),
-                const SizedBox(width: AppDesign.spacingS),
-                Expanded(
-                  child: _BudgetSummaryMetric(
-                    label: 'Limit',
-                    value: totalLimit,
-                    color: AppDesign.getTextPrimary(context),
-                  ),
-                ),
-                const SizedBox(width: AppDesign.spacingS),
-                Expanded(
-                  child: _BudgetSummaryMetric(
-                    label: remaining >= 0 ? 'Left' : 'Over',
-                    value: remaining.abs(),
-                    color: statusColor,
-                  ),
-                ),
-              ],
-            ),
-          const SizedBox(height: AppDesign.spacingM),
-          for (int index = 0; index < budgets.length; index++) ...[
-            _CategoryBudgetRow(
-              budget: budgets[index],
-              onTap: () => onEditCategory(budgets[index].category),
-            ),
-            if (index < budgets.length - 1)
-              Divider(
-                height: AppDesign.spacingM,
-                color: AppDesign.getBorderColor(context),
-              ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _BudgetSummaryMetric extends StatelessWidget {
-  final String label;
-  final double value;
-  final Color color;
-
-  const _BudgetSummaryMetric({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDesign.spacingS,
-        vertical: AppDesign.spacingS,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppDesign.radiusM),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.captionSmall.copyWith(
-              color: AppDesign.getTextSecondary(context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: AppDesign.spacingXS),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              NumberFormat.currency(
-                locale: 'en_US',
-                symbol: '\$',
-                decimalDigits: 0,
-              ).format(value),
-              style: AppTypography.numericSmall.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CategoryBudgetRow extends StatelessWidget {
-  final _CategoryBudgetProgress budget;
-  final VoidCallback onTap;
-
-  const _CategoryBudgetRow({
-    required this.budget,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final statusColor = _statusColor(context);
-    final limit = budget.limit;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDesign.radiusM),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppDesign.spacingS),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  _CategoryIcon(
-                    icon: budget.icon,
-                    color: statusColor,
-                  ),
-                  const SizedBox(width: AppDesign.spacingM),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          budget.category,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppDesign.getTextPrimary(context),
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: AppDesign.spacingXXS),
-                        Text(
-                          _detailText(context),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppDesign.getTextSecondary(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: AppDesign.spacingS),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 112),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        _statusText(),
-                        style: AppTypography.labelMedium.copyWith(
-                          color: statusColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppDesign.spacingS),
-                  Icon(
-                    CupertinoIcons.chevron_right,
-                    size: AppDesign.iconXS,
-                    color: AppDesign.getTextTertiary(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppDesign.spacingS),
-              _BudgetProgressBar(
-                progress: budget.progress,
-                color: statusColor,
-                isActive: limit != null && limit > 0,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _statusColor(BuildContext context) {
-    if (!budget.hasLimit) {
-      return AppDesign.getInfoColor(context);
-    }
-    if (budget.isOverBudget) {
-      return AppDesign.getErrorColor(context);
-    }
-    if (budget.progress >= 0.85) {
-      return AppDesign.getWarningColor(context);
-    }
-    return AppDesign.getIncomeColor(context);
-  }
-
-  String _detailText(BuildContext context) {
-    final spent = _formatCurrency(budget.spent);
-    if (!budget.hasLimit) {
-      if (budget.spent == 0) {
-        return 'No spending this month';
-      }
-      return '$spent spent this month';
-    }
-
-    return '$spent spent of ${_formatCurrency(budget.limit!)}';
-  }
-
-  String _statusText() {
-    if (!budget.hasLimit) {
-      return 'Set limit';
-    }
-    if (budget.isOverBudget) {
-      return '${_formatCurrency(budget.remaining.abs())} over';
-    }
-    return '${_formatCurrency(budget.remaining)} left';
-  }
-
-  String _formatCurrency(double value) {
-    return NumberFormat.currency(
-      locale: 'en_US',
-      symbol: '\$',
-      decimalDigits: value.abs() >= 100 ? 0 : 2,
-    ).format(value);
-  }
-}
-
-class _BudgetProgressBar extends StatelessWidget {
-  final double progress;
-  final Color color;
-  final bool isActive;
-
-  const _BudgetProgressBar({
-    required this.progress,
-    required this.color,
-    required this.isActive,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final fill = progress.clamp(0, 1).toDouble();
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppDesign.radiusRound),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Container(
-            height: 8,
-            color: AppDesign.getBorderColor(context).withValues(alpha: 0.45),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AnimatedContainer(
-                duration: AppAnimations.normal,
-                curve: AppAnimations.easeInOut,
-                width: isActive ? constraints.maxWidth * fill : 0,
-                height: 8,
-                color: color,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _CategoryIcon extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-
-  const _CategoryIcon({
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(AppDesign.radiusM),
-      ),
-      child: Icon(
-        icon,
-        color: color,
-        size: AppDesign.iconS,
-      ),
-    );
-  }
-}
-
-class _RecentTransactionRow extends StatelessWidget {
-  final Transaction transaction;
-
-  const _RecentTransactionRow({
-    required this.transaction,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isExpense = transaction.type == TransactionTyp.expense;
-    final amountColor = isExpense
-        ? AppDesign.getExpenseColor(context)
-        : AppDesign.getIncomeColor(context);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isCompact = constraints.maxHeight < 44;
-
-        return Row(
-          children: [
-            Container(
-              width: isCompact ? 32 : 36,
-              height: isCompact ? 32 : 36,
-              decoration: BoxDecoration(
-                color: amountColor.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(AppDesign.radiusM),
-              ),
-              child: Icon(
-                isExpense
-                    ? CupertinoIcons.arrow_up_circle_fill
-                    : CupertinoIcons.arrow_down_circle_fill,
-                color: amountColor,
-                size: isCompact ? AppDesign.iconS : AppDesign.iconM,
-              ),
-            ),
-            const SizedBox(width: AppDesign.spacingM),
-            Expanded(
-              child: isCompact
-                  ? Text(
-                      '${transaction.description} • ${DateFormat.MMMd().format(transaction.date)}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppDesign.getTextPrimary(context),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          transaction.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppDesign.getTextPrimary(context),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppDesign.spacingXXS),
-                        Text(
-                          '${transaction.category} • ${DateFormat.MMMd().format(transaction.date)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppDesign.getTextSecondary(context),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-            const SizedBox(width: AppDesign.spacingS),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  '${isExpense ? '-' : '+'}\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: amountColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

@@ -23,7 +23,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => RecurringTransactionModel()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
-        child: const MyApp(),
+        child: const AppContainer(child: MyApp()),
       ),
     );
 

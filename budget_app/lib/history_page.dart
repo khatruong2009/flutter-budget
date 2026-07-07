@@ -5,13 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
 import 'transaction_model.dart';
 import 'transaction.dart';
+import 'common.dart';
 import 'design_system.dart';
 import 'utils/platform_utils.dart';
 
 enum _HistoryTransactionTypeFilter { all, income, expense }
 
+/// Cash Flow tab. Overview of net cash flow, savings metrics, year-over-year
+/// comparison and a 12-month trend. The full filterable transaction list lives
+/// behind a "SEE ALL" drill-in ([_TransactionsDetailPage]).
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
 
@@ -20,35 +26,20 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _minAmountController = TextEditingController();
-  final TextEditingController _maxAmountController = TextEditingController();
-
-  String _searchQuery = '';
-  _HistoryTransactionTypeFilter _typeFilter = _HistoryTransactionTypeFilter.all;
-  String? _selectedCategory;
-  DateTime? _startDate;
-  DateTime? _endDate;
-  double? _minAmount;
-  double? _maxAmount;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _minAmountController.dispose();
-    _maxAmountController.dispose();
-    super.dispose();
-  }
+  // Selected chart range in months (3 / 6 / 12) — UI-only state driving the
+  // net cash flow chart and savings metrics.
+  int _rangeMonths = 6;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, model, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final allChartData = model.getNetCashFlowHistory();
-        final availableMonths = model.getAvailableMonths();
         final selectedMonth = model.selectedMonth;
 
-        final chartData = _getChartDisplayData(allChartData, selectedMonth);
+        final chartData =
+            _getChartDisplayData(allChartData, selectedMonth, _rangeMonths);
         final metrics = _computeMetrics(chartData);
         final currentReport =
             _buildMonthReport(model.transactions, selectedMonth);
@@ -58,78 +49,63 @@ class _HistoryPageState extends State<HistoryPage> {
             _buildMonthReport(model.transactions, previousYearMonth);
         final rollingTrendData =
             _getRollingTrendData(model.transactions, selectedMonth);
-        final filteredTransactions = _getFilteredTransactions(model);
-        final categoryOptions = _getCategoryOptions(model.transactions);
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Cash Flow Analysis',
-              style: AppTypography.headingMedium.copyWith(
-                color: AppDesign.getTextPrimary(context),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            centerTitle: true,
-            backgroundColor: AppDesign.getBackgroundColor(context),
-            elevation: 0,
-            surfaceTintColor: Colors.transparent,
-          ),
-          backgroundColor: AppDesign.getBackgroundColor(context),
+        return BudgiePageScaffold(
           body: SingleChildScrollView(
             physics: PlatformUtils.platformScrollPhysics,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildMonthDropdown(
-                    context, model, availableMonths, selectedMonth),
-                const SizedBox(height: 16),
-                if (chartData.isNotEmpty) _buildChartCard(context, chartData),
-                const SizedBox(height: 16),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: _buildMetricCard(
-                          context,
-                          label: 'Average Monthly Savings',
-                          value:
-                              '\$${NumberFormat("#,##0.00", "en_US").format(metrics['avgSavings'] ?? 0.0)}',
-                          isPositive: (metrics['avgSavings'] ?? 0.0) >= 0,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildMetricCard(
-                          context,
-                          label: 'Savings Rate %',
-                          value:
-                              '${(metrics['savingsRate'] ?? 0.0).toStringAsFixed(0)}%',
-                          isPositive: (metrics['savingsRate'] ?? 0.0) >= 0,
-                        ),
-                      ),
-                    ],
+            padding: EdgeInsets.only(
+              bottom: DockMetrics.contentBottomPadding(context),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  BudgieHeader(
+                    title: 'Cash flow',
+                    trailing: MonthPill(
+                      label: _rangeLabel(_rangeMonths),
+                      onTap: () => _showRangePicker(context),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                _buildYearOverYearReportCard(
-                  context,
-                  currentReport,
-                  previousReport,
-                ),
-                const SizedBox(height: 16),
-                _buildRollingTrendCard(context, rollingTrendData),
-                const SizedBox(height: 16),
-                _buildFiltersCard(context, model, categoryOptions),
-                const SizedBox(height: 16),
-                _buildFilteredTransactionsCard(
-                  context,
-                  filteredTransactions,
-                  model.transactions.length,
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildMetricStrip(context, metrics, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildNetCashFlowCard(
+                        context, chartData, selectedMonth, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildYearOverYearCard(
+                        context, currentReport, previousReport, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildTrendCard(context, rollingTrendData, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SectionHeader(
+                      title: 'Transactions',
+                      linkLabel: 'SEE ALL',
+                      onLinkTap: () => _openTransactions(context),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildTransactionsPreview(context, model, isDark),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -137,16 +113,23 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  // ===== Data helpers =====
+
+  String _rangeLabel(int months) => '$months months';
+
   List<MonthCashFlow> _getChartDisplayData(
-      List<MonthCashFlow> allData, DateTime selectedMonth) {
+    List<MonthCashFlow> allData,
+    DateTime selectedMonth,
+    int months,
+  ) {
     final filtered = allData
         .where((d) =>
             d.month.year < selectedMonth.year ||
             (d.month.year == selectedMonth.year &&
                 d.month.month <= selectedMonth.month))
         .toList();
-    if (filtered.length > 6) {
-      return filtered.sublist(filtered.length - 6);
+    if (filtered.length > months) {
+      return filtered.sublist(filtered.length - months);
     }
     return filtered;
   }
@@ -175,22 +158,10 @@ class _HistoryPageState extends State<HistoryPage> {
     final expenses = monthTransactions
         .where((transaction) => transaction.type == TransactionTyp.expense)
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
-    final categoryExpenses = <String, double>{};
-
-    for (final transaction in monthTransactions) {
-      if (transaction.type != TransactionTyp.expense) continue;
-      categoryExpenses.update(
-        transaction.category,
-        (value) => value + transaction.amount,
-        ifAbsent: () => transaction.amount,
-      );
-    }
-
     return _MonthlyCashFlowReport(
       month: DateTime(month.year, month.month),
       income: income,
       expenses: expenses,
-      categoryExpenses: categoryExpenses,
     );
   }
 
@@ -210,6 +181,1156 @@ class _HistoryPageState extends State<HistoryPage> {
       );
     });
   }
+
+  bool _isSameMonth(DateTime date, DateTime month) {
+    return date.year == month.year && date.month == month.month;
+  }
+
+  /// Full grouped amount like the design's `$1,376`; compacts only at
+  /// 6+ digits where the chip would otherwise overflow.
+  String _formatMetricCurrency(double value) {
+    final absValue = value.abs();
+    final prefix = value < 0 ? '-\$' : '\$';
+    if (absValue >= 100000) {
+      return '$prefix${(absValue / 1000).toStringAsFixed(0)}k';
+    }
+    final grouped =
+        NumberFormat.decimalPattern('en_US').format(absValue.round());
+    return '$prefix$grouped';
+  }
+
+  /// Percentage delta of [current] vs [previous]; null when there is no prior
+  /// figure to compare against (division by zero).
+  double? _percentDelta(double current, double previous) {
+    if (previous == 0) return null;
+    return ((current - previous) / previous) * 100;
+  }
+
+  String _formatPercentDelta(double? delta) {
+    if (delta == null) return 'new';
+    final sign = delta > 0
+        ? '+'
+        : delta < 0
+            ? '-'
+            : '';
+    return '$sign${delta.abs().toStringAsFixed(1)}%';
+  }
+
+  // ===== Sections =====
+
+  Widget _buildMetricStrip(
+    BuildContext context,
+    Map<String, double> metrics,
+    bool isDark,
+  ) {
+    final avgSavings = metrics['avgSavings'] ?? 0.0;
+    final savingsRate = metrics['savingsRate'] ?? 0.0;
+    final income = AppColors.getIncome(isDark);
+    final danger = AppColors.getDanger(isDark);
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _MetricChip(
+              label: 'AVG SAVED / MO',
+              value: _formatMetricCurrency(avgSavings),
+              color: avgSavings >= 0 ? income : danger,
+              isDark: isDark,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _MetricChip(
+              label: 'SAVINGS RATE',
+              value: '${savingsRate.toStringAsFixed(0)}%',
+              color: savingsRate >= 0 ? income : danger,
+              isDark: isDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNetCashFlowCard(
+    BuildContext context,
+    List<MonthCashFlow> chartData,
+    DateTime selectedMonth,
+    bool isDark,
+  ) {
+    return GlowCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Net cash flow',
+            style: AppTypography.cardTitle
+                .copyWith(color: AppColors.getTextColor(isDark)),
+          ),
+          const SizedBox(height: 20),
+          if (chartData.isEmpty)
+            _EmptyChartMessage(
+              message: 'No cash flow data yet.',
+              isDark: isDark,
+            )
+          else
+            _NetCashFlowBars(
+              data: chartData,
+              currentMonth: selectedMonth,
+              isDark: isDark,
+              onBarTap: (entry) =>
+                  _showMonthDetailsBottomSheet(context, entry, isDark),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildYearOverYearCard(
+    BuildContext context,
+    _MonthlyCashFlowReport current,
+    _MonthlyCashFlowReport previous,
+    bool isDark,
+  ) {
+    final accent = AppColors.getAccent(isDark);
+    final income = AppColors.getIncome(isDark);
+    final danger = AppColors.getDanger(isDark);
+    final incomeDelta = _percentDelta(current.income, previous.income);
+    final expenseDelta = _percentDelta(current.expenses, previous.expenses);
+
+    final incomeMax = max(current.income, previous.income);
+    final expenseMax = max(current.expenses, previous.expenses);
+
+    return GlowCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Expanded(
+                child: Text(
+                  'Year over year',
+                  style: AppTypography.cardTitle
+                      .copyWith(color: AppColors.getTextColor(isDark)),
+                ),
+              ),
+              Text(
+                '${DateFormat("MMM ''yy").format(current.month).toUpperCase()} VS '
+                '${DateFormat("MMM ''yy").format(previous.month).toUpperCase()}',
+                style: AppTypography.monoMonth
+                    .copyWith(color: AppColors.getTextTertiaryColor(isDark)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          _YoyRow(
+            label: 'Income',
+            deltaLabel: _formatPercentDelta(incomeDelta),
+            // Rising income is good (green); falling is rose.
+            deltaColor: (incomeDelta ?? 0) >= 0 ? income : danger,
+            thisYearFraction: incomeMax > 0 ? current.income / incomeMax : 0.0,
+            lastYearFraction: incomeMax > 0 ? previous.income / incomeMax : 0.0,
+            accent: accent,
+            isDark: isDark,
+          ),
+          const SizedBox(height: 16),
+          _YoyRow(
+            label: 'Expenses',
+            deltaLabel: _formatPercentDelta(expenseDelta),
+            // Rising expenses is bad (rose); falling is green.
+            deltaColor: (expenseDelta ?? 0) > 0 ? danger : income,
+            thisYearFraction:
+                expenseMax > 0 ? current.expenses / expenseMax : 0.0,
+            lastYearFraction:
+                expenseMax > 0 ? previous.expenses / expenseMax : 0.0,
+            accent: accent,
+            isDark: isDark,
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _LegendDot(color: accent, label: 'This year', isDark: isDark),
+              const SizedBox(width: 14),
+              _LegendDot(
+                color: AppColors.getTrackSecondary(isDark),
+                label: 'Last year',
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrendCard(
+    BuildContext context,
+    List<MonthCashFlow> trendData,
+    bool isDark,
+  ) {
+    return GlowCard(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Expanded(
+                  child: Text(
+                    '12-month trend',
+                    style: AppTypography.cardTitle
+                        .copyWith(color: AppColors.getTextColor(isDark)),
+                  ),
+                ),
+                Text(
+                  'NET / MO',
+                  style: AppTypography.monoMonth
+                      .copyWith(color: AppColors.getTextTertiaryColor(isDark)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 120,
+            child: _TrendSparkline(data: trendData, isDark: isDark),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionsPreview(
+    BuildContext context,
+    TransactionModel model,
+    bool isDark,
+  ) {
+    final recent = List<Transaction>.from(model.transactions)
+      ..sort((a, b) => b.date.compareTo(a.date));
+    final preview = recent.take(3).toList();
+
+    if (preview.isEmpty) {
+      return GlowCard(
+        onTap: () => _openTransactions(context),
+        child: _EmptyChartMessage(
+          message: 'No transactions recorded yet.',
+          isDark: isDark,
+        ),
+      );
+    }
+
+    return GlowListCard(
+      children: [
+        for (final transaction in preview)
+          _TransactionRow(
+            transaction: transaction,
+            isDark: isDark,
+            onTap: () => _openTransactions(context),
+          ),
+      ],
+    );
+  }
+
+  // ===== Interactions =====
+
+  void _openTransactions(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const _TransactionsDetailPage(),
+      ),
+    );
+  }
+
+  void _showRangePicker(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.getCard(isDark),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.getTextTertiaryColor(isDark)
+                        .withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'CHART RANGE',
+                  style: AppTypography.eyebrow
+                      .copyWith(color: AppColors.getTextTertiaryColor(isDark)),
+                ),
+              ),
+              const SizedBox(height: 8),
+              for (final months in const [3, 6, 12])
+                _RangeOptionTile(
+                  months: months,
+                  label: _rangeLabel(months),
+                  selected: months == _rangeMonths,
+                  isDark: isDark,
+                  onTap: () {
+                    MicroInteractions.selectionClick();
+                    setState(() => _rangeMonths = months);
+                    Navigator.pop(ctx);
+                  },
+                ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showMonthDetailsBottomSheet(
+    BuildContext context,
+    MonthCashFlow data,
+    bool isDark,
+  ) {
+    final fmt = NumberFormat("#,##0.00", "en_US");
+    final incomeColor = AppColors.getIncome(isDark);
+    final expenseColor = AppColors.getDanger(isDark);
+    final net = data.income - data.expenses;
+    final netColor = net >= 0 ? incomeColor : expenseColor;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.getCard(isDark),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.getTextTertiaryColor(isDark)
+                        .withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconTile(
+                      icon: Symbols.bar_chart_rounded,
+                      color: netColor,
+                      size: 44,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      DateFormat.yMMMM().format(data.month),
+                      style: AppTypography.sectionHeader
+                          .copyWith(color: AppColors.getTextColor(isDark)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _MonthDetailTile(
+                        label: 'Income',
+                        amount: '\$${fmt.format(data.income)}',
+                        color: incomeColor,
+                        icon: Symbols.south_west_rounded,
+                        isDark: isDark,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _MonthDetailTile(
+                        label: 'Expenses',
+                        amount: '\$${fmt.format(data.expenses)}',
+                        color: expenseColor,
+                        icon: Symbols.north_east_rounded,
+                        isDark: isDark,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: netColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                        color: netColor.withValues(alpha: 0.3), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            net >= 0
+                                ? Symbols.check_rounded
+                                : Symbols.trending_up_rounded,
+                            color: netColor,
+                            size: 20,
+                            weight: 500,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Net cash flow',
+                            style: AppTypography.rowTitle.copyWith(
+                              color: AppColors.getTextColor(isDark),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '\$${fmt.format(net)}',
+                        style: AppTypography.chipAmount.copyWith(
+                          color: netColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ===== Overview widgets =====
+
+class _MetricChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  final bool isDark;
+
+  const _MetricChip({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GlowCard(
+      radius: 22,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.monoMetricLabel
+                .copyWith(color: AppColors.getTextSecondaryColor(isDark)),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: AppTypography.metricAmount.copyWith(color: color),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hand-rolled net cash flow bar chart around a zero baseline: positive months
+/// float above the line, negatives below. The current month is fully saturated
+/// green with glow and a floating value badge. Bars scale to the max |net|.
+class _NetCashFlowBars extends StatelessWidget {
+  final List<MonthCashFlow> data;
+  final DateTime currentMonth;
+  final bool isDark;
+  final ValueChanged<MonthCashFlow> onBarTap;
+
+  const _NetCashFlowBars({
+    required this.data,
+    required this.currentMonth,
+    required this.isDark,
+    required this.onBarTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const chartHeight = 190.0;
+    const baselineY = 116.0; // distance from top of the chart to the zero line
+    const maxPositiveBar = 76.0; // room above for the current-month badge
+    const maxNegativeBar = 40.0; // keep negatives clear of the label band
+
+    final income = AppColors.getIncome(isDark);
+    final danger = AppColors.getDanger(isDark);
+
+    final maxMagnitude = data
+        .map((d) => d.netCashFlow.abs())
+        .fold(0.0, (previous, value) => max(previous, value));
+
+    double barHeightFor(double net) {
+      if (maxMagnitude <= 0) return 0;
+      final maxBar = net >= 0 ? maxPositiveBar : maxNegativeBar;
+      return (net.abs() / maxMagnitude) * maxBar;
+    }
+
+    return SizedBox(
+      height: chartHeight,
+      child: Stack(
+        children: [
+          // Zero baseline hairline.
+          Positioned(
+            left: 0,
+            right: 0,
+            top: baselineY,
+            child: Container(
+              height: 1,
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : Colors.black.withValues(alpha: 0.12),
+            ),
+          ),
+          Positioned.fill(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Design uses 34px bars for 6 months; longer ranges shrink the
+                // bars so the row never overflows the card.
+                final barWidth = data.isEmpty
+                    ? 34.0
+                    : min(34.0, constraints.maxWidth / data.length - 4);
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final entry in data)
+                      _NetCashFlowBar(
+                        entry: entry,
+                        isCurrent: _isSameMonth(entry.month, currentMonth),
+                        isPositive: entry.netCashFlow >= 0,
+                        barWidth: barWidth,
+                        barHeight: barHeightFor(entry.netCashFlow),
+                        baselineY: baselineY,
+                        chartHeight: chartHeight,
+                        income: income,
+                        danger: danger,
+                        isDark: isDark,
+                        onTap: () {
+                          MicroInteractions.lightImpact();
+                          onBarTap(entry);
+                        },
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isSameMonth(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month;
+}
+
+class _NetCashFlowBar extends StatelessWidget {
+  final MonthCashFlow entry;
+  final bool isCurrent;
+  final bool isPositive;
+  final double barWidth;
+  final double barHeight;
+  final double baselineY;
+  final double chartHeight;
+  final Color income;
+  final Color danger;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _NetCashFlowBar({
+    required this.entry,
+    required this.isCurrent,
+    required this.isPositive,
+    required this.barWidth,
+    required this.barHeight,
+    required this.baselineY,
+    required this.chartHeight,
+    required this.income,
+    required this.danger,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color barColor;
+    if (isCurrent) {
+      // Current month is fully saturated (green when positive, rose when not).
+      barColor = isPositive ? income : danger;
+    } else if (isPositive) {
+      barColor = income.withValues(alpha: 0.45);
+    } else {
+      barColor = danger.withValues(alpha: 0.6);
+    }
+
+    // Positive bars sit above the baseline; negatives hang below it.
+    final double barTop = isPositive ? baselineY - barHeight : baselineY;
+
+    final label = DateFormat.MMM().format(entry.month).toUpperCase();
+    // Full grouped amount like the design's "+$2,322"; the pill sizes to fit.
+    final net = entry.netCashFlow;
+    final signedValue = '${net < 0 ? '−' : '+'}'
+        '${NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0).format(net.abs())}';
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: SizedBox(
+        width: barWidth,
+        height: chartHeight,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned(
+              top: barTop,
+              child: Container(
+                width: barWidth,
+                height: barHeight,
+                decoration: BoxDecoration(
+                  color: barColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: isCurrent
+                      ? AppColors.glow(barColor,
+                          blurRadius: 20, alpha: 0.6, isDark: isDark)
+                      : null,
+                ),
+              ),
+            ),
+            // Floating value badge above the current month bar; sized to its
+            // content and kept centered over the bar.
+            if (isCurrent)
+              Positioned(
+                top: barTop - 30,
+                left: -barWidth * 1.5,
+                width: barWidth * 4,
+                child: Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: barColor,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      signedValue,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: AppTypography.badgeSmall.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.getOnAccent(isDark),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            // Month labels sit in a fixed band at the bottom so negative bars
+            // never overlap them.
+            Positioned(
+              bottom: 0,
+              width: barWidth,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: AppTypography.monoMonth.copyWith(
+                  color: isCurrent
+                      ? AppColors.getTextColor(isDark)
+                      : AppColors.getTextTertiaryColor(isDark),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _YoyRow extends StatelessWidget {
+  final String label;
+  final String deltaLabel;
+  final Color deltaColor;
+  final double thisYearFraction;
+  final double lastYearFraction;
+  final Color accent;
+  final bool isDark;
+
+  const _YoyRow({
+    required this.label,
+    required this.deltaLabel,
+    required this.deltaColor,
+    required this.thisYearFraction,
+    required this.lastYearFraction,
+    required this.accent,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: AppTypography.rowSubtitle.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.getTextSecondaryColor(isDark),
+              ),
+            ),
+            Text(
+              deltaLabel,
+              style: AppTypography.badge.copyWith(
+                fontSize: 13,
+                color: deltaColor,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        GlowProgressBar(
+          value: thisYearFraction,
+          color: accent,
+          height: 12,
+        ),
+        const SizedBox(height: 4),
+        GlowProgressBar(
+          value: lastYearFraction,
+          color: AppColors.getTrackSecondary(isDark),
+          trackColor: AppColors.getTrack(isDark),
+          height: 12,
+        ),
+      ],
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+  final bool isDark;
+
+  const _LegendDot({
+    required this.color,
+    required this.label,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: AppTypography.rowSubtitle.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.getTextSecondaryColor(isDark),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Accent glowing sparkline of monthly net for the trailing 12 months with a
+/// dashed zero line and a white endpoint dot.
+class _TrendSparkline extends StatelessWidget {
+  final List<MonthCashFlow> data;
+  final bool isDark;
+
+  const _TrendSparkline({required this.data, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = AppColors.getAccent(isDark);
+    final values = data.map((d) => d.netCashFlow).toList();
+    final spots = data
+        .asMap()
+        .entries
+        .map((entry) => FlSpot(entry.key.toDouble(), entry.value.netCashFlow))
+        .toList();
+
+    final maxMagnitude =
+        values.fold(0.0, (previous, value) => max(previous, value.abs()));
+    final bound = maxMagnitude <= 0 ? 100.0 : maxMagnitude * 1.15;
+
+    return LineChart(
+      LineChartData(
+        minX: 0,
+        maxX: (data.length - 1).toDouble(),
+        minY: -bound,
+        maxY: bound,
+        lineTouchData: const LineTouchData(enabled: false),
+        titlesData: const FlTitlesData(show: false),
+        gridData: const FlGridData(show: false),
+        borderData: FlBorderData(show: false),
+        // Dashed zero line.
+        extraLinesData: ExtraLinesData(
+          horizontalLines: [
+            HorizontalLine(
+              y: 0,
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.black.withValues(alpha: 0.12),
+              strokeWidth: 1,
+              dashArray: [3, 4],
+            ),
+          ],
+        ),
+        lineBarsData: [
+          // Glow underlay: thicker, low-opacity line beneath the main stroke.
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: accent.withValues(alpha: 0.4),
+            barWidth: 9,
+            dotData: const FlDotData(show: false),
+          ),
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: accent,
+            barWidth: 3,
+            dotData: FlDotData(
+              show: true,
+              checkToShowDot: (spot, barData) =>
+                  spot.x == (data.length - 1).toDouble(),
+              getDotPainter: (spot, percent, barData, index) =>
+                  FlDotCirclePainter(
+                radius: 5,
+                color: const Color(0xFFF2F2FA),
+                strokeWidth: 0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TransactionRow extends StatelessWidget {
+  final Transaction transaction;
+  final bool isDark;
+  final VoidCallback? onTap;
+
+  const _TransactionRow({
+    required this.transaction,
+    required this.isDark,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isIncome = transaction.type == TransactionTyp.income;
+    final income = AppColors.getIncome(isDark);
+    final tileColor = isIncome ? income : AppColors.getAccent(isDark);
+    final icon = _categoryIcon(transaction.category, isIncome);
+
+    // Only income is colored; expenses use primary text (per design).
+    final amountColor = isIncome ? income : AppColors.getTextColor(isDark);
+    final sign = isIncome ? '+' : '-';
+    final amount =
+        '$sign\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}';
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap == null
+          ? null
+          : () {
+              MicroInteractions.lightImpact();
+              onTap!();
+            },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Row(
+          children: [
+            IconTile(icon: icon, color: tileColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    transaction.description,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.rowTitle
+                        .copyWith(color: AppColors.getTextColor(isDark)),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    '${transaction.category} · ${DateFormat.MMMd().format(transaction.date)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.rowSubtitle.copyWith(
+                      color: AppColors.getTextSecondaryColor(isDark),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              amount,
+              style: AppTypography.amountSmall.copyWith(color: amountColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+IconData _categoryIcon(String category, bool isIncome) {
+  final map = isIncome ? incomeCategories : expenseCategories;
+  return map[category] ??
+      (isIncome ? CupertinoIcons.money_dollar : CupertinoIcons.square_grid_2x2);
+}
+
+class _MonthDetailTile extends StatelessWidget {
+  final String label;
+  final String amount;
+  final Color color;
+  final IconData icon;
+  final bool isDark;
+
+  const _MonthDetailTile({
+    required this.label,
+    required this.amount,
+    required this.color,
+    required this.icon,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 16, weight: 500),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            amount,
+            style: AppTypography.amount.copyWith(color: color),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RangeOptionTile extends StatelessWidget {
+  final int months;
+  final String label;
+  final bool selected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _RangeOptionTile({
+    required this.months,
+    required this.label,
+    required this.selected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = AppColors.getAccent(isDark);
+    return ListTile(
+      onTap: onTap,
+      title: Text(
+        label,
+        style: AppTypography.rowTitle.copyWith(
+          color: selected ? accent : AppColors.getTextColor(isDark),
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+        ),
+      ),
+      trailing: selected
+          ? Icon(Symbols.check_rounded, color: accent, size: 20, weight: 500)
+          : null,
+    );
+  }
+}
+
+class _EmptyChartMessage extends StatelessWidget {
+  final String message;
+  final bool isDark;
+
+  const _EmptyChartMessage({required this.message, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      child: Text(
+        message,
+        style: AppTypography.rowSubtitle.copyWith(
+          fontSize: 13,
+          color: AppColors.getTextSecondaryColor(isDark),
+        ),
+      ),
+    );
+  }
+}
+
+// ===== Transactions drill-in (all existing filter behavior preserved) =====
+
+/// Full filterable transaction list, reached from the Cash Flow "SEE ALL"
+/// link. Preserves every filter, the month picker, the category picker and the
+/// filtered summary from the original History page.
+class _TransactionsDetailPage extends StatefulWidget {
+  const _TransactionsDetailPage();
+
+  @override
+  State<_TransactionsDetailPage> createState() =>
+      _TransactionsDetailPageState();
+}
+
+class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
+  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _minAmountController = TextEditingController();
+  final TextEditingController _maxAmountController = TextEditingController();
+
+  String _searchQuery = '';
+  _HistoryTransactionTypeFilter _typeFilter = _HistoryTransactionTypeFilter.all;
+  String? _selectedCategory;
+  DateTime? _startDate;
+  DateTime? _endDate;
+  double? _minAmount;
+  double? _maxAmount;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _minAmountController.dispose();
+    _maxAmountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<TransactionModel>(
+      builder: (context, model, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final availableMonths = model.getAvailableMonths();
+        final selectedMonth = model.selectedMonth;
+        final filteredTransactions = _getFilteredTransactions(model);
+        final categoryOptions = _getCategoryOptions(model.transactions);
+
+        return Scaffold(
+          body: SingleChildScrollView(
+            physics: PlatformUtils.platformScrollPhysics,
+            padding: EdgeInsets.only(
+              bottom: DockMetrics.contentBottomPadding(context),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildDetailHeader(
+                      context, model, availableMonths, selectedMonth, isDark),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildFiltersCard(
+                        context, model, categoryOptions, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildFilteredTransactionsCard(
+                      context,
+                      filteredTransactions,
+                      model.transactions.length,
+                      isDark,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ===== Filtering =====
 
   List<Transaction> _getFilteredTransactions(TransactionModel model) {
     final query = _searchQuery.toLowerCase();
@@ -277,10 +1398,6 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  bool _isSameMonth(DateTime date, DateTime month) {
-    return date.year == month.year && date.month == month.month;
-  }
-
   DateTime _dateOnly(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
@@ -323,637 +1440,76 @@ class _HistoryPageState extends State<HistoryPage> {
     return '$sign\$${NumberFormat("#,##0.00", "en_US").format(value.abs())}';
   }
 
-  String _formatCompactCurrency(double value) {
-    final absValue = value.abs();
-    final prefix = value < 0 ? '-\$' : '\$';
-    if (absValue >= 1000000) {
-      return '$prefix${(absValue / 1000000).toStringAsFixed(absValue >= 10000000 ? 0 : 1)}m';
-    }
-    if (absValue >= 1000) {
-      return '$prefix${(absValue / 1000).toStringAsFixed(absValue >= 10000 ? 0 : 1)}k';
-    }
-    return '$prefix${absValue.toStringAsFixed(0)}';
+  double? _parseAmount(String value) {
+    final normalized = value.replaceAll(',', '').trim();
+    if (normalized.isEmpty) return null;
+    return double.tryParse(normalized);
   }
 
-  Widget _buildYearOverYearReportCard(
+  // ===== Header =====
+
+  Widget _buildDetailHeader(
     BuildContext context,
-    _MonthlyCashFlowReport currentReport,
-    _MonthlyCashFlowReport previousReport,
+    TransactionModel model,
+    List<DateTime> availableMonths,
+    DateTime selectedMonth,
+    bool isDark,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      child: Row(
         children: [
-          _buildReportHeader(
-            context,
-            title: 'Year-over-Year Comparison',
-            subtitle:
-                '${DateFormat.yMMM().format(currentReport.month)} vs ${DateFormat.yMMM().format(previousReport.month)}',
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 240,
-            child: _buildTotalYearOverYearChart(
-              context,
-              currentReport,
-              previousReport,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildYearOverYearLegend(context, currentReport, previousReport),
-          const SizedBox(height: 20),
-          Text(
-            'Expense Categories',
-            style: AppTypography.bodyLarge.copyWith(
-              color: AppDesign.getTextPrimary(context),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildCategoryYearOverYearChart(
-            context,
-            currentReport,
-            previousReport,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRollingTrendCard(
-    BuildContext context,
-    List<MonthCashFlow> trendData,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildReportHeader(
-            context,
-            title: '12-Month Rolling Trend',
-            subtitle:
-                'Net cash flow ending ${DateFormat.yMMM().format(trendData.last.month)}',
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 220,
-            child: _buildRollingTrendLineChart(context, trendData),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReportHeader(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: AppTypography.bodyLarge.copyWith(
-            color: AppDesign.getTextPrimary(context),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          subtitle,
-          style: AppTypography.bodySmall.copyWith(
-            color: AppDesign.getTextSecondary(context),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildYearOverYearLegend(
-    BuildContext context,
-    _MonthlyCashFlowReport currentReport,
-    _MonthlyCashFlowReport previousReport,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Wrap(
-      spacing: 12,
-      runSpacing: 8,
-      children: [
-        _buildLegendItem(
-          context,
-          DateFormat.yMMM().format(currentReport.month),
-          AppColors.primary,
-        ),
-        _buildLegendItem(
-          context,
-          DateFormat.yMMM().format(previousReport.month),
-          AppColors.getNeutral(isDark),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(BuildContext context, String label, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(3),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: AppTypography.bodySmall.copyWith(
-            color: AppDesign.getTextSecondary(context),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTotalYearOverYearChart(
-    BuildContext context,
-    _MonthlyCashFlowReport currentReport,
-    _MonthlyCashFlowReport previousReport,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final values = [
-      currentReport.income,
-      previousReport.income,
-      currentReport.expenses,
-      previousReport.expenses,
-      currentReport.netCashFlow,
-      previousReport.netCashFlow,
-    ];
-    final bounds = _getChartBounds(values);
-    const currentColor = AppColors.primary;
-    final previousColor = AppColors.getNeutral(isDark);
-    final groups = [
-      _ComparisonChartGroup(
-        label: 'Income',
-        currentValue: currentReport.income,
-        previousValue: previousReport.income,
-      ),
-      _ComparisonChartGroup(
-        label: 'Expenses',
-        currentValue: currentReport.expenses,
-        previousValue: previousReport.expenses,
-      ),
-      _ComparisonChartGroup(
-        label: 'Net',
-        currentValue: currentReport.netCashFlow,
-        previousValue: previousReport.netCashFlow,
-      ),
-    ];
-
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        minY: bounds.minY,
-        maxY: bounds.maxY,
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => AppDesign.getCardColor(context),
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              final item = groups[group.x.toInt()];
-              final label = rodIndex == 0 ? 'Current' : 'Previous';
-              final value =
-                  rodIndex == 0 ? item.currentValue : item.previousValue;
-              return BarTooltipItem(
-                '$label\n${_formatCurrency(value)}',
-                AppTypography.bodySmall.copyWith(
-                  color: AppDesign.getTextPrimary(context),
-                  fontWeight: FontWeight.w600,
-                ),
-              );
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              MicroInteractions.lightImpact();
+              Navigator.of(context).maybePop();
             },
-          ),
-        ),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 32,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= groups.length) {
-                  return const SizedBox.shrink();
-                }
-                return SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    groups[index].label,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                      fontSize: 11,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 48,
-              interval: bounds.interval,
-              getTitlesWidget: (value, meta) => SideTitleWidget(
-                meta: meta,
-                child: Text(
-                  _formatCompactCurrency(value),
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                    fontSize: 11,
-                  ),
-                ),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.getChipSurface(isDark),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.getCardBorder(isDark)),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Symbols.chevron_left_rounded,
+                size: 20,
+                weight: 500,
+                color: AppColors.getTextColor(isDark),
               ),
             ),
           ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: bounds.interval,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: AppDesign.getBorderColor(context).withValues(alpha: 0.5),
-            strokeWidth: value == 0 ? 1.5 : 1,
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        barGroups: groups.asMap().entries.map((entry) {
-          final group = entry.value;
-          return BarChartGroupData(
-            x: entry.key,
-            barsSpace: 5,
-            barRods: [
-              _buildComparisonRod(group.currentValue, currentColor),
-              _buildComparisonRod(group.previousValue, previousColor),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildCategoryYearOverYearChart(
-    BuildContext context,
-    _MonthlyCashFlowReport currentReport,
-    _MonthlyCashFlowReport previousReport,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final categories = {
-      ...currentReport.categoryExpenses.keys,
-      ...previousReport.categoryExpenses.keys,
-    }.toList()
-      ..sort((a, b) {
-        final bTotal = (currentReport.categoryExpenses[b] ?? 0) +
-            (previousReport.categoryExpenses[b] ?? 0);
-        final aTotal = (currentReport.categoryExpenses[a] ?? 0) +
-            (previousReport.categoryExpenses[a] ?? 0);
-        return bTotal.compareTo(aTotal);
-      });
-    final visibleCategories = categories.take(8).toList();
-
-    if (visibleCategories.isEmpty) {
-      return _buildEmptyMessage(
-        context,
-        'No expense categories found for either month.',
-      );
-    }
-
-    final values = visibleCategories
-        .expand(
-          (category) => [
-            currentReport.categoryExpenses[category] ?? 0.0,
-            previousReport.categoryExpenses[category] ?? 0.0,
-          ],
-        )
-        .toList();
-    final bounds = _getChartBounds(values, forcePositive: true);
-    final currentColor = AppColors.getExpense(isDark);
-    final previousColor = AppColors.getNeutral(isDark);
-    final chartWidth = max(520.0, visibleCategories.length * 86.0);
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: PlatformUtils.platformScrollPhysics,
-      child: SizedBox(
-        width: chartWidth,
-        height: 260,
-        child: BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.spaceAround,
-            minY: 0,
-            maxY: bounds.maxY,
-            barTouchData: BarTouchData(
-              enabled: true,
-              touchTooltipData: BarTouchTooltipData(
-                getTooltipColor: (_) => AppDesign.getCardColor(context),
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  final category = visibleCategories[group.x.toInt()];
-                  final label = rodIndex == 0 ? 'Current' : 'Previous';
-                  final value = rodIndex == 0
-                      ? currentReport.categoryExpenses[category] ?? 0.0
-                      : previousReport.categoryExpenses[category] ?? 0.0;
-                  return BarTooltipItem(
-                    '$category\n$label ${_formatCurrency(value)}',
-                    AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextPrimary(context),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  );
-                },
-              ),
-            ),
-            titlesData: FlTitlesData(
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 48,
-                  getTitlesWidget: (value, meta) {
-                    final index = value.toInt();
-                    if (index < 0 || index >= visibleCategories.length) {
-                      return const SizedBox.shrink();
-                    }
-                    return SideTitleWidget(
-                      meta: meta,
-                      child: SizedBox(
-                        width: 68,
-                        child: Text(
-                          visibleCategories[index],
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppDesign.getTextSecondary(context),
-                            fontSize: 10,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 48,
-                  interval: bounds.interval,
-                  getTitlesWidget: (value, meta) => SideTitleWidget(
-                    meta: meta,
-                    child: Text(
-                      _formatCompactCurrency(value),
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppDesign.getTextSecondary(context),
-                        fontSize: 11,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              topTitles:
-                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles:
-                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            ),
-            gridData: FlGridData(
-              show: true,
-              drawVerticalLine: false,
-              horizontalInterval: bounds.interval,
-              getDrawingHorizontalLine: (value) => FlLine(
-                color: AppDesign.getBorderColor(context).withValues(alpha: 0.5),
-                strokeWidth: 1,
-              ),
-            ),
-            borderData: FlBorderData(show: false),
-            barGroups: visibleCategories.asMap().entries.map((entry) {
-              final category = entry.value;
-              return BarChartGroupData(
-                x: entry.key,
-                barsSpace: 4,
-                barRods: [
-                  _buildComparisonRod(
-                    currentReport.categoryExpenses[category] ?? 0.0,
-                    currentColor,
-                  ),
-                  _buildComparisonRod(
-                    previousReport.categoryExpenses[category] ?? 0.0,
-                    previousColor,
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRollingTrendLineChart(
-    BuildContext context,
-    List<MonthCashFlow> trendData,
-  ) {
-    final values = trendData.map((data) => data.netCashFlow).toList();
-    final bounds = _getChartBounds(values);
-    final spots = trendData
-        .asMap()
-        .entries
-        .map((entry) => FlSpot(entry.key.toDouble(), entry.value.netCashFlow))
-        .toList();
-
-    return LineChart(
-      LineChartData(
-        minX: 0,
-        maxX: (trendData.length - 1).toDouble(),
-        minY: bounds.minY,
-        maxY: bounds.maxY,
-        lineTouchData: LineTouchData(
-          enabled: true,
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (_) => AppDesign.getCardColor(context),
-            getTooltipItems: (spots) {
-              return spots.map((spot) {
-                final index = spot.x.toInt();
-                final data = trendData[index];
-                return LineTooltipItem(
-                  '${DateFormat.yMMM().format(data.month)}\n${_formatCurrency(data.netCashFlow)}',
-                  AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                );
-              }).toList();
-            },
-          ),
-        ),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 32,
-              interval: 2,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= trendData.length || index.isOdd) {
-                  return const SizedBox.shrink();
-                }
-                return SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    DateFormat.MMM().format(trendData[index].month),
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                      fontSize: 11,
-                    ),
-                  ),
-                );
-              },
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Transactions',
+              style: AppTypography.pageTitle
+                  .copyWith(color: AppColors.getTextColor(isDark)),
             ),
           ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 48,
-              interval: bounds.interval,
-              getTitlesWidget: (value, meta) => SideTitleWidget(
-                meta: meta,
-                child: Text(
-                  _formatCompactCurrency(value),
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                    fontSize: 11,
-                  ),
-                ),
-              ),
+          if (availableMonths.isNotEmpty)
+            MonthPill(
+              label: DateFormat.MMMM().format(selectedMonth),
+              onTap: () => _showMonthPicker(
+                  context, model, availableMonths, selectedMonth),
             ),
-          ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: bounds.interval,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: AppDesign.getBorderColor(context).withValues(alpha: 0.5),
-            strokeWidth: value == 0 ? 1.5 : 1,
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: AppColors.primary,
-            barWidth: 3,
-            dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              color: AppColors.primary.withValues(alpha: 0.12),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  BarChartRodData _buildComparisonRod(double value, Color color) {
-    final isPositive = value >= 0;
-    return BarChartRodData(
-      fromY: 0,
-      toY: value,
-      color: color,
-      width: 14,
-      borderRadius: BorderRadius.only(
-        topLeft: isPositive ? const Radius.circular(4) : Radius.zero,
-        topRight: isPositive ? const Radius.circular(4) : Radius.zero,
-        bottomLeft: isPositive ? Radius.zero : const Radius.circular(4),
-        bottomRight: isPositive ? Radius.zero : const Radius.circular(4),
-      ),
-    );
-  }
-
-  _ChartBounds _getChartBounds(
-    List<double> values, {
-    bool forcePositive = false,
-  }) {
-    if (values.isEmpty || values.every((value) => value == 0)) {
-      return const _ChartBounds(minY: -100, maxY: 100, interval: 50);
-    }
-
-    final minValue = forcePositive ? 0.0 : min(0.0, values.reduce(min));
-    final maxValue = max(0.0, values.reduce(max));
-    final maxMagnitude =
-        _roundUpNice(max(minValue.abs(), maxValue.abs()) * 1.15);
-
-    if (forcePositive || minValue >= 0) {
-      return _ChartBounds(
-        minY: 0,
-        maxY: maxMagnitude,
-        interval: maxMagnitude / 2,
-      );
-    }
-
-    return _ChartBounds(
-      minY: -maxMagnitude,
-      maxY: maxMagnitude,
-      interval: maxMagnitude / 2,
-    );
-  }
-
-  Widget _buildEmptyMessage(BuildContext context, String message) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getSurfaceColor(context).withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppDesign.getBorderColor(context)),
-      ),
-      child: Text(
-        message,
-        style: AppTypography.bodyMedium.copyWith(
-          color: AppDesign.getTextSecondary(context),
-        ),
-      ),
-    );
-  }
+  // ===== Filters card =====
 
   Widget _buildFiltersCard(
     BuildContext context,
     TransactionModel model,
     List<String> categoryOptions,
+    bool isDark,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
+    return GlowCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -961,61 +1517,123 @@ class _HistoryPageState extends State<HistoryPage> {
             children: [
               Expanded(
                 child: Text(
-                  'Transaction Filters',
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.bold,
-                  ),
+                  'Filters',
+                  style: AppTypography.cardTitle
+                      .copyWith(color: AppColors.getTextColor(isDark)),
                 ),
               ),
               if (_hasActiveFilters)
-                TextButton(
-                  onPressed: _resetFilters,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    MicroInteractions.lightImpact();
+                    _resetFilters();
+                  },
                   child: Text(
-                    'Reset',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    'RESET',
+                    style: AppTypography.monoLink
+                        .copyWith(color: AppColors.getAccent(isDark)),
                   ),
                 ),
             ],
           ),
+          const SizedBox(height: 14),
+          _buildSearchField(context, isDark),
           const SizedBox(height: 12),
-          _buildSearchField(context),
+          _buildTypeFilter(context, isDark),
           const SizedBox(height: 12),
-          _buildTypeFilter(context),
+          _buildFilterButton(
+            context,
+            label: 'Category',
+            value: _selectedCategory ?? 'All categories',
+            icon: Symbols.grid_view_rounded,
+            isDark: isDark,
+            onTap: () => _showCategoryPicker(context, categoryOptions, isDark),
+          ),
           const SizedBox(height: 12),
-          _buildCategoryFilter(context, categoryOptions),
+          Row(
+            children: [
+              Expanded(
+                child: _buildFilterButton(
+                  context,
+                  label: 'From',
+                  value: _startDate == null
+                      ? 'Any date'
+                      : DateFormat.MMMd().format(_startDate!),
+                  icon: Symbols.expand_more_rounded,
+                  isDark: isDark,
+                  onTap: () => _pickDateRangeEndpoint(context, isStart: true),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildFilterButton(
+                  context,
+                  label: 'To',
+                  value: _endDate == null
+                      ? 'Any date'
+                      : DateFormat.MMMd().format(_endDate!),
+                  icon: Symbols.expand_more_rounded,
+                  isDark: isDark,
+                  onTap: () => _pickDateRangeEndpoint(context, isStart: false),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
-          _buildDateRangeFilters(context),
-          const SizedBox(height: 12),
-          _buildAmountRangeFilters(context),
+          Row(
+            children: [
+              Expanded(
+                child: _buildAmountField(
+                  context,
+                  controller: _minAmountController,
+                  label: 'Min amount',
+                  isDark: isDark,
+                  onChanged: (value) => setState(() {
+                    _minAmount = _parseAmount(value);
+                  }),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildAmountField(
+                  context,
+                  controller: _maxAmountController,
+                  label: 'Max amount',
+                  isDark: isDark,
+                  onChanged: (value) => setState(() {
+                    _maxAmount = _parseAmount(value);
+                  }),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSearchField(BuildContext context) {
+  Widget _buildSearchField(BuildContext context, bool isDark) {
     return TextField(
       controller: _searchController,
       onChanged: (value) => setState(() => _searchQuery = value.trim()),
-      style: AppTypography.bodyMedium.copyWith(
-        color: AppDesign.getTextPrimary(context),
-      ),
+      style: AppTypography.rowTitle
+          .copyWith(color: AppColors.getTextColor(isDark)),
       decoration: InputDecoration(
         prefixIcon: Icon(
-          CupertinoIcons.search,
-          color: AppDesign.getTextSecondary(context),
+          Symbols.grid_view_rounded,
+          color: AppColors.getTextSecondaryColor(isDark),
           size: 20,
+          weight: 500,
         ),
         suffixIcon: _searchQuery.isEmpty
             ? null
             : IconButton(
                 icon: Icon(
-                  CupertinoIcons.clear_circled_solid,
-                  color: AppDesign.getTextSecondary(context),
+                  Symbols.remove_rounded,
+                  color: AppColors.getTextSecondaryColor(isDark),
                   size: 18,
+                  weight: 500,
                 ),
                 onPressed: () {
                   setState(() {
@@ -1025,132 +1643,39 @@ class _HistoryPageState extends State<HistoryPage> {
                 },
               ),
         hintText: 'Search descriptions',
-        hintStyle: AppTypography.bodyMedium.copyWith(
-          color: AppDesign.getTextSecondary(context),
+        hintStyle: AppTypography.rowTitle.copyWith(
+          fontWeight: FontWeight.w400,
+          color: AppColors.getTextSecondaryColor(isDark),
         ),
         filled: true,
-        fillColor: AppDesign.getSurfaceColor(context).withValues(alpha: 0.5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppDesign.getBorderColor(context)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppDesign.getBorderColor(context)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
+        fillColor: AppColors.getChipSurface(isDark),
+        border: _fieldBorder(isDark),
+        enabledBorder: _fieldBorder(isDark),
+        focusedBorder: _fieldBorder(isDark, focused: true),
       ),
     );
   }
 
-  Widget _buildTypeFilter(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: CupertinoSlidingSegmentedControl<_HistoryTransactionTypeFilter>(
-        groupValue: _typeFilter,
-        backgroundColor:
-            AppDesign.getSurfaceColor(context).withValues(alpha: 0.6),
-        thumbColor: AppDesign.getCardColor(context),
-        children: {
-          _HistoryTransactionTypeFilter.all: _buildSegmentLabel(context, 'All'),
-          _HistoryTransactionTypeFilter.income:
-              _buildSegmentLabel(context, 'Income'),
-          _HistoryTransactionTypeFilter.expense:
-              _buildSegmentLabel(context, 'Expense'),
-        },
-        onValueChanged: (value) {
-          if (value == null) return;
-          setState(() => _typeFilter = value);
-        },
+  OutlineInputBorder _fieldBorder(bool isDark, {bool focused = false}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(
+        color: focused
+            ? AppColors.getAccent(isDark)
+            : AppColors.getCardBorder(isDark),
+        width: focused ? 1.5 : 1,
       ),
     );
   }
 
-  Widget _buildSegmentLabel(BuildContext context, String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        style: AppTypography.bodySmall.copyWith(
-          color: AppDesign.getTextPrimary(context),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryFilter(
-    BuildContext context,
-    List<String> categoryOptions,
-  ) {
-    return _buildFilterButton(
-      context,
-      label: 'Category',
-      value: _selectedCategory ?? 'All categories',
-      icon: CupertinoIcons.square_grid_2x2,
-      onTap: () => _showCategoryPicker(context, categoryOptions),
-    );
-  }
-
-  Widget _buildDateRangeFilters(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildFilterButton(
-            context,
-            label: 'From',
-            value: _startDate == null
-                ? 'Any date'
-                : DateFormat.MMMd().format(_startDate!),
-            icon: CupertinoIcons.calendar,
-            onTap: () => _pickDateRangeEndpoint(context, isStart: true),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildFilterButton(
-            context,
-            label: 'To',
-            value: _endDate == null
-                ? 'Any date'
-                : DateFormat.MMMd().format(_endDate!),
-            icon: CupertinoIcons.calendar_badge_plus,
-            onTap: () => _pickDateRangeEndpoint(context, isStart: false),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAmountRangeFilters(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildAmountField(
-            context,
-            controller: _minAmountController,
-            label: 'Min amount',
-            onChanged: (value) => setState(() {
-              _minAmount = _parseAmount(value);
-            }),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildAmountField(
-            context,
-            controller: _maxAmountController,
-            label: 'Max amount',
-            onChanged: (value) => setState(() {
-              _maxAmount = _parseAmount(value);
-            }),
-          ),
-        ),
-      ],
+  Widget _buildTypeFilter(BuildContext context, bool isDark) {
+    return SegmentedPillControl(
+      segments: const ['All', 'Income', 'Expense'],
+      selectedIndex: _typeFilter.index,
+      onChanged: (index) {
+        setState(
+            () => _typeFilter = _HistoryTransactionTypeFilter.values[index]);
+      },
     );
   }
 
@@ -1158,35 +1683,27 @@ class _HistoryPageState extends State<HistoryPage> {
     BuildContext context, {
     required TextEditingController controller,
     required String label,
+    required bool isDark,
     required ValueChanged<String> onChanged,
   }) {
     return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       onChanged: onChanged,
-      style: AppTypography.bodyMedium.copyWith(
-        color: AppDesign.getTextPrimary(context),
-      ),
+      style: AppTypography.rowTitle
+          .copyWith(color: AppColors.getTextColor(isDark)),
       decoration: InputDecoration(
         labelText: label,
         prefixText: '\$ ',
-        labelStyle: AppTypography.bodySmall.copyWith(
-          color: AppDesign.getTextSecondary(context),
-        ),
+        prefixStyle: AppTypography.rowTitle
+            .copyWith(color: AppColors.getTextSecondaryColor(isDark)),
+        labelStyle: AppTypography.rowSubtitle
+            .copyWith(color: AppColors.getTextSecondaryColor(isDark)),
         filled: true,
-        fillColor: AppDesign.getSurfaceColor(context).withValues(alpha: 0.5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppDesign.getBorderColor(context)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppDesign.getBorderColor(context)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
+        fillColor: AppColors.getChipSurface(isDark),
+        border: _fieldBorder(isDark),
+        enabledBorder: _fieldBorder(isDark),
+        focusedBorder: _fieldBorder(isDark, focused: true),
       ),
     );
   }
@@ -1196,21 +1713,29 @@ class _HistoryPageState extends State<HistoryPage> {
     required String label,
     required String value,
     required IconData icon,
+    required bool isDark,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
       child: Container(
-        constraints: const BoxConstraints(minHeight: AppDesign.touchTargetL),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        constraints: const BoxConstraints(minHeight: 56),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AppDesign.getSurfaceColor(context).withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppDesign.getBorderColor(context)),
+          color: AppColors.getChipSurface(isDark),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
         ),
         child: Row(
           children: [
-            Icon(icon, color: AppDesign.getTextSecondary(context), size: 18),
+            Icon(icon,
+                color: AppColors.getTextSecondaryColor(isDark),
+                size: 18,
+                weight: 500),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -1219,9 +1744,9 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   Text(
                     label,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
+                    style: AppTypography.rowSubtitle.copyWith(
                       fontSize: 11,
+                      color: AppColors.getTextSecondaryColor(isDark),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -1229,19 +1754,18 @@ class _HistoryPageState extends State<HistoryPage> {
                     value,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextPrimary(context),
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypography.rowTitle
+                        .copyWith(color: AppColors.getTextColor(isDark)),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 4),
             Icon(
-              CupertinoIcons.chevron_down,
-              color: AppDesign.getTextSecondary(context),
-              size: 14,
+              Symbols.expand_more_rounded,
+              color: AppColors.getTextSecondaryColor(isDark),
+              size: 16,
+              weight: 500,
             ),
           ],
         ),
@@ -1282,39 +1806,43 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-  void _showCategoryPicker(BuildContext context, List<String> categories) {
+  void _showCategoryPicker(
+    BuildContext context,
+    List<String> categories,
+    bool isDark,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: AppDesign.getCardColor(ctx),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          color: AppColors.getCard(isDark),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
         ),
         child: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Container(
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppDesign.getTextTertiary(ctx).withValues(alpha: 0.3),
+                  color: AppColors.getTextTertiaryColor(isDark)
+                      .withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Select Category',
-                    style: AppTypography.headingSmall.copyWith(
-                      color: AppDesign.getTextPrimary(ctx),
-                      fontWeight: FontWeight.bold,
-                    ),
+                    'SELECT CATEGORY',
+                    style: AppTypography.eyebrow.copyWith(
+                        color: AppColors.getTextTertiaryColor(isDark)),
                   ),
                 ),
               ),
@@ -1323,9 +1851,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    _buildCategoryOptionTile(ctx, null),
+                    _buildCategoryOptionTile(ctx, null, isDark),
                     ...categories.map(
-                      (category) => _buildCategoryOptionTile(ctx, category),
+                      (category) =>
+                          _buildCategoryOptionTile(ctx, category, isDark),
                     ),
                   ],
                 ),
@@ -1338,314 +1867,72 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildCategoryOptionTile(BuildContext context, String? category) {
+  Widget _buildCategoryOptionTile(
+    BuildContext context,
+    String? category,
+    bool isDark,
+  ) {
     final isSelected = _selectedCategory == category;
+    final accent = AppColors.getAccent(isDark);
     return ListTile(
       title: Text(
         category ?? 'All categories',
-        style: AppTypography.bodyLarge.copyWith(
-          color: isSelected
-              ? AppColors.primary
-              : AppDesign.getTextPrimary(context),
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        style: AppTypography.rowTitle.copyWith(
+          color: isSelected ? accent : AppColors.getTextColor(isDark),
+          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
         ),
       ),
       trailing: isSelected
-          ? const Icon(CupertinoIcons.checkmark,
-              color: AppColors.primary, size: 18)
+          ? Icon(Symbols.check_rounded, color: accent, size: 20, weight: 500)
           : null,
       onTap: () {
+        MicroInteractions.selectionClick();
         setState(() => _selectedCategory = category);
         Navigator.pop(context);
       },
     );
   }
 
-  double? _parseAmount(String value) {
-    final normalized = value.replaceAll(',', '').trim();
-    if (normalized.isEmpty) return null;
-    return double.tryParse(normalized);
-  }
-
-  Widget _buildFilteredTransactionsCard(
+  void _showMonthPicker(
     BuildContext context,
-    List<Transaction> transactions,
-    int totalTransactionCount,
+    TransactionModel model,
+    List<DateTime> availableMonths,
+    DateTime selectedMonth,
   ) {
-    final summary = _buildFilteredSummary(transactions);
-    final visibleTransactions = transactions.take(50).toList();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Filtered History',
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Text(
-                '${transactions.length} of $totalTransactionCount',
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppDesign.getTextSecondary(context),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _buildSummaryPill(
-                context,
-                label: 'Income',
-                value: _formatCurrency(summary.income),
-                color: AppDesign.getIncomeColor(context),
-              ),
-              _buildSummaryPill(
-                context,
-                label: 'Expenses',
-                value: _formatCurrency(summary.expenses),
-                color: AppDesign.getExpenseColor(context),
-              ),
-              _buildSummaryPill(
-                context,
-                label: 'Net',
-                value: _formatSignedCurrency(summary.netCashFlow),
-                color: summary.netCashFlow >= 0
-                    ? AppDesign.getIncomeColor(context)
-                    : AppDesign.getExpenseColor(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          if (transactions.isEmpty)
-            _buildEmptyMessage(
-              context,
-              _hasActiveFilters
-                  ? 'No transactions match these filters.'
-                  : 'No transactions have been recorded yet.',
-            )
-          else
-            Column(
-              children: [
-                ...visibleTransactions.map(
-                  (transaction) => _buildTransactionHistoryRow(
-                    context,
-                    transaction,
-                  ),
-                ),
-                if (transactions.length > visibleTransactions.length) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'Showing latest ${visibleTransactions.length} matches',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryPill(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '$label ',
-            style: AppTypography.bodySmall.copyWith(
-              color: AppDesign.getTextSecondary(context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            value,
-            style: AppTypography.bodySmall.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionHistoryRow(
-    BuildContext context,
-    Transaction transaction,
-  ) {
-    final isIncome = transaction.type == TransactionTyp.income;
-    final color = isIncome
-        ? AppDesign.getIncomeColor(context)
-        : AppDesign.getExpenseColor(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppDesign.getBorderColor(context).withValues(alpha: 0.6),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              isIncome
-                  ? CupertinoIcons.arrow_down_circle_fill
-                  : CupertinoIcons.arrow_up_circle_fill,
-              color: color,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction.description,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  '${transaction.category} • ${DateFormat.MMMd().format(transaction.date)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppDesign.getTextSecondary(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            '${isIncome ? '+' : '-'}${_formatCurrency(transaction.amount)}',
-            style: AppTypography.bodyMedium.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMonthDropdown(BuildContext context, TransactionModel model,
-      List<DateTime> availableMonths, DateTime selectedMonth) {
-    return GestureDetector(
-      onTap: availableMonths.isEmpty
-          ? null
-          : () =>
-              _showMonthPicker(context, model, availableMonths, selectedMonth),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppDesign.getCardColor(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppDesign.getBorderColor(context),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              DateFormat.MMMM().format(selectedMonth),
-              style: AppTypography.bodyLarge.copyWith(
-                color: AppDesign.getTextPrimary(context),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Icon(
-              CupertinoIcons.chevron_down,
-              color: AppDesign.getTextSecondary(context),
-              size: 18,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showMonthPicker(BuildContext context, TransactionModel model,
-      List<DateTime> availableMonths, DateTime selectedMonth) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: AppDesign.getCardColor(ctx),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          color: AppColors.getCard(isDark),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
         ),
         child: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Container(
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color:
-                      AppDesign.getTextTertiary(context).withValues(alpha: 0.3),
+                  color: AppColors.getTextTertiaryColor(isDark)
+                      .withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Select Month',
-                    style: AppTypography.headingSmall.copyWith(
-                      color: AppDesign.getTextPrimary(context),
-                      fontWeight: FontWeight.bold,
-                    ),
+                    'SELECT MONTH',
+                    style: AppTypography.eyebrow.copyWith(
+                        color: AppColors.getTextTertiaryColor(isDark)),
                   ),
                 ),
               ),
@@ -1660,19 +1947,20 @@ class _HistoryPageState extends State<HistoryPage> {
                     return ListTile(
                       title: Text(
                         DateFormat.yMMMM().format(month),
-                        style: AppTypography.bodyLarge.copyWith(
+                        style: AppTypography.rowTitle.copyWith(
                           color: isSelected
-                              ? AppColors.primary
-                              : AppDesign.getTextPrimary(context),
+                              ? accent
+                              : AppColors.getTextColor(isDark),
                           fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.normal,
+                              isSelected ? FontWeight.w700 : FontWeight.w600,
                         ),
                       ),
                       trailing: isSelected
-                          ? const Icon(CupertinoIcons.checkmark,
-                              color: AppColors.primary, size: 18)
+                          ? Icon(Symbols.check_rounded,
+                              color: accent, size: 20, weight: 500)
                           : null,
                       onTap: () {
+                        MicroInteractions.selectionClick();
                         model.selectMonth(month);
                         Navigator.pop(ctx);
                       },
@@ -1688,415 +1976,108 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildChartCard(BuildContext context, List<MonthCashFlow> chartData) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Monthly Net Cash Flow',
-            style: AppTypography.bodyLarge.copyWith(
-              color: AppDesign.getTextPrimary(context),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 220,
-            child: _buildNetCashFlowBarChart(context, chartData, isDark),
-          ),
-        ],
-      ),
-    );
-  }
+  // ===== Filtered transactions card =====
 
-  Widget _buildNetCashFlowBarChart(
-      BuildContext context, List<MonthCashFlow> chartData, bool isDark) {
-    final incomeColor = AppColors.getIncome(isDark);
-    final expenseColor = AppColors.getExpense(isDark);
-    final netValues = chartData.map((d) => d.netCashFlow).toList();
-    final minNet = netValues.reduce(min);
-    final maxNet = netValues.reduce(max);
+  Widget _buildFilteredTransactionsCard(
+    BuildContext context,
+    List<Transaction> transactions,
+    int totalTransactionCount,
+    bool isDark,
+  ) {
+    final summary = _buildFilteredSummary(transactions);
+    final visibleTransactions = transactions.take(50).toList();
+    final income = AppColors.getIncome(isDark);
+    final danger = AppColors.getDanger(isDark);
 
-    late final double minY;
-    late final double maxY;
-    late final double interval;
-
-    if (minNet == 0 && maxNet == 0) {
-      minY = -100;
-      maxY = 100;
-      interval = 50;
-    } else if (minNet < 0 && maxNet > 0) {
-      final maxMagnitude = _roundUpNice(max(minNet.abs(), maxNet.abs()) * 1.15);
-      minY = -maxMagnitude;
-      maxY = maxMagnitude;
-      interval = maxMagnitude / 2;
-    } else if (maxNet <= 0) {
-      minY = -_roundUpNice(minNet.abs() * 1.15);
-      maxY = 0;
-      interval = minY.abs() / 2;
-    } else {
-      minY = 0;
-      maxY = _roundUpNice(maxNet * 1.15);
-      interval = maxY / 2;
-    }
-
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        maxY: maxY,
-        minY: minY,
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => Colors.transparent,
-            getTooltipItem: (_, __, ___, ____) => null,
-          ),
-          touchCallback: (FlTouchEvent event, BarTouchResponse? response) {
-            if (event is! FlTapUpEvent) return;
-            final index = response?.spot?.touchedBarGroupIndex;
-            if (index == null || index < 0 || index >= chartData.length) return;
-            _showMonthDetailsBottomSheet(chartData[index], isDark);
-          },
-        ),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 28,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= chartData.length) {
-                  return const SizedBox.shrink();
-                }
-                return SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    DateFormat.MMM().format(chartData[index].month),
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                      fontSize: 12,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 48,
-              interval: interval,
-              getTitlesWidget: (value, meta) {
-                final absValue = value.abs();
-                final prefix = value < 0 ? '-\$' : '\$';
-                final label = absValue >= 1000
-                    ? '$prefix${(absValue / 1000).toStringAsFixed(0)}k'
-                    : '$prefix${absValue.toStringAsFixed(0)}';
-                return SideTitleWidget(
-                  meta: meta,
-                  child: Text(
-                    label,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppDesign.getTextSecondary(context),
-                      fontSize: 11,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: interval,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: AppDesign.getBorderColor(context).withValues(alpha: 0.5),
-            strokeWidth: value == 0 ? 1.5 : 1,
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        barGroups: chartData.asMap().entries.map((entry) {
-          final data = entry.value;
-          final isPositive = data.netCashFlow >= 0;
-          return BarChartGroupData(
-            x: entry.key,
-            barRods: [
-              BarChartRodData(
-                fromY: 0,
-                toY: data.netCashFlow,
-                color: isPositive ? incomeColor : expenseColor,
-                width: 28,
-                borderRadius: BorderRadius.only(
-                  topLeft: isPositive ? const Radius.circular(5) : Radius.zero,
-                  topRight: isPositive ? const Radius.circular(5) : Radius.zero,
-                  bottomLeft:
-                      isPositive ? Radius.zero : const Radius.circular(5),
-                  bottomRight:
-                      isPositive ? Radius.zero : const Radius.circular(5),
-                ),
-              ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  double _roundUpNice(double value) {
-    if (value <= 0) return 1000;
-    final magnitude = pow(10, (log(value) / ln10).floor()).toDouble();
-    final normalized = (value / magnitude).ceil();
-    return normalized * magnitude;
-  }
-
-  void _showMonthDetailsBottomSheet(MonthCashFlow data, bool isDark) {
-    final fmt = NumberFormat("#,##0.00", "en_US");
-    final incomeColor = AppColors.getIncome(isDark);
-    final expenseColor = AppColors.getExpense(isDark);
-    final net = data.income - data.expenses;
-    final netColor = net >= 0 ? incomeColor : expenseColor;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        decoration: BoxDecoration(
-          color: AppDesign.getCardColor(ctx),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color:
-                        AppDesign.getTextTertiary(ctx).withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: netColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(CupertinoIcons.calendar,
-                          color: netColor, size: 22),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      DateFormat.yMMMM().format(data.month),
-                      style: AppTypography.headingMedium.copyWith(
-                        color: AppDesign.getTextPrimary(ctx),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildDetailTile(
-                        ctx,
-                        label: 'Income',
-                        amount: '\$${fmt.format(data.income)}',
-                        color: incomeColor,
-                        icon: CupertinoIcons.arrow_down_circle_fill,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildDetailTile(
-                        ctx,
-                        label: 'Expenses',
-                        amount: '\$${fmt.format(data.expenses)}',
-                        color: expenseColor,
-                        icon: CupertinoIcons.arrow_up_circle_fill,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: netColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: netColor.withValues(alpha: 0.3), width: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            net >= 0
-                                ? CupertinoIcons.checkmark_circle_fill
-                                : CupertinoIcons.exclamationmark_circle_fill,
-                            color: netColor,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Net Cash Flow',
-                            style: AppTypography.bodyLarge.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppDesign.getTextPrimary(ctx),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        '\$${fmt.format(net)}',
-                        style: AppTypography.headingMedium.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: netColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailTile(
-    BuildContext context, {
-    required String label,
-    required String amount,
-    required Color color,
-    required IconData icon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 16),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: AppTypography.bodySmall.copyWith(
-                  color: AppDesign.getTextSecondary(context),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            amount,
-            style: AppTypography.headingSmall.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMetricCard(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required bool isPositive,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final accentColor =
-        isPositive ? AppColors.getIncome(isDark) : AppColors.getExpense(isDark);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppDesign.getCardColor(context),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: AppDesign.getTextSecondary(context),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               Expanded(
                 child: Text(
-                  value,
-                  style: AppTypography.headingSmall.copyWith(
-                    color: AppDesign.getTextPrimary(context),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                  'Results',
+                  style: AppTypography.sectionHeader
+                      .copyWith(color: AppColors.getTextColor(isDark)),
                 ),
               ),
-              const SizedBox(width: 4),
-              Icon(
-                isPositive
-                    ? CupertinoIcons.arrow_up
-                    : CupertinoIcons.arrow_down,
-                color: accentColor,
-                size: 20,
+              Text(
+                '${transactions.length} of $totalTransactionCount',
+                style: AppTypography.monoLabel
+                    .copyWith(color: AppColors.getTextSecondaryColor(isDark)),
               ),
             ],
           ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            PillChip(
+              label: 'Income ${_formatCurrency(summary.income)}',
+              color: income,
+            ),
+            PillChip(
+              label: 'Expenses ${_formatCurrency(summary.expenses)}',
+              color: danger,
+            ),
+            PillChip(
+              label: 'Net ${_formatSignedCurrency(summary.netCashFlow)}',
+              color: summary.netCashFlow >= 0 ? income : danger,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        if (transactions.isEmpty)
+          GlowCard(
+            child: _EmptyChartMessage(
+              message: _hasActiveFilters
+                  ? 'No transactions match these filters.'
+                  : 'No transactions have been recorded yet.',
+              isDark: isDark,
+            ),
+          )
+        else ...[
+          GlowListCard(
+            children: [
+              for (final transaction in visibleTransactions)
+                _TransactionRow(transaction: transaction, isDark: isDark),
+            ],
+          ),
+          if (transactions.length > visibleTransactions.length) ...[
+            const SizedBox(height: 12),
+            Center(
+              child: Text(
+                'Showing latest ${visibleTransactions.length} matches',
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontSize: 13,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ),
+          ],
         ],
-      ),
+      ],
     );
   }
 }
+
+// ===== Data classes =====
 
 class _MonthlyCashFlowReport {
   final DateTime month;
   final double income;
   final double expenses;
-  final Map<String, double> categoryExpenses;
 
   const _MonthlyCashFlowReport({
     required this.month,
     required this.income,
     required this.expenses,
-    required this.categoryExpenses,
   });
 
   double get netCashFlow => income - expenses;
@@ -2114,28 +2095,4 @@ class _FilteredTransactionSummary {
   });
 
   double get netCashFlow => income - expenses;
-}
-
-class _ComparisonChartGroup {
-  final String label;
-  final double currentValue;
-  final double previousValue;
-
-  const _ComparisonChartGroup({
-    required this.label,
-    required this.currentValue,
-    required this.previousValue,
-  });
-}
-
-class _ChartBounds {
-  final double minY;
-  final double maxY;
-  final double interval;
-
-  const _ChartBounds({
-    required this.minY,
-    required this.maxY,
-    required this.interval,
-  });
 }

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+
+import 'design_system.dart';
+import 'recurring_transaction.dart';
+import 'recurring_transaction_model.dart';
+import 'recurring_transactions_page.dart';
 import 'theme_provider.dart';
 import 'transaction_model.dart';
-import 'package:provider/provider.dart';
-import 'design_system.dart';
-import 'utils/platform_utils.dart';
-import 'recurring_transactions_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -91,110 +94,127 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeProvider = Provider.of<ThemeProvider>(context);
     final currentThemeMode = themeProvider.themeMode;
+    final transactionModel = context.watch<TransactionModel>();
+    final recurringModel = context.watch<RecurringTransactionModel>();
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(
-          'Settings',
-          style: AppTypography.headingLarge.copyWith(
-            color: AppDesign.getTextPrimary(context),
-          ),
+    final transactionCount = transactionModel.transactions.length;
+    final activeRecurring =
+        recurringModel.recurringTransactions.where((r) => r.isActive).toList();
+
+    return BudgiePageScaffold(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: DockMetrics.contentBottomPadding(context),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-        color: AppDesign.getBackgroundColor(context),
         child: SafeArea(
-          child: ListView(
-            physics: PlatformUtils.platformScrollPhysics,
-            padding: const EdgeInsets.all(AppDesign.spacingM),
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Appearance Section
-              _buildSectionHeader(context, 'Appearance'),
-              const SizedBox(height: AppDesign.spacingS),
-              _buildSettingCard(
-                context,
-                icon: _themeModeIcon(currentThemeMode),
-                iconGradient: AppDesign.getPrimaryGradient(context),
-                title: 'Theme',
-                description: 'Light, dark, or follow your device settings',
-                trailing: _buildThemeModeTrailing(
-                  context,
-                  currentThemeMode,
-                ),
-                onTap: () => _showThemeModePicker(context, themeProvider),
+              const BudgieHeader(title: 'Settings'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: _BrandCard(isDark: isDark),
               ),
-              const SizedBox(height: AppDesign.spacingXL),
-
-              // Data Section
-              _buildSectionHeader(context, 'Data'),
-              const SizedBox(height: AppDesign.spacingS),
-              _buildSettingCard(
-                context,
-                icon: Icons.repeat,
-                iconGradient: AppDesign.getPrimaryGradient(context),
-                title: 'Recurring Transactions',
-                description: 'Manage your recurring expenses and income',
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: AppDesign.getTextTertiary(context),
-                  size: AppDesign.iconM,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const RecurringTransactionsPage(),
+              const _SectionEyebrow(label: 'APPEARANCE'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: GlowListCard(
+                  children: [
+                    _ThemeRow(
+                      isDark: isDark,
+                      currentThemeMode: currentThemeMode,
+                      onChanged: (mode) => themeProvider.setThemeMode(mode),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-              const SizedBox(height: AppDesign.spacingS),
-              _buildSettingCard(
-                context,
-                icon: Icons.file_download,
-                iconGradient: AppDesign.getIncomeGradient(context),
-                title: 'Export Transactions',
-                description: 'Export all transactions as CSV file',
-                trailing: _isExporting
-                    ? SizedBox(
-                        width: AppDesign.iconM,
-                        height: AppDesign.iconM,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppDesign.getTextPrimary(context),
-                          ),
-                        ),
-                      )
-                    : Icon(
-                        Icons.chevron_right,
-                        color: AppDesign.getTextTertiary(context),
-                        size: AppDesign.iconM,
+              const _SectionEyebrow(label: 'DATA'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: GlowListCard(
+                  children: [
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.repeat_rounded,
+                      iconColor: AppColors.getAccent(isDark),
+                      title: 'Recurring transactions',
+                      subtitle: _recurringSubtitle(activeRecurring),
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        weight: 500,
+                        color: AppColors.getTextTertiaryColor(isDark),
                       ),
-                onTap: _isExporting ? null : () => _exportTransactions(context),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) =>
+                                const RecurringTransactionsPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.file_download_rounded,
+                      iconColor: AppColors.getIncome(isDark),
+                      iconBackground:
+                          AppColors.getIncome(isDark).withValues(alpha: 0.12),
+                      title: 'Export as CSV',
+                      subtitle: 'All $transactionCount transactions',
+                      trailing: _isExporting
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.getTextColor(isDark),
+                                ),
+                              ),
+                            )
+                          : Icon(
+                              Symbols.chevron_right_rounded,
+                              size: 20,
+                              weight: 500,
+                              color: AppColors.getTextTertiaryColor(isDark),
+                            ),
+                      onTap: _isExporting
+                          ? null
+                          : () => _exportTransactions(context),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppDesign.spacingXL),
-
-              // About Section
-              _buildSectionHeader(context, 'About'),
-              const SizedBox(height: AppDesign.spacingS),
-              FutureBuilder<String>(
-                future: _versionFuture,
-                builder: (context, snapshot) {
-                  final version = snapshot.data ?? '2.0.0';
-                  return _buildSettingCard(
-                    context,
-                    icon: Icons.info_outline,
-                    iconGradient: AppDesign.getNeutralGradient(context),
-                    title: 'Version',
-                    description: 'Budget App v$version',
-                    trailing: null,
-                  );
-                },
+              const _SectionEyebrow(label: 'ABOUT'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: GlowListCard(
+                  children: [
+                    FutureBuilder<String>(
+                      future: _versionFuture,
+                      builder: (context, snapshot) {
+                        final version = snapshot.data ?? '2.0.0';
+                        return _SettingsRow(
+                          isDark: isDark,
+                          icon: Symbols.info_rounded,
+                          iconColor: AppColors.dockInactiveIcon,
+                          iconBackground: isDark
+                              ? Colors.white.withValues(alpha: 0.06)
+                              : Colors.black.withValues(alpha: 0.06),
+                          title: 'Version',
+                          subtitle: 'Budgie $version',
+                          trailing: null,
+                          onTap: null,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -203,211 +223,258 @@ class SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  /// Builds a section header with consistent styling
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppDesign.spacingS),
-      child: Text(
-        title.toUpperCase(),
-        style: AppTypography.caption.copyWith(
-          color: AppDesign.getTextSecondary(context),
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.2,
-        ),
-      ),
-    );
+  String _recurringSubtitle(List<RecurringTransaction> active) {
+    if (active.isEmpty) return 'No active recurring transactions';
+    final names = active.map((r) => r.description).take(3).join(', ');
+    return '${active.length} active · $names';
   }
+}
 
-  /// Builds a modern setting card with glassmorphism effect
-  Widget _buildSettingCard(
-    BuildContext context, {
-    required IconData icon,
-    required Gradient iconGradient,
-    required String title,
-    required String description,
-    Widget? trailing,
-    VoidCallback? onTap,
-  }) {
-    return ElevatedCard(
-      elevation: AppDesign.elevationS,
-      onTap: onTap,
-      padding: const EdgeInsets.all(AppDesign.spacingM),
+/// Accent-gradient tinted brand card: Budgie mark + name + local-only note.
+class _BrandCard extends StatelessWidget {
+  final bool isDark;
+
+  const _BrandCard({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = AppColors.getAccent(isDark);
+    final base = AppColors.getCard(isDark);
+
+    return GlowCard(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color.alphaBlend(accent.withValues(alpha: 0.22), base), base],
+      ),
+      border: Border.all(color: accent.withValues(alpha: 0.3)),
       child: Row(
         children: [
-          // Icon container with gradient
           Container(
-            width: 48,
-            height: 48,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              gradient: iconGradient,
-              borderRadius: BorderRadius.circular(AppDesign.radiusM),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: AppColors.glow(accent,
+                  blurRadius: 24, alpha: 0.4, isDark: isDark),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.textOnPrimary,
-              size: AppDesign.iconM,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/budgie_mark.png',
+                width: 52,
+                height: 52,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          const SizedBox(width: AppDesign.spacingM),
-          // Title and description
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  title,
-                  style: AppTypography.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppDesign.getTextPrimary(context),
+                  'Budgie',
+                  style: AppTypography.cardTitle.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                    color: AppColors.getTextColor(isDark),
                   ),
                 ),
-                const SizedBox(height: AppDesign.spacingXXS),
+                const SizedBox(height: 2),
                 Text(
-                  description,
-                  style: AppTypography.caption.copyWith(
-                    color: AppDesign.getTextSecondary(context),
+                  'All data stays on this device',
+                  style: AppTypography.rowSubtitle.copyWith(
+                    fontSize: 13,
+                    color: AppColors.getTextSecondaryColor(isDark),
                   ),
                 ),
               ],
             ),
           ),
-          // Trailing widget (switch, chevron, etc.)
-          if (trailing != null) ...[
-            const SizedBox(width: AppDesign.spacingM),
-            trailing,
-          ],
         ],
       ),
     );
   }
+}
 
-  Future<void> _showThemeModePicker(
-    BuildContext context,
-    ThemeProvider themeProvider,
-  ) async {
-    final selectedMode = await showModalBottomSheet<ThemeMode>(
-      context: context,
-      backgroundColor: AppDesign.getCardColor(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppDesign.radiusL),
+/// Mono eyebrow section header, inset 24px like the design.
+class _SectionEyebrow extends StatelessWidget {
+  final String label;
+
+  const _SectionEyebrow({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+      child: Text(
+        label,
+        style: AppTypography.eyebrow.copyWith(
+          color: AppColors.getTextTertiaryColor(isDark),
         ),
       ),
-      builder: (sheetContext) {
-        final currentMode = themeProvider.themeMode;
-
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppDesign.spacingM,
-                  AppDesign.spacingM,
-                  AppDesign.spacingM,
-                  AppDesign.spacingS,
-                ),
-                child: Text(
-                  'Choose Theme',
-                  style: AppTypography.headingSmall.copyWith(
-                    color: AppDesign.getTextPrimary(sheetContext),
-                  ),
-                ),
-              ),
-              ...ThemeMode.values.map(
-                (mode) => ListTile(
-                  leading: Icon(
-                    _themeModeIcon(mode),
-                    color: AppDesign.getTextPrimary(sheetContext),
-                  ),
-                  title: Text(
-                    _themeModeLabel(mode),
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppDesign.getTextPrimary(sheetContext),
-                    ),
-                  ),
-                  subtitle: Text(
-                    _themeModeDescription(mode),
-                    style: AppTypography.caption.copyWith(
-                      color: AppDesign.getTextSecondary(sheetContext),
-                    ),
-                  ),
-                  trailing: mode == currentMode
-                      ? Icon(
-                          Icons.check,
-                          color: AppDesign.getPrimaryGradient(sheetContext)
-                              .colors
-                              .first,
-                        )
-                      : null,
-                  onTap: () {
-                    Navigator.of(sheetContext).pop(mode);
-                  },
-                ),
-              ),
-              const SizedBox(height: AppDesign.spacingS),
-            ],
-          ),
-        );
-      },
-    );
-
-    if (selectedMode != null) {
-      await themeProvider.setThemeMode(selectedMode);
-    }
-  }
-
-  Widget _buildThemeModeTrailing(BuildContext context, ThemeMode themeMode) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          _themeModeLabel(themeMode),
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppDesign.getTextSecondary(context),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(width: AppDesign.spacingXS),
-        Icon(
-          Icons.chevron_right,
-          color: AppDesign.getTextTertiary(context),
-          size: AppDesign.iconM,
-        ),
-      ],
     );
   }
+}
 
-  String _themeModeLabel(ThemeMode mode) {
-    switch (mode) {
-      case ThemeMode.system:
-        return 'System';
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-    }
+/// Theme row: icon tile + title/subtitle + inline SegmentedPillControl bound
+/// to [ThemeProvider].
+class _ThemeRow extends StatelessWidget {
+  final bool isDark;
+  final ThemeMode currentThemeMode;
+  final ValueChanged<ThemeMode> onChanged;
+
+  const _ThemeRow({
+    required this.isDark,
+    required this.currentThemeMode,
+    required this.onChanged,
+  });
+
+  static const _modes = [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedIndex = _modes.indexOf(currentThemeMode);
+    final accent = AppColors.getAccent(isDark);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            alignment: Alignment.center,
+            child: Icon(Symbols.dark_mode_rounded,
+                size: 20, weight: 500, color: accent),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Theme',
+                  style: AppTypography.rowTitle.copyWith(
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Light, dark, or match device',
+                  style: AppTypography.rowSubtitle.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Semantics(
+            label: 'Theme mode',
+            child: SegmentedPillControl(
+              segments: const ['Light', 'Dark', 'Auto'],
+              selectedIndex: selectedIndex < 0 ? 2 : selectedIndex,
+              onChanged: (index) => onChanged(_modes[index]),
+            ),
+          ),
+        ],
+      ),
+    );
   }
+}
 
-  String _themeModeDescription(ThemeMode mode) {
-    switch (mode) {
-      case ThemeMode.system:
-        return 'Match your device appearance';
-      case ThemeMode.light:
-        return 'Always use the light theme';
-      case ThemeMode.dark:
-        return 'Always use the dark theme';
-    }
-  }
+/// Generic settings row: icon tile, title/subtitle, trailing widget.
+class _SettingsRow extends StatelessWidget {
+  final bool isDark;
+  final IconData icon;
+  final Color iconColor;
+  final Color? iconBackground;
+  final String title;
+  final String subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
-  IconData _themeModeIcon(ThemeMode mode) {
-    switch (mode) {
-      case ThemeMode.system:
-        return Icons.brightness_auto;
-      case ThemeMode.light:
-        return Icons.wb_sunny;
-      case ThemeMode.dark:
-        return Icons.nights_stay;
-    }
+  const _SettingsRow({
+    required this.isDark,
+    required this.icon,
+    required this.iconColor,
+    this.iconBackground,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: iconBackground ?? iconColor.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, size: 20, weight: 500, color: iconColor),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: AppTypography.rowTitle.copyWith(
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.rowSubtitle.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 12),
+            trailing!,
+          ],
+        ],
+      ),
+    );
+
+    if (onTap == null) return row;
+    return Semantics(
+      button: true,
+      label: '$title, $subtitle',
+      child: InkWell(
+        onTap: () {
+          MicroInteractions.lightImpact();
+          onTap!();
+        },
+        borderRadius: BorderRadius.circular(18),
+        child: row,
+      ),
+    );
   }
 }
