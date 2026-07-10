@@ -15,6 +15,7 @@ import 'transaction.dart';
 import 'utils/platform_enhancements.dart';
 import 'design_system.dart';
 import 'widgets/voice_recording_sheet.dart';
+import 'onboarding_tutorial.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -193,7 +194,9 @@ class _MyAppState extends State<MyApp> {
           switchInCurve: Curves.easeOut,
           switchOutCurve: Curves.easeIn,
           child: ready
-              ? const BudgetHomePage(title: 'Home')
+              ? const OnboardingTutorialGate(
+                  child: BudgetHomePage(title: 'Home'),
+                )
               : const _OpeningScreen(),
         );
       },

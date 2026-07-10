@@ -13,6 +13,7 @@ import 'package:budget_app/main.dart';
 import 'package:budget_app/net_worth_page.dart';
 import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/spending_page.dart';
+import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
 import 'package:budget_app/transaction_model.dart';
 import 'package:budget_app/widgets/floating_dock.dart';
@@ -72,13 +73,14 @@ class _FakeRecordPlatform extends RecordPlatform {
   Future<void> cancel(String recorderId) async {}
 
   @override
-  Stream<RecordState> onStateChanged(String recorderId) =>
-      const Stream.empty();
+  Stream<RecordState> onStateChanged(String recorderId) => const Stream.empty();
 }
 
 void main() {
   setUp(() {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({
+      StorageKeys.onboardingCompleted: true,
+    });
     RecordPlatform.instance = _FakeRecordPlatform();
   });
 

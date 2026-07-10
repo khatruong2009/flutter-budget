@@ -37,6 +37,10 @@ class StorageKeys {
   /// One of `'light' | 'dark' | 'system'`. Owned by `ThemeProvider`.
   static const String themeMode = 'themeMode';
 
+  /// Whether the first-launch app tour has been completed. Owned by
+  /// `OnboardingTutorialGate`.
+  static const String onboardingCompleted = 'onboarding_completed';
+
   // --- Legacy keys (read-only, used for one-time migration) ---
 
   /// Pre-v2 single-value starting-assets total. Migrated into
