@@ -252,6 +252,29 @@ class SpendingPageState extends State<SpendingPage> {
     }
   }
 
+  /// Long-press shortcut for the main add button. Selecting a category first
+  /// lets the transaction form focus immediately on its amount and details.
+  Future<void> _showQuickExpenseCategoryPicker(
+    TransactionModel transactionModel,
+  ) async {
+    final selectedCategory = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _QuickExpenseCategorySheet(),
+    );
+
+    if (!mounted || selectedCategory == null) return;
+
+    await showTransactionForm(
+      context,
+      TransactionTyp.expense,
+      transactionModel.addTransaction,
+      initialCategory: selectedCategory,
+    );
+  }
+
   /// Days remaining in the selected month. For the current calendar month this
   /// is days after today; for any other month it is the month's total length.
   int _daysLeftInMonth(DateTime month) {
@@ -328,6 +351,8 @@ class SpendingPageState extends State<SpendingPage> {
                   TransactionTyp.expense,
                   transactionModel.addTransaction,
                 ),
+                onLongPress: () =>
+                    _showQuickExpenseCategoryPicker(transactionModel),
                 semanticLabel: 'Add transaction',
               ),
             ],
@@ -489,6 +514,122 @@ class SpendingPageState extends State<SpendingPage> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Category-first entry sheet opened by long-pressing the main transaction
+/// button. It is intentionally limited to expenses because that is the action
+/// represented by the primary add button on the Spending tab.
+class _QuickExpenseCategorySheet extends StatelessWidget {
+  const _QuickExpenseCategorySheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final categoryEntries = expenseCategories.entries.toList();
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.66,
+      minChildSize: 0.36,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.getCard(isDark),
+          border: Border.all(color: AppColors.getCardBorder(isDark)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.getTextTertiaryColor(isDark)
+                        .withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 4),
+                child: Text(
+                  'Add expense',
+                  style: AppTypography.sectionHeader.copyWith(
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                child: Text(
+                  'Choose a category, then enter the amount and description.',
+                  style: AppTypography.rowSubtitle.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  itemCount: categoryEntries.length,
+                  separatorBuilder: (_, __) => Divider(
+                    height: 1,
+                    color: AppColors.getCardBorder(isDark),
+                  ),
+                  itemBuilder: (context, index) {
+                    final entry = categoryEntries[index];
+                    return Semantics(
+                      button: true,
+                      label: 'Choose ${entry.key}',
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          MicroInteractions.selectionClick();
+                          Navigator.of(context).pop(entry.key);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
+                          ),
+                          child: Row(
+                            children: [
+                              IconTile(
+                                icon: entry.value,
+                                color: AppColors.getDanger(isDark),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                entry.key,
+                                style: AppTypography.rowTitle.copyWith(
+                                  color: AppColors.getTextColor(isDark),
+                                ),
+                              ),
+                              const Spacer(),
+                              Icon(
+                                CupertinoIcons.chevron_right,
+                                size: 18,
+                                color: AppColors.getTextSecondaryColor(isDark),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

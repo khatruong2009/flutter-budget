@@ -101,5 +101,29 @@ void main() {
 
       expect(tapped, isTrue);
     });
+
+    testWidgets('onLongPress fires without also triggering onPressed',
+        (tester) async {
+      var tapped = false;
+      var longPressed = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GlowFab(
+              onPressed: () => tapped = true,
+              onLongPress: () => longPressed = true,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.longPress(find.byType(GlowFab));
+      await tester.pump();
+
+      expect(longPressed, isTrue);
+      expect(tapped, isFalse);
+    });
   });
 }

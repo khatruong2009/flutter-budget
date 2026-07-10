@@ -22,6 +22,7 @@ Future<void> _pumpForm(
   required TransactionModel model,
   required TransactionTyp type,
   Transaction? prefill,
+  String? initialCategory,
   Function? addSpy,
 }) async {
   await tester.pumpWidget(
@@ -37,6 +38,7 @@ Future<void> _pumpForm(
                   type,
                   addSpy ?? (a, b, c, d, e) {},
                   prefill: prefill,
+                  initialCategory: initialCategory,
                 ),
                 child: const Text('open'),
               ),
@@ -306,5 +308,21 @@ void main() {
     expect(_fieldText(tester, 'Amount'), isEmpty);
     expect(expenseCategories.keys.first, 'General');
     expect(find.text('General'), findsOneWidget);
+  });
+
+  testWidgets('initialCategory preselects a manual transaction category',
+      (tester) async {
+    final model = TransactionModel();
+
+    await _pumpForm(
+      tester,
+      model: model,
+      type: TransactionTyp.expense,
+      initialCategory: 'Groceries',
+    );
+
+    expect(_fieldText(tester, 'Amount'), isEmpty);
+    expect(_fieldText(tester, 'Description'), isEmpty);
+    expect(find.text('Groceries'), findsOneWidget);
   });
 }

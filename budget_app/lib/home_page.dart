@@ -81,6 +81,15 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
     }
   }
 
+  void _onTabDragged(int index) {
+    if (_currentIndex == index) return;
+
+    setState(() {
+      _currentIndex = index;
+    });
+    _pageController.jumpToPage(index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,6 +147,7 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
                 items: _dockItems,
                 currentIndex: _currentIndex,
                 onTap: _onTabTapped,
+                onDragSelect: _onTabDragged,
               ),
             ),
           ),

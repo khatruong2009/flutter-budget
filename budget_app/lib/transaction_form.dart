@@ -11,17 +11,24 @@ import 'recurring_transaction_form.dart';
 import 'widgets/modern_text_field.dart';
 
 Future<void> showTransactionForm(
-    BuildContext context, TransactionTyp type, Function addTransaction,
-    {Transaction? transactionToEdit, Transaction? prefill}) async {
+  BuildContext context,
+  TransactionTyp type,
+  Function addTransaction, {
+  Transaction? transactionToEdit,
+  Transaction? prefill,
+  String? initialCategory,
+}) async {
   final transactionModel =
       Provider.of<TransactionModel>(context, listen: false);
 
   final formKey = GlobalKey<FormState>();
   String description = '';
   final descriptionController = TextEditingController();
-  String category = type == TransactionTyp.expense
-      ? expenseCategories.keys.first
-      : incomeCategories.keys.first;
+  final categoryMap =
+      type == TransactionTyp.expense ? expenseCategories : incomeCategories;
+  String category = categoryMap.containsKey(initialCategory)
+      ? initialCategory!
+      : categoryMap.keys.first;
   double amount = 0.0;
   DateTime selectedDate = DateTime.now();
 

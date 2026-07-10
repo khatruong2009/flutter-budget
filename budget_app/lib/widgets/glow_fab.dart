@@ -12,6 +12,7 @@ import '../utils/micro_interactions.dart';
 /// the glow flares and the icon pops. Skipped under reduced motion.
 class GlowFab extends StatefulWidget {
   final VoidCallback onPressed;
+  final VoidCallback? onLongPress;
   final IconData icon;
   final String? semanticLabel;
   final double size;
@@ -19,6 +20,7 @@ class GlowFab extends StatefulWidget {
   const GlowFab({
     super.key,
     required this.onPressed,
+    this.onLongPress,
     this.icon = Symbols.add_rounded,
     this.semanticLabel,
     this.size = 54,
@@ -61,6 +63,11 @@ class _GlowFabState extends State<GlowFab> with TickerProviderStateMixin {
     widget.onPressed();
   }
 
+  void _handleLongPress() {
+    MicroInteractions.selectionClick();
+    widget.onLongPress?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -77,6 +84,7 @@ class _GlowFabState extends State<GlowFab> with TickerProviderStateMixin {
           onTapUp: (_) => setState(() => _pressed = false),
           onTapCancel: () => setState(() => _pressed = false),
           onTap: _handleTap,
+          onLongPress: widget.onLongPress == null ? null : _handleLongPress,
           child: AnimatedScale(
             scale: _pressed ? 0.95 : 1.0,
             duration: const Duration(milliseconds: 120),

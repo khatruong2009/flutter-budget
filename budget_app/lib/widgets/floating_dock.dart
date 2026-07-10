@@ -44,17 +44,109 @@ class DockItem {
 /// Floating pill navigation dock: blurred `rgba(19,19,31,0.88)` container,
 /// white/10% border. The active tab morphs from a 44px icon circle into a
 /// labeled accent pill (~250ms ease-out) with an accent glow.
-class FloatingDock extends StatelessWidget {
+class FloatingDock extends StatefulWidget {
   final List<DockItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final ValueChanged<int>? onDragSelect;
 
   const FloatingDock({
     super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    this.onDragSelect,
   });
+
+  @override
+  State<FloatingDock> createState() => _FloatingDockState();
+}
+
+class _FloatingDockState extends State<FloatingDock> {
+  late List<GlobalKey> _dockButtonKeys;
+  int? _dragSelection;
+  var _isDragSelecting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _dockButtonKeys = _createButtonKeys();
+  }
+
+  @override
+  void didUpdateWidget(covariant FloatingDock oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items.length != widget.items.length) {
+      _dockButtonKeys = _createButtonKeys();
+    }
+  }
+
+  List<GlobalKey> _createButtonKeys() {
+    return List<GlobalKey>.generate(widget.items.length, (_) => GlobalKey());
+  }
+
+  void _selectTab(int index, {required bool fromDrag}) {
+    final selectedIndex = fromDrag
+        ? (_dragSelection ?? widget.currentIndex)
+        : widget.currentIndex;
+    if (index == selectedIndex) return;
+
+    if (fromDrag) {
+      _dragSelection = index;
+    }
+    MicroInteractions.selectionClick();
+    (fromDrag ? widget.onDragSelect ?? widget.onTap : widget.onTap)(index);
+  }
+
+  void _selectTabUnderFinger(Offset globalPosition) {
+    RenderBox? closestButton;
+    var closestDistance = double.infinity;
+
+    for (var index = 0; index < _dockButtonKeys.length; index++) {
+      final renderObject =
+          _dockButtonKeys[index].currentContext?.findRenderObject();
+      if (renderObject is! RenderBox || !renderObject.hasSize) continue;
+
+      final origin = renderObject.localToGlobal(Offset.zero);
+      final bounds = origin & renderObject.size;
+      if (bounds.contains(globalPosition)) {
+        _selectTab(index, fromDrag: true);
+        return;
+      }
+
+      // The buttons have small visual gaps between them. Choose the nearest
+      // tab there so the selection remains continuous under the finger.
+      final centerX = bounds.center.dx;
+      final distance = (globalPosition.dx - centerX).abs();
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestButton = renderObject;
+      }
+    }
+
+    if (closestButton == null) return;
+    final closestIndex = _dockButtonKeys.indexWhere((key) {
+      final renderObject = key.currentContext?.findRenderObject();
+      return identical(renderObject, closestButton);
+    });
+    if (closestIndex >= 0) {
+      _selectTab(closestIndex, fromDrag: true);
+    }
+  }
+
+  void _beginDrag() {
+    _dragSelection = widget.currentIndex;
+    if (!_isDragSelecting) {
+      setState(() => _isDragSelecting = true);
+    }
+  }
+
+  void _endDrag() {
+    _dragSelection = null;
+    if (_isDragSelecting) {
+      setState(() => _isDragSelecting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,44 +159,60 @@ class FloatingDock extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.10)
         : Colors.black.withValues(alpha: 0.08);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(999),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: borderColor),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
-                blurRadius: 40,
-                offset: const Offset(0, 16),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (int i = 0; i < items.length; i++)
-                Padding(
-                  padding: EdgeInsets.only(left: i == 0 ? 0 : 2),
-                  child: _DockButton(
-                    item: items[i],
-                    active: i == currentIndex,
-                    accent: accent,
-                    isDark: isDark,
-                    onTap: () {
-                      if (i != currentIndex) {
-                        MicroInteractions.selectionClick();
-                        onTap(i);
-                      }
-                    },
-                  ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragStart: (details) {
+        _beginDrag();
+        _selectTabUnderFinger(details.globalPosition);
+      },
+      onHorizontalDragUpdate: (details) {
+        _selectTabUnderFinger(details.globalPosition);
+      },
+      onHorizontalDragEnd: (_) => _endDrag(),
+      onHorizontalDragCancel: _endDrag,
+      onLongPressStart: (_) => _beginDrag(),
+      onLongPressMoveUpdate: (details) {
+        _selectTabUnderFinger(details.globalPosition);
+      },
+      onLongPressEnd: (_) => _endDrag(),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(999),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: background,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: borderColor),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.6 : 0.15),
+                  blurRadius: 40,
+                  offset: const Offset(0, 16),
                 ),
-            ],
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < widget.items.length; i++)
+                  Padding(
+                    padding: EdgeInsets.only(left: i == 0 ? 0 : 2),
+                    child: SizedBox(
+                      key: _dockButtonKeys[i],
+                      child: _DockButton(
+                        item: widget.items[i],
+                        active: i == widget.currentIndex,
+                        accent: accent,
+                        isDark: isDark,
+                        isDragSelecting: _isDragSelecting,
+                        onTap: () => _selectTab(i, fromDrag: false),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,6 +225,7 @@ class _DockButton extends StatelessWidget {
   final bool active;
   final Color accent;
   final bool isDark;
+  final bool isDragSelecting;
   final VoidCallback onTap;
 
   const _DockButton({
@@ -124,6 +233,7 @@ class _DockButton extends StatelessWidget {
     required this.active,
     required this.accent,
     required this.isDark,
+    required this.isDragSelecting,
     required this.onTap,
   });
 
@@ -137,7 +247,7 @@ class _DockButton extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: Duration(milliseconds: isDragSelecting ? 100 : 250),
         curve: Curves.easeOut,
         height: 44,
         padding: EdgeInsets.symmetric(horizontal: active ? 16 : 12),
@@ -159,7 +269,7 @@ class _DockButton extends StatelessWidget {
               color: active ? onAccent : inactiveColor,
             ),
             AnimatedSize(
-              duration: const Duration(milliseconds: 250),
+              duration: Duration(milliseconds: isDragSelecting ? 100 : 250),
               curve: Curves.easeOut,
               child: active
                   ? Padding(
