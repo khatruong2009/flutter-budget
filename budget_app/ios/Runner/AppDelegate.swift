@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import WidgetKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -16,6 +17,7 @@ import Flutter
     // Start the Flutter engine
     flutterEngine.run()
     GeneratedPluginRegistrant.register(with: flutterEngine)
+    setupWidgetDataChannel()
 
     // For iOS 12 and below (non-scene based)
     if #unavailable(iOS 13.0) {
@@ -90,5 +92,37 @@ import Flutter
   private func handleDeepLink(_ url: URL) {
     initialLink = url.absoluteString
     deepLinkChannel?.invokeMethod("deep_link", arguments: url.absoluteString)
+  }
+
+  // MARK: - Widget Data
+
+  /// Receives the current month's safe-to-spend from Flutter and shares it
+  /// with the widget extension through the app group.
+  private func setupWidgetDataChannel() {
+    let channel = FlutterMethodChannel(
+      name: "budget_app/widget_data",
+      binaryMessenger: flutterEngine.binaryMessenger
+    )
+
+    channel.setMethodCallHandler { (call: FlutterMethodCall, result: FlutterResult) in
+      guard call.method == "updateSafeToSpend" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      guard let arguments = call.arguments as? [String: Any],
+            let amount = arguments["amount"] as? Double,
+            let month = arguments["month"] as? String else {
+        result(FlutterError(code: "bad_args", message: "Expected amount and month", details: nil))
+        return
+      }
+
+      let defaults = UserDefaults(suiteName: "group.com.khatruong.budgetbuddy")
+      defaults?.set(amount, forKey: "safeToSpend")
+      defaults?.set(month, forKey: "safeToSpendMonth")
+      if #available(iOS 14.0, *) {
+        WidgetCenter.shared.reloadAllTimelines()
+      }
+      result(nil)
+    }
   }
 }

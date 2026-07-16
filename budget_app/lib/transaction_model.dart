@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,6 +14,7 @@ import 'net_worth_entry.dart';
 import 'savings_goal.dart';
 import 'storage/storage_keys.dart';
 import 'transaction.dart';
+import 'utils/platform_utils.dart';
 
 // Data class for monthly cash flow information
 class MonthCashFlow {
@@ -213,6 +215,39 @@ class TransactionModel extends ChangeNotifier {
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
     await prefs.setString(
         StorageKeys.transactions, jsonEncode(jsonTransactions));
+    await _syncWidgetSafeToSpend();
+  }
+
+  static const MethodChannel _widgetDataChannel =
+      MethodChannel('budget_app/widget_data');
+
+  // Pushes the current calendar month's safe-to-spend to the iOS home screen
+  // widgets via the shared app group.
+  Future<void> _syncWidgetSafeToSpend() async {
+    if (!PlatformUtils.isIOS) return;
+
+    final now = DateTime.now();
+    var safeToSpend = 0.0;
+    for (final transaction in transactions) {
+      if (transaction.date.year != now.year ||
+          transaction.date.month != now.month) {
+        continue;
+      }
+      safeToSpend += transaction.type == TransactionTyp.income
+          ? transaction.amount
+          : -transaction.amount;
+    }
+
+    try {
+      await _widgetDataChannel.invokeMethod('updateSafeToSpend', {
+        'amount': safeToSpend,
+        'month': '${now.year}-${now.month.toString().padLeft(2, '0')}',
+      });
+    } on PlatformException {
+      // Widget data is best-effort; never let it break a save.
+    } on MissingPluginException {
+      // Native handler absent (e.g. stale binary during development).
+    }
   }
 
   // load transactions
@@ -262,6 +297,8 @@ class TransactionModel extends ChangeNotifier {
           .map((goal) => SavingsGoal.fromJson(goal as Map<String, dynamic>))
           .toList();
     }
+
+    await _syncWidgetSafeToSpend();
   }
 
   // get the current month's transactions
