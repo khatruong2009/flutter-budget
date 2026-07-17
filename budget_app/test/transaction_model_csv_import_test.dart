@@ -252,6 +252,44 @@ void main() {
     expect(summary.rowErrors[3], contains('column'));
   });
 
+  test('rejects impossible dates instead of rolling them over', () {
+    // DateTime.tryParse normalizes '2026-02-30' to 2026-03-02; such rows must
+    // become row errors, not import on a shifted date.
+    const csv = 'Date,Type,Category,Description,Amount\r\n'
+        '2026-02-30,Expense,Food,Bad day,5.00\r\n'
+        '2026-13-05,Expense,Food,Bad month,5.00\r\n'
+        '2026-01-15,Expense,Food,Valid,5.00';
+
+    final model = TransactionModel();
+    final summary = model.parseTransactionsCsv(csv);
+
+    expect(summary.transactions.length, 1);
+    expect(summary.transactions.single.description, 'Valid');
+    expect(summary.rowErrors.length, 2);
+    expect(summary.rowErrors[0], contains('Row 2'));
+    expect(summary.rowErrors[1], contains('Row 3'));
+  });
+
+  test('rejects European decimal-comma amounts instead of mangling them', () {
+    // Stripping the comma from '1.234,56' would import 1.23456 — wrong by
+    // three orders of magnitude — so misplaced commas are row errors.
+    final csv = const ListToCsvConverter().convert([
+      ['Date', 'Type', 'Category', 'Description', 'Amount'],
+      ['2026-01-01', 'Expense', 'Food', 'European format', '1.234,56'],
+      ['2026-01-02', 'Expense', 'Food', 'Misplaced group', '12,34'],
+      ['2026-01-03', 'Expense', 'Food', 'Valid grouped', '1,234.56'],
+    ]);
+
+    final model = TransactionModel();
+    final summary = model.parseTransactionsCsv(csv);
+
+    expect(summary.transactions.length, 1);
+    expect(summary.transactions.single.amount, 1234.56);
+    expect(summary.rowErrors.length, 2);
+    expect(summary.rowErrors[0], contains('Row 2'));
+    expect(summary.rowErrors[1], contains('Row 3'));
+  });
+
   test('parses a currency-formatted amount like \$1,234.56', () {
     final csv = const ListToCsvConverter().convert([
       ['Date', 'Type', 'Category', 'Description', 'Amount'],

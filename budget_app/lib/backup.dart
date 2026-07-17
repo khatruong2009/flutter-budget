@@ -92,15 +92,60 @@ BackupData decodeBackup(String content) {
   }
 
   return BackupData(
-    transactions: _decodeList(data['transactions'], Transaction.fromJson),
+    transactions: _decodeList(data['transactions'], _backupTransaction),
     netWorthEntries:
-        _decodeList(data['netWorthEntries'], NetWorthEntry.fromJson),
+        _decodeList(data['netWorthEntries'], _backupNetWorthEntry),
     categoryBudgetLimits: _decodeBudgetLimits(data['categoryBudgetLimits']),
-    savingsGoals: _decodeList(data['savingsGoals'], SavingsGoal.fromJson),
+    savingsGoals: _decodeList(data['savingsGoals'], _backupSavingsGoal),
     recurringTransactions:
-        _decodeList(data['recurringTransactions'], RecurringTransaction.fromJson),
+        _decodeList(data['recurringTransactions'], _backupRecurring),
     themeMode: _themeModeFromString(data['themeMode']),
   );
+}
+
+// The model fromJson factories are lenient: unknown type strings coerce to a
+// default, and non-finite numbers pass through even though jsonEncode cannot
+// re-serialize them (which would fail midway through the store-by-store
+// restore persistence, leaving a partial wipe). Restore is destructive, so
+// the backup path validates strictly before accepting an entry.
+void _require(bool condition) {
+  if (!condition) {
+    throw const FormatException('This backup file is corrupt or incomplete.');
+  }
+}
+
+Transaction _backupTransaction(Map<String, dynamic> json) {
+  _require(json['type'] == 'expense' || json['type'] == 'income');
+  final transaction = Transaction.fromJson(json);
+  _require(transaction.amount.isFinite);
+  return transaction;
+}
+
+NetWorthEntry _backupNetWorthEntry(Map<String, dynamic> json) {
+  _require(json['type'] == 'asset' || json['type'] == 'liability');
+  final entry = NetWorthEntry.fromJson(json);
+  _require(entry.snapshots.every((snapshot) => snapshot.amount.isFinite));
+  return entry;
+}
+
+SavingsGoal _backupSavingsGoal(Map<String, dynamic> json) {
+  final goal = SavingsGoal.fromJson(json);
+  _require(goal.targetAmount.isFinite && goal.currentAmount.isFinite);
+  return goal;
+}
+
+RecurringTransaction _backupRecurring(Map<String, dynamic> json) {
+  _require(json['type'] == 'expense' || json['type'] == 'income');
+  final recurring = RecurringTransaction.fromJson(json);
+  _require(recurring.amount.isFinite);
+  // TransactionGenerator dereferences dayOfMonth for monthly templates and
+  // loops on the computed next occurrence, so an absent or out-of-range day
+  // would crash or hang every subsequent launch.
+  if (recurring.pattern == RecurrencePattern.monthly) {
+    final day = recurring.dayOfMonth;
+    _require(day != null && day >= 1 && day <= 31);
+  }
+  return recurring;
 }
 
 // An absent or null section is a valid empty section. A present-but-wrong-type
@@ -129,9 +174,11 @@ Map<String, double> _decodeBudgetLimits(dynamic raw) {
   }
   try {
     final map = raw as Map<String, dynamic>;
-    return map.map(
-      (category, value) => MapEntry(category, (value as num).toDouble()),
-    );
+    return map.map((category, value) {
+      final limit = (value as num).toDouble();
+      _require(limit.isFinite);
+      return MapEntry(category, limit);
+    });
   } catch (_) {
     throw const FormatException('This backup file is corrupt or incomplete.');
   }

@@ -910,7 +910,11 @@ class TransactionModel extends ChangeNotifier {
 
       final dateText = row[0].toString().trim();
       final date = DateTime.tryParse(dateText);
-      if (date == null) {
+      // Dart normalizes out-of-range components ('2026-02-30' parses as
+      // 2026-03-02), so require the text to match the parsed day to surface
+      // typo'd dates as row errors instead of importing on a shifted date.
+      if (date == null ||
+          !dateText.startsWith(DateFormat('yyyy-MM-dd').format(date))) {
         rowErrors.add('Row $rowNumber: invalid date "$dateText"');
         continue;
       }
@@ -938,7 +942,16 @@ class TransactionModel extends ChangeNotifier {
       if (amountValue.startsWith('\$')) {
         amountValue = amountValue.substring(1);
       }
-      amountValue = amountValue.replaceAll(',', '');
+      // Commas are only accepted as US-style thousands separators; stripping
+      // them from anything else (e.g. the European decimal comma in
+      // '1.234,56') would silently parse to the wrong magnitude.
+      if (amountValue.contains(',')) {
+        if (!RegExp(r'^\d{1,3}(,\d{3})+(\.\d+)?$').hasMatch(amountValue)) {
+          rowErrors.add('Row $rowNumber: invalid amount "$amountText"');
+          continue;
+        }
+        amountValue = amountValue.replaceAll(',', '');
+      }
       final amount = double.tryParse(amountValue);
       if (amount == null || !amount.isFinite || amount < 0) {
         rowErrors.add('Row $rowNumber: invalid amount "$amountText"');

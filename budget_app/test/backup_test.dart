@@ -249,6 +249,99 @@ void main() {
     }
   });
 
+  test('decode rejects non-finite numbers in every section', () {
+    // jsonDecode('1e999') yields infinity, which jsonEncode cannot
+    // re-serialize; accepting it would fail midway through the
+    // store-by-store restore persistence.
+    const rejected = <String>[
+      '{"schemaVersion":1,"data":{"categoryBudgetLimits":{"Food":1e999}}}',
+      '{"schemaVersion":1,"data":{"transactions":[{"type":"expense",'
+          '"description":"x","amount":1e999,"category":"Food",'
+          '"date":"2026-07-01T00:00:00.000"}]}}',
+      '{"schemaVersion":1,"data":{"savingsGoals":[{"id":"g1","name":"Goal",'
+          '"targetAmount":1e999,"currentAmount":0.0,'
+          '"targetDate":"2026-12-31T00:00:00.000",'
+          '"createdAt":"2026-07-01T00:00:00.000"}]}}',
+      '{"schemaVersion":1,"data":{"netWorthEntries":[{"id":"a1","name":"X",'
+          '"type":"asset","createdAt":"2026-07-01T00:00:00.000",'
+          '"snapshots":[{"recordedAt":"2026-07-01T00:00:00.000",'
+          '"amount":-1e999}]}]}}',
+      '{"schemaVersion":1,"data":{"recurringTransactions":[{"id":"r1",'
+          '"type":"expense","description":"Rent","amount":1e999,'
+          '"category":"Housing","pattern":"weekly",'
+          '"startDate":"2026-07-01T00:00:00.000",'
+          '"nextOccurrence":"2026-07-08T00:00:00.000","isActive":true}]}}',
+    ];
+    for (final content in rejected) {
+      expect(
+        () => decodeBackup(content),
+        throwsFormatException,
+        reason: 'should reject: $content',
+      );
+    }
+  });
+
+  test('decode rejects unrecognized type strings instead of coercing', () {
+    // The model fromJson factories coerce anything != 'expense' to income
+    // (and != 'liability' to asset), which would silently flip data.
+    const rejected = <String>[
+      '{"schemaVersion":1,"data":{"transactions":[{"type":"Expense",'
+          '"description":"x","amount":5.0,"category":"Food",'
+          '"date":"2026-07-01T00:00:00.000"}]}}',
+      '{"schemaVersion":1,"data":{"transactions":[{"type":"transfer",'
+          '"description":"x","amount":5.0,"category":"Food",'
+          '"date":"2026-07-01T00:00:00.000"}]}}',
+      '{"schemaVersion":1,"data":{"netWorthEntries":[{"id":"a1","name":"X",'
+          '"type":"Asset","createdAt":"2026-07-01T00:00:00.000",'
+          '"snapshots":[]}]}}',
+      '{"schemaVersion":1,"data":{"recurringTransactions":[{"id":"r1",'
+          '"type":"EXPENSE","description":"Rent","amount":900.0,'
+          '"category":"Housing","pattern":"weekly",'
+          '"startDate":"2026-07-01T00:00:00.000",'
+          '"nextOccurrence":"2026-07-08T00:00:00.000","isActive":true}]}}',
+    ];
+    for (final content in rejected) {
+      expect(
+        () => decodeBackup(content),
+        throwsFormatException,
+        reason: 'should reject: $content',
+      );
+    }
+  });
+
+  test('decode validates dayOfMonth for monthly recurring templates', () {
+    String monthly(String dayOfMonth) =>
+        '{"schemaVersion":1,"data":{"recurringTransactions":[{"id":"r1",'
+        '"type":"expense","description":"Rent","amount":900.0,'
+        '"category":"Housing","pattern":"monthly",'
+        '"startDate":"2026-07-01T00:00:00.000",'
+        '"nextOccurrence":"2026-08-01T00:00:00.000",'
+        '"dayOfMonth":$dayOfMonth,"isActive":true}]}}';
+
+    // TransactionGenerator dereferences dayOfMonth for monthly templates and
+    // loops on the computed next occurrence; a bad day crashes or hangs
+    // every launch after restore.
+    for (final bad in ['null', '0', '-30', '32']) {
+      expect(
+        () => decodeBackup(monthly(bad)),
+        throwsFormatException,
+        reason: 'should reject monthly dayOfMonth $bad',
+      );
+    }
+
+    final decoded = decodeBackup(monthly('31'));
+    expect(decoded.recurringTransactions.single.dayOfMonth, 31);
+
+    // Weekly templates do not use dayOfMonth; null stays valid there.
+    const weekly =
+        '{"schemaVersion":1,"data":{"recurringTransactions":[{"id":"r1",'
+        '"type":"expense","description":"Gym","amount":20.0,'
+        '"category":"Health","pattern":"weekly",'
+        '"startDate":"2026-07-01T00:00:00.000",'
+        '"nextOccurrence":"2026-07-08T00:00:00.000","isActive":true}]}}';
+    expect(decodeBackup(weekly).recurringTransactions.single.dayOfMonth, isNull);
+  });
+
   test('absent sections decode to empty collections and null theme', () {
     final decoded = decodeBackup('{"schemaVersion":1,"data":{}}');
     expect(decoded.transactions, isEmpty);

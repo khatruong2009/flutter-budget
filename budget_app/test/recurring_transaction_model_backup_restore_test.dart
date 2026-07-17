@@ -1,6 +1,8 @@
 import 'package:budget_app/recurring_transaction.dart';
 import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/transaction.dart';
+import 'package:budget_app/transaction_generator.dart';
+import 'package:budget_app/transaction_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,5 +65,47 @@ void main() {
     final reloaded = RecurringTransactionModel();
     await reloaded.loadRecurringTransactions();
     expect(reloaded.recurringTransactions, replacements);
+  });
+
+  test('generator fills occurrences due since the restored cursor', () async {
+    // A restored backup carries each template's cursor as of export time;
+    // running the generator right after restore must create the occurrences
+    // that came due since then (the restore flow in settings does this).
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final start = today.subtract(const Duration(days: 10));
+
+    final recurringModel = RecurringTransactionModel();
+    final transactionModel = TransactionModel();
+
+    await recurringModel.restoreFromBackup([
+      RecurringTransaction(
+        id: 'rec-restored',
+        type: TransactionTyp.expense,
+        description: 'Rent',
+        amount: 900.0,
+        category: 'Housing',
+        pattern: RecurrencePattern.weekly,
+        startDate: start,
+        nextOccurrence: start,
+      ),
+    ]);
+
+    await TransactionGenerator(
+      transactionModel: transactionModel,
+      recurringModel: recurringModel,
+    ).generateDueTransactions();
+
+    // Weekly from 10 days ago: occurrences at day -10 and day -3.
+    expect(transactionModel.transactions.length, 2);
+    expect(
+      transactionModel.transactions
+          .every((t) => t.recurringTemplateId == 'rec-restored'),
+      isTrue,
+    );
+    expect(
+      recurringModel.recurringTransactions.single.nextOccurrence.isAfter(now),
+      isTrue,
+    );
   });
 }

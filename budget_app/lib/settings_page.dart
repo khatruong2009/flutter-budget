@@ -17,6 +17,7 @@ import 'recurring_transaction.dart';
 import 'recurring_transaction_model.dart';
 import 'recurring_transactions_page.dart';
 import 'theme_provider.dart';
+import 'transaction_generator.dart';
 import 'transaction_model.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -388,23 +389,28 @@ class SettingsPageState extends State<SettingsPage> {
 
       if (!mounted) return;
 
+      // The restore sequence operates on app-scoped providers and must run to
+      // completion even if this page is disposed mid-way; only the UI
+      // feedback afterwards needs the widget alive.
       await transactionModel.restoreFromBackup(
         transactions: data.transactions,
         netWorthEntries: data.netWorthEntries,
         categoryBudgetLimits: data.categoryBudgetLimits,
         savingsGoals: data.savingsGoals,
       );
-
-      if (!mounted) return;
-
       await recurringModel.restoreFromBackup(data.recurringTransactions);
-
-      if (!mounted) return;
-
       if (data.themeMode != null) {
         await themeProvider.setThemeMode(data.themeMode!);
-        if (!mounted) return;
       }
+
+      // Fill in recurring occurrences that came due after the backup was
+      // exported; otherwise they stay missing until the next cold launch.
+      await TransactionGenerator(
+        transactionModel: transactionModel,
+        recurringModel: recurringModel,
+      ).generateDueTransactions();
+
+      if (!mounted) return;
 
       messenger?.showSnackBar(
         SnackBar(
