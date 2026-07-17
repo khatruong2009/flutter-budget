@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
+import 'package:csv/csv_settings_autodetection.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -118,6 +119,20 @@ class YearOverYearComparison {
     });
     return names;
   }
+}
+
+// Result of parsing a CSV export: transactions ready to import plus
+// diagnostics for skipped duplicates and malformed rows.
+class CsvImportSummary {
+  final List<Transaction> transactions;
+  final int duplicateCount;
+  final List<String> rowErrors;
+
+  const CsvImportSummary({
+    required this.transactions,
+    required this.duplicateCount,
+    required this.rowErrors,
+  });
 }
 
 class TransactionModel extends ChangeNotifier {
@@ -847,6 +862,173 @@ class TransactionModel extends ChangeNotifier {
       debugPrint('Error exporting transactions: $e');
       rethrow;
     }
+  }
+
+  // Parse a Date,Type,Category,Description,Amount CSV export into transactions,
+  // deduplicating against existing rows. Does not persist or notify.
+  CsvImportSummary parseTransactionsCsv(String csvContent) {
+    var content = csvContent;
+    if (content.isNotEmpty && content.codeUnitAt(0) == 0xFEFF) {
+      content = content.substring(1);
+    }
+
+    final rows = const CsvToListConverter(
+      shouldParseNumbers: false,
+      csvSettingsDetector: FirstOccurrenceSettingsDetector(
+        eols: ['\r\n', '\n'],
+      ),
+    ).convert(content);
+
+    final header = rows.isEmpty ? const <dynamic>[] : rows.first;
+    final headerMatches = header.length == 5 &&
+        header[0].toString().trim().toLowerCase() == 'date' &&
+        header[1].toString().trim().toLowerCase() == 'type' &&
+        header[2].toString().trim().toLowerCase() == 'category' &&
+        header[3].toString().trim().toLowerCase() == 'description' &&
+        header[4].toString().trim().toLowerCase() == 'amount';
+    if (rows.isEmpty || !headerMatches) {
+      throw const FormatException('Not a valid transactions CSV export');
+    }
+
+    final parsed = <Transaction>[];
+    final rowErrors = <String>[];
+
+    // Row 1 is the header, so data rows are numbered from 2.
+    for (var i = 1; i < rows.length; i++) {
+      final rowNumber = i + 1;
+      final row = rows[i];
+
+      if (row.every((cell) => cell.toString().trim().isEmpty)) {
+        continue;
+      }
+
+      if (row.length != 5) {
+        rowErrors.add(
+            'Row $rowNumber: expected 5 columns but found ${row.length}');
+        continue;
+      }
+
+      final dateText = row[0].toString().trim();
+      final date = DateTime.tryParse(dateText);
+      if (date == null) {
+        rowErrors.add('Row $rowNumber: invalid date "$dateText"');
+        continue;
+      }
+
+      final typeText = row[1].toString().trim();
+      final typeLower = typeText.toLowerCase();
+      if (typeLower != 'income' && typeLower != 'expense') {
+        rowErrors.add('Row $rowNumber: invalid type "$typeText"');
+        continue;
+      }
+      final type = typeLower == 'income'
+          ? TransactionTyp.income
+          : TransactionTyp.expense;
+
+      final category = row[2].toString().trim();
+      if (category.isEmpty) {
+        rowErrors.add('Row $rowNumber: category is empty');
+        continue;
+      }
+
+      final description = row[3].toString().trim();
+
+      final amountText = row[4].toString().trim();
+      var amountValue = amountText;
+      if (amountValue.startsWith('\$')) {
+        amountValue = amountValue.substring(1);
+      }
+      amountValue = amountValue.replaceAll(',', '');
+      final amount = double.tryParse(amountValue);
+      if (amount == null || !amount.isFinite || amount < 0) {
+        rowErrors.add('Row $rowNumber: invalid amount "$amountText"');
+        continue;
+      }
+
+      parsed.add(Transaction(
+        type: type,
+        description: description,
+        amount: amount,
+        category: category,
+        date: date,
+      ));
+    }
+
+    // Multiset dedupe against existing transactions only. Two identical rows
+    // within the file remain distinct except where they match remaining
+    // existing counts.
+    final existingCounts = <String, int>{};
+    for (final transaction in transactions) {
+      existingCounts.update(
+        _csvDedupeKey(transaction),
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+    }
+
+    final toImport = <Transaction>[];
+    var duplicateCount = 0;
+    for (final transaction in parsed) {
+      final key = _csvDedupeKey(transaction);
+      final remaining = existingCounts[key] ?? 0;
+      if (remaining > 0) {
+        existingCounts[key] = remaining - 1;
+        duplicateCount++;
+      } else {
+        toImport.add(transaction);
+      }
+    }
+
+    return CsvImportSummary(
+      transactions: toImport,
+      duplicateCount: duplicateCount,
+      rowErrors: rowErrors,
+    );
+  }
+
+  // Append parsed transactions from a CSV import and persist them.
+  Future<void> importTransactions(List<Transaction> newTransactions) async {
+    if (newTransactions.isEmpty) {
+      return;
+    }
+    transactions.addAll(newTransactions);
+    await saveTransactions(transactions);
+    notifyListeners();
+  }
+
+  // Full-replace restore from a decoded backup. Wipes the in-memory state this
+  // model owns, replaces it with the backup's contents, and persists all of it.
+  Future<void> restoreFromBackup({
+    required List<Transaction> transactions,
+    required List<NetWorthEntry> netWorthEntries,
+    required Map<String, double> categoryBudgetLimits,
+    required List<SavingsGoal> savingsGoals,
+  }) async {
+    this.transactions = List<Transaction>.of(transactions);
+    _netWorthEntries = List<NetWorthEntry>.of(netWorthEntries);
+    _categoryBudgetLimits = Map<String, double>.of(categoryBudgetLimits)
+      ..removeWhere((_, limit) => limit <= 0);
+    _savingsGoals = List<SavingsGoal>.of(savingsGoals);
+
+    await saveTransactions(this.transactions);
+    await _saveNetWorthEntries();
+    await _saveCategoryBudgetLimits();
+    await _saveSavingsGoals();
+
+    notifyListeners();
+  }
+
+  // Multiset dedupe key: identical transactions collapse to the same string.
+  // Amount is normalized with toStringAsFixed(2) and text fields are trimmed
+  // to mirror what the CSV export/parse round-trip does to a transaction, so
+  // an exported row always keys the same as the transaction it came from.
+  String _csvDedupeKey(Transaction transaction) {
+    final date = DateFormat('yyyy-MM-dd').format(transaction.date);
+    final type =
+        transaction.type == TransactionTyp.income ? 'income' : 'expense';
+    final amount = transaction.amount.toStringAsFixed(2);
+    return '$date|$type|${transaction.category.trim()}|'
+        '${transaction.description.trim()}|$amount';
   }
 
   // Get net cash flow data for all months (for charting)

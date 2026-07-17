@@ -51,6 +51,14 @@ class RecurringTransactionModel extends ChangeNotifier {
         StorageKeys.recurringTransactions, jsonEncode(jsonTransactions));
   }
 
+  /// Full-replace restore from a decoded backup. Replaces every template and
+  /// persists the result.
+  Future<void> restoreFromBackup(List<RecurringTransaction> templates) async {
+    recurringTransactions = List<RecurringTransaction>.of(templates);
+    await saveRecurringTransactions();
+    notifyListeners();
+  }
+
   /// Load recurring transactions from SharedPreferences
   Future<void> loadRecurringTransactions() async {
     final prefs = await SharedPreferences.getInstance();
