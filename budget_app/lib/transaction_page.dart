@@ -10,6 +10,7 @@ import 'widgets/modern_transaction_list_item.dart';
 import 'widgets/empty_state.dart';
 import 'utils/platform_utils.dart';
 import 'widgets/month_selector.dart';
+import 'money_formatter.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -274,7 +275,7 @@ class _MonthlySummaryCard extends StatelessWidget {
               const SizedBox(width: AppDesign.spacingS),
               Flexible(
                 child: Text(
-                  '\$${NumberFormat("#,##0.00", "en_US").format(net)}',
+                  MoneyFormatter.formatSigned(net),
                   style: AppTypography.amount.copyWith(
                     fontSize: 20,
                     color: net >= 0
@@ -306,7 +307,7 @@ class _MonthlySummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppDesign.spacingXS),
           Text(
-            '\$${NumberFormat("#,##0.00", "en_US").format(amount)}',
+            MoneyFormatter.format(amount),
             style: AppTypography.amount.copyWith(
               fontSize: 20,
               color: color,

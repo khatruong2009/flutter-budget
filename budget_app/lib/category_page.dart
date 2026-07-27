@@ -13,6 +13,7 @@ import 'widgets/empty_state.dart';
 import 'widgets/category_donut_chart.dart';
 import 'utils/platform_utils.dart';
 import 'category_transactions_page.dart';
+import 'money_formatter.dart';
 
 /// Categories tab: donut hero of the month's spend by category, followed by
 /// a ranked breakdown list. The first six categories (by amount) get their
@@ -290,9 +291,6 @@ class _CategoryPageState extends State<CategoryPage> {
     required DateTime month,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final moneyFmt =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0);
-    final limitFmt = NumberFormat('#,##0', 'en_US');
     final isSelected =
         index == _selectedSliceIndex && index < _maxVisibleCategories;
 
@@ -303,7 +301,7 @@ class _CategoryPageState extends State<CategoryPage> {
     if (limit != null && limit > 0) {
       subtitle += record.amount > limit
           ? ' · over limit'
-          : ' · ${limitFmt.format(limit)} limit';
+          : ' · ${MoneyFormatter.format(limit, decimalDigits: 0)} limit';
     }
 
     return GestureDetector(
@@ -369,7 +367,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  moneyFmt.format(record.amount),
+                  MoneyFormatter.format(record.amount, decimalDigits: 0),
                   style: AppTypography.amount.copyWith(
                     color: AppColors.getTextColor(isDark),
                   ),
@@ -394,8 +392,6 @@ class _CategoryPageState extends State<CategoryPage> {
     required double largestAmount,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final moneyFmt =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0);
     final tailTotal = tail.fold(0.0, (sum, r) => sum + r.amount);
     final names = tail.map((r) => r.category).join(', ');
 
@@ -447,7 +443,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  moneyFmt.format(tailTotal),
+                  MoneyFormatter.format(tailTotal, decimalDigits: 0),
                   style: AppTypography.amount.copyWith(
                     color: AppColors.getTextColor(isDark),
                   ),

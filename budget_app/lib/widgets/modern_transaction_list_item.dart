@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../transaction.dart';
 import '../design_system.dart';
 import '../common.dart';
+import '../money_formatter.dart';
 import '../utils/accessibility_utils.dart';
 import 'recurrence_indicator.dart';
 
@@ -49,7 +50,7 @@ class ModernTransactionListItem extends StatelessWidget {
         hint: 'Double tap to edit, swipe left to delete',
         button: true,
         child: Dismissible(
-          key: ValueKey(transaction.description + transaction.date.toString()),
+          key: ValueKey(transaction.id),
           direction: DismissDirection.endToStart,
           confirmDismiss: (direction) async {
             // Trigger haptic feedback when swipe threshold is reached
@@ -135,7 +136,7 @@ class ModernTransactionListItem extends StatelessWidget {
                   ),
                   // Transaction amount
                   Text(
-                    '\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}',
+                    MoneyFormatter.format(transaction.amount),
                     style: AppTypography.headingMedium.copyWith(
                       color: isExpense
                           ? AppDesign.getExpenseColor(context)

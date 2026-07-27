@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../money_formatter.dart';
+
 /// Utility class for accessibility features and helpers
 class AccessibilityUtils {
   /// Checks if reduced motion is preferred by the system
@@ -68,7 +70,7 @@ class AccessibilityUtils {
     required double value,
     required double percentage,
   }) {
-    final formattedValue = NumberFormat.currency(symbol: '\$').format(value);
+    final formattedValue = MoneyFormatter.format(value);
     final formattedPercentage =
         NumberFormat.percentPattern().format(percentage / 100);
 

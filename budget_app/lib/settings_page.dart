@@ -19,6 +19,12 @@ import 'recurring_transactions_page.dart';
 import 'theme_provider.dart';
 import 'transaction_generator.dart';
 import 'transaction_model.dart';
+import 'app_settings_provider.dart';
+import 'category_provider.dart';
+import 'category_settings_page.dart';
+import 'categorization_settings_page.dart';
+import 'categorization_provider.dart';
+import 'storage/atomic_financial_store.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -283,6 +289,12 @@ class SettingsPageState extends State<SettingsPage> {
       final recurringModel =
           Provider.of<RecurringTransactionModel>(context, listen: false);
       final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+      final categoryProvider =
+          Provider.of<CategoryProvider>(context, listen: false);
+      final appSettings =
+          Provider.of<AppSettingsProvider>(context, listen: false);
+      final categorizationProvider =
+          Provider.of<CategorizationProvider>(context, listen: false);
 
       // Get the position of the button for iPad popover positioning
       final RenderBox? box = context.findRenderObject() as RenderBox?;
@@ -296,6 +308,14 @@ class SettingsPageState extends State<SettingsPage> {
         savingsGoals: transactionModel.savingsGoals,
         recurringTransactions: recurringModel.recurringTransactions,
         themeMode: themeProvider.themeMode,
+        categories: categoryProvider.categories,
+        transactionTags: categorizationProvider.tags,
+        categorizationRules: categorizationProvider.rules,
+        baseCurrencyCode: appSettings.baseCurrencyCode,
+        localeOverride: appSettings.localeOverride,
+        appLockEnabled: appSettings.appLockEnabled,
+        autoLockTimeoutSeconds: appSettings.autoLockTimeoutSeconds,
+        hideBalances: appSettings.hideBalances,
       );
 
       final version = await _versionFuture;
@@ -363,6 +383,12 @@ class SettingsPageState extends State<SettingsPage> {
     final recurringModel =
         Provider.of<RecurringTransactionModel>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
+    final appSettings =
+        Provider.of<AppSettingsProvider>(context, listen: false);
+    final categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
 
     try {
       final result = await FilePicker.pickFiles(
@@ -392,6 +418,32 @@ class SettingsPageState extends State<SettingsPage> {
       // The restore sequence operates on app-scoped providers and must run to
       // completion even if this page is disposed mid-way; only the UI
       // feedback afterwards needs the widget alive.
+      await AtomicFinancialStore.instance.updateSections({
+        FinancialSections.transactions:
+            data.transactions.map((item) => item.toJson()).toList(),
+        FinancialSections.netWorthEntries:
+            data.netWorthEntries.map((item) => item.toJson()).toList(),
+        FinancialSections.selectedNetWorthMonth:
+            transactionModel.selectedNetWorthMonth.toIso8601String(),
+        FinancialSections.categoryBudgetLimits: data.categoryBudgetLimits,
+        FinancialSections.savingsGoals:
+            data.savingsGoals.map((item) => item.toJson()).toList(),
+        FinancialSections.recurringTransactions:
+            data.recurringTransactions.map((item) => item.toJson()).toList(),
+        FinancialSections.categories:
+            data.categories.map((item) => item.toJson()).toList(),
+        FinancialSections.transactionTags:
+            data.transactionTags.map((item) => item.toJson()).toList(),
+        FinancialSections.categorizationRules:
+            data.categorizationRules.map((item) => item.toJson()).toList(),
+        FinancialSections.appSettings: {
+          'baseCurrencyCode': data.baseCurrencyCode,
+          'localeOverride': data.localeOverride,
+          'appLockEnabled': data.appLockEnabled,
+          'autoLockTimeoutSeconds': data.autoLockTimeoutSeconds,
+          'hideBalances': data.hideBalances,
+        },
+      });
       await transactionModel.restoreFromBackup(
         transactions: data.transactions,
         netWorthEntries: data.netWorthEntries,
@@ -399,6 +451,18 @@ class SettingsPageState extends State<SettingsPage> {
         savingsGoals: data.savingsGoals,
       );
       await recurringModel.restoreFromBackup(data.recurringTransactions);
+      await categoryProvider.restoreFromBackup(data.categories);
+      await categorizationProvider.restoreFromBackup(
+        tags: data.transactionTags,
+        rules: data.categorizationRules,
+      );
+      await appSettings.restoreFromBackup(
+        baseCurrencyCode: data.baseCurrencyCode,
+        localeOverride: data.localeOverride,
+        appLockEnabled: data.appLockEnabled,
+        autoLockTimeoutSeconds: data.autoLockTimeoutSeconds,
+        hideBalances: data.hideBalances,
+      );
       if (data.themeMode != null) {
         await themeProvider.setThemeMode(data.themeMode!);
       }
@@ -519,6 +583,9 @@ class SettingsPageState extends State<SettingsPage> {
     final currentThemeMode = themeProvider.themeMode;
     final transactionModel = context.watch<TransactionModel>();
     final recurringModel = context.watch<RecurringTransactionModel>();
+    final appSettings = context.watch<AppSettingsProvider>();
+    final categoryProvider = context.watch<CategoryProvider>();
+    final categorizationProvider = context.watch<CategorizationProvider>();
 
     final transactionCount = transactionModel.transactions.length;
     final activeRecurring =
@@ -548,6 +615,138 @@ class SettingsPageState extends State<SettingsPage> {
                       isDark: isDark,
                       currentThemeMode: currentThemeMode,
                       onChanged: (mode) => themeProvider.setThemeMode(mode),
+                    ),
+                  ],
+                ),
+              ),
+              const _SectionEyebrow(label: 'PERSONALIZATION'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: GlowListCard(
+                  children: [
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.category_rounded,
+                      iconColor: AppColors.getAccent(isDark),
+                      title: 'Categories',
+                      subtitle:
+                          '${categoryProvider.categories.where((category) => !category.isArchived).length} active · custom names, icons, and order',
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (_) => const CategorySettingsPage(),
+                        ),
+                      ),
+                    ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.auto_awesome_rounded,
+                      iconColor: AppColors.getInfo(isDark),
+                      title: 'Tags & rules',
+                      subtitle:
+                          '${categorizationProvider.tags.length} tags · ${categorizationProvider.rules.length} rules',
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (_) => const CategorizationSettingsPage(),
+                        ),
+                      ),
+                    ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.payments_rounded,
+                      iconColor: AppColors.getIncome(isDark),
+                      title: 'Currency',
+                      subtitle: _currencyLabel(appSettings.baseCurrencyCode),
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                      onTap: () => _chooseCurrency(context, appSettings),
+                    ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.language_rounded,
+                      iconColor: AppColors.getInfo(isDark),
+                      title: 'Number format',
+                      subtitle: _localeLabel(appSettings.localeOverride),
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                      onTap: () => _chooseLocale(context, appSettings),
+                    ),
+                  ],
+                ),
+              ),
+              const _SectionEyebrow(label: 'PRIVACY'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: GlowListCard(
+                  children: [
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.lock_rounded,
+                      iconColor: AppColors.getAccent(isDark),
+                      title: 'App lock',
+                      subtitle: appSettings.appLockEnabled
+                          ? 'Lock after ${_lockTimeoutLabel(appSettings.autoLockTimeoutSeconds)}'
+                          : 'Require device authentication',
+                      trailing: Switch.adaptive(
+                        value: appSettings.appLockEnabled,
+                        onChanged: appSettings.setAppLockEnabled,
+                      ),
+                      onTap: null,
+                    ),
+                    if (appSettings.appLockEnabled)
+                      _SettingsRow(
+                        isDark: isDark,
+                        icon: Symbols.timer_rounded,
+                        iconColor: AppColors.getInfo(isDark),
+                        title: 'Lock delay',
+                        subtitle: _lockTimeoutLabel(
+                            appSettings.autoLockTimeoutSeconds),
+                        trailing: Icon(
+                          Symbols.chevron_right_rounded,
+                          size: 20,
+                          color: AppColors.getTextTertiaryColor(isDark),
+                        ),
+                        onTap: () => _chooseLockTimeout(context, appSettings),
+                      ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.visibility_off_rounded,
+                      iconColor: AppColors.getWarning(isDark),
+                      title: 'Hide balances',
+                      subtitle: 'Mask amounts throughout the app',
+                      trailing: Switch.adaptive(
+                        value: appSettings.hideBalances,
+                        onChanged: appSettings.setHideBalances,
+                      ),
+                      onTap: null,
+                    ),
+                    _SettingsRow(
+                      isDark: isDark,
+                      icon: Symbols.privacy_tip_rounded,
+                      iconColor: AppColors.getInfo(isDark),
+                      title: 'Privacy details',
+                      subtitle: 'What stays local and when data is shared',
+                      trailing: Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 20,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                      onTap: () => _showPrivacyDetails(context),
                     ),
                   ],
                 ),
@@ -729,9 +928,176 @@ class SettingsPageState extends State<SettingsPage> {
     final names = active.map((r) => r.description).take(3).join(', ');
     return '${active.length} active · $names';
   }
+
+  String _currencyLabel(String code) =>
+      '${_supportedCurrencies[code] ?? code} ($code)';
+
+  String _localeLabel(String? locale) =>
+      locale == null ? 'Match device' : (_supportedLocales[locale] ?? locale);
+
+  String _lockTimeoutLabel(int seconds) {
+    if (seconds == 0) return 'Immediately';
+    if (seconds < 60) return '$seconds seconds';
+    return '${seconds ~/ 60} minute${seconds == 60 ? '' : 's'}';
+  }
+
+  Future<void> _chooseCurrency(
+    BuildContext context,
+    AppSettingsProvider settings,
+  ) async {
+    final selected = await _showChoiceSheet<String>(
+      context,
+      title: 'Base currency',
+      current: settings.baseCurrencyCode,
+      choices: _supportedCurrencies,
+    );
+    if (selected != null) await settings.setBaseCurrencyCode(selected);
+  }
+
+  Future<void> _chooseLocale(
+    BuildContext context,
+    AppSettingsProvider settings,
+  ) async {
+    final choices = <String, String>{
+      'device': 'Match device',
+      ..._supportedLocales,
+    };
+    final selected = await _showChoiceSheet<String>(
+      context,
+      title: 'Number format',
+      current: settings.localeOverride ?? 'device',
+      choices: choices,
+    );
+    if (selected != null) {
+      await settings.setLocaleOverride(selected == 'device' ? null : selected);
+    }
+  }
+
+  Future<void> _chooseLockTimeout(
+    BuildContext context,
+    AppSettingsProvider settings,
+  ) async {
+    const choices = <int, String>{
+      0: 'Immediately',
+      30: '30 seconds',
+      60: '1 minute',
+      300: '5 minutes',
+      900: '15 minutes',
+    };
+    final selected = await _showChoiceSheet<int>(
+      context,
+      title: 'Lock delay',
+      current: settings.autoLockTimeoutSeconds,
+      choices: choices,
+    );
+    if (selected != null) {
+      await settings.setAutoLockTimeoutSeconds(selected);
+    }
+  }
+
+  Future<T?> _showChoiceSheet<T>(
+    BuildContext context, {
+    required String title,
+    required T current,
+    required Map<T, String> choices,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      useRootNavigator: true,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.75,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppDesign.spacingM),
+                child: Text(title, style: AppTypography.headingMedium),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final entry in choices.entries)
+                      ListTile(
+                        title: Text(entry.value),
+                        trailing: entry.key == current
+                            ? Icon(
+                                Symbols.check_rounded,
+                                color: AppColors.getAccent(
+                                  Theme.of(sheetContext).brightness ==
+                                      Brightness.dark,
+                                ),
+                              )
+                            : null,
+                        onTap: () => Navigator.pop(sheetContext, entry.key),
+                      ),
+                    const SizedBox(height: AppDesign.spacingS),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPrivacyDetails(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppDesign.getCardColor(dialogContext),
+        title: const Text('Your data in Budgie'),
+        content: const Text(
+          'Transactions, budgets, goals, settings, quick-entry parsing, and '
+          'insights are processed and stored on this device. Budgie does not '
+          'use a cloud account or send financial data to an AI service.\n\n'
+          'Data leaves Budgie only when you choose an export, backup, or share '
+          'action. Files are not encrypted after you share them, so choose '
+          'their destination carefully.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Done'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-/// Accent-gradient tinted brand card: Budgie mark + name + local-only note.
+const _supportedCurrencies = <String, String>{
+  'USD': 'US Dollar',
+  'CAD': 'Canadian Dollar',
+  'EUR': 'Euro',
+  'GBP': 'British Pound',
+  'AUD': 'Australian Dollar',
+  'JPY': 'Japanese Yen',
+  'CNY': 'Chinese Yuan',
+  'INR': 'Indian Rupee',
+  'KRW': 'South Korean Won',
+  'MXN': 'Mexican Peso',
+  'BRL': 'Brazilian Real',
+};
+
+const _supportedLocales = <String, String>{
+  'en_US': 'English (United States)',
+  'en_CA': 'English (Canada)',
+  'en_GB': 'English (United Kingdom)',
+  'en_AU': 'English (Australia)',
+  'de_DE': 'German (Germany)',
+  'fr_FR': 'French (France)',
+  'es_ES': 'Spanish (Spain)',
+  'ja_JP': 'Japanese (Japan)',
+};
+
+/// Accent-gradient tinted brand card: Budgie mark + privacy summary.
 class _BrandCard extends StatelessWidget {
   final bool isDark;
 
@@ -786,7 +1152,7 @@ class _BrandCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'All data stays on this device',
+                  'Local by default · no cloud account',
                   style: AppTypography.rowSubtitle.copyWith(
                     fontSize: 13,
                     color: AppColors.getTextSecondaryColor(isDark),

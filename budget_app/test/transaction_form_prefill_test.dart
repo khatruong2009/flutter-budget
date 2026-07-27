@@ -5,10 +5,41 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:budget_app/common.dart';
+import 'package:budget_app/categorization_provider.dart';
+import 'package:budget_app/categorization_rule.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_form.dart';
 import 'package:budget_app/transaction_model.dart';
+import 'package:budget_app/transaction_tag.dart';
 import 'package:budget_app/widgets/modern_text_field.dart';
+
+class _TestCategorizationProvider extends CategorizationProvider {
+  final TransactionTag tag;
+  final CategorizationRule rule;
+
+  _TestCategorizationProvider({
+    required this.tag,
+    required this.rule,
+  });
+
+  @override
+  List<TransactionTag> get tags => [tag];
+
+  @override
+  CategorizationSuggestion? suggest({
+    required TransactionTyp type,
+    required String description,
+    required double amount,
+  }) {
+    return rule.matches(
+      type: type,
+      description: description,
+      amount: amount,
+    )
+        ? CategorizationSuggestion(rule)
+        : null;
+  }
+}
 
 /// Pumps a minimal host that provides a [TransactionModel] and exposes a button
 /// which opens [showTransactionForm] with the supplied [type]/[prefill].
@@ -22,12 +53,20 @@ Future<void> _pumpForm(
   required TransactionModel model,
   required TransactionTyp type,
   Transaction? prefill,
+  Transaction? transactionToEdit,
   String? initialCategory,
+  CategorizationProvider? categorizationProvider,
   Function? addSpy,
 }) async {
   await tester.pumpWidget(
-    ChangeNotifierProvider<TransactionModel>.value(
-      value: model,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TransactionModel>.value(value: model),
+        if (categorizationProvider != null)
+          ChangeNotifierProvider<CategorizationProvider>.value(
+            value: categorizationProvider,
+          ),
+      ],
       child: MaterialApp(
         home: Scaffold(
           body: Builder(
@@ -38,6 +77,7 @@ Future<void> _pumpForm(
                   type,
                   addSpy ?? (a, b, c, d, e) {},
                   prefill: prefill,
+                  transactionToEdit: transactionToEdit,
                   initialCategory: initialCategory,
                 ),
                 child: const Text('open'),
@@ -176,6 +216,46 @@ void main() {
     expect(added.date, prefillDate);
   });
 
+  testWidgets('prefill applies merchant rule category and tags',
+      (tester) async {
+    final model = TransactionModel();
+    final tag = TransactionTag(id: 'tag-work', name: 'Work');
+    final rule = CategorizationRule(
+      merchantPattern: 'Acme',
+      transactionType: TransactionTyp.expense,
+      category: 'Groceries',
+      tagIds: [tag.id],
+    );
+    final categorization = _TestCategorizationProvider(tag: tag, rule: rule);
+    final prefill = Transaction(
+      type: TransactionTyp.expense,
+      description: 'Acme Market',
+      amount: 18.25,
+      category: 'General',
+      date: DateTime(2026, 7, 4),
+    );
+
+    await _pumpForm(
+      tester,
+      model: model,
+      type: TransactionTyp.expense,
+      prefill: prefill,
+      categorizationProvider: categorization,
+    );
+
+    final workChip = tester.widget<FilterChip>(
+      find.widgetWithText(FilterChip, 'Work'),
+    );
+    expect(workChip.selected, isTrue);
+    expect(find.text('Groceries'), findsOneWidget);
+
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+
+    expect(model.transactions.single.category, 'Groceries');
+    expect(model.transactions.single.tagIds, [tag.id]);
+  });
+
   testWidgets('income prefill submits with income type and category',
       (tester) async {
     final model = TransactionModel();
@@ -205,6 +285,54 @@ void main() {
     expect(added.type, TransactionTyp.income);
     expect(added.category, 'Salary');
     expect(added.amount, 3000.0);
+  });
+
+  testWidgets('editing updates in place and preserves recurring identity',
+      (tester) async {
+    final model = TransactionModel();
+    model.addTransaction(
+      TransactionTyp.expense,
+      'Rent',
+      1000,
+      'Housing',
+      DateTime(2026, 7, 1),
+      recurringTemplateId: 'rent-template',
+    );
+    final original = model.transactions.single;
+
+    await _pumpForm(
+      tester,
+      model: model,
+      type: TransactionTyp.expense,
+      transactionToEdit: original,
+    );
+
+    expect(find.text('Update'), findsOneWidget);
+    final amountField = find.descendant(
+      of: find.byWidgetPredicate(
+        (widget) => widget is ModernTextField && widget.label == 'Amount',
+      ),
+      matching: find.byType(TextField),
+    );
+    final descriptionField = find.descendant(
+      of: find.byWidgetPredicate(
+        (widget) => widget is ModernTextField && widget.label == 'Description',
+      ),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(amountField, '1100');
+    await tester.enterText(descriptionField, 'Updated rent');
+    await tester.tap(find.text('Update'));
+    await tester.pumpAndSettle();
+
+    expect(model.transactions, hasLength(1));
+    final updated = model.transactions.single;
+    expect(updated.id, original.id);
+    expect(updated.createdAt, original.createdAt);
+    expect(updated.updatedAt.isAfter(original.updatedAt), isTrue);
+    expect(updated.recurringTemplateId, 'rent-template');
+    expect(updated.description, 'Updated rent');
+    expect(updated.amount, 1100);
   });
 
   testWidgets('barrier tap does NOT dismiss the form when prefill != null',

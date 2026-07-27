@@ -13,6 +13,7 @@ import 'net_worth_entry.dart';
 import 'transaction_model.dart';
 import 'utils/platform_utils.dart';
 import 'widgets/month_selector.dart';
+import 'money_formatter.dart';
 
 // ---------- Main Page ----------
 
@@ -2944,37 +2945,20 @@ Future<void> _confirmDeleteNetWorthSnapshot({
 // ---------- Formatting helpers ----------
 
 String _formatCurrency(double value) {
-  final formatter = NumberFormat.currency(
-    locale: 'en_US',
-    symbol: '\$',
-    decimalDigits: 2,
-  );
-  return value < 0
-      ? '-${formatter.format(value.abs())}'
-      : formatter.format(value);
+  return MoneyFormatter.formatSigned(value);
 }
 
 String _formatCurrencyNoDecimals(double value) {
-  final formatter = NumberFormat.currency(
-    locale: 'en_US',
-    symbol: '\$',
-    decimalDigits: 0,
-  );
-  return value < 0
-      ? '-${formatter.format(value.abs())}'
-      : formatter.format(value);
+  return MoneyFormatter.formatSigned(value, decimalDigits: 0);
 }
 
 String _formatCompactCurrencyNoDecimals(double value) {
-  final absValue = value.abs();
-  final sign = value < 0 ? '-' : '';
-  if (absValue >= 1000000) {
-    final digits = absValue >= 10000000 ? 0 : 1;
-    return '$sign\$${(absValue / 1000000).toStringAsFixed(digits)}M';
+  if (value < 0) {
+    return '-${MoneyFormatter.format(
+      value.abs(),
+      decimalDigits: 1,
+      compact: true,
+    )}';
   }
-  if (absValue >= 1000) {
-    final digits = absValue >= 100000 ? 0 : 1;
-    return '$sign\$${(absValue / 1000).toStringAsFixed(digits)}k';
-  }
-  return '$sign\$${absValue.toStringAsFixed(0)}';
+  return MoneyFormatter.format(value, decimalDigits: 1, compact: true);
 }
