@@ -12,7 +12,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'net_worth_entry.dart';
+import 'recurring_transaction.dart';
+import 'safe_to_spend.dart';
 import 'savings_goal.dart';
+import 'storage/atomic_financial_store.dart';
 import 'storage/storage_keys.dart';
 import 'transaction.dart';
 import 'utils/platform_utils.dart';
@@ -136,6 +139,8 @@ class CsvImportSummary {
 }
 
 class TransactionModel extends ChangeNotifier {
+  static const _safeToSpendCalculator = SafeToSpendCalculator();
+
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
@@ -143,6 +148,7 @@ class TransactionModel extends ChangeNotifier {
   List<NetWorthEntry> _netWorthEntries = [];
   Map<String, double> _categoryBudgetLimits = {};
   List<SavingsGoal> _savingsGoals = [];
+  List<RecurringTransaction> _recurringProjection = [];
 
   DateTime get selectedNetWorthMonth => _selectedNetWorthMonth;
   List<NetWorthEntry> get netWorthEntries =>
@@ -179,10 +185,15 @@ class TransactionModel extends ChangeNotifier {
     _selectedNetWorthMonth = DateTime(date.year, date.month);
     notifyListeners();
 
+    final serializedMonth = _selectedNetWorthMonth.toIso8601String();
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.selectedNetWorthMonth,
+      serializedMonth,
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       StorageKeys.netWorthSelectedMonth,
-      _selectedNetWorthMonth.toIso8601String(),
+      serializedMonth,
     );
   }
 
@@ -210,6 +221,7 @@ class TransactionModel extends ChangeNotifier {
     String category,
     DateTime date, {
     String? recurringTemplateId,
+    List<String> tagIds = const [],
   }) {
     final newTransaction = Transaction(
       type: type,
@@ -218,6 +230,7 @@ class TransactionModel extends ChangeNotifier {
       category: category,
       date: date,
       recurringTemplateId: recurringTemplateId,
+      tagIds: tagIds,
     );
     transactions.add(newTransaction);
     saveTransactions(transactions);
@@ -226,8 +239,12 @@ class TransactionModel extends ChangeNotifier {
 
   // save transactions
   Future<void> saveTransactions(List<Transaction> transactions) async {
-    final prefs = await SharedPreferences.getInstance();
     final jsonTransactions = transactions.map((t) => t.toJson()).toList();
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.transactions,
+      jsonTransactions,
+    );
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
         StorageKeys.transactions, jsonEncode(jsonTransactions));
     await _syncWidgetSafeToSpend();
@@ -242,20 +259,18 @@ class TransactionModel extends ChangeNotifier {
     if (!PlatformUtils.isIOS) return;
 
     final now = DateTime.now();
-    var safeToSpend = 0.0;
-    for (final transaction in transactions) {
-      if (transaction.date.year != now.year ||
-          transaction.date.month != now.month) {
-        continue;
-      }
-      safeToSpend += transaction.type == TransactionTyp.income
-          ? transaction.amount
-          : -transaction.amount;
-    }
+    final breakdown = _safeToSpendCalculator.calculate(
+      transactions: transactions,
+      recurringTransactions: _recurringProjection,
+      categoryBudgetLimits: _categoryBudgetLimits,
+      savingsGoals: _savingsGoals,
+      month: now,
+      asOf: now,
+    );
 
     try {
       await _widgetDataChannel.invokeMethod('updateSafeToSpend', {
-        'amount': safeToSpend,
+        'amount': breakdown.safeToSpend,
         'month': '${now.year}-${now.month.toString().padLeft(2, '0')}',
       });
     } on PlatformException {
@@ -265,52 +280,85 @@ class TransactionModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updateRecurringProjection(
+    List<RecurringTransaction> templates,
+  ) async {
+    _recurringProjection = List<RecurringTransaction>.of(templates);
+    await _syncWidgetSafeToSpend();
+  }
+
   // load transactions
   Future<void> getTransactions() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(StorageKeys.transactions);
-    final netWorthEntriesJson = prefs.getString(StorageKeys.netWorthEntries);
-    final netWorthMonthString =
-        prefs.getString(StorageKeys.netWorthSelectedMonth);
-    final categoryBudgetLimitsJson =
-        prefs.getString(StorageKeys.categoryBudgetLimits);
-    final savingsGoalsJson = prefs.getString(StorageKeys.savingsGoals);
+    final snapshot = await AtomicFinancialStore.instance.read();
+    final sections = snapshot.sections;
+    final storedTransactions = sections[FinancialSections.transactions];
 
-    if (jsonString != null && jsonString.isNotEmpty) {
-      final jsonList = jsonDecode(jsonString) as List<dynamic>;
-      transactions = jsonList.map((e) => Transaction.fromJson(e)).toList();
+    if (storedTransactions is List && storedTransactions.isNotEmpty) {
+      final jsonList = storedTransactions;
+      final seenIds = <String>{};
+      var needsIdentityMigration = false;
+      transactions = [];
+      for (final item in jsonList) {
+        final json = item as Map<String, dynamic>;
+        var transaction = Transaction.fromJson(json);
+        final persistedId = json['id'];
+        final hasPersistedIdentity =
+            persistedId is String && persistedId.trim().isNotEmpty;
+        if (!hasPersistedIdentity || !seenIds.add(transaction.id)) {
+          transaction = transaction.copyWith(id: Transaction.generateId());
+          seenIds.add(transaction.id);
+          needsIdentityMigration = true;
+        }
+        if (json['createdAt'] is! String || json['updatedAt'] is! String) {
+          needsIdentityMigration = true;
+        }
+        transactions.add(transaction);
+      }
+      if (needsIdentityMigration) {
+        await saveTransactions(transactions);
+      }
+    } else {
+      transactions = [];
     }
 
-    if (netWorthEntriesJson != null && netWorthEntriesJson.isNotEmpty) {
-      final jsonList = jsonDecode(netWorthEntriesJson) as List<dynamic>;
-      _netWorthEntries = jsonList
+    final storedNetWorthEntries = sections[FinancialSections.netWorthEntries];
+    if (storedNetWorthEntries is List && storedNetWorthEntries.isNotEmpty) {
+      _netWorthEntries = storedNetWorthEntries
           .map((entry) => NetWorthEntry.fromJson(entry as Map<String, dynamic>))
           .toList();
     } else {
       _netWorthEntries = await _migrateLegacyNetWorthIfNeeded(prefs);
+      if (_netWorthEntries.isNotEmpty) {
+        await _saveNetWorthEntries();
+      }
     }
 
-    if (netWorthMonthString != null && netWorthMonthString.isNotEmpty) {
+    final netWorthMonthString =
+        sections[FinancialSections.selectedNetWorthMonth];
+    if (netWorthMonthString is String && netWorthMonthString.isNotEmpty) {
       final parsedMonth = DateTime.tryParse(netWorthMonthString);
       if (parsedMonth != null) {
         _selectedNetWorthMonth = DateTime(parsedMonth.year, parsedMonth.month);
       }
     }
 
-    if (categoryBudgetLimitsJson != null &&
-        categoryBudgetLimitsJson.isNotEmpty) {
-      final decoded =
-          jsonDecode(categoryBudgetLimitsJson) as Map<String, dynamic>;
-      _categoryBudgetLimits = decoded.map(
+    final storedBudgetLimits = sections[FinancialSections.categoryBudgetLimits];
+    if (storedBudgetLimits is Map) {
+      _categoryBudgetLimits = Map<String, dynamic>.from(storedBudgetLimits).map(
         (category, value) => MapEntry(category, (value as num).toDouble()),
       )..removeWhere((_, limit) => limit <= 0);
+    } else {
+      _categoryBudgetLimits = {};
     }
 
-    if (savingsGoalsJson != null && savingsGoalsJson.isNotEmpty) {
-      final jsonList = jsonDecode(savingsGoalsJson) as List<dynamic>;
-      _savingsGoals = jsonList
+    final storedSavingsGoals = sections[FinancialSections.savingsGoals];
+    if (storedSavingsGoals is List) {
+      _savingsGoals = storedSavingsGoals
           .map((goal) => SavingsGoal.fromJson(goal as Map<String, dynamic>))
           .toList();
+    } else {
+      _savingsGoals = [];
     }
 
     await _syncWidgetSafeToSpend();
@@ -325,10 +373,43 @@ class TransactionModel extends ChangeNotifier {
         .toList();
   }
 
-  void deleteTransaction(Transaction transactionToDelete) {
-    transactions.remove(transactionToDelete);
+  bool updateTransaction(String id, Transaction updatedTransaction) {
+    final index =
+        transactions.indexWhere((transaction) => transaction.id == id);
+    if (index == -1) {
+      return false;
+    }
+
+    final existing = transactions[index];
+    final now = DateTime.now();
+    transactions[index] = updatedTransaction.copyWith(
+      id: existing.id,
+      recurringTemplateId: updatedTransaction.recurringTemplateId ??
+          existing.recurringTemplateId,
+      createdAt: existing.createdAt,
+      updatedAt: now.isAfter(existing.updatedAt)
+          ? now
+          : existing.updatedAt.add(const Duration(microseconds: 1)),
+    );
     saveTransactions(transactions);
     notifyListeners();
+    return true;
+  }
+
+  bool deleteTransactionById(String id) {
+    final initialLength = transactions.length;
+    transactions.removeWhere((transaction) => transaction.id == id);
+    if (transactions.length == initialLength) {
+      return false;
+    }
+
+    saveTransactions(transactions);
+    notifyListeners();
+    return true;
+  }
+
+  void deleteTransaction(Transaction transactionToDelete) {
+    deleteTransactionById(transactionToDelete.id);
   }
 
   List<NetWorthEntry> getNetWorthEntriesForMonth(
@@ -645,6 +726,67 @@ class TransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Renames the legacy category string everywhere it is used by transactions
+  /// and expense budget limits. Category definitions themselves are owned by
+  /// `CategoryProvider`.
+  Future<void> renameCategory({
+    required TransactionTyp type,
+    required String oldName,
+    required String newName,
+  }) async {
+    final trimmedName = newName.trim();
+    if (oldName == trimmedName || trimmedName.isEmpty) return;
+
+    var transactionsChanged = false;
+    transactions = transactions.map((transaction) {
+      if (transaction.type != type || transaction.category != oldName) {
+        return transaction;
+      }
+      transactionsChanged = true;
+      return transaction.copyWith(
+        category: trimmedName,
+        updatedAt: DateTime.now(),
+      );
+    }).toList();
+
+    var budgetsChanged = false;
+    if (type == TransactionTyp.expense &&
+        _categoryBudgetLimits.containsKey(oldName)) {
+      final oldLimit = _categoryBudgetLimits[oldName]!;
+      _categoryBudgetLimits = Map<String, double>.from(_categoryBudgetLimits)
+        ..remove(oldName)
+        ..putIfAbsent(trimmedName, () => oldLimit);
+      budgetsChanged = true;
+    }
+
+    if (transactionsChanged && budgetsChanged) {
+      final serializedTransactions =
+          transactions.map((transaction) => transaction.toJson()).toList();
+      final serializedBudgets = Map<String, double>.from(_categoryBudgetLimits);
+      await AtomicFinancialStore.instance.updateSections({
+        FinancialSections.transactions: serializedTransactions,
+        FinancialSections.categoryBudgetLimits: serializedBudgets,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await Future.wait([
+        prefs.setString(
+          StorageKeys.transactions,
+          jsonEncode(serializedTransactions),
+        ),
+        prefs.setString(
+          StorageKeys.categoryBudgetLimits,
+          jsonEncode(serializedBudgets),
+        ),
+      ]);
+      await _syncWidgetSafeToSpend();
+    } else if (transactionsChanged) {
+      await saveTransactions(transactions);
+    } else if (budgetsChanged) {
+      await _saveCategoryBudgetLimits();
+    }
+    if (transactionsChanged || budgetsChanged) notifyListeners();
+  }
+
   double getCategorySpendingForMonth(String category, DateTime month) {
     return getTransactionsForMonth(month)
         .where((transaction) =>
@@ -903,8 +1045,8 @@ class TransactionModel extends ChangeNotifier {
       }
 
       if (row.length != 5) {
-        rowErrors.add(
-            'Row $rowNumber: expected 5 columns but found ${row.length}');
+        rowErrors
+            .add('Row $rowNumber: expected 5 columns but found ${row.length}');
         continue;
       }
 
@@ -1004,7 +1146,15 @@ class TransactionModel extends ChangeNotifier {
     if (newTransactions.isEmpty) {
       return;
     }
-    transactions.addAll(newTransactions);
+    final seenIds = transactions.map((transaction) => transaction.id).toSet();
+    transactions.addAll(newTransactions.map((transaction) {
+      if (seenIds.add(transaction.id)) {
+        return transaction;
+      }
+      final imported = transaction.copyWith(id: Transaction.generateId());
+      seenIds.add(imported.id);
+      return imported;
+    }));
     await saveTransactions(transactions);
     notifyListeners();
   }
@@ -1017,16 +1167,48 @@ class TransactionModel extends ChangeNotifier {
     required Map<String, double> categoryBudgetLimits,
     required List<SavingsGoal> savingsGoals,
   }) async {
-    this.transactions = List<Transaction>.of(transactions);
-    _netWorthEntries = List<NetWorthEntry>.of(netWorthEntries);
-    _categoryBudgetLimits = Map<String, double>.of(categoryBudgetLimits)
-      ..removeWhere((_, limit) => limit <= 0);
-    _savingsGoals = List<SavingsGoal>.of(savingsGoals);
+    final seenIds = <String>{};
+    final restoredTransactions = transactions.map((transaction) {
+      if (seenIds.add(transaction.id)) {
+        return transaction;
+      }
+      final restored = transaction.copyWith(id: Transaction.generateId());
+      seenIds.add(restored.id);
+      return restored;
+    }).toList();
+    final restoredNetWorthEntries = List<NetWorthEntry>.of(netWorthEntries);
+    final restoredCategoryBudgetLimits =
+        Map<String, double>.of(categoryBudgetLimits)
+          ..removeWhere((_, limit) => limit <= 0);
+    final restoredSavingsGoals = List<SavingsGoal>.of(savingsGoals);
 
-    await saveTransactions(this.transactions);
-    await _saveNetWorthEntries();
-    await _saveCategoryBudgetLimits();
-    await _saveSavingsGoals();
+    final serializedTransactions =
+        restoredTransactions.map((entry) => entry.toJson()).toList();
+    final serializedNetWorth =
+        restoredNetWorthEntries.map((entry) => entry.toJson()).toList();
+    final serializedSavingsGoals =
+        restoredSavingsGoals.map((goal) => goal.toJson()).toList();
+    await AtomicFinancialStore.instance.updateSections({
+      FinancialSections.transactions: serializedTransactions,
+      FinancialSections.netWorthEntries: serializedNetWorth,
+      FinancialSections.selectedNetWorthMonth:
+          _selectedNetWorthMonth.toIso8601String(),
+      FinancialSections.categoryBudgetLimits: restoredCategoryBudgetLimits,
+      FinancialSections.savingsGoals: serializedSavingsGoals,
+    });
+
+    this.transactions = restoredTransactions;
+    _netWorthEntries = restoredNetWorthEntries;
+    _categoryBudgetLimits = restoredCategoryBudgetLimits;
+    _savingsGoals = restoredSavingsGoals;
+
+    await _writeLegacyOwnedSections(
+      serializedTransactions: serializedTransactions,
+      serializedNetWorthEntries: serializedNetWorth,
+      serializedCategoryBudgetLimits: restoredCategoryBudgetLimits,
+      serializedSavingsGoals: serializedSavingsGoals,
+    );
+    await _syncWidgetSafeToSpend();
 
     notifyListeners();
   }
@@ -1245,27 +1427,75 @@ class TransactionModel extends ChangeNotifier {
   }
 
   Future<void> _saveNetWorthEntries() async {
+    final serialized = _netWorthEntries.map((entry) => entry.toJson()).toList();
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.netWorthEntries,
+      serialized,
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       StorageKeys.netWorthEntries,
-      jsonEncode(_netWorthEntries.map((entry) => entry.toJson()).toList()),
+      jsonEncode(serialized),
     );
   }
 
   Future<void> _saveCategoryBudgetLimits() async {
+    final serialized = Map<String, double>.from(_categoryBudgetLimits);
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.categoryBudgetLimits,
+      serialized,
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       StorageKeys.categoryBudgetLimits,
-      jsonEncode(_categoryBudgetLimits),
+      jsonEncode(serialized),
     );
+    await _syncWidgetSafeToSpend();
   }
 
   Future<void> _saveSavingsGoals() async {
+    final serialized = _savingsGoals.map((goal) => goal.toJson()).toList();
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.savingsGoals,
+      serialized,
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       StorageKeys.savingsGoals,
-      jsonEncode(_savingsGoals.map((goal) => goal.toJson()).toList()),
+      jsonEncode(serialized),
     );
+    await _syncWidgetSafeToSpend();
+  }
+
+  Future<void> _writeLegacyOwnedSections({
+    required List<Map<String, dynamic>> serializedTransactions,
+    required List<Map<String, dynamic>> serializedNetWorthEntries,
+    required Map<String, double> serializedCategoryBudgetLimits,
+    required List<Map<String, dynamic>> serializedSavingsGoals,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await Future.wait([
+      prefs.setString(
+        StorageKeys.transactions,
+        jsonEncode(serializedTransactions),
+      ),
+      prefs.setString(
+        StorageKeys.netWorthEntries,
+        jsonEncode(serializedNetWorthEntries),
+      ),
+      prefs.setString(
+        StorageKeys.netWorthSelectedMonth,
+        _selectedNetWorthMonth.toIso8601String(),
+      ),
+      prefs.setString(
+        StorageKeys.categoryBudgetLimits,
+        jsonEncode(serializedCategoryBudgetLimits),
+      ),
+      prefs.setString(
+        StorageKeys.savingsGoals,
+        jsonEncode(serializedSavingsGoals),
+      ),
+    ]);
   }
 
   Future<List<NetWorthEntry>> _migrateLegacyNetWorthIfNeeded(

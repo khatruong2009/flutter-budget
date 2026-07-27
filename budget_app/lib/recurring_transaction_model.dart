@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'recurring_transaction.dart';
 import 'storage/storage_keys.dart';
+import 'storage/atomic_financial_store.dart';
+import 'transaction.dart';
 
 /// State management class for recurring transactions
 /// Extends ChangeNotifier to integrate with Provider pattern
@@ -33,6 +35,24 @@ class RecurringTransactionModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> renameCategory({
+    required TransactionTyp type,
+    required String oldName,
+    required String newName,
+  }) async {
+    var changed = false;
+    recurringTransactions = recurringTransactions.map((template) {
+      if (template.type != type || template.category != oldName) {
+        return template;
+      }
+      changed = true;
+      return template.copyWith(category: newName);
+    }).toList();
+    if (!changed) return;
+    await saveRecurringTransactions();
+    notifyListeners();
+  }
+
   /// Get a specific recurring transaction by ID
   RecurringTransaction? getRecurringTransaction(String id) {
     try {
@@ -47,6 +67,10 @@ class RecurringTransactionModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonTransactions =
         recurringTransactions.map((r) => r.toJson()).toList();
+    await AtomicFinancialStore.instance.updateSection(
+      FinancialSections.recurringTransactions,
+      jsonTransactions,
+    );
     await prefs.setString(
         StorageKeys.recurringTransactions, jsonEncode(jsonTransactions));
   }
@@ -62,12 +86,22 @@ class RecurringTransactionModel extends ChangeNotifier {
   /// Load recurring transactions from SharedPreferences
   Future<void> loadRecurringTransactions() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(StorageKeys.recurringTransactions);
-    if (jsonString != null && jsonString.isNotEmpty) {
-      final jsonList = jsonDecode(jsonString) as List;
+    final snapshot = await AtomicFinancialStore.instance.read();
+    final stored = snapshot.sections[FinancialSections.recurringTransactions];
+    if (stored is List && stored.isNotEmpty) {
+      final jsonList = stored;
       recurringTransactions =
           jsonList.map((e) => RecurringTransaction.fromJson(e)).toList();
       notifyListeners();
+    } else {
+      final jsonString = prefs.getString(StorageKeys.recurringTransactions);
+      if (jsonString != null && jsonString.isNotEmpty) {
+        final jsonList = jsonDecode(jsonString) as List;
+        recurringTransactions =
+            jsonList.map((e) => RecurringTransaction.fromJson(e)).toList();
+        await saveRecurringTransactions();
+        notifyListeners();
+      }
     }
   }
 

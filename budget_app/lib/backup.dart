@@ -3,13 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart' show ThemeMode;
 
 import 'net_worth_entry.dart';
+import 'category_definition.dart';
+import 'categorization_rule.dart';
 import 'recurring_transaction.dart';
 import 'savings_goal.dart';
 import 'transaction.dart';
+import 'transaction_tag.dart';
 
 /// Bumped whenever the backup envelope or any covered model's serialization
 /// changes in a way that older apps could not read.
-const int kBackupSchemaVersion = 1;
+const int kBackupSchemaVersion = 3;
 
 /// Everything a full backup carries. Pure data — no IO, no persistence.
 class BackupData {
@@ -19,6 +22,14 @@ class BackupData {
   final List<SavingsGoal> savingsGoals;
   final List<RecurringTransaction> recurringTransactions;
   final ThemeMode? themeMode; // null => do not change theme on restore
+  final List<BudgetCategory> categories;
+  final List<TransactionTag> transactionTags;
+  final List<CategorizationRule> categorizationRules;
+  final String baseCurrencyCode;
+  final String? localeOverride;
+  final bool appLockEnabled;
+  final int autoLockTimeoutSeconds;
+  final bool hideBalances;
 
   const BackupData({
     required this.transactions,
@@ -27,6 +38,14 @@ class BackupData {
     required this.savingsGoals,
     required this.recurringTransactions,
     this.themeMode,
+    this.categories = const [],
+    this.transactionTags = const [],
+    this.categorizationRules = const [],
+    this.baseCurrencyCode = 'USD',
+    this.localeOverride,
+    this.appLockEnabled = false,
+    this.autoLockTimeoutSeconds = 60,
+    this.hideBalances = false,
   });
 }
 
@@ -49,6 +68,16 @@ String encodeBackup(
       'recurringTransactions':
           data.recurringTransactions.map((r) => r.toJson()).toList(),
       'themeMode': _themeModeToString(data.themeMode),
+      'categories': data.categories.map((item) => item.toJson()).toList(),
+      'transactionTags':
+          data.transactionTags.map((item) => item.toJson()).toList(),
+      'categorizationRules':
+          data.categorizationRules.map((item) => item.toJson()).toList(),
+      'baseCurrencyCode': data.baseCurrencyCode,
+      'localeOverride': data.localeOverride,
+      'appLockEnabled': data.appLockEnabled,
+      'autoLockTimeoutSeconds': data.autoLockTimeoutSeconds,
+      'hideBalances': data.hideBalances,
     },
   };
 
@@ -91,16 +120,61 @@ BackupData decodeBackup(String content) {
     throw const FormatException('This backup file is missing its data.');
   }
 
+  final categories = _decodeList(data['categories'], BudgetCategory.fromJson);
+  final tags = _decodeList(data['transactionTags'], TransactionTag.fromJson);
+  final rules =
+      _decodeList(data['categorizationRules'], CategorizationRule.fromJson);
+  final categoryIds = categories.map((item) => item.id).toSet();
+  final tagIds = tags.map((item) => item.id).toSet();
+  final ruleIds = rules.map((item) => item.id).toSet();
+  _require(categoryIds.length == categories.length);
+  _require(tagIds.length == tags.length && ruleIds.length == rules.length);
+  _require(rules.every(
+    (rule) => rule.tagIds.every(tagIds.contains),
+  ));
+  if (categories.isNotEmpty) {
+    _require(BudgetCategoryType.values.every(
+      (type) => categories.any(
+        (category) => category.type == type && !category.isArchived,
+      ),
+    ));
+  }
+  final localeRaw = data['localeOverride'];
+  _require(localeRaw == null || localeRaw is String);
+  final appLockRaw = data['appLockEnabled'];
+  final hideBalancesRaw = data['hideBalances'];
+  _require(appLockRaw == null || appLockRaw is bool);
+  _require(hideBalancesRaw == null || hideBalancesRaw is bool);
+  final timeoutRaw = data['autoLockTimeoutSeconds'];
+  _require(timeoutRaw == null || timeoutRaw is num);
+  final timeout = (timeoutRaw as num?)?.toInt() ?? 60;
+  _require(timeout >= 0);
+
   return BackupData(
     transactions: _decodeList(data['transactions'], _backupTransaction),
-    netWorthEntries:
-        _decodeList(data['netWorthEntries'], _backupNetWorthEntry),
+    netWorthEntries: _decodeList(data['netWorthEntries'], _backupNetWorthEntry),
     categoryBudgetLimits: _decodeBudgetLimits(data['categoryBudgetLimits']),
     savingsGoals: _decodeList(data['savingsGoals'], _backupSavingsGoal),
     recurringTransactions:
         _decodeList(data['recurringTransactions'], _backupRecurring),
     themeMode: _themeModeFromString(data['themeMode']),
+    categories: categories,
+    transactionTags: tags,
+    categorizationRules: rules,
+    baseCurrencyCode: _decodeCurrency(data['baseCurrencyCode']),
+    localeOverride: localeRaw as String?,
+    appLockEnabled: appLockRaw as bool? ?? false,
+    autoLockTimeoutSeconds: timeout,
+    hideBalances: hideBalancesRaw as bool? ?? false,
   );
+}
+
+String _decodeCurrency(dynamic raw) {
+  if (raw == null) return 'USD';
+  if (raw is! String || raw.trim().length != 3) {
+    throw const FormatException('This backup has an invalid currency.');
+  }
+  return raw.trim().toUpperCase();
 }
 
 // The model fromJson factories are lenient: unknown type strings coerce to a
@@ -160,9 +234,7 @@ List<T> _decodeList<T>(
   }
   try {
     final list = raw as List;
-    return list
-        .map((item) => fromJson(item as Map<String, dynamic>))
-        .toList();
+    return list.map((item) => fromJson(item as Map<String, dynamic>)).toList();
   } catch (_) {
     throw const FormatException('This backup file is corrupt or incomplete.');
   }

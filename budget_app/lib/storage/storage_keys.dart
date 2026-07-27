@@ -41,6 +41,28 @@ class StorageKeys {
   /// `OnboardingTutorialGate`.
   static const String onboardingCompleted = 'onboarding_completed';
 
+  /// Encoded list of user-manageable income and expense category definitions.
+  /// Owned by `CategoryProvider`.
+  static const String categories = 'categories_v1';
+
+  /// ISO 4217 code used to format every amount. Owned by
+  /// `AppSettingsProvider`.
+  static const String baseCurrencyCode = 'base_currency_code';
+
+  /// Optional locale override (for example `en_US`). An absent value follows
+  /// the device locale. Owned by `AppSettingsProvider`.
+  static const String localeOverride = 'locale_override';
+
+  /// Privacy controls. Authentication enforcement is owned by the app shell;
+  /// the preferences live in `AppSettingsProvider`.
+  static const String appLockEnabled = 'app_lock_enabled';
+  static const String autoLockTimeoutSeconds = 'auto_lock_timeout_seconds';
+  static const String hideBalances = 'hide_balances';
+
+  /// User-defined transaction tags and merchant categorization rules.
+  static const String transactionTags = 'transaction_tags_v1';
+  static const String categorizationRules = 'categorization_rules_v1';
+
   // --- Legacy keys (read-only, used for one-time migration) ---
 
   /// Pre-v2 single-value starting-assets total. Migrated into

@@ -152,6 +152,7 @@ void main() {
       expect(transaction.amount, recurring.amount);
       expect(transaction.category, recurring.category);
       expect(transaction.date, DateTime(2024, 2, 1));
+      expect(transaction.recurringTemplateId, recurring.id);
     });
 
     test('should create copy with updated fields', () {

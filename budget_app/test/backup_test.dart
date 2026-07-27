@@ -1,21 +1,27 @@
 import 'dart:convert';
 
 import 'package:budget_app/backup.dart';
+import 'package:budget_app/categorization_rule.dart';
+import 'package:budget_app/category_definition.dart';
 import 'package:budget_app/net_worth_entry.dart';
 import 'package:budget_app/recurring_transaction.dart';
 import 'package:budget_app/savings_goal.dart';
 import 'package:budget_app/transaction.dart';
+import 'package:budget_app/transaction_tag.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void expectTransactionEquals(Transaction actual, Transaction expected) {
+  expect(actual.id, expected.id);
   expect(actual.type, expected.type);
   expect(actual.description, expected.description);
   expect(actual.amount, expected.amount);
   expect(actual.category, expected.category);
   expect(actual.date, expected.date);
   expect(actual.recurringTemplateId, expected.recurringTemplateId);
+  expect(actual.createdAt, expected.createdAt);
+  expect(actual.updatedAt, expected.updatedAt);
 }
 
 void expectSnapshotEquals(NetWorthSnapshot actual, NetWorthSnapshot expected) {
@@ -160,6 +166,44 @@ void main() {
     savingsGoals: savingsGoals,
     recurringTransactions: recurringTransactions,
     themeMode: ThemeMode.dark,
+    categories: const [
+      BudgetCategory(
+        id: 'expense-groceries',
+        type: BudgetCategoryType.expense,
+        name: 'Groceries',
+        iconIdentifier: 'cart',
+        colorToken: 'green',
+        sortOrder: 0,
+        isArchived: false,
+        isBuiltIn: true,
+      ),
+      BudgetCategory(
+        id: 'income-salary',
+        type: BudgetCategoryType.income,
+        name: 'Salary',
+        iconIdentifier: 'payments',
+        colorToken: 'blue',
+        sortOrder: 0,
+        isArchived: false,
+        isBuiltIn: true,
+      ),
+    ],
+    transactionTags: [
+      TransactionTag(id: 'tag-work', name: 'Work', colorToken: 'blue'),
+    ],
+    categorizationRules: [
+      CategorizationRule(
+        id: 'rule-coffee',
+        merchantPattern: 'Coffee',
+        category: 'Groceries',
+        tagIds: const ['tag-work'],
+      ),
+    ],
+    baseCurrencyCode: 'CAD',
+    localeOverride: 'en_CA',
+    appLockEnabled: true,
+    autoLockTimeoutSeconds: 30,
+    hideBalances: true,
   );
 
   const appVersion = '1.2.3';
@@ -190,15 +234,32 @@ void main() {
     expect(decoded.recurringTransactions, recurringTransactions);
 
     expect(decoded.themeMode, ThemeMode.dark);
+    expect(
+      decoded.categories.map((category) => category.toJson()),
+      backup.categories.map((category) => category.toJson()),
+    );
+    expect(
+      decoded.transactionTags.map((tag) => tag.toJson()),
+      backup.transactionTags.map((tag) => tag.toJson()),
+    );
+    expect(
+      decoded.categorizationRules.map((rule) => rule.toJson()),
+      backup.categorizationRules.map((rule) => rule.toJson()),
+    );
+    expect(decoded.baseCurrencyCode, 'CAD');
+    expect(decoded.localeOverride, 'en_CA');
+    expect(decoded.appLockEnabled, isTrue);
+    expect(decoded.autoLockTimeoutSeconds, 30);
+    expect(decoded.hideBalances, isTrue);
 
     // Envelope shape.
     final json = jsonDecode(encoded) as Map<String, dynamic>;
-    expect(json['schemaVersion'], 1);
+    expect(json['schemaVersion'], 3);
     expect(json['app'], 'budgie');
     expect(json['appVersion'], appVersion);
     expect(json['exportedAt'], exportedAt.toIso8601String());
     final data = json['data'] as Map<String, dynamic>;
-    expect(data.length, 6);
+    expect(data.length, 14);
     expect(
       data.keys,
       containsAll(<String>[
@@ -208,6 +269,14 @@ void main() {
         'savingsGoals',
         'recurringTransactions',
         'themeMode',
+        'categories',
+        'transactionTags',
+        'categorizationRules',
+        'baseCurrencyCode',
+        'localeOverride',
+        'appLockEnabled',
+        'autoLockTimeoutSeconds',
+        'hideBalances',
       ]),
     );
   });
@@ -226,6 +295,20 @@ void main() {
       );
       expect(decodeBackup(encoded).themeMode, mode);
     }
+  });
+
+  test('schema 1 transactions without identity remain importable', () {
+    const legacy = '{"schemaVersion":1,"data":{"transactions":['
+        '{"type":"expense","description":"Legacy","amount":12.5,'
+        '"category":"Other","date":"2024-01-02T00:00:00.000",'
+        '"recurringTemplateId":"rec-legacy"}]}}';
+
+    final transaction = decodeBackup(legacy).transactions.single;
+
+    expect(transaction.id, isNotEmpty);
+    expect(transaction.createdAt, transaction.date);
+    expect(transaction.updatedAt, transaction.date);
+    expect(transaction.recurringTemplateId, 'rec-legacy');
   });
 
   test('decode rejects invalid content with a FormatException', () {
@@ -339,7 +422,8 @@ void main() {
         '"category":"Health","pattern":"weekly",'
         '"startDate":"2026-07-01T00:00:00.000",'
         '"nextOccurrence":"2026-07-08T00:00:00.000","isActive":true}]}}';
-    expect(decodeBackup(weekly).recurringTransactions.single.dayOfMonth, isNull);
+    expect(
+        decodeBackup(weekly).recurringTransactions.single.dayOfMonth, isNull);
   });
 
   test('absent sections decode to empty collections and null theme', () {
