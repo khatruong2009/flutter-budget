@@ -189,7 +189,7 @@ struct BudgetVoiceAddEntryView: View {
     VStack(spacing: 0) {
       BudgieWidgetHeader(safeToSpend: entry.safeToSpend)
       Spacer(minLength: 0)
-      Image(systemName: "mic.fill")
+      Image(systemName: "square.and.pencil")
         .font(.system(size: 26))
         .foregroundColor(.white)
         .frame(width: 52, height: 52)
@@ -212,8 +212,8 @@ struct BudgetVoiceAddWidget: Widget {
       BudgetVoiceAddEntryView(entry: entry)
         .widgetURL(URL(string: "budgetapp://voice-add")!)
     }
-    .configurationDisplayName("Voice Add")
-    .description("Speak an expense and Budgie logs it.")
+    .configurationDisplayName("Quick Entry")
+    .description("Type a transaction and review it before saving.")
     .supportedFamilies([.systemSmall])
   }
 }
