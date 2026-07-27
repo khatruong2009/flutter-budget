@@ -15,7 +15,13 @@ import 'transaction.dart';
 import 'utils/platform_enhancements.dart';
 import 'design_system.dart';
 import 'widgets/voice_recording_sheet.dart';
+import 'widgets/app_privacy_gate.dart';
 import 'onboarding_tutorial.dart';
+import 'app_settings_provider.dart';
+import 'category_provider.dart';
+import 'category_definition.dart';
+import 'categorization_provider.dart';
+import 'storage/atomic_financial_store.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -27,6 +33,9 @@ void main() {
         ChangeNotifierProvider(
             create: (context) => RecurringTransactionModel()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => AppSettingsProvider()),
+        ChangeNotifierProvider(create: (context) => CategoryProvider()),
+        ChangeNotifierProvider(create: (context) => CategorizationProvider()),
       ],
       child: const AppContainer(child: MyApp()),
     ),
@@ -41,11 +50,13 @@ class AppContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final appSettings = Provider.of<AppSettingsProvider>(context);
 
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Budgeting App',
+      locale: appSettings.locale,
       // Platform-specific scroll behavior
       scrollBehavior: const PlatformScrollBehavior(),
       theme: ThemeData(
@@ -155,6 +166,8 @@ class _MyAppState extends State<MyApp> {
   String? _lastHandledLink;
   DateTime? _lastHandledLinkAt;
   Future<void>? _initFuture;
+  RecurringTransactionModel? _observedRecurringModel;
+  TransactionModel? _projectionTransactionModel;
 
   @override
   void initState() {
@@ -176,10 +189,27 @@ class _MyAppState extends State<MyApp> {
       ),
       const ShortcutItem(
         type: 'action_voice_add',
-        localizedTitle: 'Add by Voice',
-        icon: 'mic.circle.fill',
+        localizedTitle: 'Quick Entry',
+        icon: 'square.and.pencil',
       ),
     ]);
+  }
+
+  @override
+  void dispose() {
+    _observedRecurringModel?.removeListener(_refreshRecurringProjection);
+    super.dispose();
+  }
+
+  void _refreshRecurringProjection() {
+    final recurringModel = _observedRecurringModel;
+    final transactionModel = _projectionTransactionModel;
+    if (recurringModel == null || transactionModel == null) return;
+    unawaited(
+      transactionModel.updateRecurringProjection(
+        recurringModel.recurringTransactions,
+      ),
+    );
   }
 
   @override
@@ -194,8 +224,10 @@ class _MyAppState extends State<MyApp> {
           switchInCurve: Curves.easeOut,
           switchOutCurve: Curves.easeIn,
           child: ready
-              ? const OnboardingTutorialGate(
-                  child: BudgetHomePage(title: 'Home'),
+              ? const AppPrivacyGate(
+                  child: OnboardingTutorialGate(
+                    child: BudgetHomePage(title: 'Home'),
+                  ),
                 )
               : const _OpeningScreen(),
         );
@@ -207,11 +239,38 @@ class _MyAppState extends State<MyApp> {
   Future<void> _initializeApp(BuildContext context) async {
     final transactionModel = context.read<TransactionModel>();
     final recurringModel = context.read<RecurringTransactionModel>();
+    final categoryProvider = context.read<CategoryProvider>();
+    final appSettings = context.read<AppSettingsProvider>();
+    final categorizationProvider = context.read<CategorizationProvider>();
 
     try {
+      await AtomicFinancialStore.instance.read();
+      await Future.wait([
+        categoryProvider.load(),
+        appSettings.load(),
+        categorizationProvider.load(),
+      ]);
       // Load existing transactions and recurring transactions
       await transactionModel.getTransactions();
       await recurringModel.loadRecurringTransactions();
+      await categoryProvider.ensureLegacyCategories(
+        transactionModel.transactions,
+      );
+      await categoryProvider.ensureLegacyCategoryNames(
+        [
+          ...recurringModel.recurringTransactions.map(
+            (template) => (
+              template.type == TransactionTyp.income
+                  ? BudgetCategoryType.income
+                  : BudgetCategoryType.expense,
+              template.category,
+            ),
+          ),
+          ...transactionModel.categoryBudgetLimits.keys.map(
+            (name) => (BudgetCategoryType.expense, name),
+          ),
+        ],
+      );
 
       // Create transaction generator and generate due transactions
       final generator = TransactionGenerator(
@@ -219,6 +278,13 @@ class _MyAppState extends State<MyApp> {
         recurringModel: recurringModel,
       );
       await generator.generateDueTransactions();
+      _observedRecurringModel?.removeListener(_refreshRecurringProjection);
+      _observedRecurringModel = recurringModel;
+      _projectionTransactionModel = transactionModel;
+      recurringModel.addListener(_refreshRecurringProjection);
+      await transactionModel.updateRecurringProjection(
+        recurringModel.recurringTransactions,
+      );
     } finally {
       if (!_initializationCompleter.isCompleted) {
         _initializationCompleter.complete();

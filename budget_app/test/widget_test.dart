@@ -12,6 +12,9 @@ import 'package:budget_app/main.dart';
 import 'package:budget_app/transaction_model.dart';
 import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/theme_provider.dart';
+import 'package:budget_app/app_settings_provider.dart';
+import 'package:budget_app/category_provider.dart';
+import 'package:budget_app/categorization_provider.dart';
 
 void main() {
   testWidgets('App initializes and displays home page',
@@ -23,6 +26,9 @@ void main() {
           ChangeNotifierProvider(create: (_) => TransactionModel()),
           ChangeNotifierProvider(create: (_) => RecurringTransactionModel()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => AppSettingsProvider()),
+          ChangeNotifierProvider(create: (_) => CategoryProvider()),
+          ChangeNotifierProvider(create: (_) => CategorizationProvider()),
         ],
         child: const AppContainer(child: MyApp()),
       ),
