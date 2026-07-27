@@ -30,4 +30,17 @@ void main() {
     expect(android, isNot(contains('android.permission.RECORD_AUDIO')));
     expect(ios, isNot(contains('NSMicrophoneUsageDescription')));
   });
+
+  test('iOS explains why file imports may access the camera', () {
+    final ios = File('ios/Runner/Info.plist').readAsStringSync();
+
+    expect(ios, contains('<key>NSCameraUsageDescription</key>'));
+    expect(
+      ios,
+      contains(
+        'Budgie uses the camera only when you choose to capture a file for '
+        'importing financial data.',
+      ),
+    );
+  });
 }
