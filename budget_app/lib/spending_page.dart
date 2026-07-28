@@ -17,6 +17,10 @@ import 'utils/platform_utils.dart';
 import 'widgets/voice_recording_sheet.dart';
 import 'money_formatter.dart';
 
+/// Popped by the "Add a budget" row in the picker sheet; no category name can
+/// collide with it.
+const String _addBudgetAction = '__add_budget__';
+
 class SpendingPage extends StatefulWidget {
   const SpendingPage({super.key});
 
@@ -84,10 +88,6 @@ class SpendingPageState extends State<SpendingPage> {
     );
   }
 
-  Map<String, double> _categoryBudgetLimits(TransactionModel model) {
-    return model.categoryBudgetLimits;
-  }
-
   double? _getCategoryBudgetLimit(
     TransactionModel model,
     String category,
@@ -118,31 +118,28 @@ class SpendingPageState extends State<SpendingPage> {
     await model.removeCategoryBudgetLimit(category);
   }
 
+  /// Only the categories that actually have a limit get a row; the rest are
+  /// reached through the "Add a budget" row instead of sitting there empty.
   List<_CategoryBudgetProgress> _buildBudgetProgressItems(
     TransactionModel model,
     DateTime month,
   ) {
-    final budgetLimits = _categoryBudgetLimits(model);
-    final items = expenseCategories.keys.map((category) {
-      final limit =
-          _getCategoryBudgetLimit(model, category) ?? budgetLimits[category];
-      final spent = _getCategorySpendingForMonth(model, category, month);
+    final items = <_CategoryBudgetProgress>[];
+    for (final entry in expenseCategories.entries) {
+      final limit = _getCategoryBudgetLimit(model, entry.key);
+      if (limit == null || limit <= 0) continue;
 
-      return _CategoryBudgetProgress(
-        category: category,
-        icon: expenseCategories[category] ?? CupertinoIcons.square_grid_2x2,
-        spent: spent,
-        limit: limit,
+      items.add(
+        _CategoryBudgetProgress(
+          category: entry.key,
+          icon: entry.value,
+          spent: _getCategorySpendingForMonth(model, entry.key, month),
+          limit: limit,
+        ),
       );
-    }).toList();
+    }
 
     items.sort((a, b) {
-      final aHasLimit = a.hasLimit ? 1 : 0;
-      final bHasLimit = b.hasLimit ? 1 : 0;
-      if (aHasLimit != bHasLimit) {
-        return bHasLimit.compareTo(aHasLimit);
-      }
-
       final spentCompare = b.spent.compareTo(a.spent);
       if (spentCompare != 0) {
         return spentCompare;
@@ -152,6 +149,20 @@ class SpendingPageState extends State<SpendingPage> {
     });
 
     return items;
+  }
+
+  List<String> _budgetedCategories(TransactionModel model) {
+    return [
+      for (final category in expenseCategories.keys)
+        if ((_getCategoryBudgetLimit(model, category) ?? 0) > 0) category,
+    ];
+  }
+
+  List<String> _unbudgetedCategories(TransactionModel model) {
+    return [
+      for (final category in expenseCategories.keys)
+        if ((_getCategoryBudgetLimit(model, category) ?? 0) <= 0) category,
+    ];
   }
 
   Future<void> _showBudgetLimitSheet(
@@ -173,15 +184,67 @@ class SpendingPageState extends State<SpendingPage> {
     );
   }
 
-  /// Bound to the `EDIT` link: pick a category, then open the existing limit
-  /// sheet for it. Categories with a limit already set are marked.
+  /// Bound to the `EDIT` link: lists the budgets that are already set plus a
+  /// row for creating a new one, then opens the limit sheet for the pick.
   Future<void> _showEditBudgetsSheet(
     BuildContext context,
     TransactionModel model,
   ) async {
+    final budgeted = _budgetedCategories(model);
+
+    final selected = await _showBudgetCategorySheet(
+      context,
+      title: 'Edit budgets',
+      subtitle: budgeted.isEmpty
+          ? 'No monthly limits yet. Add one to start tracking a category.'
+          : 'Tap a budget to change or remove its monthly limit.',
+      categories: budgeted,
+      limits: model.categoryBudgetLimits,
+      showAddRow: budgeted.length < expenseCategories.length,
+    );
+
+    if (selected == null || !context.mounted) return;
+
+    if (selected == _addBudgetAction) {
+      await _showAddBudgetSheet(context, model);
+      return;
+    }
+
+    await _showBudgetLimitSheet(context, model, selected);
+  }
+
+  /// Category picker for a brand new budget: only categories without a limit.
+  Future<void> _showAddBudgetSheet(
+    BuildContext context,
+    TransactionModel model,
+  ) async {
+    final selected = await _showBudgetCategorySheet(
+      context,
+      title: 'Add a budget',
+      subtitle: 'Choose a category to set a monthly limit.',
+      categories: _unbudgetedCategories(model),
+      limits: const {},
+      showAddRow: false,
+    );
+
+    if (selected != null && context.mounted) {
+      await _showBudgetLimitSheet(context, model, selected);
+    }
+  }
+
+  /// Shared chrome for the two category pickers. Capped at 75% of the screen
+  /// so the grab handle and title never slide under the status bar.
+  Future<String?> _showBudgetCategorySheet(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required List<String> categories,
+    required Map<String, double> limits,
+    required bool showAddRow,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final selected = await showModalBottomSheet<String>(
+    return showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
@@ -195,66 +258,73 @@ class SpendingPageState extends State<SpendingPage> {
           ),
           child: SafeArea(
             top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 12),
-                Center(
-                  child: Container(
-                    width: 44,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.getTextTertiaryColor(isDark)
-                          .withValues(alpha: 0.35),
-                      borderRadius: BorderRadius.circular(999),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.75,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.getTextTertiaryColor(isDark)
+                            .withValues(alpha: 0.35),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                  child: Text(
-                    'Edit budgets',
-                    style: AppTypography.sectionHeader.copyWith(
-                      color: AppColors.getTextColor(isDark),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Text(
+                      title,
+                      style: AppTypography.sectionHeader.copyWith(
+                        color: AppColors.getTextColor(isDark),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-                  child: Text(
-                    'Choose a category to set or change its monthly limit.',
-                    style: AppTypography.rowSubtitle.copyWith(
-                      color: AppColors.getTextSecondaryColor(isDark),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+                    child: Text(
+                      subtitle,
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
                     ),
                   ),
-                ),
-                Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                    children: [
-                      for (final category in expenseCategories.keys)
-                        _EditBudgetCategoryTile(
-                          category: category,
-                          icon: expenseCategories[category] ??
-                              CupertinoIcons.square_grid_2x2,
-                          limit: model.getCategoryBudgetLimit(category),
-                          onTap: () => Navigator.of(sheetContext).pop(category),
-                        ),
-                    ],
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                      children: [
+                        for (final category in categories)
+                          _EditBudgetCategoryTile(
+                            category: category,
+                            icon: expenseCategories[category] ??
+                                CupertinoIcons.square_grid_2x2,
+                            limit: limits[category],
+                            onTap: () =>
+                                Navigator.of(sheetContext).pop(category),
+                          ),
+                        if (showAddRow)
+                          _AddBudgetRow(
+                            onTap: () => Navigator.of(sheetContext)
+                                .pop(_addBudgetAction),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
     );
-
-    if (selected != null && context.mounted) {
-      await _showBudgetLimitSheet(context, model, selected);
-    }
   }
 
   /// Long-press shortcut for the main add button. Selecting a category first
@@ -564,6 +634,12 @@ class SpendingPageState extends State<SpendingPage> {
                             transactionModel,
                             category,
                           ),
+                          onAddBudget: budgets.length < expenseCategories.length
+                              ? () => _showAddBudgetSheet(
+                                    context,
+                                    transactionModel,
+                                  )
+                              : null,
                         ),
                       ],
                     ),
@@ -1492,13 +1568,19 @@ class _FlowChip extends StatelessWidget {
   }
 }
 
-/// Budgets list card: one row per expense category with an IconTile, name,
-/// sub, status pill, and a glowing progress bar underneath.
+/// Budgets list card: one row per budgeted category with an IconTile, name,
+/// sub, status pill, and a glowing progress bar underneath, closed out by an
+/// "Add a budget" row for the categories that have no limit yet.
 class _BudgetsCard extends StatelessWidget {
   final List<_CategoryBudgetProgress> budgets;
   final ValueChanged<String> onRowTap;
+  final VoidCallback? onAddBudget;
 
-  const _BudgetsCard({required this.budgets, required this.onRowTap});
+  const _BudgetsCard({
+    required this.budgets,
+    required this.onRowTap,
+    required this.onAddBudget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1508,6 +1590,13 @@ class _BudgetsCard extends StatelessWidget {
           _BudgetRow(
             budget: budget,
             onTap: () => onRowTap(budget.category),
+          ),
+        if (onAddBudget != null)
+          _AddBudgetRow(
+            subtitle: budgets.isEmpty
+                ? 'No monthly limits yet'
+                : 'Set a limit for another category',
+            onTap: onAddBudget!,
           ),
       ],
     );
@@ -1745,6 +1834,63 @@ class _RecentActivityRow extends StatelessWidget {
   }
 }
 
+/// "Add a budget" row, shared by the Budgets card and the picker sheet.
+class _AddBudgetRow extends StatelessWidget {
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  const _AddBudgetRow({this.subtitle, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.getAccent(isDark);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MicroInteractions.lightImpact();
+        onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Row(
+          children: [
+            IconTile(icon: Symbols.add_rounded, color: accent),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Add a budget',
+                    style: AppTypography.rowTitle.copyWith(color: accent),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Icon(
+              Symbols.chevron_right_rounded,
+              size: 20,
+              weight: 500,
+              color: AppColors.getTextTertiaryColor(isDark),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// A category row in the `EDIT` picker sheet.
 class _EditBudgetCategoryTile extends StatelessWidget {
   final String category;
@@ -1763,9 +1909,6 @@ class _EditBudgetCategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasLimit = limit != null && limit! > 0;
-    final subtitle = hasLimit
-        ? '${MoneyFormatter.format(limit!, decimalDigits: 0)} limit'
-        : 'No limit set';
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -1796,13 +1939,15 @@ class _EditBudgetCategoryTile extends StatelessWidget {
                       color: AppColors.getTextColor(isDark),
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: AppTypography.rowSubtitle.copyWith(
-                      color: AppColors.getTextSecondaryColor(isDark),
+                  if (hasLimit) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      '${MoneyFormatter.format(limit!, decimalDigits: 0)} limit',
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
