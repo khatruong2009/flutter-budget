@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -289,15 +290,16 @@ class SpendingPageState extends State<SpendingPage> {
     return (current - previous) / previous * 100;
   }
 
-  /// Footer under the breakdown total. Negative months get a "trim per day"
-  /// target instead of a negative daily allowance, which reads as nonsense.
+  /// Footer under the breakdown total. A negative month needs more income or
+  /// fewer planned expenses; dividing an existing shortfall by days remaining
+  /// would imply that not spending can undo expenses already recorded.
   String _breakdownFooter(SafeToSpendBreakdown breakdown) {
     final days = breakdown.daysRemaining;
     if (days <= 0) return 'This month is already closed out.';
     final daysLabel = days == 1 ? '1 day remaining' : '$days days remaining';
     if (breakdown.isOverCommitted) {
-      return 'Trim ${MoneyFormatter.format(breakdown.dailyTrimNeeded)} per day'
-          ' to break even · $daysLabel';
+      return 'Add income or reduce planned spending to close the shortfall'
+          ' · $daysLabel';
     }
     return '${MoneyFormatter.format(breakdown.dailyAllowance)} per day'
         ' · $daysLabel';
@@ -323,7 +325,7 @@ class SpendingPageState extends State<SpendingPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  isOver ? 'Over budget' : 'Safe to spend',
+                  isOver ? 'Projected shortfall' : 'Safe to spend',
                   style: AppTypography.headingLarge.copyWith(
                     color: AppColors.getTextColor(isDark),
                   ),
@@ -367,10 +369,9 @@ class SpendingPageState extends State<SpendingPage> {
                 ),
                 const Divider(height: 28),
                 _BreakdownRow(
-                  label: isOver ? 'Over budget by' : 'Safe to spend',
-                  value: isOver
-                      ? breakdown.overCommitment
-                      : breakdown.safeToSpend,
+                  label: isOver ? 'Projected shortfall' : 'Safe to spend',
+                  value:
+                      isOver ? breakdown.overCommitment : breakdown.safeToSpend,
                   positive: true,
                   emphasized: true,
                   valueColor: isOver ? AppColors.getDanger(isDark) : null,
@@ -995,6 +996,41 @@ class _MonthPickerPanel extends StatelessWidget {
   }
 }
 
+/// The rolling hero digits are assembled by `AnimatedDigitWidget`, so the
+/// currency affixes and separators `MoneyFormatter` would normally bake into
+/// the string have to be handed over as separate pieces.
+class _HeroAmountFormat {
+  final String prefix;
+  final String suffix;
+  final String groupSeparator;
+  final String decimalSeparator;
+
+  const _HeroAmountFormat({
+    required this.prefix,
+    required this.suffix,
+    required this.groupSeparator,
+    required this.decimalSeparator,
+  });
+
+  factory _HeroAmountFormat.current() {
+    final format = NumberFormat.simpleCurrency(
+      locale: MoneyFormatter.locale,
+      name: MoneyFormatter.currencyCode,
+      decimalDigits: 2,
+    );
+    // A zero sample carries the symbol on whichever side the locale puts it.
+    final sample = format.format(0);
+    final firstDigit = sample.indexOf(RegExp(r'\d'));
+    final lastDigit = sample.lastIndexOf(RegExp(r'\d'));
+    return _HeroAmountFormat(
+      prefix: sample.substring(0, firstDigit),
+      suffix: sample.substring(lastDigit + 1),
+      groupSeparator: format.symbols.GROUP_SEP,
+      decimalSeparator: format.symbols.DECIMAL_SEP,
+    );
+  }
+}
+
 /// Centered hero: `CASH FLOW` eyebrow, the month's income minus expenses with
 /// accent glow (danger tint + glow when negative), and the in / out subline.
 class _HeroCashFlow extends StatelessWidget {
@@ -1017,6 +1053,11 @@ class _HeroCashFlow extends StatelessWidget {
         ? AppColors.getDanger(isDark)
         : AppColors.getTextColor(isDark);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final heroStyle = AppTypography.hero.copyWith(
+      color: amountColor,
+      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+    );
+    final amountFormat = _HeroAmountFormat.current();
 
     // Negatives read as an amount plus a direction ("$120 short") rather than
     // a bare minus sign, which is easy to miss at hero size.
@@ -1052,20 +1093,41 @@ class _HeroCashFlow extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ExcludeSemantics(
-              child: AnimatedSwitcher(
-                duration: reduceMotion
-                    ? Duration.zero
-                    : const Duration(milliseconds: 350),
-                child: Text(
-                  amountLabel,
-                  key: ValueKey(amountLabel),
-                  textAlign: TextAlign.center,
-                  style: AppTypography.hero.copyWith(
-                    color: amountColor,
-                    shadows: AppColors.textGlow(glowColor, isDark: isDark),
-                  ),
-                ),
-              ),
+              // Balances are masked as dots when hidden, which has no digits to
+              // roll, so only the visible amount gets the odometer treatment.
+              child: MoneyFormatter.hideBalances
+                  ? Text(
+                      amountLabel,
+                      textAlign: TextAlign.center,
+                      style: heroStyle,
+                    )
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Each rolling digit lives in its own clipped cell, so a
+                        // glow on their text style gets cut into bright boxes.
+                        // The halo is painted once behind them instead.
+                        Text(
+                          amountLabel,
+                          textAlign: TextAlign.center,
+                          style: heroStyle.copyWith(color: Colors.transparent),
+                        ),
+                        AnimatedDigitWidget(
+                          value: cashFlow.abs(),
+                          fractionDigits: 2,
+                          enableSeparator: true,
+                          separateSymbol: amountFormat.groupSeparator,
+                          decimalSeparator: amountFormat.decimalSeparator,
+                          prefix: amountFormat.prefix,
+                          suffix: amountFormat.suffix,
+                          duration: reduceMotion
+                              ? Duration.zero
+                              : const Duration(milliseconds: 900),
+                          textStyle:
+                              heroStyle.copyWith(shadows: const <Shadow>[]),
+                        ),
+                      ],
+                    ),
             ),
             const SizedBox(height: 12),
             ExcludeSemantics(
@@ -1098,8 +1160,8 @@ class _HeroCashFlow extends StatelessWidget {
 }
 
 /// Tappable summary row for safe to spend, demoted from the hero slot. Frames
-/// a negative result as "over budget by X" with a per-day trim target instead
-/// of a negative daily allowance.
+/// a negative result as a projected shortfall that needs additional income or
+/// reduced plans, rather than implying recorded expenses can be undone.
 class _SafeToSpendCard extends StatelessWidget {
   final SafeToSpendBreakdown breakdown;
   final VoidCallback onTap;
@@ -1116,7 +1178,7 @@ class _SafeToSpendCard extends StatelessWidget {
     final accent =
         isOver ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
 
-    final title = isOver ? 'Over budget by' : 'Safe to spend';
+    final title = isOver ? 'Projected shortfall' : 'Safe to spend';
     final amountLabel = MoneyFormatter.format(
       isOver ? breakdown.overCommitment : breakdown.safeToSpend,
       decimalDigits: 0,
@@ -1127,9 +1189,7 @@ class _SafeToSpendCard extends StatelessWidget {
     if (days <= 0) {
       subtitle = 'This month is already closed out';
     } else if (isOver) {
-      final trimLabel =
-          MoneyFormatter.format(breakdown.dailyTrimNeeded, decimalDigits: 0);
-      subtitle = 'Trim $trimLabel/day to break even';
+      subtitle = 'Add income or reduce planned spending';
     } else {
       final dailyLabel =
           MoneyFormatter.format(breakdown.dailyAllowance, decimalDigits: 0);
@@ -1148,9 +1208,7 @@ class _SafeToSpendCard extends StatelessWidget {
           child: Row(
             children: [
               IconTile(
-                icon: isOver
-                    ? Symbols.warning_rounded
-                    : Symbols.shield_rounded,
+                icon: isOver ? Symbols.warning_rounded : Symbols.shield_rounded,
                 color: accent,
               ),
               const SizedBox(width: 12),
