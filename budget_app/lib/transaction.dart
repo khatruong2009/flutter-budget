@@ -63,6 +63,21 @@ class Transaction {
   // Check if transaction is from recurring template
   bool get isRecurring => recurringTemplateId != null;
 
+  // Newest-first ordering for lists. Compares the calendar day rather than the
+  // raw date because the time component is inconsistent: the form defaults to
+  // now, the date picker and voice parsing both yield midnight. Same-day
+  // entries fall back to when they were recorded so the latest one stays on top.
+  static int compareNewestFirst(Transaction a, Transaction b) {
+    final dayCompare = _dayKey(b.date).compareTo(_dayKey(a.date));
+    if (dayCompare != 0) return dayCompare;
+    final createdCompare = b.createdAt.compareTo(a.createdAt);
+    if (createdCompare != 0) return createdCompare;
+    return b.id.compareTo(a.id);
+  }
+
+  static DateTime _dayKey(DateTime value) =>
+      DateTime(value.year, value.month, value.day);
+
   static bool _validId(String? value) =>
       value != null && value.trim().isNotEmpty;
 

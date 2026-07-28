@@ -416,7 +416,7 @@ class _HistoryPageState extends State<HistoryPage> {
     bool isDark,
   ) {
     final recent = List<Transaction>.from(model.transactions)
-      ..sort((a, b) => b.date.compareTo(a.date));
+      ..sort(Transaction.compareNewestFirst);
     final preview = recent.take(3).toList();
 
     if (preview.isEmpty) {
@@ -1349,7 +1349,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
   List<Transaction> _getFilteredTransactions(TransactionModel model) {
     final query = _searchQuery.toLowerCase();
     final transactions = List<Transaction>.from(model.transactions)
-      ..sort((a, b) => b.date.compareTo(a.date));
+      ..sort(Transaction.compareNewestFirst);
 
     return transactions.where((transaction) {
       if (query.isNotEmpty &&

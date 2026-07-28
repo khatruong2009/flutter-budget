@@ -41,7 +41,7 @@ class CategoryTransactionsPage extends StatelessWidget {
             .where((t) =>
                 t.category == category && t.type == TransactionTyp.expense)
             .toList()
-          ..sort((a, b) => b.date.compareTo(a.date));
+          ..sort(Transaction.compareNewestFirst);
 
         final double total = categoryTransactions.fold(
           0.0,

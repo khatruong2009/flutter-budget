@@ -136,7 +136,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
     // Sort transactions by date (newest first)
     final sortedTransactions = List<Transaction>.from(transactions)
-      ..sort((a, b) => b.date.compareTo(a.date));
+      ..sort(Transaction.compareNewestFirst);
 
     // Group transactions by date
     final Map<String, List<Transaction>> groupedTransactions = {};

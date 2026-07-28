@@ -935,7 +935,7 @@ class TransactionModel extends ChangeNotifier {
   // Get all transactions sorted by date (newest first)
   List<Transaction> getAllTransactionsSorted() {
     final sorted = List<Transaction>.from(transactions);
-    sorted.sort((a, b) => b.date.compareTo(a.date));
+    sorted.sort(Transaction.compareNewestFirst);
     return sorted;
   }
 
