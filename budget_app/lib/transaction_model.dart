@@ -12,8 +12,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'net_worth_entry.dart';
-import 'recurring_transaction.dart';
-import 'safe_to_spend.dart';
 import 'savings_goal.dart';
 import 'storage/atomic_financial_store.dart';
 import 'storage/storage_keys.dart';
@@ -139,8 +137,6 @@ class CsvImportSummary {
 }
 
 class TransactionModel extends ChangeNotifier {
-  static const _safeToSpendCalculator = SafeToSpendCalculator();
-
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
@@ -148,7 +144,6 @@ class TransactionModel extends ChangeNotifier {
   List<NetWorthEntry> _netWorthEntries = [];
   Map<String, double> _categoryBudgetLimits = {};
   List<SavingsGoal> _savingsGoals = [];
-  List<RecurringTransaction> _recurringProjection = [];
 
   DateTime get selectedNetWorthMonth => _selectedNetWorthMonth;
   List<NetWorthEntry> get netWorthEntries =>
@@ -247,30 +242,32 @@ class TransactionModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
         StorageKeys.transactions, jsonEncode(jsonTransactions));
-    await _syncWidgetSafeToSpend();
+    await _syncWidgetCashFlow();
   }
 
   static const MethodChannel _widgetDataChannel =
       MethodChannel('budget_app/widget_data');
 
-  // Pushes the current calendar month's safe-to-spend to the iOS home screen
-  // widgets via the shared app group.
-  Future<void> _syncWidgetSafeToSpend() async {
+  // Pushes the current calendar month's cash flow (income minus expenses) to
+  // the iOS home screen widgets via the shared app group.
+  Future<void> _syncWidgetCashFlow() async {
     if (!PlatformUtils.isIOS) return;
 
     final now = DateTime.now();
-    final breakdown = _safeToSpendCalculator.calculate(
-      transactions: transactions,
-      recurringTransactions: _recurringProjection,
-      categoryBudgetLimits: _categoryBudgetLimits,
-      savingsGoals: _savingsGoals,
-      month: now,
-      asOf: now,
-    );
+    var cashFlow = 0.0;
+    for (final transaction in transactions) {
+      if (transaction.date.year != now.year ||
+          transaction.date.month != now.month) {
+        continue;
+      }
+      cashFlow += transaction.type == TransactionTyp.income
+          ? transaction.amount
+          : -transaction.amount;
+    }
 
     try {
-      await _widgetDataChannel.invokeMethod('updateSafeToSpend', {
-        'amount': breakdown.safeToSpend,
+      await _widgetDataChannel.invokeMethod('updateCashFlow', {
+        'amount': cashFlow,
         'month': '${now.year}-${now.month.toString().padLeft(2, '0')}',
       });
     } on PlatformException {
@@ -278,13 +275,6 @@ class TransactionModel extends ChangeNotifier {
     } on MissingPluginException {
       // Native handler absent (e.g. stale binary during development).
     }
-  }
-
-  Future<void> updateRecurringProjection(
-    List<RecurringTransaction> templates,
-  ) async {
-    _recurringProjection = List<RecurringTransaction>.of(templates);
-    await _syncWidgetSafeToSpend();
   }
 
   // load transactions
@@ -361,7 +351,7 @@ class TransactionModel extends ChangeNotifier {
       _savingsGoals = [];
     }
 
-    await _syncWidgetSafeToSpend();
+    await _syncWidgetCashFlow();
   }
 
   // get the current month's transactions
@@ -769,7 +759,7 @@ class TransactionModel extends ChangeNotifier {
           jsonEncode(serializedBudgets),
         ),
       ]);
-      await _syncWidgetSafeToSpend();
+      await _syncWidgetCashFlow();
     } else if (transactionsChanged) {
       await saveTransactions(transactions);
     } else if (budgetsChanged) {
@@ -1199,7 +1189,7 @@ class TransactionModel extends ChangeNotifier {
       serializedCategoryBudgetLimits: restoredCategoryBudgetLimits,
       serializedSavingsGoals: serializedSavingsGoals,
     );
-    await _syncWidgetSafeToSpend();
+    await _syncWidgetCashFlow();
 
     notifyListeners();
   }
@@ -1441,7 +1431,6 @@ class TransactionModel extends ChangeNotifier {
       StorageKeys.categoryBudgetLimits,
       jsonEncode(serialized),
     );
-    await _syncWidgetSafeToSpend();
   }
 
   Future<void> _saveSavingsGoals() async {
@@ -1455,7 +1444,6 @@ class TransactionModel extends ChangeNotifier {
       StorageKeys.savingsGoals,
       jsonEncode(serialized),
     );
-    await _syncWidgetSafeToSpend();
   }
 
   Future<void> _writeLegacyOwnedSections({

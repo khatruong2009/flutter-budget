@@ -96,7 +96,7 @@ import WidgetKit
 
   // MARK: - Widget Data
 
-  /// Receives the current month's safe-to-spend from Flutter and shares it
+  /// Receives the current month's cash flow from Flutter and shares it
   /// with the widget extension through the app group.
   private func setupWidgetDataChannel() {
     let channel = FlutterMethodChannel(
@@ -105,7 +105,7 @@ import WidgetKit
     )
 
     channel.setMethodCallHandler { (call: FlutterMethodCall, result: FlutterResult) in
-      guard call.method == "updateSafeToSpend" else {
+      guard call.method == "updateCashFlow" else {
         result(FlutterMethodNotImplemented)
         return
       }
@@ -117,8 +117,8 @@ import WidgetKit
       }
 
       let defaults = UserDefaults(suiteName: "group.com.khatruong.budgetbuddy")
-      defaults?.set(amount, forKey: "safeToSpend")
-      defaults?.set(month, forKey: "safeToSpendMonth")
+      defaults?.set(amount, forKey: "cashFlow")
+      defaults?.set(month, forKey: "cashFlowMonth")
       if #available(iOS 14.0, *) {
         WidgetCenter.shared.reloadAllTimelines()
       }

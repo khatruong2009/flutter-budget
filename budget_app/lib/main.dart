@@ -166,8 +166,6 @@ class _MyAppState extends State<MyApp> {
   String? _lastHandledLink;
   DateTime? _lastHandledLinkAt;
   Future<void>? _initFuture;
-  RecurringTransactionModel? _observedRecurringModel;
-  TransactionModel? _projectionTransactionModel;
 
   @override
   void initState() {
@@ -193,23 +191,6 @@ class _MyAppState extends State<MyApp> {
         icon: 'mic.circle.fill',
       ),
     ]);
-  }
-
-  @override
-  void dispose() {
-    _observedRecurringModel?.removeListener(_refreshRecurringProjection);
-    super.dispose();
-  }
-
-  void _refreshRecurringProjection() {
-    final recurringModel = _observedRecurringModel;
-    final transactionModel = _projectionTransactionModel;
-    if (recurringModel == null || transactionModel == null) return;
-    unawaited(
-      transactionModel.updateRecurringProjection(
-        recurringModel.recurringTransactions,
-      ),
-    );
   }
 
   @override
@@ -278,13 +259,6 @@ class _MyAppState extends State<MyApp> {
         recurringModel: recurringModel,
       );
       await generator.generateDueTransactions();
-      _observedRecurringModel?.removeListener(_refreshRecurringProjection);
-      _observedRecurringModel = recurringModel;
-      _projectionTransactionModel = transactionModel;
-      recurringModel.addListener(_refreshRecurringProjection);
-      await transactionModel.updateRecurringProjection(
-        recurringModel.recurringTransactions,
-      );
     } finally {
       if (!_initializationCompleter.isCompleted) {
         _initializationCompleter.complete();

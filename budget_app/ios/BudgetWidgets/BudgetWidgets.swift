@@ -1,19 +1,19 @@
 import SwiftUI
 import WidgetKit
 
-/// Reads the safe-to-spend value the app writes to the shared app group.
-enum SafeToSpendStore {
+/// Reads the cash flow value the app writes to the shared app group.
+enum CashFlowStore {
   static let suiteName = "group.com.khatruong.budgetbuddy"
 
   /// Returns nil when the app has never written data (fresh install).
   /// Returns 0 when the stored value belongs to a previous month.
   static func read(for date: Date = Date()) -> Double? {
     guard let defaults = UserDefaults(suiteName: suiteName),
-      defaults.object(forKey: "safeToSpend") != nil,
-      let storedMonth = defaults.string(forKey: "safeToSpendMonth")
+      defaults.object(forKey: "cashFlow") != nil,
+      let storedMonth = defaults.string(forKey: "cashFlowMonth")
     else { return nil }
     guard storedMonth == monthKey(for: date) else { return 0 }
-    return defaults.double(forKey: "safeToSpend")
+    return defaults.double(forKey: "cashFlow")
   }
 
   /// Always Gregorian: the key must match what the Dart side writes from
@@ -35,9 +35,9 @@ enum SafeToSpendStore {
   }
 }
 
-/// Logo + safe-to-spend strip shown at the top of every Budgie widget.
+/// Logo + cash flow strip shown at the top of every Budgie widget.
 struct BudgieWidgetHeader: View {
-  let safeToSpend: Double?
+  let cashFlow: Double?
 
   var body: some View {
     HStack(spacing: 5) {
@@ -45,7 +45,7 @@ struct BudgieWidgetHeader: View {
         .resizable()
         .scaledToFit()
         .frame(width: 16, height: 16)
-      if let amount = safeToSpend {
+      if let amount = cashFlow {
         Spacer(minLength: 4)
         Text(Self.formattedAmount(amount))
           .font(.system(size: 12, weight: .bold, design: .rounded))
@@ -76,22 +76,22 @@ struct BudgieWidgetHeader: View {
 
 struct BudgetQuickActionsEntry: TimelineEntry {
   let date: Date
-  let safeToSpend: Double?
+  let cashFlow: Double?
 }
 
 struct BudgetQuickActionsProvider: TimelineProvider {
   func placeholder(in context: Context) -> BudgetQuickActionsEntry {
-    BudgetQuickActionsEntry(date: Date(), safeToSpend: SafeToSpendStore.read())
+    BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read())
   }
 
   func getSnapshot(in context: Context, completion: @escaping (BudgetQuickActionsEntry) -> Void) {
-    completion(BudgetQuickActionsEntry(date: Date(), safeToSpend: SafeToSpendStore.read()))
+    completion(BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read()))
   }
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetQuickActionsEntry>) -> Void) {
     let now = Date()
-    let entry = BudgetQuickActionsEntry(date: now, safeToSpend: SafeToSpendStore.read(for: now))
-    completion(Timeline(entries: [entry], policy: .after(SafeToSpendStore.startOfNextMonth(after: now))))
+    let entry = BudgetQuickActionsEntry(date: now, cashFlow: CashFlowStore.read(for: now))
+    completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
   }
 }
 
@@ -103,7 +103,7 @@ struct BudgetQuickActionsEntryView: View {
 
   var body: some View {
     VStack(spacing: 8) {
-      BudgieWidgetHeader(safeToSpend: entry.safeToSpend)
+      BudgieWidgetHeader(cashFlow: entry.cashFlow)
       actionButton(
         title: "Income",
         icon: "plus.circle.fill",
@@ -161,22 +161,22 @@ struct BudgetQuickActionsWidget: Widget {
 
 struct BudgetVoiceAddEntry: TimelineEntry {
   let date: Date
-  let safeToSpend: Double?
+  let cashFlow: Double?
 }
 
 struct BudgetVoiceAddProvider: TimelineProvider {
   func placeholder(in context: Context) -> BudgetVoiceAddEntry {
-    BudgetVoiceAddEntry(date: Date(), safeToSpend: SafeToSpendStore.read())
+    BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read())
   }
 
   func getSnapshot(in context: Context, completion: @escaping (BudgetVoiceAddEntry) -> Void) {
-    completion(BudgetVoiceAddEntry(date: Date(), safeToSpend: SafeToSpendStore.read()))
+    completion(BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read()))
   }
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetVoiceAddEntry>) -> Void) {
     let now = Date()
-    let entry = BudgetVoiceAddEntry(date: now, safeToSpend: SafeToSpendStore.read(for: now))
-    completion(Timeline(entries: [entry], policy: .after(SafeToSpendStore.startOfNextMonth(after: now))))
+    let entry = BudgetVoiceAddEntry(date: now, cashFlow: CashFlowStore.read(for: now))
+    completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
   }
 }
 
@@ -187,7 +187,7 @@ struct BudgetVoiceAddEntryView: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      BudgieWidgetHeader(safeToSpend: entry.safeToSpend)
+      BudgieWidgetHeader(cashFlow: entry.cashFlow)
       Spacer(minLength: 0)
       Image(systemName: "mic.fill")
         .font(.system(size: 26))
