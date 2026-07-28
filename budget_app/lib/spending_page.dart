@@ -289,6 +289,20 @@ class SpendingPageState extends State<SpendingPage> {
     return (current - previous) / previous * 100;
   }
 
+  /// Footer under the breakdown total. Negative months get a "trim per day"
+  /// target instead of a negative daily allowance, which reads as nonsense.
+  String _breakdownFooter(SafeToSpendBreakdown breakdown) {
+    final days = breakdown.daysRemaining;
+    if (days <= 0) return 'This month is already closed out.';
+    final daysLabel = days == 1 ? '1 day remaining' : '$days days remaining';
+    if (breakdown.isOverCommitted) {
+      return 'Trim ${MoneyFormatter.format(breakdown.dailyTrimNeeded)} per day'
+          ' to break even · $daysLabel';
+    }
+    return '${MoneyFormatter.format(breakdown.dailyAllowance)} per day'
+        ' · $daysLabel';
+  }
+
   Future<void> _showSafeToSpendBreakdown(
     BuildContext context,
     SafeToSpendBreakdown breakdown,
@@ -300,6 +314,7 @@ class SpendingPageState extends State<SpendingPage> {
       useRootNavigator: true,
       builder: (sheetContext) {
         final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final isOver = breakdown.isOverCommitted;
         return SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
@@ -308,14 +323,17 @@ class SpendingPageState extends State<SpendingPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Safe to spend',
+                  isOver ? 'Over budget' : 'Safe to spend',
                   style: AppTypography.headingLarge.copyWith(
                     color: AppColors.getTextColor(isDark),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'A forward-looking estimate for the rest of this month.',
+                  isOver
+                      ? 'What you have spent and reserved for the rest of this'
+                          ' month is more than the income you expect.'
+                      : 'A forward-looking estimate for the rest of this month.',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.getTextSecondaryColor(isDark),
                   ),
@@ -349,15 +367,17 @@ class SpendingPageState extends State<SpendingPage> {
                 ),
                 const Divider(height: 28),
                 _BreakdownRow(
-                  label: 'Safe to spend',
-                  value: breakdown.safeToSpend,
+                  label: isOver ? 'Over budget by' : 'Safe to spend',
+                  value: isOver
+                      ? breakdown.overCommitment
+                      : breakdown.safeToSpend,
                   positive: true,
                   emphasized: true,
+                  valueColor: isOver ? AppColors.getDanger(isDark) : null,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${MoneyFormatter.formatSigned(breakdown.dailyAllowance)} per day'
-                  ' · ${breakdown.daysRemaining} days remaining',
+                  _breakdownFooter(breakdown),
                   style: AppTypography.caption.copyWith(
                     color: AppColors.getTextSecondaryColor(isDark),
                   ),
@@ -469,12 +489,9 @@ class SpendingPageState extends State<SpendingPage> {
                       );
                     },
                   ),
-                  _HeroSafeToSpend(
-                    breakdown: safeToSpend,
-                    onTap: () => _showSafeToSpendBreakdown(
-                      context,
-                      safeToSpend,
-                    ),
+                  _HeroCashFlow(
+                    income: totalIncome,
+                    expenses: totalExpenses,
                   ),
                   const SizedBox(height: 20),
                   Padding(
@@ -511,6 +528,17 @@ class SpendingPageState extends State<SpendingPage> {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _SafeToSpendCard(
+                      breakdown: safeToSpend,
+                      onTap: () => _showSafeToSpendBreakdown(
+                        context,
+                        safeToSpend,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -967,13 +995,116 @@ class _MonthPickerPanel extends StatelessWidget {
   }
 }
 
-/// Centered hero: `SAFE TO SPEND` eyebrow, two-tone amount with accent glow
-/// (danger tint + glow when negative), and the income / days-left subline.
-class _HeroSafeToSpend extends StatelessWidget {
+/// Centered hero: `CASH FLOW` eyebrow, the month's income minus expenses with
+/// accent glow (danger tint + glow when negative), and the in / out subline.
+class _HeroCashFlow extends StatelessWidget {
+  final double income;
+  final double expenses;
+
+  const _HeroCashFlow({
+    required this.income,
+    required this.expenses,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cashFlow = income - expenses;
+    final isNegative = cashFlow < 0;
+    final glowColor =
+        isNegative ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
+    final amountColor = isNegative
+        ? AppColors.getDanger(isDark)
+        : AppColors.getTextColor(isDark);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    // Negatives read as an amount plus a direction ("$120 short") rather than
+    // a bare minus sign, which is easy to miss at hero size.
+    final amountLabel = MoneyFormatter.format(cashFlow.abs());
+    final incomeLabel = MoneyFormatter.format(income, decimalDigits: 0);
+    final expenseLabel = MoneyFormatter.format(expenses, decimalDigits: 0);
+    final String statusLabel;
+    if (cashFlow > 0) {
+      statusLabel = 'SAVED THIS MONTH';
+    } else if (cashFlow < 0) {
+      statusLabel = 'SHORT THIS MONTH';
+    } else {
+      statusLabel = 'BREAKING EVEN';
+    }
+
+    return Semantics(
+      label: isNegative
+          ? 'Cash flow, $amountLabel short this month.'
+          : 'Cash flow, $amountLabel this month.',
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
+        child: Column(
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                'CASH FLOW',
+                textAlign: TextAlign.center,
+                style: AppTypography.eyebrow.copyWith(
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ExcludeSemantics(
+              child: AnimatedSwitcher(
+                duration: reduceMotion
+                    ? Duration.zero
+                    : const Duration(milliseconds: 350),
+                child: Text(
+                  amountLabel,
+                  key: ValueKey(amountLabel),
+                  textAlign: TextAlign.center,
+                  style: AppTypography.hero.copyWith(
+                    color: amountColor,
+                    shadows: AppColors.textGlow(glowColor, isDark: isDark),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ExcludeSemantics(
+              child: Text(
+                '$incomeLabel in   ·   $expenseLabel out',
+                textAlign: TextAlign.center,
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontSize: 14,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            ExcludeSemantics(
+              child: Text(
+                statusLabel,
+                style: AppTypography.caption.copyWith(
+                  color: isNegative
+                      ? AppColors.getDanger(isDark)
+                      : AppColors.getAccent(isDark),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tappable summary row for safe to spend, demoted from the hero slot. Frames
+/// a negative result as "over budget by X" with a per-day trim target instead
+/// of a negative daily allowance.
+class _SafeToSpendCard extends StatelessWidget {
   final SafeToSpendBreakdown breakdown;
   final VoidCallback onTap;
 
-  const _HeroSafeToSpend({
+  const _SafeToSpendCard({
     required this.breakdown,
     required this.onTap,
   });
@@ -981,75 +1112,97 @@ class _HeroSafeToSpend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final amount = breakdown.safeToSpend;
-    final isNegative = amount < 0;
-    final glowColor =
-        isNegative ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
-    final integerColor = isNegative
-        ? AppColors.getDanger(isDark)
-        : AppColors.getTextColor(isDark);
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final isOver = breakdown.isOverCommitted;
+    final accent =
+        isOver ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
 
-    final amountLabel = MoneyFormatter.formatSigned(amount);
-    final incomeLabel =
-        MoneyFormatter.format(breakdown.projectedIncome, decimalDigits: 0);
-    final daysLabel = breakdown.daysRemaining == 1
-        ? '1 day left'
-        : '${breakdown.daysRemaining} days left';
+    final title = isOver ? 'Over budget by' : 'Safe to spend';
+    final amountLabel = MoneyFormatter.format(
+      isOver ? breakdown.overCommitment : breakdown.safeToSpend,
+      decimalDigits: 0,
+    );
+
+    final days = breakdown.daysRemaining;
+    final String subtitle;
+    if (days <= 0) {
+      subtitle = 'This month is already closed out';
+    } else if (isOver) {
+      final trimLabel =
+          MoneyFormatter.format(breakdown.dailyTrimNeeded, decimalDigits: 0);
+      subtitle = 'Trim $trimLabel/day to break even';
+    } else {
+      final dailyLabel =
+          MoneyFormatter.format(breakdown.dailyAllowance, decimalDigits: 0);
+      final daysLabel = days == 1 ? '1 day left' : '$days days left';
+      subtitle = '$dailyLabel/day for $daysLabel';
+    }
 
     return Semantics(
       button: true,
-      label: 'Safe to spend $amountLabel. Double tap for breakdown.',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
-          child: Column(
+      label: '$title $amountLabel. $subtitle. Double tap for breakdown.',
+      child: ExcludeSemantics(
+        child: GlowCard(
+          radius: 22,
+          padding: const EdgeInsets.all(16),
+          onTap: onTap,
+          child: Row(
             children: [
-              Semantics(
-                header: true,
-                child: Text(
-                  'SAFE TO SPEND',
-                  textAlign: TextAlign.center,
-                  style: AppTypography.eyebrow.copyWith(
-                    color: AppColors.getTextSecondaryColor(isDark),
-                  ),
-                ),
+              IconTile(
+                icon: isOver
+                    ? Symbols.warning_rounded
+                    : Symbols.shield_rounded,
+                color: accent,
               ),
-              const SizedBox(height: 10),
-              ExcludeSemantics(
-                child: AnimatedSwitcher(
-                  duration: reduceMotion
-                      ? Duration.zero
-                      : const Duration(milliseconds: 350),
-                  child: Text(
-                    amountLabel,
-                    key: ValueKey(amountLabel),
-                    textAlign: TextAlign.center,
-                    style: AppTypography.hero.copyWith(
-                      color: integerColor,
-                      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTypography.rowTitle.copyWith(
+                        color: AppColors.getTextColor(isDark),
+                      ),
                     ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.rowSubtitle.copyWith(
+                        color: AppColors.getTextSecondaryColor(isDark),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    amountLabel,
+                    style: AppTypography.chipAmount.copyWith(color: accent),
                   ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'of $incomeLabel projected income   ·   $daysLabel',
-                textAlign: TextAlign.center,
-                style: AppTypography.rowSubtitle.copyWith(
-                  fontSize: 14,
-                  color: AppColors.getTextSecondaryColor(isDark),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'TAP FOR BREAKDOWN',
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.getAccent(isDark),
-                  fontWeight: FontWeight.w700,
-                ),
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'DETAILS',
+                        style: AppTypography.captionSmall.copyWith(
+                          color: AppColors.getTextTertiaryColor(isDark),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 14,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -1064,12 +1217,14 @@ class _BreakdownRow extends StatelessWidget {
   final double value;
   final bool positive;
   final bool emphasized;
+  final Color? valueColor;
 
   const _BreakdownRow({
     required this.label,
     required this.value,
     this.positive = false,
     this.emphasized = false,
+    this.valueColor,
   });
 
   @override
@@ -1101,9 +1256,10 @@ class _BreakdownRow extends StatelessWidget {
                     ? AppTypography.bodyLarge
                     : AppTypography.bodyMedium)
                 .copyWith(
-              color: emphasized
-                  ? AppColors.getAccent(isDark)
-                  : AppColors.getTextSecondaryColor(isDark),
+              color: valueColor ??
+                  (emphasized
+                      ? AppColors.getAccent(isDark)
+                      : AppColors.getTextSecondaryColor(isDark)),
               fontWeight: emphasized ? FontWeight.w800 : FontWeight.w600,
             ),
           ),

@@ -44,16 +44,23 @@ void main() {
       await tester.pump(const Duration(milliseconds: 600));
       expect(find.byType(SpendingPage), findsOneWidget);
 
-      await tester.tap(find.text('TAP FOR BREAKDOWN'));
+      await tester.scrollUntilVisible(
+        find.text('DETAILS'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('DETAILS'));
       await tester.pumpAndSettle();
 
-      final sheetTitle = find.text('Safe to spend').first;
+      // The card behind the sheet also says "Safe to spend", so key off the
+      // sheet's own description line.
+      final sheetTitle = find.textContaining('A forward-looking estimate');
       final sheetRoute = ModalRoute.of(tester.element(sheetTitle))!;
       final rootNavigator =
           tester.state<NavigatorState>(find.byType(Navigator).first);
       expect(sheetRoute.navigator, same(rootNavigator));
 
-      final dailyAllowance = find.textContaining('days remaining');
+      final dailyAllowance = find.textContaining('remaining');
       expect(dailyAllowance, findsOneWidget);
       expect(
         find.ancestor(

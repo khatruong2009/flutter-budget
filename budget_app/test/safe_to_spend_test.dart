@@ -147,4 +147,62 @@ void main() {
 
     expect(result.actualExpenses, 0);
   });
+
+  test('an over-committed month reports a trim target, not a negative allowance',
+      () {
+    final result = calculator.calculate(
+      transactions: [
+        Transaction(
+          type: TransactionTyp.income,
+          description: 'Pay',
+          amount: 1000,
+          category: 'Salary',
+          date: DateTime(2026, 7, 1),
+        ),
+        Transaction(
+          type: TransactionTyp.expense,
+          description: 'Rent',
+          amount: 1850,
+          category: 'Housing',
+          date: DateTime(2026, 7, 2),
+        ),
+      ],
+      recurringTransactions: const [],
+      categoryBudgetLimits: const {},
+      savingsGoals: const [],
+      month: month,
+      asOf: asOf,
+    );
+
+    expect(result.safeToSpend, -850);
+    expect(result.isOverCommitted, isTrue);
+    expect(result.overCommitment, 850);
+    expect(result.dailyAllowance, 0);
+    expect(result.daysRemaining, 17);
+    expect(result.dailyTrimNeeded, closeTo(50, 0.001));
+  });
+
+  test('a healthy month has an allowance and nothing to trim', () {
+    final result = calculator.calculate(
+      transactions: [
+        Transaction(
+          type: TransactionTyp.income,
+          description: 'Pay',
+          amount: 1700,
+          category: 'Salary',
+          date: DateTime(2026, 7, 1),
+        ),
+      ],
+      recurringTransactions: const [],
+      categoryBudgetLimits: const {},
+      savingsGoals: const [],
+      month: month,
+      asOf: asOf,
+    );
+
+    expect(result.isOverCommitted, isFalse);
+    expect(result.overCommitment, 0);
+    expect(result.dailyTrimNeeded, 0);
+    expect(result.dailyAllowance, closeTo(100, 0.001));
+  });
 }

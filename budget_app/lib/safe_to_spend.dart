@@ -35,8 +35,22 @@ class SafeToSpendBreakdown {
 
   double get safeToSpend => projectedIncome - actualExpenses - totalReserved;
 
+  /// True when what is already spent plus what is still reserved exceeds the
+  /// income projected for the month.
+  bool get isOverCommitted => safeToSpend < 0;
+
+  /// How far past break-even the month is, always as a positive amount.
+  double get overCommitment => isOverCommitted ? -safeToSpend : 0;
+
+  /// Spend-per-day for the rest of the month. Zero once the month is
+  /// over-committed — a negative daily allowance is not an actionable number.
   double get dailyAllowance =>
-      daysRemaining <= 0 ? 0 : safeToSpend / daysRemaining;
+      daysRemaining <= 0 || safeToSpend <= 0 ? 0 : safeToSpend / daysRemaining;
+
+  /// Daily spending to cut across the remaining days to reach break-even.
+  /// Zero unless the month is over-committed.
+  double get dailyTrimNeeded =>
+      daysRemaining <= 0 || !isOverCommitted ? 0 : overCommitment / daysRemaining;
 }
 
 /// Calculates "safe to spend" without IO so the app, widget, and tests can
