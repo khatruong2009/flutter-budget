@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:material_symbols_icons/symbols.dart';
@@ -20,14 +22,76 @@ import 'package:budget_app/transaction_model.dart';
 import 'package:budget_app/widgets/floating_dock.dart';
 import 'package:budget_app/widgets/voice_recording_sheet.dart';
 
+class _FakeRecordPlatform extends RecordPlatform {
+  @override
+  Future<void> create(String recorderId) async {}
+
+  @override
+  Future<bool> hasPermission(String recorderId, {bool request = true}) async =>
+      false;
+
+  @override
+  Future<void> start(
+    String recorderId,
+    RecordConfig config, {
+    required String path,
+  }) async {}
+
+  @override
+  Future<Stream<Uint8List>> startStream(
+    String recorderId,
+    RecordConfig config,
+  ) async =>
+      const Stream<Uint8List>.empty();
+
+  @override
+  Future<String?> stop(String recorderId) async => null;
+
+  @override
+  Future<void> pause(String recorderId) async {}
+
+  @override
+  Future<void> resume(String recorderId) async {}
+
+  @override
+  Future<bool> isRecording(String recorderId) async => false;
+
+  @override
+  Future<bool> isPaused(String recorderId) async => false;
+
+  @override
+  Future<void> dispose(String recorderId) async {}
+
+  @override
+  Future<Amplitude> getAmplitude(String recorderId) async =>
+      Amplitude(current: 0, max: 0);
+
+  @override
+  Future<bool> isEncoderSupported(
+    String recorderId,
+    AudioEncoder encoder,
+  ) async =>
+      true;
+
+  @override
+  Future<List<InputDevice>> listInputDevices(String recorderId) async => [];
+
+  @override
+  Future<void> cancel(String recorderId) async {}
+
+  @override
+  Stream<RecordState> onStateChanged(String recorderId) => const Stream.empty();
+}
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({
       StorageKeys.onboardingCompleted: true,
     });
+    RecordPlatform.instance = _FakeRecordPlatform();
   });
 
-  testWidgets('quick-entry sheet is hosted on root navigator above the dock',
+  testWidgets('voice-entry sheet is hosted on root navigator above the dock',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MultiProvider(
@@ -56,12 +120,14 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final sheetTitle = find.text('Quick entry');
-    expect(sheetTitle, findsOneWidget);
+    final sheetMessage = find.text(
+      'Microphone access is off. Enable it in Settings > Budgie.',
+    );
+    expect(sheetMessage, findsOneWidget);
 
     // The sheet's route must live on the root navigator; on a nested tab
     // navigator it would paint below the FloatingDock.
-    final sheetRoute = ModalRoute.of(tester.element(sheetTitle))!;
+    final sheetRoute = ModalRoute.of(tester.element(sheetMessage))!;
     final rootNavigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
     expect(sheetRoute.navigator, same(rootNavigator));
@@ -77,6 +143,5 @@ void main() {
     final dock = tester.widget<FloatingDock>(find.byType(FloatingDock));
     expect(dock.currentIndex, 0);
     expect(find.byType(NetWorthPage), findsNothing);
-    expect(sheetTitle, findsOneWidget);
   });
 }

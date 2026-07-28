@@ -439,8 +439,8 @@ class SpendingPageState extends State<SpendingPage> {
               if (PlatformUtils.isMobile) ...[
                 GlowFab(
                   size: 44,
-                  icon: Symbols.edit_note_rounded,
-                  semanticLabel: 'Quick entry',
+                  icon: Symbols.mic_rounded,
+                  semanticLabel: 'Add by voice',
                   onPressed: () => startVoiceExpenseFlow(context),
                 ),
                 const SizedBox(height: 12),

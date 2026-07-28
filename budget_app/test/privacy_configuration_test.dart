@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('release configuration does not bundle an AI key or cloud AI client',
-      () {
+  test('release configuration enables the explicitly accepted OpenAI flow', () {
     final pubspec = File('pubspec.yaml').readAsStringSync();
-    expect(pubspec, isNot(contains('flutter_dotenv')));
-    expect(pubspec, isNot(contains('dart_openai')));
-    expect(pubspec, isNot(contains('\n    - .env')));
+    expect(pubspec, contains('flutter_dotenv'));
+    expect(pubspec, contains('dart_openai'));
+    expect(pubspec, contains('\n    - .env'));
 
     final source = Directory('lib')
         .listSync(recursive: true)
@@ -16,19 +15,22 @@ void main() {
         .where((file) => file.path.endsWith('.dart'))
         .map((file) => file.readAsStringSync())
         .join('\n');
-    expect(source, isNot(contains('package:dart_openai')));
-    expect(source, isNot(contains('package:flutter_dotenv')));
-    expect(source, isNot(contains('OPEN_AI_API_KEY')));
+    expect(source, contains('package:dart_openai'));
+    expect(source, contains('package:flutter_dotenv'));
+    expect(source, contains('OPEN_AI_API_KEY'));
+
+    final gitignore = File('../.gitignore').readAsStringSync();
+    expect(gitignore, contains('budget_app/.env'));
   });
 
-  test('production manifests do not request network or microphone access', () {
+  test('voice entry declares microphone and network access', () {
     final android =
         File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
     final ios = File('ios/Runner/Info.plist').readAsStringSync();
 
-    expect(android, isNot(contains('android.permission.INTERNET')));
-    expect(android, isNot(contains('android.permission.RECORD_AUDIO')));
-    expect(ios, isNot(contains('NSMicrophoneUsageDescription')));
+    expect(android, contains('android.permission.RECORD_AUDIO'));
+    expect(android, contains('android.permission.INTERNET'));
+    expect(ios, contains('NSMicrophoneUsageDescription'));
   });
 
   test('iOS explains why file imports may access the camera', () {

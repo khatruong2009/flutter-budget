@@ -189,8 +189,8 @@ class _MyAppState extends State<MyApp> {
       ),
       const ShortcutItem(
         type: 'action_voice_add',
-        localizedTitle: 'Quick Entry',
-        icon: 'square.and.pencil',
+        localizedTitle: 'Add by Voice',
+        icon: 'mic.circle.fill',
       ),
     ]);
   }

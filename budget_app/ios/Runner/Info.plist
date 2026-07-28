@@ -80,5 +80,7 @@
 	<string>We need access to save exported transaction files</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Budgie uses Face ID to protect your financial data when App Lock is enabled.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Budgie uses the microphone so you can add transactions by speaking.</string>
 </dict>
 </plist>
