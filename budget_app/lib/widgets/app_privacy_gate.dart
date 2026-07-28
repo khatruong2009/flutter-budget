@@ -63,7 +63,12 @@ class _AppPrivacyGateState extends State<AppPrivacyGate>
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         _backgroundedAt ??= DateTime.now();
-        if (mounted) setState(() => _obscured = true);
+        if (!mounted) return;
+        final shouldObscure =
+            context.read<AppSettingsProvider>().appLockEnabled;
+        if (_obscured != shouldObscure) {
+          setState(() => _obscured = shouldObscure);
+        }
         return;
       case AppLifecycleState.resumed:
         final settings = context.read<AppSettingsProvider>();
@@ -153,7 +158,7 @@ class _AppPrivacyGateState extends State<AppPrivacyGate>
           ),
         ),
         if (_obscured)
-          const ColoredBox(color: AppColors.backgroundDark)
+          const _AppSwitcherPrivacyCover()
         else if (_locked)
           _LockScreen(
             authenticating: _authenticating,
@@ -171,6 +176,44 @@ class _AppPrivacyGateState extends State<AppPrivacyGate>
             },
           ),
       ],
+    );
+  }
+}
+
+class _AppSwitcherPrivacyCover extends StatelessWidget {
+  const _AppSwitcherPrivacyCover();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      key: const Key('app-privacy-cover'),
+      color: AppColors.backgroundDark,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/budgie_mark.png',
+              width: 72,
+              height: 72,
+            ),
+            const SizedBox(height: AppDesign.spacingM),
+            Text(
+              'Budgie',
+              style: AppTypography.headingLarge.copyWith(
+                color: AppColors.textPrimaryDark,
+              ),
+            ),
+            const SizedBox(height: AppDesign.spacingXS),
+            Text(
+              'App preview hidden',
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textSecondaryDark,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -447,6 +447,19 @@ class TransactionModel extends ChangeNotifier {
     return getTotalAssetsForMonth(month) - getTotalLiabilitiesForMonth(month);
   }
 
+  double? getNetWorthChangeForMonth(DateTime month) {
+    if (getUpdatedNetWorthEntryCountForMonth(month) == 0) {
+      return null;
+    }
+
+    final previousMonth = DateTime(month.year, month.month - 1);
+    if (!hasNetWorthDataForMonth(previousMonth)) {
+      return null;
+    }
+
+    return getNetWorthForMonth(month) - getNetWorthForMonth(previousMonth);
+  }
+
   int getStaleNetWorthEntryCountForMonth(DateTime month) {
     final selectedMonthKey = netWorthMonthKey(month);
     return _netWorthEntries.where((entry) {
@@ -466,18 +479,6 @@ class TransactionModel extends ChangeNotifier {
       }
     }
 
-    final hasSelectedMonthPoint = dayKeys.any((dayKey) {
-      final date = netWorthDayFromKey(dayKey);
-      return date.year == _selectedNetWorthMonth.year &&
-          date.month == _selectedNetWorthMonth.month;
-    });
-
-    if (!hasSelectedMonthPoint &&
-        hasNetWorthDataForMonth(_selectedNetWorthMonth)) {
-      dayKeys.add(
-          netWorthDayKey(_defaultSnapshotDateForMonth(_selectedNetWorthMonth)));
-    }
-
     return _buildNetWorthHistoryPoints(dayKeys.toList(), limit);
   }
 
@@ -495,17 +496,7 @@ class TransactionModel extends ChangeNotifier {
     }
 
     final months = monthKeys.map(netWorthMonthFromKey).toList()
-      ..sort((a, b) {
-        final selected = _selectedNetWorthMonth;
-        final aIsSelected =
-            a.year == selected.year && a.month == selected.month;
-        final bIsSelected =
-            b.year == selected.year && b.month == selected.month;
-        if (aIsSelected != bIsSelected) {
-          return aIsSelected ? -1 : 1;
-        }
-        return b.compareTo(a);
-      });
+      ..sort((a, b) => b.compareTo(a));
     return months;
   }
 

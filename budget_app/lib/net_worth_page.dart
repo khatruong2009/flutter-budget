@@ -47,12 +47,7 @@ class _NetWorthPageState extends State<NetWorthPage> {
         final history = model.getNetWorthHistory(limit: 24);
         // getNetWorthHistory returns newest-first; chart wants oldest-first.
         final chartData = history.reversed.toList();
-        final previousMonth = DateTime(month.year, month.month - 1);
-        final hasPreviousData = model.hasNetWorthDataForMonth(previousMonth);
-        final previousNetWorth =
-            hasPreviousData ? model.getNetWorthForMonth(previousMonth) : null;
-        final monthChange =
-            previousNetWorth == null ? null : netWorth - previousNetWorth;
+        final monthChange = model.getNetWorthChangeForMonth(month);
 
         if (!model.hasNetWorthEntries) {
           return BudgiePageScaffold(

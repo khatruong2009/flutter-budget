@@ -94,25 +94,78 @@ void main() {
     expect(model.getStaleNetWorthEntryCountForMonth(february), 0);
   });
 
-  test('available months include tracked snapshot months and selected month',
+  test('available months stay newest-first when an older month is selected',
+      () async {
+    final model = TransactionModel();
+    final now = DateTime.now();
+    final currentMonth = DateTime(now.year, now.month);
+    final previousMonth = DateTime(now.year, now.month - 1);
+    final olderMonth = DateTime(now.year, now.month - 2);
+
+    await model.selectNetWorthMonth(previousMonth);
+    await model.addNetWorthEntry(
+      name: 'Savings',
+      type: NetWorthEntryType.asset,
+      amount: 5000,
+      month: olderMonth,
+    );
+
+    final months = model.getNetWorthAvailableMonths();
+
+    expect(months, [currentMonth, previousMonth, olderMonth]);
+  });
+
+  test('carried balances do not create synthetic month-end history points',
       () async {
     final model = TransactionModel();
     final january = DateTime(2026, 1);
-    final march = DateTime(2026, 3);
+    final february = DateTime(2026, 2);
+    final recordedAt = DateTime(2026, 1, 20, 9);
 
-    await model.selectNetWorthMonth(march);
     await model.addNetWorthEntry(
       name: 'Savings',
       type: NetWorthEntryType.asset,
       amount: 5000,
       month: january,
+      recordedAt: recordedAt,
+    );
+    await model.selectNetWorthMonth(february);
+
+    expect(model.hasNetWorthDataForMonth(february), isTrue);
+    expect(model.getUpdatedNetWorthEntryCountForMonth(february), 0);
+
+    final history = model.getNetWorthHistory(limit: 10);
+
+    expect(history, hasLength(1));
+    expect(history.single.date, DateTime(2026, 1, 20));
+    expect(history.single.netWorth, 5000);
+    expect(model.getNetWorthChangeForMonth(february), isNull);
+  });
+
+  test('monthly change uses recorded balances from the previous month',
+      () async {
+    final model = TransactionModel();
+    final june = DateTime(2026, 6);
+    final july = DateTime(2026, 7);
+
+    await model.addNetWorthEntry(
+      name: 'Brokerage',
+      type: NetWorthEntryType.asset,
+      amount: 200000,
+      month: june,
+      recordedAt: DateTime(2026, 6, 20, 9),
+    );
+    final brokerage = model.netWorthEntries.single;
+    await model.updateNetWorthEntry(
+      id: brokerage.id,
+      name: brokerage.name,
+      type: brokerage.type,
+      amount: 210000,
+      month: july,
+      recordedAt: DateTime(2026, 7, 20, 9),
     );
 
-    final months = model.getNetWorthAvailableMonths();
-
-    expect(months, contains(march));
-    expect(months, contains(january));
-    expect(months.first, march);
+    expect(model.getNetWorthChangeForMonth(july), 10000);
   });
 
   test('same-month net worth updates create separate history points', () async {

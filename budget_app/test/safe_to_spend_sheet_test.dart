@@ -11,6 +11,7 @@ import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/spending_page.dart';
 import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
+import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_model.dart';
 
 void main() {
@@ -77,4 +78,41 @@ void main() {
       expect(tester.getBottomRight(dailyAllowance).dy, lessThanOrEqualTo(500));
     },
   );
+
+  testWidgets('negative cash flow does not suggest an impossible daily trim',
+      (tester) async {
+    final now = DateTime.now();
+    final transactionModel = TransactionModel()
+      ..transactions = [
+        Transaction(
+          type: TransactionTyp.income,
+          description: 'Income',
+          amount: 4400,
+          category: 'Salary',
+          date: DateTime(now.year, now.month, 1),
+        ),
+        Transaction(
+          type: TransactionTyp.expense,
+          description: 'Expenses',
+          amount: 7176.93,
+          category: 'General',
+          date: DateTime(now.year, now.month, 2),
+        ),
+      ];
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: transactionModel),
+          ChangeNotifierProvider(create: (_) => RecurringTransactionModel()),
+        ],
+        child: const MaterialApp(home: SpendingPage()),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(find.text('Projected shortfall'), findsOneWidget);
+    expect(find.text('Add income or reduce planned spending'), findsOneWidget);
+    expect(find.textContaining('Trim'), findsNothing);
+  });
 }

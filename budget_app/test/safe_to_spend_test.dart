@@ -148,8 +148,7 @@ void main() {
     expect(result.actualExpenses, 0);
   });
 
-  test('an over-committed month reports a trim target, not a negative allowance',
-      () {
+  test('an over-committed month reports its shortfall', () {
     final result = calculator.calculate(
       transactions: [
         Transaction(
@@ -179,7 +178,6 @@ void main() {
     expect(result.overCommitment, 850);
     expect(result.dailyAllowance, 0);
     expect(result.daysRemaining, 17);
-    expect(result.dailyTrimNeeded, closeTo(50, 0.001));
   });
 
   test('a healthy month has an allowance and nothing to trim', () {
@@ -202,7 +200,6 @@ void main() {
 
     expect(result.isOverCommitted, isFalse);
     expect(result.overCommitment, 0);
-    expect(result.dailyTrimNeeded, 0);
     expect(result.dailyAllowance, closeTo(100, 0.001));
   });
 }

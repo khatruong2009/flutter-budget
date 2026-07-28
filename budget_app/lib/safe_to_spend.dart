@@ -46,11 +46,6 @@ class SafeToSpendBreakdown {
   /// over-committed — a negative daily allowance is not an actionable number.
   double get dailyAllowance =>
       daysRemaining <= 0 || safeToSpend <= 0 ? 0 : safeToSpend / daysRemaining;
-
-  /// Daily spending to cut across the remaining days to reach break-even.
-  /// Zero unless the month is over-committed.
-  double get dailyTrimNeeded =>
-      daysRemaining <= 0 || !isOverCommitted ? 0 : overCommitment / daysRemaining;
 }
 
 /// Calculates "safe to spend" without IO so the app, widget, and tests can
