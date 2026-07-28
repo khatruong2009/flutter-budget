@@ -21,7 +21,13 @@ class VoiceExpenseException implements Exception {
 class VoiceExpenseService {
   Future<void> _ensureKey() async {
     await dotenv.load(fileName: '.env');
-    OpenAI.apiKey = dotenv.env['OPEN_AI_API_KEY']!;
+    final apiKey = dotenv.env['OPEN_AI_API_KEY']?.trim();
+    if (apiKey == null || apiKey.isEmpty) {
+      throw VoiceExpenseException(
+        'OpenAI is not configured. Add OPEN_AI_API_KEY to the app .env file.',
+      );
+    }
+    OpenAI.apiKey = apiKey;
   }
 
   Future<String> transcribe(File audio) async {
@@ -96,7 +102,10 @@ If the phrase is not describing a transaction at all, return {"error":"not_a_tra
   }
 
   static Transaction parseVoiceJson(
-      String llmOutput, String transcript, DateTime today) {
+    String llmOutput,
+    String transcript,
+    DateTime today,
+  ) {
     var raw = llmOutput.trim();
     if (raw.startsWith('```')) {
       raw = raw.replaceFirst(RegExp(r'^```[a-zA-Z]*\n?'), '');

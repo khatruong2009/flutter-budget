@@ -213,7 +213,7 @@ struct BudgetVoiceAddWidget: Widget {
         .widgetURL(URL(string: "budgetapp://voice-add")!)
     }
     .configurationDisplayName("Voice Add")
-    .description("Speak an expense and Budgie logs it.")
+    .description("Speak a transaction and review it before saving.")
     .supportedFamilies([.systemSmall])
   }
 }

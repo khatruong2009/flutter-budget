@@ -108,6 +108,7 @@ class RecurringTransaction {
       amount: amount,
       category: category,
       date: date,
+      recurringTemplateId: id,
     );
   }
 

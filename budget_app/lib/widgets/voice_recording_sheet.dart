@@ -20,16 +20,12 @@ import 'pill_chip.dart';
 bool _voiceFlowActive = false;
 
 Future<void> startVoiceExpenseFlow(BuildContext context) async {
-  if (_voiceFlowActive) {
-    return;
-  }
+  if (_voiceFlowActive) return;
   _voiceFlowActive = true;
   try {
     final model = Provider.of<TransactionModel>(context, listen: false);
     final draft = await showVoiceRecordingSheet(context);
-    if (draft == null || !context.mounted) {
-      return;
-    }
+    if (draft == null || !context.mounted) return;
     await showTransactionForm(
       context,
       draft.type,
@@ -44,14 +40,12 @@ Future<void> startVoiceExpenseFlow(BuildContext context) async {
 Future<Transaction?> showVoiceRecordingSheet(BuildContext context) {
   return showModalBottomSheet<Transaction>(
     context: context,
-    // The home screen draws the floating dock above the per-tab navigators;
-    // the sheet must be hosted on the root navigator to render above it.
     useRootNavigator: true,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     isDismissible: true,
     enableDrag: true,
-    builder: (sheetContext) => const _VoiceRecordingSheet(),
+    builder: (_) => const _VoiceRecordingSheet(),
   );
 }
 
@@ -74,14 +68,11 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
   final VoiceExpenseService _service = VoiceExpenseService();
 
   late final AnimationController _pulse;
-
   _VoiceState _state = _VoiceState.recording;
   _ErrorKind _errorKind = _ErrorKind.noSpeech;
   String _errorMessage = '';
-
   Timer? _timer;
   int _elapsedSeconds = 0;
-
   String? _audioPath;
   String? _transcript;
 
@@ -93,9 +84,7 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
       duration: const Duration(milliseconds: 1400),
       vsync: this,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startRecording();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startRecording());
   }
 
   @override
@@ -109,9 +98,7 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
     if (path != null) {
       final file = File(path);
       file.exists().then((exists) {
-        if (exists) {
-          file.delete().catchError((_) => file);
-        }
+        if (exists) file.delete().catchError((_) => file);
       });
     }
     super.dispose();
@@ -126,25 +113,15 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
 
   Future<void> _startRecording() async {
     final hasPermission = await _recorder.hasPermission();
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     if (!hasPermission) {
-      MicroInteractions.vibrate();
-      setState(() {
-        _state = _VoiceState.error;
-        _errorKind = _ErrorKind.noSpeech;
-        _errorMessage =
-            'Microphone access is off. Enable it in Settings > Budgie.';
-      });
+      _showError(
+        _ErrorKind.noSpeech,
+        'Microphone access is off. Enable it in Settings > Budgie.',
+      );
       return;
     }
-    // A lifecycle pause or manual stop may have left the recording state
-    // while this was awaiting; starting the mic then would leave it hot
-    // with nothing to stop it.
-    if (_state != _VoiceState.recording) {
-      return;
-    }
+    if (_state != _VoiceState.recording) return;
 
     final previousPath = _audioPath;
     if (previousPath != null) {
@@ -153,15 +130,11 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
       if (await previousFile.exists()) {
         await previousFile.delete().catchError((_) => previousFile);
       }
-      if (!mounted || _state != _VoiceState.recording) {
-        return;
-      }
+      if (!mounted || _state != _VoiceState.recording) return;
     }
 
     final tempDir = await getTemporaryDirectory();
-    if (!mounted || _state != _VoiceState.recording) {
-      return;
-    }
+    if (!mounted || _state != _VoiceState.recording) return;
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final path = '${tempDir.path}/voice_expense_$timestamp.m4a';
 
@@ -175,24 +148,15 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
       ),
       path: path,
     );
-    if (!mounted || _state != _VoiceState.recording) {
-      return;
-    }
+    if (!mounted || _state != _VoiceState.recording) return;
 
     MicroInteractions.mediumImpact();
-    if (!MediaQuery.disableAnimationsOf(context)) {
-      _pulse.repeat();
-    }
-
-    setState(() {
-      _elapsedSeconds = 0;
-    });
+    if (!MediaQuery.disableAnimationsOf(context)) _pulse.repeat();
+    setState(() => _elapsedSeconds = 0);
 
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       setState(() => _elapsedSeconds++);
       if (_elapsedSeconds >= _maxDuration.inSeconds) {
         _stopAndProcess();
@@ -201,9 +165,7 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
   }
 
   Future<void> _stopAndProcess() async {
-    if (_state != _VoiceState.recording) {
-      return;
-    }
+    if (_state != _VoiceState.recording) return;
     setState(() => _state = _VoiceState.processing);
 
     _timer?.cancel();
@@ -211,10 +173,7 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
     MicroInteractions.lightImpact();
 
     await _recorder.stop();
-    if (!mounted) {
-      return;
-    }
-
+    if (!mounted) return;
     await _transcribeAndParse();
   }
 
@@ -227,23 +186,14 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
 
     try {
       final transcript = await _service.transcribe(File(path));
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       _transcript = transcript;
       await _parseTranscript(transcript);
-    } on VoiceExpenseException catch (e) {
-      if (!mounted) {
-        return;
-      }
-      // The only VoiceExpenseException transcribe throws is the empty
-      // transcript; retrying the same silent file can never succeed, so
-      // route Retry back to a fresh recording.
-      _showError(_ErrorKind.noSpeech, e.message);
+    } on VoiceExpenseException catch (error) {
+      if (!mounted) return;
+      _showError(_ErrorKind.noSpeech, error.message);
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       _showError(
         _ErrorKind.transcribeFailed,
         'Something went wrong. Try again.',
@@ -254,19 +204,13 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
   Future<void> _parseTranscript(String transcript) async {
     try {
       final transaction = await _service.parse(transcript, DateTime.now());
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       Navigator.of(context).pop(transaction);
-    } on VoiceExpenseException catch (e) {
-      if (!mounted) {
-        return;
-      }
-      _showError(_ErrorKind.parseFailed, e.message);
+    } on VoiceExpenseException catch (error) {
+      if (!mounted) return;
+      _showError(_ErrorKind.parseFailed, error.message);
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       _showError(_ErrorKind.parseFailed, 'Something went wrong. Try again.');
     }
   }
@@ -309,10 +253,6 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
     _startRecording();
   }
 
-  void _cancel() {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -325,14 +265,15 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
         onVerticalDragEnd: processing ? (_) {} : null,
         child: Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
           ),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.getCard(isDark),
               border: Border.all(color: AppColors.getCardBorder(isDark)),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
             ),
             child: SafeArea(
               top: false,
@@ -434,7 +375,9 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: accent.withValues(alpha: 0.55 * (1 - ping)),
+                            color: accent.withValues(
+                              alpha: 0.55 * (1 - ping),
+                            ),
                             width: 2,
                           ),
                         ),
@@ -473,7 +416,6 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
 
   Widget _buildProcessing(bool isDark) {
     final accent = AppColors.getAccent(isDark);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -547,7 +489,7 @@ class _VoiceRecordingSheetState extends State<_VoiceRecordingSheet>
                 label: 'Cancel',
                 color: AppColors.getTextSecondaryColor(isDark),
                 height: 44,
-                onPressed: _cancel,
+                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
             const SizedBox(width: 12),

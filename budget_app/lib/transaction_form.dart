@@ -5,6 +5,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'transaction.dart';
 import 'common.dart';
 import 'package:provider/provider.dart';
+import 'categorization_provider.dart';
 import 'transaction_model.dart';
 import 'design_system.dart';
 import 'recurring_transaction_form.dart';
@@ -20,6 +21,13 @@ Future<void> showTransactionForm(
 }) async {
   final transactionModel =
       Provider.of<TransactionModel>(context, listen: false);
+  CategorizationProvider? categorizationProvider;
+  try {
+    categorizationProvider =
+        Provider.of<CategorizationProvider>(context, listen: false);
+  } on ProviderNotFoundException {
+    categorizationProvider = null;
+  }
 
   final formKey = GlobalKey<FormState>();
   String description = '';
@@ -31,6 +39,7 @@ Future<void> showTransactionForm(
       : categoryMap.keys.first;
   double amount = 0.0;
   DateTime selectedDate = DateTime.now();
+  final selectedTagIds = <String>{};
 
   final amountController = TextEditingController();
   final amountFocusNode = FocusNode();
@@ -48,15 +57,32 @@ Future<void> showTransactionForm(
     selectedDate = transactionToEdit.date;
     amountController.text = amount.toStringAsFixed(2);
     descriptionController.text = description;
+    selectedTagIds.addAll(transactionToEdit.tagIds);
   } else if (prefill != null) {
     description = prefill.description;
     category = prefill.category;
     amount = prefill.amount;
     selectedDate = prefill.date;
+    selectedTagIds.addAll(prefill.tagIds);
     if (prefill.amount > 0) {
       amountController.text = amount.toStringAsFixed(2);
     }
     descriptionController.text = description;
+
+    // Quick entry supplies fully populated controllers, so their onChanged
+    // callbacks do not fire. Apply merchant rules here as well as during
+    // manual typing so category and tag suggestions behave consistently.
+    final suggestion = categorizationProvider?.suggest(
+      type: type,
+      description: description,
+      amount: amount,
+    );
+    if (suggestion != null && categoryMap.containsKey(suggestion.category)) {
+      category = suggestion.category;
+      selectedTagIds
+        ..clear()
+        ..addAll(suggestion.tagIds);
+    }
   }
 
   // show transaction form
@@ -73,6 +99,23 @@ Future<void> showTransactionForm(
         final categoryMap = type == TransactionTyp.expense
             ? expenseCategories
             : incomeCategories;
+
+        void applySuggestion(String nextDescription, String nextAmount) {
+          final parsedAmount = double.tryParse(nextAmount) ?? 0;
+          final suggestion = categorizationProvider?.suggest(
+            type: type,
+            description: nextDescription,
+            amount: parsedAmount,
+          );
+          if (suggestion == null ||
+              !categoryMap.containsKey(suggestion.category)) {
+            return;
+          }
+          category = suggestion.category;
+          selectedTagIds
+            ..clear()
+            ..addAll(suggestion.tagIds);
+        }
 
         int initialCategoryIndex = categoryMap.keys.toList().indexOf(category);
         final categoryScrollController =
@@ -161,12 +204,13 @@ Future<void> showTransactionForm(
                             prefixIcon: Icons.attach_money,
                             errorText: amountError,
                             onChanged: (value) {
-                              // Clear error on change
-                              if (amountError != null) {
-                                setState(() {
-                                  amountError = null;
-                                });
-                              }
+                              setState(() {
+                                amountError = null;
+                                applySuggestion(
+                                  descriptionController.text,
+                                  value,
+                                );
+                              });
                             },
                           ),
                           const SizedBox(height: AppDesign.spacingS),
@@ -180,12 +224,10 @@ Future<void> showTransactionForm(
                             prefixIcon: Icons.description_outlined,
                             errorText: descriptionError,
                             onChanged: (value) {
-                              // Clear error on change
-                              if (descriptionError != null) {
-                                setState(() {
-                                  descriptionError = null;
-                                });
-                              }
+                              setState(() {
+                                descriptionError = null;
+                                applySuggestion(value, amountController.text);
+                              });
                             },
                           ),
                           const SizedBox(height: AppDesign.spacingS),
@@ -274,6 +316,42 @@ Future<void> showTransactionForm(
                           ),
                           const SizedBox(height: AppDesign.spacingM),
 
+                          if (categorizationProvider?.tags.isNotEmpty ==
+                              true) ...[
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Tags',
+                                style: AppTypography.caption.copyWith(
+                                  color: AppDesign.getTextSecondary(context),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppDesign.spacingXS),
+                            Wrap(
+                              spacing: AppDesign.spacingXS,
+                              runSpacing: AppDesign.spacingXS,
+                              children: [
+                                for (final tag in categorizationProvider!.tags)
+                                  FilterChip(
+                                    label: Text(tag.name),
+                                    selected: selectedTagIds.contains(tag.id),
+                                    onSelected: (selected) {
+                                      setState(() {
+                                        if (selected) {
+                                          selectedTagIds.add(tag.id);
+                                        } else {
+                                          selectedTagIds.remove(tag.id);
+                                        }
+                                      });
+                                    },
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: AppDesign.spacingM),
+                          ],
+
                           // Date Picker
                           _DatePickerTile(
                             label: 'Date',
@@ -335,18 +413,18 @@ Future<void> showTransactionForm(
                                 // Only proceed if no errors
                                 if (amountError == null) {
                                   if (transactionToEdit != null) {
-                                    // Update the existing transaction
-                                    transactionModel.deleteTransaction(
-                                      transactionToEdit,
-                                    );
-                                    transactionModel.addTransaction(
-                                      type,
-                                      description.isEmpty
-                                          ? 'Transaction'
-                                          : description,
-                                      amount,
-                                      category,
-                                      selectedDate,
+                                    transactionModel.updateTransaction(
+                                      transactionToEdit.id,
+                                      transactionToEdit.copyWith(
+                                        type: type,
+                                        description: description.isEmpty
+                                            ? 'Transaction'
+                                            : description,
+                                        amount: amount,
+                                        category: category,
+                                        date: selectedDate,
+                                        tagIds: selectedTagIds.toList(),
+                                      ),
                                     );
                                     Navigator.of(context).pop();
                                   } else {
@@ -364,6 +442,7 @@ Future<void> showTransactionForm(
                                       amount,
                                       category,
                                       selectedDate,
+                                      tagIds: selectedTagIds.toList(),
                                     );
                                     Navigator.of(context).pop();
                                     final selectedMonth =

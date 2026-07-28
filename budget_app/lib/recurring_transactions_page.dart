@@ -10,6 +10,7 @@ import 'transaction_generator.dart';
 import 'design_system.dart';
 import 'widgets/recurrence_indicator.dart';
 import 'common.dart';
+import 'money_formatter.dart';
 
 /// RecurringTransactionsPage displays and manages all recurring transactions
 /// Allows users to view, edit, and delete recurring transaction templates
@@ -297,7 +298,7 @@ class _RecurringTransactionListItem extends StatelessWidget {
               ),
               // Amount
               Text(
-                '\$${NumberFormat("#,##0.00", "en_US").format(recurring.amount)}',
+                MoneyFormatter.format(recurring.amount),
                 style: AppTypography.headingMedium.copyWith(
                   color: categoryColor,
                   fontWeight: FontWeight.bold,

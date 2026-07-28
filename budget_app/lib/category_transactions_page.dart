@@ -10,6 +10,7 @@ import 'design_system.dart';
 import 'widgets/empty_state.dart';
 import 'widgets/recurrence_indicator.dart';
 import 'utils/platform_utils.dart';
+import 'money_formatter.dart';
 
 /// Drill-in destination from a Categories breakdown row: shows every
 /// transaction in [category] for [month], newest first, with the same
@@ -161,8 +162,6 @@ class CategoryTransactionsPage extends StatelessWidget {
     double total,
     int count,
   ) {
-    final moneyFmt =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
     final base = AppColors.getCard(isDark);
 
     return GlowCard(
@@ -195,7 +194,7 @@ class CategoryTransactionsPage extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      moneyFmt.format(total),
+                      MoneyFormatter.format(total),
                       style: AppTypography.heroSmall.copyWith(
                         color: AppColors.getTextColor(isDark),
                         shadows:
@@ -252,12 +251,9 @@ class _TransactionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final moneyFmt =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
 
     return Dismissible(
-      key: ValueKey(
-          transaction.description + transaction.date.toIso8601String()),
+      key: ValueKey(transaction.id),
       direction: DismissDirection.endToStart,
       confirmDismiss: (direction) async {
         await MicroInteractions.mediumImpact();
@@ -326,7 +322,7 @@ class _TransactionRow extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              moneyFmt.format(transaction.amount),
+              MoneyFormatter.format(transaction.amount),
               style: AppTypography.amountSmall.copyWith(
                 color: AppColors.getTextColor(isDark),
               ),

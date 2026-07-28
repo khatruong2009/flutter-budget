@@ -90,7 +90,7 @@ class _OnboardingTutorialState extends State<_OnboardingTutorial> {
       eyebrow: 'WELCOME TO BUDGIE',
       title: 'Your money, made clearer.',
       description:
-          'Budgie keeps your budget simple and private. Everything stays on this device.',
+          'Budgie keeps your budget simple and private. Financial data and insights stay on this device unless you choose to export or share a backup.',
     ),
     _TutorialPageData(
       icon: Icons.add_chart_rounded,

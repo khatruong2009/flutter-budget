@@ -2,11 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
+import '../money_formatter.dart';
 import 'pill_chip.dart';
 
 /// Data class representing a single slice in the donut chart.
@@ -442,8 +442,6 @@ class _CenterLabel extends StatelessWidget {
   }
 
   String _formatWhole(double value) {
-    return NumberFormat.currency(
-            locale: 'en_US', symbol: '\$', decimalDigits: 0)
-        .format(value);
+    return MoneyFormatter.format(value, decimalDigits: 0);
   }
 }

@@ -8,10 +8,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'transaction_model.dart';
+import 'categorization_provider.dart';
+import 'transaction_tag.dart';
 import 'transaction.dart';
 import 'common.dart';
 import 'design_system.dart';
 import 'utils/platform_utils.dart';
+import 'widgets/local_insights_section.dart';
+import 'money_formatter.dart';
 
 enum _HistoryTransactionTypeFilter { all, income, expense }
 
@@ -72,6 +76,11 @@ class _HistoryPageState extends State<HistoryPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: _buildMetricStrip(context, metrics, isDark),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: LocalInsightsSection(model: model),
                   ),
                   const SizedBox(height: 16),
                   Padding(
@@ -189,14 +198,7 @@ class _HistoryPageState extends State<HistoryPage> {
   /// Full grouped amount like the design's `$1,376`; compacts only at
   /// 6+ digits where the chip would otherwise overflow.
   String _formatMetricCurrency(double value) {
-    final absValue = value.abs();
-    final prefix = value < 0 ? '-\$' : '\$';
-    if (absValue >= 100000) {
-      return '$prefix${(absValue / 1000).toStringAsFixed(0)}k';
-    }
-    final grouped =
-        NumberFormat.decimalPattern('en_US').format(absValue.round());
-    return '$prefix$grouped';
+    return MoneyFormatter.formatSigned(value, decimalDigits: 0);
   }
 
   /// Percentage delta of [current] vs [previous]; null when there is no prior
@@ -513,7 +515,6 @@ class _HistoryPageState extends State<HistoryPage> {
     MonthCashFlow data,
     bool isDark,
   ) {
-    final fmt = NumberFormat("#,##0.00", "en_US");
     final incomeColor = AppColors.getIncome(isDark);
     final expenseColor = AppColors.getDanger(isDark);
     final net = data.income - data.expenses;
@@ -566,7 +567,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     Expanded(
                       child: _MonthDetailTile(
                         label: 'Income',
-                        amount: '\$${fmt.format(data.income)}',
+                        amount: MoneyFormatter.format(data.income),
                         color: incomeColor,
                         icon: Symbols.south_west_rounded,
                         isDark: isDark,
@@ -576,7 +577,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     Expanded(
                       child: _MonthDetailTile(
                         label: 'Expenses',
-                        amount: '\$${fmt.format(data.expenses)}',
+                        amount: MoneyFormatter.format(data.expenses),
                         color: expenseColor,
                         icon: Symbols.north_east_rounded,
                         isDark: isDark,
@@ -617,7 +618,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         ],
                       ),
                       Text(
-                        '\$${fmt.format(net)}',
+                        MoneyFormatter.formatSigned(net),
                         style: AppTypography.chipAmount.copyWith(
                           color: netColor,
                         ),
@@ -813,8 +814,11 @@ class _NetCashFlowBar extends StatelessWidget {
     final label = DateFormat.MMM().format(entry.month).toUpperCase();
     // Full grouped amount like the design's "+$2,322"; the pill sizes to fit.
     final net = entry.netCashFlow;
-    final signedValue = '${net < 0 ? '−' : '+'}'
-        '${NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0).format(net.abs())}';
+    final signedValue = MoneyFormatter.formatSigned(
+      net,
+      decimalDigits: 0,
+      plusForPositive: true,
+    );
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -1085,9 +1089,10 @@ class _TransactionRow extends StatelessWidget {
 
     // Only income is colored; expenses use primary text (per design).
     final amountColor = isIncome ? income : AppColors.getTextColor(isDark);
-    final sign = isIncome ? '+' : '-';
-    final amount =
-        '$sign\$${NumberFormat("#,##0.00", "en_US").format(transaction.amount)}';
+    final amount = MoneyFormatter.formatSigned(
+      isIncome ? transaction.amount : -transaction.amount,
+      plusForPositive: true,
+    );
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -1271,6 +1276,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
   String _searchQuery = '';
   _HistoryTransactionTypeFilter _typeFilter = _HistoryTransactionTypeFilter.all;
   String? _selectedCategory;
+  String? _selectedTagId;
   DateTime? _startDate;
   DateTime? _endDate;
   double? _minAmount;
@@ -1293,6 +1299,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
         final selectedMonth = model.selectedMonth;
         final filteredTransactions = _getFilteredTransactions(model);
         final categoryOptions = _getCategoryOptions(model.transactions);
+        final tags = context.watch<CategorizationProvider>().tags;
 
         return Scaffold(
           body: SingleChildScrollView(
@@ -1311,7 +1318,12 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: _buildFiltersCard(
-                        context, model, categoryOptions, isDark),
+                      context,
+                      model,
+                      categoryOptions,
+                      tags,
+                      isDark,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Padding(
@@ -1354,6 +1366,10 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
       }
       if (_selectedCategory != null &&
           transaction.category != _selectedCategory) {
+        return false;
+      }
+      if (_selectedTagId != null &&
+          !transaction.tagIds.contains(_selectedTagId)) {
         return false;
       }
       if (_startDate != null &&
@@ -1408,6 +1424,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
     return _searchQuery.isNotEmpty ||
         _typeFilter != _HistoryTransactionTypeFilter.all ||
         _selectedCategory != null ||
+        _selectedTagId != null ||
         _startDate != null ||
         _endDate != null ||
         _minAmount != null ||
@@ -1422,6 +1439,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
       _searchQuery = '';
       _typeFilter = _HistoryTransactionTypeFilter.all;
       _selectedCategory = null;
+      _selectedTagId = null;
       _startDate = null;
       _endDate = null;
       _minAmount = null;
@@ -1430,16 +1448,11 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
   }
 
   String _formatCurrency(double value) {
-    return '\$${NumberFormat("#,##0.00", "en_US").format(value)}';
+    return MoneyFormatter.format(value);
   }
 
   String _formatSignedCurrency(double value) {
-    final sign = value > 0
-        ? '+'
-        : value < 0
-            ? '-'
-            : '';
-    return '$sign\$${NumberFormat("#,##0.00", "en_US").format(value.abs())}';
+    return MoneyFormatter.formatSigned(value, plusForPositive: true);
   }
 
   double? _parseAmount(String value) {
@@ -1509,6 +1522,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
     BuildContext context,
     TransactionModel model,
     List<String> categoryOptions,
+    List<TransactionTag> tags,
     bool isDark,
   ) {
     return GlowCard(
@@ -1552,6 +1566,28 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
             isDark: isDark,
             onTap: () => _showCategoryPicker(context, categoryOptions, isDark),
           ),
+          if (tags.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ChoiceChip(
+                  label: const Text('All tags'),
+                  selected: _selectedTagId == null,
+                  onSelected: (_) => setState(() => _selectedTagId = null),
+                ),
+                for (final tag in tags)
+                  ChoiceChip(
+                    label: Text(tag.name),
+                    selected: _selectedTagId == tag.id,
+                    onSelected: (selected) => setState(() {
+                      _selectedTagId = selected ? tag.id : null;
+                    }),
+                  ),
+              ],
+            ),
+          ],
           const SizedBox(height: 12),
           Row(
             children: [

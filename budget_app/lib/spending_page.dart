@@ -7,12 +7,15 @@ import 'package:provider/provider.dart';
 
 import 'common.dart';
 import 'design_system.dart';
+import 'recurring_transaction_model.dart';
+import 'safe_to_spend.dart';
 import 'transaction.dart';
 import 'transaction_form.dart';
 import 'transaction_model.dart';
 import 'transaction_page.dart';
 import 'utils/platform_utils.dart';
 import 'widgets/voice_recording_sheet.dart';
+import 'money_formatter.dart';
 
 class SpendingPage extends StatefulWidget {
   const SpendingPage({super.key});
@@ -22,6 +25,8 @@ class SpendingPage extends StatefulWidget {
 }
 
 class SpendingPageState extends State<SpendingPage> {
+  static const _safeToSpendCalculator = SafeToSpendCalculator();
+
   final List<String> months = [
     'January',
     'February',
@@ -275,17 +280,6 @@ class SpendingPageState extends State<SpendingPage> {
     );
   }
 
-  /// Days remaining in the selected month. For the current calendar month this
-  /// is days after today; for any other month it is the month's total length.
-  int _daysLeftInMonth(DateTime month) {
-    final now = DateTime.now();
-    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
-    if (month.year == now.year && month.month == now.month) {
-      return (daysInMonth - now.day).clamp(0, daysInMonth);
-    }
-    return daysInMonth;
-  }
-
   /// Percent change vs the previous month, guarding division by zero.
   /// Returns null when there is no meaningful baseline to compare against.
   double? _percentDelta(double current, double previous) {
@@ -296,22 +290,131 @@ class SpendingPageState extends State<SpendingPage> {
     return (current - previous) / previous * 100;
   }
 
+  /// Footer under the breakdown total. A negative month needs more income or
+  /// fewer planned expenses; dividing an existing shortfall by days remaining
+  /// would imply that not spending can undo expenses already recorded.
+  String _breakdownFooter(SafeToSpendBreakdown breakdown) {
+    final days = breakdown.daysRemaining;
+    if (days <= 0) return 'This month is already closed out.';
+    final daysLabel = days == 1 ? '1 day remaining' : '$days days remaining';
+    if (breakdown.isOverCommitted) {
+      return 'Add income or reduce planned spending to close the shortfall'
+          ' · $daysLabel';
+    }
+    return '${MoneyFormatter.format(breakdown.dailyAllowance)} per day'
+        ' · $daysLabel';
+  }
+
+  Future<void> _showSafeToSpendBreakdown(
+    BuildContext context,
+    SafeToSpendBreakdown breakdown,
+  ) {
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (sheetContext) {
+        final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final isOver = breakdown.isOverCommitted;
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  isOver ? 'Projected shortfall' : 'Safe to spend',
+                  style: AppTypography.headingLarge.copyWith(
+                    color: AppColors.getTextColor(isDark),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  isOver
+                      ? 'What you have spent and reserved for the rest of this'
+                          ' month is more than the income you expect.'
+                      : 'A forward-looking estimate for the rest of this month.',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _BreakdownRow(
+                  label: 'Income recorded',
+                  value: breakdown.actualIncome,
+                  positive: true,
+                ),
+                _BreakdownRow(
+                  label: 'Income still expected',
+                  value: breakdown.expectedIncome,
+                  positive: true,
+                ),
+                _BreakdownRow(
+                  label: 'Expenses recorded',
+                  value: breakdown.actualExpenses,
+                ),
+                _BreakdownRow(
+                  label: 'Upcoming recurring bills',
+                  value: breakdown.upcomingRecurringExpenses,
+                ),
+                _BreakdownRow(
+                  label: 'Flexible budget reserve',
+                  value: breakdown.flexibleBudgetReserve,
+                ),
+                _BreakdownRow(
+                  label: 'Suggested goal contributions',
+                  value: breakdown.plannedGoalContributions,
+                ),
+                const Divider(height: 28),
+                _BreakdownRow(
+                  label: isOver ? 'Projected shortfall' : 'Safe to spend',
+                  value:
+                      isOver ? breakdown.overCommitment : breakdown.safeToSpend,
+                  positive: true,
+                  emphasized: true,
+                  valueColor: isOver ? AppColors.getDanger(isDark) : null,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _breakdownFooter(breakdown),
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.getTextSecondaryColor(isDark),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionModel>(
       builder: (context, transactionModel, child) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+        final recurringModel = context.watch<RecurringTransactionModel>();
 
         final totalIncome =
             calculateTotalIncome(transactionModel.currentMonthTransactions);
         final totalExpenses =
             calculateTotalExpenses(transactionModel.currentMonthTransactions);
-        final safeToSpend = totalIncome - totalExpenses;
         final recentTransactions =
             transactionModel.getAllTransactionsSorted().take(3).toList();
         final selectedBudgetMonth = DateTime(
           transactionModel.selectedMonth.year,
           transactionModel.selectedMonth.month,
+        );
+        final safeToSpend = _safeToSpendCalculator.calculate(
+          transactions: transactionModel.transactions,
+          recurringTransactions: recurringModel.recurringTransactions,
+          categoryBudgetLimits: transactionModel.categoryBudgetLimits,
+          savingsGoals: transactionModel.savingsGoals,
+          month: selectedBudgetMonth,
+          asOf: DateTime.now(),
         );
 
         // Previous month figures for the delta lines.
@@ -326,8 +429,6 @@ class SpendingPageState extends State<SpendingPage> {
         final incomeDelta = _percentDelta(totalIncome, previousIncome);
         final expenseDelta = _percentDelta(totalExpenses, previousExpenses);
         final previousMonthLabel = DateFormat.MMMM().format(previousMonth);
-
-        final daysLeft = _daysLeftInMonth(selectedBudgetMonth);
 
         final budgets =
             _buildBudgetProgressItems(transactionModel, selectedBudgetMonth);
@@ -389,10 +490,9 @@ class SpendingPageState extends State<SpendingPage> {
                       );
                     },
                   ),
-                  _HeroSafeToSpend(
-                    amount: safeToSpend,
+                  _HeroCashFlow(
                     income: totalIncome,
-                    daysLeft: daysLeft,
+                    expenses: totalExpenses,
                   ),
                   const SizedBox(height: 20),
                   Padding(
@@ -429,6 +529,17 @@ class SpendingPageState extends State<SpendingPage> {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _SafeToSpendCard(
+                      breakdown: safeToSpend,
+                      onTap: () => _showSafeToSpendBreakdown(
+                        context,
+                        safeToSpend,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -667,7 +778,7 @@ class _BudgetLimitSheetState extends State<_BudgetLimitSheet> {
     _controller = TextEditingController(
       text: widget.currentLimit == null
           ? ''
-          : NumberFormat('#,##0.##', 'en_US').format(widget.currentLimit),
+          : MoneyFormatter.formatNumber(widget.currentLimit!, decimalDigits: 2),
     );
   }
 
@@ -885,105 +996,329 @@ class _MonthPickerPanel extends StatelessWidget {
   }
 }
 
-/// Centered hero: `SAFE TO SPEND` eyebrow, two-tone amount with accent glow
-/// (danger tint + glow when negative), and the income / days-left subline.
-class _HeroSafeToSpend extends StatelessWidget {
-  final double amount;
-  final double income;
-  final int daysLeft;
+/// The rolling hero digits are assembled by `AnimatedDigitWidget`, so the
+/// currency affixes and separators `MoneyFormatter` would normally bake into
+/// the string have to be handed over as separate pieces.
+class _HeroAmountFormat {
+  final String prefix;
+  final String suffix;
+  final String groupSeparator;
+  final String decimalSeparator;
 
-  const _HeroSafeToSpend({
-    required this.amount,
+  const _HeroAmountFormat({
+    required this.prefix,
+    required this.suffix,
+    required this.groupSeparator,
+    required this.decimalSeparator,
+  });
+
+  factory _HeroAmountFormat.current() {
+    final format = NumberFormat.simpleCurrency(
+      locale: MoneyFormatter.locale,
+      name: MoneyFormatter.currencyCode,
+      decimalDigits: 2,
+    );
+    // A zero sample carries the symbol on whichever side the locale puts it.
+    final sample = format.format(0);
+    final firstDigit = sample.indexOf(RegExp(r'\d'));
+    final lastDigit = sample.lastIndexOf(RegExp(r'\d'));
+    return _HeroAmountFormat(
+      prefix: sample.substring(0, firstDigit),
+      suffix: sample.substring(lastDigit + 1),
+      groupSeparator: format.symbols.GROUP_SEP,
+      decimalSeparator: format.symbols.DECIMAL_SEP,
+    );
+  }
+}
+
+/// Centered hero: `CASH FLOW` eyebrow, the month's income minus expenses with
+/// accent glow (danger tint + glow when negative), and the in / out subline.
+class _HeroCashFlow extends StatelessWidget {
+  final double income;
+  final double expenses;
+
+  const _HeroCashFlow({
     required this.income,
-    required this.daysLeft,
+    required this.expenses,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isNegative = amount < 0;
+    final cashFlow = income - expenses;
+    final isNegative = cashFlow < 0;
     final glowColor =
         isNegative ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
-    final integerColor = isNegative
+    final amountColor = isNegative
         ? AppColors.getDanger(isDark)
         : AppColors.getTextColor(isDark);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final heroStyle = AppTypography.hero.copyWith(
+      color: amountColor,
+      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+    );
+    final amountFormat = _HeroAmountFormat.current();
 
-    // Round once at the cent boundary so cents stay in [0, 99] and whole-
-    // dollar carries land in the integer part (float sums like 12874.999...
-    // must render as $12,875.00, not $12,874.100).
-    final totalCents = (amount.abs() * 100).round();
-    final integerPart = totalCents ~/ 100;
-    final decimalString = (totalCents % 100).toString().padLeft(2, '0');
+    // Negatives read as an amount plus a direction ("$120 short") rather than
+    // a bare minus sign, which is easy to miss at hero size.
+    final amountLabel = MoneyFormatter.format(cashFlow.abs());
+    final incomeLabel = MoneyFormatter.format(income, decimalDigits: 0);
+    final expenseLabel = MoneyFormatter.format(expenses, decimalDigits: 0);
+    final String statusLabel;
+    if (cashFlow > 0) {
+      statusLabel = 'SAVED THIS MONTH';
+    } else if (cashFlow < 0) {
+      statusLabel = 'SHORT THIS MONTH';
+    } else {
+      statusLabel = 'BREAKING EVEN';
+    }
 
-    final incomeLabel =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
-            .format(income);
-    final daysLabel = daysLeft == 1 ? '1 day left' : '$daysLeft days left';
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
-      child: Column(
-        children: [
-          Semantics(
-            header: true,
-            child: Text(
-              'SAFE TO SPEND',
-              textAlign: TextAlign.center,
-              style: AppTypography.eyebrow.copyWith(
-                color: AppColors.getTextSecondaryColor(isDark),
+    return Semantics(
+      label: isNegative
+          ? 'Cash flow, $amountLabel short this month.'
+          : 'Cash flow, $amountLabel this month.',
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
+        child: Column(
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                'CASH FLOW',
+                textAlign: TextAlign.center,
+                style: AppTypography.eyebrow.copyWith(
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Semantics(
-            label:
-                'Safe to spend ${isNegative ? 'negative ' : ''}\$$integerPart.$decimalString',
-            child: ExcludeSemantics(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    isNegative ? '-\$' : '\$',
-                    style: AppTypography.hero.copyWith(
-                      color: integerColor,
-                      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+            const SizedBox(height: 10),
+            ExcludeSemantics(
+              // Balances are masked as dots when hidden, which has no digits to
+              // roll, so only the visible amount gets the odometer treatment.
+              child: MoneyFormatter.hideBalances
+                  ? Text(
+                      amountLabel,
+                      textAlign: TextAlign.center,
+                      style: heroStyle,
+                    )
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Each rolling digit lives in its own clipped cell, so a
+                        // glow on their text style gets cut into bright boxes.
+                        // The halo is painted once behind them instead.
+                        Text(
+                          amountLabel,
+                          textAlign: TextAlign.center,
+                          style: heroStyle.copyWith(color: Colors.transparent),
+                        ),
+                        AnimatedDigitWidget(
+                          value: cashFlow.abs(),
+                          fractionDigits: 2,
+                          enableSeparator: true,
+                          separateSymbol: amountFormat.groupSeparator,
+                          decimalSeparator: amountFormat.decimalSeparator,
+                          prefix: amountFormat.prefix,
+                          suffix: amountFormat.suffix,
+                          duration: reduceMotion
+                              ? Duration.zero
+                              : const Duration(milliseconds: 900),
+                          textStyle:
+                              heroStyle.copyWith(shadows: const <Shadow>[]),
+                        ),
+                      ],
                     ),
-                  ),
-                  AnimatedDigitWidget(
-                    value: integerPart,
-                    enableSeparator: true,
-                    animateAutoSize: false,
-                    duration: reduceMotion
-                        ? Duration.zero
-                        : const Duration(milliseconds: 900),
-                    textStyle: AppTypography.hero.copyWith(
-                      color: integerColor,
-                      shadows: AppColors.textGlow(glowColor, isDark: isDark),
+            ),
+            const SizedBox(height: 12),
+            ExcludeSemantics(
+              child: Text(
+                '$incomeLabel in   ·   $expenseLabel out',
+                textAlign: TextAlign.center,
+                style: AppTypography.rowSubtitle.copyWith(
+                  fontSize: 14,
+                  color: AppColors.getTextSecondaryColor(isDark),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            ExcludeSemantics(
+              child: Text(
+                statusLabel,
+                style: AppTypography.caption.copyWith(
+                  color: isNegative
+                      ? AppColors.getDanger(isDark)
+                      : AppColors.getAccent(isDark),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tappable summary row for safe to spend, demoted from the hero slot. Frames
+/// a negative result as a projected shortfall that needs additional income or
+/// reduced plans, rather than implying recorded expenses can be undone.
+class _SafeToSpendCard extends StatelessWidget {
+  final SafeToSpendBreakdown breakdown;
+  final VoidCallback onTap;
+
+  const _SafeToSpendCard({
+    required this.breakdown,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isOver = breakdown.isOverCommitted;
+    final accent =
+        isOver ? AppColors.getDanger(isDark) : AppColors.getAccent(isDark);
+
+    final title = isOver ? 'Projected shortfall' : 'Safe to spend';
+    final amountLabel = MoneyFormatter.format(
+      isOver ? breakdown.overCommitment : breakdown.safeToSpend,
+      decimalDigits: 0,
+    );
+
+    final days = breakdown.daysRemaining;
+    final String subtitle;
+    if (days <= 0) {
+      subtitle = 'This month is already closed out';
+    } else if (isOver) {
+      subtitle = 'Add income or reduce planned spending';
+    } else {
+      final dailyLabel =
+          MoneyFormatter.format(breakdown.dailyAllowance, decimalDigits: 0);
+      final daysLabel = days == 1 ? '1 day left' : '$days days left';
+      subtitle = '$dailyLabel/day for $daysLabel';
+    }
+
+    return Semantics(
+      button: true,
+      label: '$title $amountLabel. $subtitle. Double tap for breakdown.',
+      child: ExcludeSemantics(
+        child: GlowCard(
+          radius: 22,
+          padding: const EdgeInsets.all(16),
+          onTap: onTap,
+          child: Row(
+            children: [
+              IconTile(
+                icon: isOver ? Symbols.warning_rounded : Symbols.shield_rounded,
+                color: accent,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTypography.rowTitle.copyWith(
+                        color: AppColors.getTextColor(isDark),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Text(
-                      '.$decimalString',
-                      style: AppTypography.heroDecimals.copyWith(
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.rowSubtitle.copyWith(
                         color: AppColors.getTextSecondaryColor(isDark),
                       ),
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    amountLabel,
+                    style: AppTypography.chipAmount.copyWith(color: accent),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'DETAILS',
+                        style: AppTypography.captionSmall.copyWith(
+                          color: AppColors.getTextTertiaryColor(isDark),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Icon(
+                        Symbols.chevron_right_rounded,
+                        size: 14,
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                    ],
                   ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BreakdownRow extends StatelessWidget {
+  final String label;
+  final double value;
+  final bool positive;
+  final bool emphasized;
+  final Color? valueColor;
+
+  const _BreakdownRow({
+    required this.label,
+    required this.value,
+    this.positive = false,
+    this.emphasized = false,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final displayValue = positive ? value : -value;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: (emphasized
+                      ? AppTypography.bodyLarge
+                      : AppTypography.bodyMedium)
+                  .copyWith(
+                color: AppColors.getTextColor(isDark),
+                fontWeight: emphasized ? FontWeight.w700 : FontWeight.w500,
+              ),
             ),
           ),
-          const SizedBox(height: 12),
           Text(
-            'of $incomeLabel income   ·   $daysLabel',
-            textAlign: TextAlign.center,
-            style: AppTypography.rowSubtitle.copyWith(
-              fontSize: 14,
-              color: AppColors.getTextSecondaryColor(isDark),
+            MoneyFormatter.formatSigned(
+              displayValue,
+              plusForPositive: positive && !emphasized,
+            ),
+            style: (emphasized
+                    ? AppTypography.bodyLarge
+                    : AppTypography.bodyMedium)
+                .copyWith(
+              color: valueColor ??
+                  (emphasized
+                      ? AppColors.getAccent(isDark)
+                      : AppColors.getTextSecondaryColor(isDark)),
+              fontWeight: emphasized ? FontWeight.w800 : FontWeight.w600,
             ),
           ),
         ],
@@ -1005,12 +1340,8 @@ class _SpendGauge extends StatelessWidget {
     final accent = AppColors.getAccent(isDark);
     final value = income <= 0 ? 0.0 : spent / income;
 
-    final spentLabel =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
-            .format(spent);
-    final incomeLabel =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
-            .format(income);
+    final spentLabel = MoneyFormatter.format(spent, decimalDigits: 0);
+    final incomeLabel = MoneyFormatter.format(income, decimalDigits: 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1094,9 +1425,7 @@ class _FlowChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final amountLabel =
-        NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0)
-            .format(amount);
+    final amountLabel = MoneyFormatter.format(amount, decimalDigits: 0);
 
     final String deltaLabel;
     if (delta == null) {
@@ -1294,11 +1623,10 @@ class _BudgetRow extends StatelessWidget {
   }
 
   String _formatCurrency(double value) {
-    return NumberFormat.currency(
-      locale: 'en_US',
-      symbol: '\$',
+    return MoneyFormatter.format(
+      value,
       decimalDigits: value.abs() >= 100 ? 0 : 2,
-    ).format(value);
+    );
   }
 }
 
@@ -1359,9 +1687,10 @@ class _RecentActivityRow extends StatelessWidget {
         : Symbols.south_west_rounded;
 
     final amountColor = isExpense ? AppColors.getTextColor(isDark) : income;
-    final sign = isExpense ? '−' : '+';
-    final amountLabel =
-        '$sign\$${NumberFormat('#,##0.00', 'en_US').format(transaction.amount)}';
+    final amountLabel = MoneyFormatter.formatSigned(
+      isExpense ? -transaction.amount : transaction.amount,
+      plusForPositive: true,
+    );
 
     final description = transaction.description.isEmpty
         ? 'Transaction'
@@ -1371,7 +1700,7 @@ class _RecentActivityRow extends StatelessWidget {
       label:
           '$description, ${transaction.category}, ${DateFormat.MMMd().format(transaction.date)}, '
           '${isExpense ? 'expense' : 'income'} '
-          '\$${NumberFormat('#,##0.00', 'en_US').format(transaction.amount)}',
+          '${MoneyFormatter.format(transaction.amount)}',
       child: ExcludeSemantics(
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -1435,7 +1764,7 @@ class _EditBudgetCategoryTile extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasLimit = limit != null && limit! > 0;
     final subtitle = hasLimit
-        ? '${NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 0).format(limit)} limit'
+        ? '${MoneyFormatter.format(limit!, decimalDigits: 0)} limit'
         : 'No limit set';
 
     return GestureDetector(

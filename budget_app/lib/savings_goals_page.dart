@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import 'design_system.dart';
 import 'savings_goal.dart';
+import 'money_formatter.dart';
 
 typedef AddSavingsGoalCallback = Future<void> Function({
   required String name,
@@ -52,19 +53,6 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
   String? _celebrationGoalName;
   bool _isBusy = false;
 
-  final NumberFormat _currency = NumberFormat.currency(
-    locale: 'en_US',
-    symbol: r'$',
-    decimalDigits: 2,
-  );
-
-  /// Whole-dollar formatter for the compact amounts in the redesign
-  /// (`$8,200 of $10,000`, `$15,520`).
-  final NumberFormat _currencyWhole = NumberFormat.currency(
-    locale: 'en_US',
-    symbol: r'$',
-    decimalDigits: 0,
-  );
   final DateFormat _dateFormat = DateFormat.yMMMd();
 
   /// Compact date used in the pace/funded copy (e.g. `Nov 30`).
@@ -231,7 +219,6 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
           child: _SavingsGoalsSummary(
             goals: goals,
-            currency: _currencyWhole,
           ),
         ),
         for (final goal in goals)
@@ -240,7 +227,6 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
             child: _SavingsGoalCard(
               goal: goal,
               status: _statusFor(goal),
-              currency: _currencyWhole,
               shortDate: _shortDate,
               paceCopy: _paceCopyFor(goal),
               onAddMoney: goal.isCompleted
@@ -284,7 +270,10 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
   /// or `Mar 15 · bump to $435/mo to catch up`.
   String _paceCopyFor(SavingsGoal goal) {
     final date = _shortDate.format(goal.targetDate);
-    final monthly = _currencyWhole.format(goal.suggestedMonthlyContribution);
+    final monthly = MoneyFormatter.format(
+      goal.suggestedMonthlyContribution,
+      decimalDigits: 0,
+    );
     if (_statusFor(goal) == _GoalStatus.behind) {
       return '$date · bump to $monthly/mo to catch up';
     }
@@ -349,7 +338,6 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
       builder: (dialogContext) {
         return _AllocationDialog(
           goal: goal,
-          currency: _currency,
         );
       },
     );
@@ -619,11 +607,9 @@ class _SavingsGoalsPageState extends State<SavingsGoalsPage>
 /// Summary strip: 72px accent progress ring + saved-so-far aggregates.
 class _SavingsGoalsSummary extends StatelessWidget {
   final List<SavingsGoal> goals;
-  final NumberFormat currency;
 
   const _SavingsGoalsSummary({
     required this.goals,
-    required this.currency,
   });
 
   @override
@@ -675,7 +661,7 @@ class _SavingsGoalsSummary extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  currency.format(totalSaved),
+                  MoneyFormatter.format(totalSaved, decimalDigits: 0),
                   style: AppTypography.heroSmall.copyWith(
                     fontSize: 28,
                     letterSpacing: -0.8,
@@ -684,7 +670,7 @@ class _SavingsGoalsSummary extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'of ${currency.format(totalTarget)} · '
+                  'of ${MoneyFormatter.format(totalTarget, decimalDigits: 0)} · '
                   '$completedCount of ${goals.length} complete',
                   style: AppTypography.rowSubtitle.copyWith(
                     fontSize: 13,
@@ -705,7 +691,6 @@ class _SavingsGoalsSummary extends StatelessWidget {
 class _SavingsGoalCard extends StatelessWidget {
   final SavingsGoal goal;
   final _GoalStatus status;
-  final NumberFormat currency;
   final DateFormat shortDate;
   final String paceCopy;
 
@@ -718,7 +703,6 @@ class _SavingsGoalCard extends StatelessWidget {
   const _SavingsGoalCard({
     required this.goal,
     required this.status,
-    required this.currency,
     required this.shortDate,
     required this.paceCopy,
     required this.onAddMoney,
@@ -866,7 +850,12 @@ class _SavingsGoalCard extends StatelessWidget {
         TextSpan(
           style: base,
           children: [
-            TextSpan(text: currency.format(goal.currentAmount)),
+            TextSpan(
+              text: MoneyFormatter.format(
+                goal.currentAmount,
+                decimalDigits: 0,
+              ),
+            ),
             TextSpan(
               text: ' saved',
               style: TextStyle(color: secondary, fontWeight: FontWeight.w500),
@@ -880,9 +869,15 @@ class _SavingsGoalCard extends StatelessWidget {
       TextSpan(
         style: base,
         children: [
-          TextSpan(text: currency.format(goal.currentAmount)),
           TextSpan(
-            text: ' of ${currency.format(goal.targetAmount)}',
+            text: MoneyFormatter.format(
+              goal.currentAmount,
+              decimalDigits: 0,
+            ),
+          ),
+          TextSpan(
+            text:
+                ' of ${MoneyFormatter.format(goal.targetAmount, decimalDigits: 0)}',
             style: TextStyle(color: secondary, fontWeight: FontWeight.w500),
           ),
         ],
@@ -1223,11 +1218,9 @@ class _GoalFormDialogState extends State<_GoalFormDialog> {
 
 class _AllocationDialog extends StatefulWidget {
   final SavingsGoal goal;
-  final NumberFormat currency;
 
   const _AllocationDialog({
     required this.goal,
-    required this.currency,
   });
 
   @override
@@ -1303,12 +1296,12 @@ class _AllocationDialogState extends State<_AllocationDialog> {
               runSpacing: 8,
               children: [
                 _QuickAmountChip(
-                  label: widget.currency.format(25),
+                  label: MoneyFormatter.format(25),
                   amount: 25,
                   onSelected: _setAmount,
                 ),
                 _QuickAmountChip(
-                  label: widget.currency.format(100),
+                  label: MoneyFormatter.format(100),
                   amount: 100,
                   onSelected: _setAmount,
                 ),
