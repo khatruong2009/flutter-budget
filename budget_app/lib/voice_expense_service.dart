@@ -19,6 +19,10 @@ class VoiceExpenseException implements Exception {
 }
 
 class VoiceExpenseService {
+  /// How far back a spoken date may plausibly reach. Mirrors the 90-day
+  /// lookback the recurring generator uses for automated entries.
+  static const int maxSpokenDateLookbackDays = 90;
+
   Future<void> _ensureKey() async {
     await dotenv.load(fileName: '.env');
     final apiKey = dotenv.env['OPEN_AI_API_KEY']?.trim();
@@ -68,7 +72,7 @@ Fields:
 - "description": a short merchant or purpose label from the phrase.
 - "amount": a number. Spoken amounts map to decimals — "twelve fifty" means 12.50, "three thousand" means 3000. If no amount is stated, use 0.
 - "category": for expenses pick exactly one of: $expenseVocab. For income pick exactly one of: $incomeVocab. Choose the closest match.
-- "date": an ISO-8601 date (YYYY-MM-DD). Default to today ($dateLabel). Never return a date in the future.
+- "date": an ISO-8601 date (YYYY-MM-DD). Default to today ($dateLabel). Use a different date only when the phrase explicitly says when the money was spent (for example "yesterday", "last Friday", "on the 3rd"). When the phrase mentions the date of an upcoming trip, stay, or event ("flights for next month", "hotel for our trip in September"), that is NOT the transaction date — the payment is happening now, so use today. Never return a date in the future, and never replace a future reference with the same date in an earlier year.
 
 If the phrase is not describing a transaction at all, return {"error":"not_a_transaction"}.''';
 
@@ -175,11 +179,20 @@ If the phrase is not describing a transaction at all, return {"error":"not_a_tra
         date = parsed;
       }
     }
-    final lowerBound = DateTime(2000);
-    if (date.isAfter(today)) {
+    // Quick entry records money spent now or in the recent, explicitly spoken
+    // past ("yesterday", "last Friday"). A date further back is almost always
+    // the model mis-resolving a future trip or event date into a previous
+    // year (it is instructed never to return future dates), which would
+    // silently file the expense in a month the user never looks at. Trust
+    // recent dates and fall back to today for the rest — the confirmation
+    // form still lets the user pick an older date deliberately.
+    final earliestPlausible = DateTime(
+      today.year,
+      today.month,
+      today.day - maxSpokenDateLookbackDays,
+    );
+    if (date.isAfter(today) || date.isBefore(earliestPlausible)) {
       date = today;
-    } else if (date.isBefore(lowerBound)) {
-      date = lowerBound;
     }
 
     return Transaction(

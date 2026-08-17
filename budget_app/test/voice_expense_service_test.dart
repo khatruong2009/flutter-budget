@@ -312,18 +312,18 @@ void main() {
   });
 
   group('date', () {
-    test('valid past ISO date passes through', () {
+    test('recent explicit past date passes through', () {
       final txn = VoiceExpenseService.parseVoiceJson(
         jsonOutput(
           description: 'lunch',
           amount: 12.5,
           category: 'Eating Out',
-          date: '2026-03-15',
+          date: '2026-06-20',
         ),
-        'lunch on march 15',
+        'lunch on june 20',
         today,
       );
-      expect(txn.date, DateTime(2026, 3, 15));
+      expect(txn.date, DateTime(2026, 6, 20));
     });
 
     test('missing date defaults to today', () {
@@ -377,7 +377,54 @@ void main() {
       expect(txn.date, today);
     });
 
-    test('pre-2000 date is clamped to DateTime(2000)', () {
+    test('date at the 90-day lookback boundary passes through', () {
+      // today is 2026-07-07, so 2026-04-08 is exactly 90 days back.
+      final txn = VoiceExpenseService.parseVoiceJson(
+        jsonOutput(
+          description: 'lunch',
+          amount: 12.5,
+          category: 'Eating Out',
+          date: '2026-04-08',
+        ),
+        'that lunch back in april',
+        today,
+      );
+      expect(txn.date, DateTime(2026, 4, 8));
+    });
+
+    test('date older than the 90-day lookback falls back to today', () {
+      final txn = VoiceExpenseService.parseVoiceJson(
+        jsonOutput(
+          description: 'lunch',
+          amount: 12.5,
+          category: 'Eating Out',
+          date: '2026-04-07',
+        ),
+        'lunch',
+        today,
+      );
+      expect(txn.date, today);
+    });
+
+    test('a future trip mis-resolved into last year falls back to today', () {
+      // Regression: "hotel for our trip in September" spoken in July 2026.
+      // The model may not return future dates, so it can answer with the
+      // same date a year earlier — which used to file the expense in a
+      // month the user never looks at.
+      final txn = VoiceExpenseService.parseVoiceJson(
+        jsonOutput(
+          description: 'Hotel',
+          amount: 280,
+          category: 'Travel',
+          date: '2025-09-12',
+        ),
+        'two eighty for the hotel for our trip in september',
+        today,
+      );
+      expect(txn.date, today);
+    });
+
+    test('an ancient date falls back to today', () {
       final txn = VoiceExpenseService.parseVoiceJson(
         jsonOutput(
           description: 'lunch',
@@ -388,21 +435,7 @@ void main() {
         'lunch in the eighties',
         today,
       );
-      expect(txn.date, DateTime(2000));
-    });
-
-    test('exactly DateTime(2000) lower bound passes through', () {
-      final txn = VoiceExpenseService.parseVoiceJson(
-        jsonOutput(
-          description: 'lunch',
-          amount: 12.5,
-          category: 'Eating Out',
-          date: '2000-01-01',
-        ),
-        'lunch at the millennium',
-        today,
-      );
-      expect(txn.date, DateTime(2000));
+      expect(txn.date, today);
     });
   });
 

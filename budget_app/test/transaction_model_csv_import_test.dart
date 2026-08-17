@@ -305,7 +305,8 @@ void main() {
 
   test('importTransactions persists rows for a fresh model to load', () async {
     final model = TransactionModel();
-    final summary = model.parseTransactionsCsv(buildExportCsv(sampleTransactions));
+    final summary =
+        model.parseTransactionsCsv(buildExportCsv(sampleTransactions));
 
     await model.importTransactions(summary.transactions);
     expect(model.transactions.length, sampleTransactions.length);

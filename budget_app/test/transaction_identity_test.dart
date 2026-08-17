@@ -173,6 +173,51 @@ void main() {
     expect(model.transactions, hasLength(1));
   });
 
+  test('an unreadable stored row is skipped without dropping readable rows',
+      () async {
+    final first = Transaction(
+      id: 'first',
+      type: TransactionTyp.expense,
+      description: 'Groceries',
+      amount: 42,
+      category: 'Groceries',
+      date: DateTime(2026, 8, 1),
+    );
+    final newest = Transaction(
+      id: 'newest',
+      type: TransactionTyp.expense,
+      description: 'Hotel',
+      amount: 280,
+      category: 'Travel',
+      date: DateTime(2026, 8, 10),
+    );
+    SharedPreferences.setMockInitialValues({
+      StorageKeys.transactions: jsonEncode([
+        first.toJson(),
+        {'type': 'expense', 'description': 'no date or amount'},
+        newest.toJson(),
+      ]),
+    });
+
+    final model = TransactionModel();
+    await model.getTransactions();
+
+    // The bad row is skipped; every readable row survives, including the
+    // newest one after it.
+    expect(
+      model.transactions.map((transaction) => transaction.id),
+      orderedEquals(['first', 'newest']),
+    );
+
+    // Loading must not rewrite storage while a row was unreadable — the raw
+    // rows stay on disk untouched.
+    final snapshot = await AtomicFinancialStore.instance.read();
+    expect(
+      snapshot.sections[FinancialSections.transactions] as List,
+      hasLength(3),
+    );
+  });
+
   test('model loads recovered atomic backup instead of stale legacy keys',
       () async {
     final original = Transaction(

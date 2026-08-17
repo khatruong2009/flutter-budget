@@ -451,10 +451,19 @@ Future<void> showTransactionForm(
                                             selectedMonth.year ||
                                         selectedDate.month !=
                                             selectedMonth.month) {
+                                      // Spell out the year when it isn't the
+                                      // current one: "Added to September" reads
+                                      // as this September even when the entry
+                                      // landed a year back.
+                                      final monthLabel = DateFormat(
+                                        selectedDate.year == DateTime.now().year
+                                            ? 'MMMM'
+                                            : 'MMMM yyyy',
+                                      ).format(selectedDate);
                                       messenger.showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            'Added to ${DateFormat('MMMM').format(selectedDate)}',
+                                            'Added to $monthLabel',
                                           ),
                                           backgroundColor:
                                               AppColors.getSuccess(isDark),

@@ -288,10 +288,22 @@ class TransactionModel extends ChangeNotifier {
       final jsonList = storedTransactions;
       final seenIds = <String>{};
       var needsIdentityMigration = false;
+      var skippedUnreadableRows = 0;
       transactions = [];
       for (final item in jsonList) {
-        final json = item as Map<String, dynamic>;
-        var transaction = Transaction.fromJson(json);
+        Map<String, dynamic> json;
+        Transaction transaction;
+        try {
+          json = (item as Map).cast<String, dynamic>();
+          transaction = Transaction.fromJson(json);
+        } catch (error) {
+          // A row that fails to decode must not abort the whole load: bailing
+          // out mid-list would leave a truncated ledger in memory, and the
+          // next save would persist that truncation. Keep every readable row.
+          skippedUnreadableRows++;
+          debugPrint('Skipping unreadable stored transaction: $error');
+          continue;
+        }
         final persistedId = json['id'];
         final hasPersistedIdentity =
             persistedId is String && persistedId.trim().isNotEmpty;
@@ -305,7 +317,9 @@ class TransactionModel extends ChangeNotifier {
         }
         transactions.add(transaction);
       }
-      if (needsIdentityMigration) {
+      // Rewriting storage while rows were unreadable would permanently drop
+      // them, so only persist backfilled identities from a fully clean load.
+      if (needsIdentityMigration && skippedUnreadableRows == 0) {
         await saveTransactions(transactions);
       }
     } else {
