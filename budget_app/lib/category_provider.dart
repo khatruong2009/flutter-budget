@@ -42,7 +42,11 @@ class CategoryProvider extends ChangeNotifier {
     _normalizeSortOrders();
     _syncCompatibilityMaps();
     _isLoaded = true;
-    await _persist();
+    // Write back only when seeding or normalizing changed something, so a
+    // launch never commits a store that did not need to change.
+    if (stored is! List || jsonEncode(stored) != jsonEncode(_serialize())) {
+      await _persist();
+    }
     notifyListeners();
   }
 
@@ -254,17 +258,13 @@ class CategoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Map<String, dynamic>> _serialize() =>
+      _categories.map((category) => category.toJson()).toList();
+
   Future<void> _persist() async {
-    final serialized =
-        _categories.map((category) => category.toJson()).toList();
     await AtomicFinancialStore.instance.updateSection(
       FinancialSections.categories,
-      serialized,
-    );
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      StorageKeys.categories,
-      jsonEncode(serialized),
+      _serialize(),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 
 import 'package:budget_app/backup.dart';
 import 'package:budget_app/categorization_rule.dart';
@@ -54,7 +55,8 @@ BackupData emptyBackup({ThemeMode? themeMode}) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 

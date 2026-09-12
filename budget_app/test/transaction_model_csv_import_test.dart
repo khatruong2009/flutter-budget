@@ -1,4 +1,5 @@
 import 'package:budget_app/storage/storage_keys.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_model.dart';
 import 'package:csv/csv.dart';
@@ -36,7 +37,8 @@ void expectTransactionEquals(Transaction actual, Transaction expected) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -85,10 +87,11 @@ void main() {
     }
   });
 
-  test('re-importing an export of current data yields no new transactions', () {
+  test('re-importing an export of current data yields no new transactions',
+      () async {
     final model = TransactionModel();
     for (final transaction in sampleTransactions) {
-      model.addTransaction(
+      await model.addTransaction(
         transaction.type,
         transaction.description,
         transaction.amount,
@@ -105,7 +108,7 @@ void main() {
     expect(summary.rowErrors, isEmpty);
   });
 
-  test('multiset dedupe imports the surplus copy of an existing row', () {
+  test('multiset dedupe imports the surplus copy of an existing row', () async {
     final existing = Transaction(
       type: TransactionTyp.expense,
       description: 'Coffee',
@@ -115,7 +118,7 @@ void main() {
     );
 
     final model = TransactionModel();
-    model.addTransaction(
+    await model.addTransaction(
       existing.type,
       existing.description,
       existing.amount,
@@ -132,11 +135,12 @@ void main() {
     expectTransactionEquals(summary.transactions.single, existing);
   });
 
-  test('re-importing a three-decimal amount still detects the duplicate', () {
+  test('re-importing a three-decimal amount still detects the duplicate',
+      () async {
     // (3.005 * 100).round() and toStringAsFixed(2) round differently; the
     // dedupe key must use the export's rounding so re-import stays idempotent.
     final model = TransactionModel();
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Fuel',
       3.005,
@@ -151,11 +155,11 @@ void main() {
     expect(summary.duplicateCount, 1);
   });
 
-  test('dedupe ignores surrounding whitespace in text fields', () {
+  test('dedupe ignores surrounding whitespace in text fields', () async {
     // The parser trims fields; an existing description with a stray trailing
     // space must still match its own exported row.
     final model = TransactionModel();
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Lunch ',
       12.00,

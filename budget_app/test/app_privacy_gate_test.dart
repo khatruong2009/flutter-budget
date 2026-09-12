@@ -1,4 +1,5 @@
 import 'package:budget_app/app_settings_provider.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/widgets/app_privacy_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 

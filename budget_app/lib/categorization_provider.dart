@@ -167,28 +167,16 @@ class CategorizationProvider extends ChangeNotifier {
   }
 
   Future<void> _persistTags() async {
-    final serialized = _tags.map((tag) => tag.toJson()).toList();
     await AtomicFinancialStore.instance.updateSection(
       FinancialSections.transactionTags,
-      serialized,
-    );
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      StorageKeys.transactionTags,
-      jsonEncode(serialized),
+      _tags.map((tag) => tag.toJson()).toList(),
     );
   }
 
   Future<void> _persistRules() async {
-    final serialized = _rules.map((rule) => rule.toJson()).toList();
     await AtomicFinancialStore.instance.updateSection(
       FinancialSections.categorizationRules,
-      serialized,
-    );
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      StorageKeys.categorizationRules,
-      jsonEncode(serialized),
+      _rules.map((rule) => rule.toJson()).toList(),
     );
   }
 

@@ -11,8 +11,14 @@
 class StorageKeys {
   StorageKeys._();
 
+  // --- Financial sections (read-only, migrated) ---
+  //
+  // Everything from here to the theme key used to hold a copy of a section
+  // that now lives in the `AtomicFinancialStore` file. The keys are read once
+  // to migrate an existing device and then removed; nothing writes them.
+
   /// Encoded list of all `Transaction` objects (income + expense).
-  /// Owned by `TransactionModel`.
+  /// Migrated into `AtomicFinancialStore`.
   static const String transactions = 'transactions';
 
   /// Encoded list of all `NetWorthEntry` objects (assets + liabilities with

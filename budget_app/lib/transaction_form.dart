@@ -48,6 +48,9 @@ Future<void> showTransactionForm(
   // Validation state
   String? amountError;
   String? descriptionError;
+  // True while the durable write is in flight; the form closes only once the
+  // store has confirmed the change on disk (or reported that it could not).
+  bool isSaving = false;
 
   // Check if we are editing an existing transaction
   if (transactionToEdit != null) {
@@ -120,6 +123,30 @@ Future<void> showTransactionForm(
         int initialCategoryIndex = categoryMap.keys.toList().indexOf(category);
         final categoryScrollController =
             FixedExtentScrollController(initialItem: initialCategoryIndex);
+
+        // The row is already in memory, so the user must know it is not on
+        // disk yet; the app-level banner stays until a retry succeeds.
+        void showSaveFailure(ScaffoldMessengerState messenger, bool isDark) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: const Text(
+                "Couldn't save to this device. The entry is kept in memory "
+                'until Retry succeeds.',
+              ),
+              backgroundColor: AppColors.getDanger(isDark),
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppDesign.radiusM),
+              ),
+              action: SnackBarAction(
+                label: 'Retry',
+                textColor: Colors.white,
+                onPressed: () => transactionModel.retryPendingSaves(),
+              ),
+            ),
+          );
+        }
 
         // Validation function
         void validateForm() {
@@ -390,9 +417,11 @@ Future<void> showTransactionForm(
                           Expanded(
                             child: AppButton.secondary(
                               label: 'Cancel',
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                              onPressed: isSaving
+                                  ? null
+                                  : () {
+                                      Navigator.of(context).pop();
+                                    },
                             ),
                           ),
                           const SizedBox(width: AppDesign.spacingM),
@@ -407,78 +436,98 @@ Future<void> showTransactionForm(
                                   : AppColors.getIncomeGradient(
                                       Theme.of(context).brightness ==
                                           Brightness.dark),
-                              onPressed: () {
-                                validateForm();
+                              isLoading: isSaving,
+                              onPressed: isSaving
+                                  ? null
+                                  : () async {
+                                      validateForm();
 
-                                // Only proceed if no errors
-                                if (amountError == null) {
-                                  if (transactionToEdit != null) {
-                                    transactionModel.updateTransaction(
-                                      transactionToEdit.id,
-                                      transactionToEdit.copyWith(
-                                        type: type,
-                                        description: description.isEmpty
-                                            ? 'Transaction'
-                                            : description,
-                                        amount: amount,
-                                        category: category,
-                                        date: selectedDate,
-                                        tagIds: selectedTagIds.toList(),
-                                      ),
-                                    );
-                                    Navigator.of(context).pop();
-                                  } else {
-                                    // Add a new transaction
-                                    final messenger =
-                                        ScaffoldMessenger.of(context);
-                                    final isDark =
-                                        Theme.of(context).brightness ==
-                                            Brightness.dark;
-                                    transactionModel.addTransaction(
-                                      type,
-                                      description.isEmpty
-                                          ? 'Transaction'
-                                          : description,
-                                      amount,
-                                      category,
-                                      selectedDate,
-                                      tagIds: selectedTagIds.toList(),
-                                    );
-                                    Navigator.of(context).pop();
-                                    final selectedMonth =
-                                        transactionModel.selectedMonth;
-                                    if (selectedDate.year !=
-                                            selectedMonth.year ||
-                                        selectedDate.month !=
-                                            selectedMonth.month) {
-                                      // Spell out the year when it isn't the
-                                      // current one: "Added to September" reads
-                                      // as this September even when the entry
-                                      // landed a year back.
-                                      final monthLabel = DateFormat(
-                                        selectedDate.year == DateTime.now().year
-                                            ? 'MMMM'
-                                            : 'MMMM yyyy',
-                                      ).format(selectedDate);
-                                      messenger.showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Added to $monthLabel',
-                                          ),
-                                          backgroundColor:
-                                              AppColors.getSuccess(isDark),
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              AppDesign.radiusM,
+                                      // Only proceed if no errors
+                                      if (amountError == null) {
+                                        final messenger =
+                                            ScaffoldMessenger.of(context);
+                                        final isDark =
+                                            Theme.of(context).brightness ==
+                                                Brightness.dark;
+                                        if (transactionToEdit != null) {
+                                          setState(() => isSaving = true);
+                                          final saved = await transactionModel
+                                              .updateTransaction(
+                                            transactionToEdit.id,
+                                            transactionToEdit.copyWith(
+                                              type: type,
+                                              description: description.isEmpty
+                                                  ? 'Transaction'
+                                                  : description,
+                                              amount: amount,
+                                              category: category,
+                                              date: selectedDate,
+                                              tagIds: selectedTagIds.toList(),
                                             ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                }
-                              },
+                                          );
+                                          if (!context.mounted) return;
+                                          Navigator.of(context).pop();
+                                          if (!saved) {
+                                            showSaveFailure(messenger, isDark);
+                                          }
+                                        } else {
+                                          // Add a new transaction
+                                          setState(() => isSaving = true);
+                                          final saved = await transactionModel
+                                              .addTransaction(
+                                            type,
+                                            description.isEmpty
+                                                ? 'Transaction'
+                                                : description,
+                                            amount,
+                                            category,
+                                            selectedDate,
+                                            tagIds: selectedTagIds.toList(),
+                                          );
+                                          if (!context.mounted) return;
+                                          Navigator.of(context).pop();
+                                          if (!saved) {
+                                            showSaveFailure(messenger, isDark);
+                                            return;
+                                          }
+                                          final selectedMonth =
+                                              transactionModel.selectedMonth;
+                                          if (selectedDate.year !=
+                                                  selectedMonth.year ||
+                                              selectedDate.month !=
+                                                  selectedMonth.month) {
+                                            // Spell out the year when it isn't the
+                                            // current one: "Added to September" reads
+                                            // as this September even when the entry
+                                            // landed a year back.
+                                            final monthLabel = DateFormat(
+                                              selectedDate.year ==
+                                                      DateTime.now().year
+                                                  ? 'MMMM'
+                                                  : 'MMMM yyyy',
+                                            ).format(selectedDate);
+                                            messenger.showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Added to $monthLabel',
+                                                ),
+                                                backgroundColor:
+                                                    AppColors.getSuccess(
+                                                        isDark),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    AppDesign.radiusM,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      }
+                                    },
                             ),
                           ),
                         ],

@@ -10,6 +10,7 @@ import 'history_page.dart';
 import 'settings_page.dart';
 import 'design_system.dart';
 import 'transaction_model.dart';
+import 'widgets/unsaved_changes_banner.dart';
 
 class BudgetHomePage extends StatefulWidget {
   const BudgetHomePage({Key? key, required this.title}) : super(key: key);
@@ -93,62 +94,69 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            children: [
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => const SpendingPage(),
+          const UnsavedChangesBanner(),
+          Expanded(
+            child: Stack(
+              children: [
+                PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  children: [
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => const SpendingPage(),
+                      ),
+                    ),
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => const NetWorthPage(),
+                      ),
+                    ),
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => SavingsGoalsPage(
+                          model: context.watch<TransactionModel>(),
+                        ),
+                      ),
+                    ),
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => const CategoryPage(),
+                      ),
+                    ),
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => const HistoryPage(),
+                      ),
+                    ),
+                    Navigator(
+                      onGenerateRoute: (settings) => MaterialPageRoute(
+                        builder: (context) => const SettingsPage(),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => const NetWorthPage(),
-                ),
-              ),
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => SavingsGoalsPage(
-                    model: context.watch<TransactionModel>(),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: DockMetrics.bottomOffset(context),
+                  child: Center(
+                    child: FloatingDock(
+                      items: _dockItems,
+                      currentIndex: _currentIndex,
+                      onTap: _onTabTapped,
+                      onDragSelect: _onTabDragged,
+                    ),
                   ),
                 ),
-              ),
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => const CategoryPage(),
-                ),
-              ),
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => const HistoryPage(),
-                ),
-              ),
-              Navigator(
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: DockMetrics.bottomOffset(context),
-            child: Center(
-              child: FloatingDock(
-                items: _dockItems,
-                currentIndex: _currentIndex,
-                onTap: _onTabTapped,
-                onDragSelect: _onTabDragged,
-              ),
+              ],
             ),
           ),
         ],

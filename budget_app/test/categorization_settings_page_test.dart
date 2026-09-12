@@ -1,4 +1,5 @@
 import 'package:budget_app/categorization_provider.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/categorization_settings_page.dart';
 import 'package:budget_app/transaction_tag.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,8 @@ class _TestCategorizationProvider extends CategorizationProvider {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 

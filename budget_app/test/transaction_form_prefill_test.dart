@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -102,7 +103,8 @@ String _fieldText(WidgetTester tester, String label) {
 }
 
 void main() {
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -290,7 +292,7 @@ void main() {
   testWidgets('editing updates in place and preserves recurring identity',
       (tester) async {
     final model = TransactionModel();
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Rent',
       1000,

@@ -1,4 +1,5 @@
 import 'package:budget_app/app_settings_provider.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/money_formatter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
     MoneyFormatter.configure(currencyCode: 'USD');
   });

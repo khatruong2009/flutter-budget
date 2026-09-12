@@ -18,6 +18,7 @@ import WidgetKit
     flutterEngine.run()
     GeneratedPluginRegistrant.register(with: flutterEngine)
     setupWidgetDataChannel()
+    setupProtectedDataChannel()
 
     // For iOS 12 and below (non-scene based)
     if #unavailable(iOS 13.0) {
@@ -92,6 +93,39 @@ import WidgetKit
   private func handleDeepLink(_ url: URL) {
     initialLink = url.absoluteString
     deepLinkChannel?.invokeMethod("deep_link", arguments: url.absoluteString)
+  }
+
+  // MARK: - Protected Data
+
+  /// Lets Flutter hold its storage access until the app container is readable.
+  /// iOS can prewarm the app (running `main` and this delegate) before the
+  /// device has been unlocked after a reboot; in that state the data files are
+  /// still encrypted and would read back empty.
+  private var protectedDataChannel: FlutterMethodChannel?
+
+  private func setupProtectedDataChannel() {
+    let channel = FlutterMethodChannel(
+      name: "budget_app/protected_data",
+      binaryMessenger: flutterEngine.binaryMessenger
+    )
+    protectedDataChannel = channel
+
+    channel.setMethodCallHandler { (call: FlutterMethodCall, result: FlutterResult) in
+      guard call.method == "isAvailable" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      result(UIApplication.shared.isProtectedDataAvailable)
+    }
+
+    NotificationCenter.default.addObserver(
+      forName: UIApplication.protectedDataDidBecomeAvailableNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      self?.protectedDataChannel?.invokeMethod(
+        "protectedDataDidBecomeAvailable", arguments: nil)
+    }
   }
 
   // MARK: - Widget Data

@@ -1,38 +1,40 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'recurring_transaction.dart';
-import 'storage/storage_keys.dart';
 import 'storage/atomic_financial_store.dart';
+import 'storage/persistence_status.dart';
 import 'transaction.dart';
 
 /// State management class for recurring transactions
 /// Extends ChangeNotifier to integrate with Provider pattern
-class RecurringTransactionModel extends ChangeNotifier {
+class RecurringTransactionModel extends ChangeNotifier with PersistenceStatus {
   List<RecurringTransaction> recurringTransactions = [];
 
-  /// Add a new recurring transaction
-  void addRecurringTransaction(RecurringTransaction recurring) {
+  /// Add a new recurring transaction. Resolves to whether the change was
+  /// verified on disk; a false result is also reflected by
+  /// [hasUnsavedChanges].
+  Future<bool> addRecurringTransaction(RecurringTransaction recurring) {
     recurringTransactions.add(recurring);
-    saveRecurringTransactions();
     notifyListeners();
+    return saveRecurringTransactions();
   }
 
   /// Update an existing recurring transaction by ID
-  void updateRecurringTransaction(String id, RecurringTransaction updated) {
+  Future<bool> updateRecurringTransaction(
+    String id,
+    RecurringTransaction updated,
+  ) async {
     final index = recurringTransactions.indexWhere((r) => r.id == id);
-    if (index != -1) {
-      recurringTransactions[index] = updated;
-      saveRecurringTransactions();
-      notifyListeners();
-    }
+    if (index == -1) return false;
+    recurringTransactions[index] = updated;
+    notifyListeners();
+    return saveRecurringTransactions();
   }
 
   /// Delete a recurring transaction by ID
-  void deleteRecurringTransaction(String id) {
+  Future<bool> deleteRecurringTransaction(String id) {
     recurringTransactions.removeWhere((r) => r.id == id);
-    saveRecurringTransactions();
     notifyListeners();
+    return saveRecurringTransactions();
   }
 
   Future<void> renameCategory({
@@ -49,8 +51,8 @@ class RecurringTransactionModel extends ChangeNotifier {
       return template.copyWith(category: newName);
     }).toList();
     if (!changed) return;
-    await saveRecurringTransactions();
     notifyListeners();
+    await saveRecurringTransactions();
   }
 
   /// Get a specific recurring transaction by ID
@@ -62,46 +64,36 @@ class RecurringTransactionModel extends ChangeNotifier {
     }
   }
 
-  /// Save recurring transactions to SharedPreferences
-  Future<void> saveRecurringTransactions() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonTransactions =
-        recurringTransactions.map((r) => r.toJson()).toList();
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.recurringTransactions,
-      jsonTransactions,
-    );
-    await prefs.setString(
-        StorageKeys.recurringTransactions, jsonEncode(jsonTransactions));
+  @override
+  dynamic serializeSection(String section) {
+    assert(section == FinancialSections.recurringTransactions);
+    return recurringTransactions.map((r) => r.toJson()).toList();
+  }
+
+  /// Persist the templates to the financial store and confirm the write.
+  Future<bool> saveRecurringTransactions() {
+    return persistSections({
+      FinancialSections.recurringTransactions:
+          serializeSection(FinancialSections.recurringTransactions),
+    });
   }
 
   /// Full-replace restore from a decoded backup. Replaces every template and
   /// persists the result.
   Future<void> restoreFromBackup(List<RecurringTransaction> templates) async {
     recurringTransactions = List<RecurringTransaction>.of(templates);
-    await saveRecurringTransactions();
     notifyListeners();
+    await saveRecurringTransactions();
   }
 
-  /// Load recurring transactions from SharedPreferences
+  /// Load recurring transactions from the financial store.
   Future<void> loadRecurringTransactions() async {
-    final prefs = await SharedPreferences.getInstance();
     final snapshot = await AtomicFinancialStore.instance.read();
     final stored = snapshot.sections[FinancialSections.recurringTransactions];
     if (stored is List && stored.isNotEmpty) {
-      final jsonList = stored;
       recurringTransactions =
-          jsonList.map((e) => RecurringTransaction.fromJson(e)).toList();
+          stored.map((e) => RecurringTransaction.fromJson(e)).toList();
       notifyListeners();
-    } else {
-      final jsonString = prefs.getString(StorageKeys.recurringTransactions);
-      if (jsonString != null && jsonString.isNotEmpty) {
-        final jsonList = jsonDecode(jsonString) as List;
-        recurringTransactions =
-            jsonList.map((e) => RecurringTransaction.fromJson(e)).toList();
-        await saveRecurringTransactions();
-        notifyListeners();
-      }
     }
   }
 

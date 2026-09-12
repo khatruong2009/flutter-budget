@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -84,7 +85,8 @@ class _FakeRecordPlatform extends RecordPlatform {
 }
 
 void main() {
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({
       StorageKeys.onboardingCompleted: true,
     });

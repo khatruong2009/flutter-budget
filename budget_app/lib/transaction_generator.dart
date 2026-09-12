@@ -39,7 +39,7 @@ class TransactionGenerator {
       // Only generate if within lookback window
       if (current.isAfter(maxLookback) || isSameDay(current, maxLookback)) {
         final transaction = recurring.generateTransaction(current);
-        transactionModel.addTransaction(
+        await transactionModel.addTransaction(
           transaction.type,
           transaction.description,
           transaction.amount,
@@ -55,7 +55,10 @@ class TransactionGenerator {
 
     // Update the recurring transaction's next occurrence date
     final updatedRecurring = recurring.copyWith(nextOccurrence: current);
-    recurringModel.updateRecurringTransaction(recurring.id, updatedRecurring);
+    await recurringModel.updateRecurringTransaction(
+      recurring.id,
+      updatedRecurring,
+    );
   }
 
   /// Calculate next occurrence based on recurrence pattern

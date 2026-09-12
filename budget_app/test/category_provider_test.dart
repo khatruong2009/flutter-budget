@@ -1,9 +1,8 @@
-import 'dart:convert';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 
 import 'package:budget_app/category_definition.dart';
 import 'package:budget_app/category_provider.dart';
 import 'package:budget_app/common.dart';
-import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -24,10 +24,8 @@ void main() {
     expect(expenses.first.name, 'General');
     expect(expenseCategories.keys.first, 'General');
 
-    final preferences = await SharedPreferences.getInstance();
-    final saved = jsonDecode(
-      preferences.getString(StorageKeys.categories)!,
-    ) as List<dynamic>;
+    final saved = (await AtomicFinancialStore.instance.read())
+        .sections[FinancialSections.categories] as List<dynamic>;
     expect(saved, isNotEmpty);
     expect(saved.first['id'], 'expense-general');
   });

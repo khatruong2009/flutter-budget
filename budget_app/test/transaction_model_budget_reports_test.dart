@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 
 import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/transaction.dart';
@@ -9,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -17,14 +19,14 @@ void main() {
     final model = TransactionModel();
 
     await model.setCategoryBudgetLimit('Eating Out', 400);
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Dinner',
       125,
       'Eating Out',
       DateTime(2026, 6, 8),
     );
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Taxi',
       40,
@@ -41,9 +43,9 @@ void main() {
     expect(progress.single.limit, 400);
     expect(progress.single.remaining, 275);
 
-    final prefs = await SharedPreferences.getInstance();
     expect(
-      jsonDecode(prefs.getString(StorageKeys.categoryBudgetLimits)!),
+      (await AtomicFinancialStore.instance.read())
+          .sections[FinancialSections.categoryBudgetLimits],
       {'Eating Out': 400.0},
     );
   });
@@ -63,31 +65,31 @@ void main() {
     expect(model.getCategoryBudgetLimit('Ignored'), isNull);
   });
 
-  test('year-over-year comparison summarizes totals and categories', () {
+  test('year-over-year comparison summarizes totals and categories', () async {
     final model = TransactionModel();
 
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Rent',
       1200,
       'Housing',
       DateTime(2025, 1, 5),
     );
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Groceries',
       200,
       'Groceries',
       DateTime(2025, 1, 10),
     );
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Rent',
       1300,
       'Housing',
       DateTime(2026, 1, 5),
     );
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Dinner',
       300,

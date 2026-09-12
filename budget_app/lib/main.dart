@@ -22,6 +22,7 @@ import 'category_provider.dart';
 import 'category_definition.dart';
 import 'categorization_provider.dart';
 import 'storage/atomic_financial_store.dart';
+import 'storage/protected_data_gate.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -157,7 +158,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final QuickActions quickActions = const QuickActions();
   static const MethodChannel _deepLinkChannel =
       MethodChannel('budget_app/deeplink');
@@ -170,6 +171,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _setupDeepLinks();
     quickActions.initialize(_handleQuickAction);
@@ -194,23 +196,53 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Leaving the foreground is the last chance to land anything a failed
+    // write left in memory before iOS may reclaim the process.
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      if (!_initializationCompleter.isCompleted) return;
+      unawaited(context.read<TransactionModel>().retryPendingSaves());
+      unawaited(context.read<RecurringTransactionModel>().retryPendingSaves());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     _initFuture ??= _initializeApp(context);
     return FutureBuilder(
       future: _initFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        final ready = snapshot.connectionState == ConnectionState.done;
+        final done = snapshot.connectionState == ConnectionState.done;
+        final Widget child;
+        if (done && snapshot.hasError) {
+          // Loading failed (for example the data file could not be read).
+          // Never show the app on top of empty models: a mutation from that
+          // state would overwrite the real data on disk.
+          child = _InitializationErrorScreen(
+            error: snapshot.error,
+            onRetry: () => setState(() => _initFuture = null),
+          );
+        } else if (done) {
+          child = const AppPrivacyGate(
+            child: OnboardingTutorialGate(
+              child: BudgetHomePage(title: 'Home'),
+            ),
+          );
+        } else {
+          child = const _OpeningScreen();
+        }
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 450),
           switchInCurve: Curves.easeOut,
           switchOutCurve: Curves.easeIn,
-          child: ready
-              ? const AppPrivacyGate(
-                  child: OnboardingTutorialGate(
-                    child: BudgetHomePage(title: 'Home'),
-                  ),
-                )
-              : const _OpeningScreen(),
+          child: child,
         );
       },
     );
@@ -223,6 +255,10 @@ class _MyAppState extends State<MyApp> {
     final categoryProvider = context.read<CategoryProvider>();
     final appSettings = context.read<AppSettingsProvider>();
     final categorizationProvider = context.read<CategorizationProvider>();
+
+    // A prewarmed launch on a still-locked device cannot read the data
+    // files. Wait for protected data rather than loading an empty view.
+    await ProtectedDataGate.waitUntilAvailable();
 
     try {
       await AtomicFinancialStore.instance.read();
@@ -259,10 +295,14 @@ class _MyAppState extends State<MyApp> {
         recurringModel: recurringModel,
       );
       await generator.generateDueTransactions();
-    } finally {
-      if (!_initializationCompleter.isCompleted) {
-        _initializationCompleter.complete();
-      }
+    } catch (error, stackTrace) {
+      // Deep links and quick actions keep waiting on the completer, so they
+      // cannot add rows on top of a half-loaded ledger.
+      debugPrint('App initialization failed: $error\n$stackTrace');
+      rethrow;
+    }
+    if (!_initializationCompleter.isCompleted) {
+      _initializationCompleter.complete();
     }
   }
 
@@ -364,6 +404,79 @@ class _MyAppState extends State<MyApp> {
     _lastHandledLink = link;
     _lastHandledLinkAt = now;
     return true;
+  }
+}
+
+/// Shown instead of the app when stored data could not be loaded.
+class _InitializationErrorScreen extends StatelessWidget {
+  final Object? error;
+  final VoidCallback onRetry;
+
+  const _InitializationErrorScreen({
+    required this.error,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Material(
+      key: const Key('initialization-error-screen'),
+      color: AppColors.getBackground(isDark),
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDesign.spacingXL),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.sd_storage_rounded,
+                    size: 54,
+                    color: AppColors.getDanger(isDark),
+                  ),
+                  const SizedBox(height: AppDesign.spacingL),
+                  Text(
+                    "Budgie couldn't read your data",
+                    textAlign: TextAlign.center,
+                    style: AppTypography.headingLarge.copyWith(
+                      color: AppColors.getTextColor(isDark),
+                    ),
+                  ),
+                  const SizedBox(height: AppDesign.spacingS),
+                  Text(
+                    'Nothing has been changed on this device. '
+                    'Unlock your phone if it is locked, then try again.',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.getTextSecondaryColor(isDark),
+                    ),
+                  ),
+                  if (error != null) ...[
+                    const SizedBox(height: AppDesign.spacingS),
+                    Text(
+                      '$error',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.getTextTertiaryColor(isDark),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: AppDesign.spacingL),
+                  AppButton.primary(
+                    label: 'Try again',
+                    icon: Icons.refresh_rounded,
+                    onPressed: onRetry,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

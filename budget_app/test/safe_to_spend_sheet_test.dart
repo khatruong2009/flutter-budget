@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,8 @@ import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_model.dart';
 
 void main() {
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({
       StorageKeys.onboardingCompleted: true,
     });

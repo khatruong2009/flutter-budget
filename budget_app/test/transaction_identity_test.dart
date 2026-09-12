@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/storage/storage_keys.dart';
@@ -10,7 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -98,10 +100,8 @@ void main() {
     final ids = model.transactions.map((transaction) => transaction.id).toSet();
     expect(ids, hasLength(3));
 
-    final prefs = await SharedPreferences.getInstance();
-    final persisted = jsonDecode(
-      prefs.getString(StorageKeys.transactions)!,
-    ) as List<dynamic>;
+    final persisted = (await AtomicFinancialStore.instance.read())
+        .sections[FinancialSections.transactions] as List<dynamic>;
     expect(
       persisted.every(
         (item) =>
@@ -120,9 +120,10 @@ void main() {
     );
   });
 
-  test('update is atomic and preserves identity and recurring metadata', () {
+  test('update is atomic and preserves identity and recurring metadata',
+      () async {
     final model = TransactionModel();
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Rent',
       1000,
@@ -132,7 +133,7 @@ void main() {
     );
     final original = model.transactions.single;
 
-    final changed = model.updateTransaction(
+    final changed = await model.updateTransaction(
       original.id,
       original.copyWith(
         description: 'Updated rent',
@@ -151,10 +152,10 @@ void main() {
     expect(updated.amount, 1100);
   });
 
-  test('identical transactions can be deleted independently by ID', () {
+  test('identical transactions can be deleted independently by ID', () async {
     final model = TransactionModel();
     for (var i = 0; i < 2; i++) {
-      model.addTransaction(
+      await model.addTransaction(
         TransactionTyp.expense,
         'Coffee',
         4.5,
@@ -165,12 +166,92 @@ void main() {
     final firstId = model.transactions.first.id;
     final secondId = model.transactions.last.id;
 
-    expect(model.deleteTransactionById(firstId), isTrue);
+    expect(await model.deleteTransactionById(firstId), isTrue);
 
     expect(model.transactions, hasLength(1));
     expect(model.transactions.single.id, secondId);
-    expect(model.deleteTransactionById('missing'), isFalse);
+    expect(await model.deleteTransactionById('missing'), isFalse);
     expect(model.transactions, hasLength(1));
+  });
+
+  test('a failed write keeps the row, flags it unsaved, and retry heals it',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('budgie_identity');
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
+    final model = TransactionModel();
+    await model.addTransaction(
+      TransactionTyp.expense,
+      'Groceries',
+      42,
+      'Groceries',
+      DateTime(2026, 7, 1),
+    );
+    expect(model.hasUnsavedChanges, isFalse);
+
+    // Make the store directory unwritable, then add a row.
+    await directory.delete(recursive: true);
+    await File(directory.path).writeAsString('blocks the directory');
+    var notifications = 0;
+    model.addListener(() => notifications++);
+
+    final saved = await model.addTransaction(
+      TransactionTyp.expense,
+      'Coffee',
+      4.5,
+      'Dining',
+      DateTime(2026, 7, 2),
+    );
+
+    expect(saved, isFalse);
+    expect(model.transactions, hasLength(2));
+    expect(model.hasUnsavedChanges, isTrue);
+    expect(model.unsavedSections, contains(FinancialSections.transactions));
+    expect(model.lastSaveError, isNotNull);
+    expect(notifications, greaterThanOrEqualTo(2));
+
+    // Storage comes back: a retry lands the pending change and clears it.
+    await File(directory.path).delete();
+    expect(await model.retryPendingSaves(), isTrue);
+    expect(model.hasUnsavedChanges, isFalse);
+    expect(model.lastSaveError, isNull);
+
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
+    final reloaded = TransactionModel();
+    await reloaded.getTransactions();
+    expect(
+      reloaded.transactions.map((transaction) => transaction.description),
+      orderedEquals(['Groceries', 'Coffee']),
+    );
+  });
+
+  test('a later successful save also carries earlier unsaved sections',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('budgie_identity');
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
+    final model = TransactionModel();
+    await directory.delete(recursive: true);
+    await File(directory.path).writeAsString('blocks the directory');
+
+    await model.setCategoryBudgetLimit('Groceries', 300);
+    expect(model.unsavedSections,
+        contains(FinancialSections.categoryBudgetLimits));
+
+    await File(directory.path).delete();
+    final saved = await model.addTransaction(
+      TransactionTyp.expense,
+      'Coffee',
+      4.5,
+      'Dining',
+      DateTime(2026, 7, 2),
+    );
+
+    expect(saved, isTrue);
+    expect(model.hasUnsavedChanges, isFalse);
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
+    final reloaded = TransactionModel();
+    await reloaded.getTransactions();
+    expect(reloaded.getCategoryBudgetLimit('Groceries'), 300);
+    expect(reloaded.transactions.single.description, 'Coffee');
   });
 
   test('an unreadable stored row is skipped without dropping readable rows',
@@ -231,6 +312,8 @@ void main() {
     SharedPreferences.setMockInitialValues({
       StorageKeys.transactions: jsonEncode([original.toJson()]),
     });
+    final directory = await Directory.systemTemp.createTemp('budgie_identity');
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
 
     final model = TransactionModel();
     await model.getTransactions();
@@ -245,12 +328,10 @@ void main() {
       ),
     ]);
 
-    final prefs = await SharedPreferences.getInstance();
-    final primaryKey = prefs.getKeys().singleWhere(
-          (key) =>
-              key.startsWith('financial_store_v1') && !key.endsWith('_backup'),
-        );
-    await prefs.setString(primaryKey, 'malformed');
+    await File('${directory.path}/${AtomicFinancialStore.primaryFileName}')
+        .writeAsString('malformed');
+    // Relaunch: memory is gone, only the files remain.
+    await AtomicFinancialStore.instance.resetForTesting(directory: directory);
 
     final recovered = TransactionModel();
     await recovered.getTransactions();

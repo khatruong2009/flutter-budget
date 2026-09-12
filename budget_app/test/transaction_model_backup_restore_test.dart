@@ -33,7 +33,8 @@ void expectNetWorthEntryEquals(NetWorthEntry actual, NetWorthEntry expected) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -86,7 +87,7 @@ void main() {
   ];
 
   Future<void> seed(TransactionModel model) async {
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.income,
       'Old Salary',
       1000.0,

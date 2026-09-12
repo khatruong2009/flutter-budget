@@ -1,4 +1,5 @@
 import 'package:budget_app/net_worth_entry.dart';
+import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,7 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
+    await AtomicFinancialStore.instance.resetForTesting();
     SharedPreferences.setMockInitialValues({});
   });
 
@@ -30,14 +32,14 @@ void main() {
       month: month,
     );
 
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.income,
       'Salary',
       250,
       'Income',
       DateTime(2026, 3, 15),
     );
-    model.addTransaction(
+    await model.addTransaction(
       TransactionTyp.expense,
       'Groceries',
       100,

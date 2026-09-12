@@ -9,8 +9,13 @@ A personal budget tracking app. The **only active code** lives in
 [`budget_app/`](budget_app) — a Flutter mobile app (iOS-first, also builds for
 Android/macOS/web/Linux/Windows).
 
-All persistence is **local** via `shared_preferences` (JSON-encoded). There is
-no backend, no auth, no network sync.
+All persistence is **local**. Financial data (transactions, net worth,
+budgets, goals, recurring templates, categories, tags, rules, app settings)
+lives in one checksummed JSON file with a last-known-good backup, managed by
+[`AtomicFinancialStore`](budget_app/lib/storage/atomic_financial_store.dart)
+in the app-support directory. `shared_preferences` is only used for real
+preferences (theme, onboarding flag, small settings). There is no backend, no
+auth, no network sync.
 
 ### Legacy / inactive directories — do not modify unless asked
 
@@ -54,8 +59,17 @@ wired in [`lib/main.dart`](budget_app/lib/main.dart):
 
 Each provider:
 1. Holds its data in memory.
-2. Loads from / saves to `SharedPreferences` (JSON).
+2. Loads its section from / saves it to `AtomicFinancialStore` (one section
+   per feature inside a single versioned file).
 3. Calls `notifyListeners()` after any mutation.
+
+Mutations on `TransactionModel` and `RecurringTransactionModel` return
+`Future<bool>`: memory updates first, then the write is awaited and verified by
+reading the file back from disk. A `false` result means the change is still
+only in memory; the model flags it (`hasUnsavedChanges`, via the
+`PersistenceStatus` mixin), the home page shows a retry banner, and the app
+retries when it goes to the background. Never fire-and-forget a save and
+never treat a save as done before its future resolves.
 
 If you add a field to a model, you **must** update `toJson` / `fromJson` and
 handle the case where the key is missing (existing users have old data).
@@ -119,9 +133,12 @@ simulator — these paths are not covered by widget tests.
 - **Single quotes** for strings (Dart default).
 - **No new top-level abstractions** unless the task needs them. The codebase
   is pragmatic, not layered.
-- **Persistence**: any new persisted field needs a `SharedPreferences` key
-  defined as a `static const String` on its model and a graceful fallback when
-  loading (the user has existing data).
+- **Persistence**: financial data goes into a `FinancialSections` entry of
+  `AtomicFinancialStore`, never into `shared_preferences` (iOS backs that with
+  `NSUserDefaults`, which caps the domain at ~4 MB, gives no durability
+  guarantee, and reads back empty during a prewarmed launch). Only genuine
+  preferences get a `StorageKeys` entry. Any new field needs a graceful
+  fallback when loading (the user has existing data).
 - **`debugPrint` over `print`** for diagnostics.
 - **Money is `double`** throughout. Don't introduce `Decimal` partway — either
   migrate everything or stick with `double`.

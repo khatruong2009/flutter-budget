@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'net_worth_entry.dart';
 import 'savings_goal.dart';
 import 'storage/atomic_financial_store.dart';
+import 'storage/persistence_status.dart';
 import 'storage/storage_keys.dart';
 import 'transaction.dart';
 import 'utils/platform_utils.dart';
@@ -136,7 +136,7 @@ class CsvImportSummary {
   });
 }
 
-class TransactionModel extends ChangeNotifier {
+class TransactionModel extends ChangeNotifier with PersistenceStatus {
   List<Transaction> transactions = [];
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
@@ -179,17 +179,27 @@ class TransactionModel extends ChangeNotifier {
   Future<void> selectNetWorthMonth(DateTime date) async {
     _selectedNetWorthMonth = DateTime(date.year, date.month);
     notifyListeners();
+    await persistSections({
+      FinancialSections.selectedNetWorthMonth:
+          serializeSection(FinancialSections.selectedNetWorthMonth),
+    });
+  }
 
-    final serializedMonth = _selectedNetWorthMonth.toIso8601String();
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.selectedNetWorthMonth,
-      serializedMonth,
-    );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      StorageKeys.netWorthSelectedMonth,
-      serializedMonth,
-    );
+  @override
+  dynamic serializeSection(String section) {
+    switch (section) {
+      case FinancialSections.transactions:
+        return transactions.map((t) => t.toJson()).toList();
+      case FinancialSections.netWorthEntries:
+        return _netWorthEntries.map((entry) => entry.toJson()).toList();
+      case FinancialSections.selectedNetWorthMonth:
+        return _selectedNetWorthMonth.toIso8601String();
+      case FinancialSections.categoryBudgetLimits:
+        return Map<String, double>.from(_categoryBudgetLimits);
+      case FinancialSections.savingsGoals:
+        return _savingsGoals.map((goal) => goal.toJson()).toList();
+    }
+    throw ArgumentError.value(section, 'section', 'not owned by this model');
   }
 
   // Calculate total income for selected month
@@ -208,8 +218,10 @@ class TransactionModel extends ChangeNotifier {
         .fold(0, (previousValue, amount) => previousValue + amount);
   }
 
-  // add transaction
-  void addTransaction(
+  /// Adds a transaction. The row is visible immediately; the returned future
+  /// resolves to whether the change was verified on disk. A false result is
+  /// also reflected by [hasUnsavedChanges] until a retry succeeds.
+  Future<bool> addTransaction(
     TransactionTyp type,
     String description,
     double amount,
@@ -228,21 +240,19 @@ class TransactionModel extends ChangeNotifier {
       tagIds: tagIds,
     );
     transactions.add(newTransaction);
-    saveTransactions(transactions);
     notifyListeners();
+    return saveTransactions(transactions);
   }
 
-  // save transactions
-  Future<void> saveTransactions(List<Transaction> transactions) async {
-    final jsonTransactions = transactions.map((t) => t.toJson()).toList();
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.transactions,
-      jsonTransactions,
-    );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        StorageKeys.transactions, jsonEncode(jsonTransactions));
-    await _syncWidgetCashFlow();
+  /// Persists [transactions] and confirms the write from disk. Never throws;
+  /// a failure flags the section as unsaved and returns false.
+  Future<bool> saveTransactions(List<Transaction> transactions) async {
+    final saved = await persistSections({
+      FinancialSections.transactions:
+          transactions.map((t) => t.toJson()).toList(),
+    });
+    if (saved) await _syncWidgetCashFlow();
+    return saved;
   }
 
   static const MethodChannel _widgetDataChannel =
@@ -377,7 +387,12 @@ class TransactionModel extends ChangeNotifier {
         .toList();
   }
 
-  bool updateTransaction(String id, Transaction updatedTransaction) {
+  /// Replaces the transaction with [id]. Resolves to false when it does not
+  /// exist or when the change could not be verified on disk.
+  Future<bool> updateTransaction(
+    String id,
+    Transaction updatedTransaction,
+  ) async {
     final index =
         transactions.indexWhere((transaction) => transaction.id == id);
     if (index == -1) {
@@ -395,25 +410,25 @@ class TransactionModel extends ChangeNotifier {
           ? now
           : existing.updatedAt.add(const Duration(microseconds: 1)),
     );
-    saveTransactions(transactions);
     notifyListeners();
-    return true;
+    return saveTransactions(transactions);
   }
 
-  bool deleteTransactionById(String id) {
+  /// Removes the transaction with [id]. Resolves to false when it does not
+  /// exist or when the change could not be verified on disk.
+  Future<bool> deleteTransactionById(String id) async {
     final initialLength = transactions.length;
     transactions.removeWhere((transaction) => transaction.id == id);
     if (transactions.length == initialLength) {
       return false;
     }
 
-    saveTransactions(transactions);
     notifyListeners();
-    return true;
+    return saveTransactions(transactions);
   }
 
-  void deleteTransaction(Transaction transactionToDelete) {
-    deleteTransactionById(transactionToDelete.id);
+  Future<bool> deleteTransaction(Transaction transactionToDelete) {
+    return deleteTransactionById(transactionToDelete.id);
   }
 
   List<NetWorthEntry> getNetWorthEntriesForMonth(
@@ -755,25 +770,13 @@ class TransactionModel extends ChangeNotifier {
     }
 
     if (transactionsChanged && budgetsChanged) {
-      final serializedTransactions =
-          transactions.map((transaction) => transaction.toJson()).toList();
-      final serializedBudgets = Map<String, double>.from(_categoryBudgetLimits);
-      await AtomicFinancialStore.instance.updateSections({
-        FinancialSections.transactions: serializedTransactions,
-        FinancialSections.categoryBudgetLimits: serializedBudgets,
+      final saved = await persistSections({
+        FinancialSections.transactions:
+            serializeSection(FinancialSections.transactions),
+        FinancialSections.categoryBudgetLimits:
+            serializeSection(FinancialSections.categoryBudgetLimits),
       });
-      final prefs = await SharedPreferences.getInstance();
-      await Future.wait([
-        prefs.setString(
-          StorageKeys.transactions,
-          jsonEncode(serializedTransactions),
-        ),
-        prefs.setString(
-          StorageKeys.categoryBudgetLimits,
-          jsonEncode(serializedBudgets),
-        ),
-      ]);
-      await _syncWidgetCashFlow();
+      if (saved) await _syncWidgetCashFlow();
     } else if (transactionsChanged) {
       await saveTransactions(transactions);
     } else if (budgetsChanged) {
@@ -1177,35 +1180,25 @@ class TransactionModel extends ChangeNotifier {
           ..removeWhere((_, limit) => limit <= 0);
     final restoredSavingsGoals = List<SavingsGoal>.of(savingsGoals);
 
-    final serializedTransactions =
-        restoredTransactions.map((entry) => entry.toJson()).toList();
-    final serializedNetWorth =
-        restoredNetWorthEntries.map((entry) => entry.toJson()).toList();
-    final serializedSavingsGoals =
-        restoredSavingsGoals.map((goal) => goal.toJson()).toList();
-    await AtomicFinancialStore.instance.updateSections({
-      FinancialSections.transactions: serializedTransactions,
-      FinancialSections.netWorthEntries: serializedNetWorth,
-      FinancialSections.selectedNetWorthMonth:
-          _selectedNetWorthMonth.toIso8601String(),
-      FinancialSections.categoryBudgetLimits: restoredCategoryBudgetLimits,
-      FinancialSections.savingsGoals: serializedSavingsGoals,
-    });
-
     this.transactions = restoredTransactions;
     _netWorthEntries = restoredNetWorthEntries;
     _categoryBudgetLimits = restoredCategoryBudgetLimits;
     _savingsGoals = restoredSavingsGoals;
-
-    await _writeLegacyOwnedSections(
-      serializedTransactions: serializedTransactions,
-      serializedNetWorthEntries: serializedNetWorth,
-      serializedCategoryBudgetLimits: restoredCategoryBudgetLimits,
-      serializedSavingsGoals: serializedSavingsGoals,
-    );
-    await _syncWidgetCashFlow();
-
     notifyListeners();
+
+    final saved = await persistSections({
+      FinancialSections.transactions:
+          serializeSection(FinancialSections.transactions),
+      FinancialSections.netWorthEntries:
+          serializeSection(FinancialSections.netWorthEntries),
+      FinancialSections.selectedNetWorthMonth:
+          serializeSection(FinancialSections.selectedNetWorthMonth),
+      FinancialSections.categoryBudgetLimits:
+          serializeSection(FinancialSections.categoryBudgetLimits),
+      FinancialSections.savingsGoals:
+          serializeSection(FinancialSections.savingsGoals),
+    });
+    if (saved) await _syncWidgetCashFlow();
   }
 
   // Multiset dedupe key: identical transactions collapse to the same string.
@@ -1421,74 +1414,25 @@ class TransactionModel extends ChangeNotifier {
     return endOfNetWorthMonth(normalizedMonth);
   }
 
-  Future<void> _saveNetWorthEntries() async {
-    final serialized = _netWorthEntries.map((entry) => entry.toJson()).toList();
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.netWorthEntries,
-      serialized,
-    );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      StorageKeys.netWorthEntries,
-      jsonEncode(serialized),
-    );
+  Future<bool> _saveNetWorthEntries() {
+    return persistSections({
+      FinancialSections.netWorthEntries:
+          serializeSection(FinancialSections.netWorthEntries),
+    });
   }
 
-  Future<void> _saveCategoryBudgetLimits() async {
-    final serialized = Map<String, double>.from(_categoryBudgetLimits);
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.categoryBudgetLimits,
-      serialized,
-    );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      StorageKeys.categoryBudgetLimits,
-      jsonEncode(serialized),
-    );
+  Future<bool> _saveCategoryBudgetLimits() {
+    return persistSections({
+      FinancialSections.categoryBudgetLimits:
+          serializeSection(FinancialSections.categoryBudgetLimits),
+    });
   }
 
-  Future<void> _saveSavingsGoals() async {
-    final serialized = _savingsGoals.map((goal) => goal.toJson()).toList();
-    await AtomicFinancialStore.instance.updateSection(
-      FinancialSections.savingsGoals,
-      serialized,
-    );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      StorageKeys.savingsGoals,
-      jsonEncode(serialized),
-    );
-  }
-
-  Future<void> _writeLegacyOwnedSections({
-    required List<Map<String, dynamic>> serializedTransactions,
-    required List<Map<String, dynamic>> serializedNetWorthEntries,
-    required Map<String, double> serializedCategoryBudgetLimits,
-    required List<Map<String, dynamic>> serializedSavingsGoals,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
-    await Future.wait([
-      prefs.setString(
-        StorageKeys.transactions,
-        jsonEncode(serializedTransactions),
-      ),
-      prefs.setString(
-        StorageKeys.netWorthEntries,
-        jsonEncode(serializedNetWorthEntries),
-      ),
-      prefs.setString(
-        StorageKeys.netWorthSelectedMonth,
-        _selectedNetWorthMonth.toIso8601String(),
-      ),
-      prefs.setString(
-        StorageKeys.categoryBudgetLimits,
-        jsonEncode(serializedCategoryBudgetLimits),
-      ),
-      prefs.setString(
-        StorageKeys.savingsGoals,
-        jsonEncode(serializedSavingsGoals),
-      ),
-    ]);
+  Future<bool> _saveSavingsGoals() {
+    return persistSections({
+      FinancialSections.savingsGoals:
+          serializeSection(FinancialSections.savingsGoals),
+    });
   }
 
   Future<List<NetWorthEntry>> _migrateLegacyNetWorthIfNeeded(
@@ -1528,13 +1472,6 @@ class TransactionModel extends ChangeNotifier {
             ),
           ],
         ),
-      );
-    }
-
-    if (migratedEntries.isNotEmpty) {
-      await prefs.setString(
-        StorageKeys.netWorthEntries,
-        jsonEncode(migratedEntries.map((entry) => entry.toJson()).toList()),
       );
     }
 
