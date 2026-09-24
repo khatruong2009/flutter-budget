@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -63,6 +64,27 @@ class FinancialStoreException implements Exception {
   @override
   String toString() =>
       cause == null ? message : '$message (${cause.runtimeType}: $cause)';
+}
+
+/// Size and phase timings for one full-snapshot commit. Contains no user data.
+class FinancialStoreWriteMetrics {
+  final int bytes;
+  final Duration encode;
+  final Duration backup;
+  final Duration write;
+  final Duration verify;
+  final Duration total;
+  final bool succeeded;
+
+  const FinancialStoreWriteMetrics({
+    required this.bytes,
+    required this.encode,
+    required this.backup,
+    required this.write,
+    required this.verify,
+    required this.total,
+    required this.succeeded,
+  });
 }
 
 /// Stores all financial state as one checksummed file with a last-known-good
@@ -132,6 +154,10 @@ class AtomicFinancialStore {
   /// widget test's fake event loop after a `setUp` reset) would never run.
   Future<void>? _writeQueue;
 
+  /// Optional diagnostics hook; a slow or throwing observer never affects a save.
+  @visibleForTesting
+  ValueChanged<FinancialStoreWriteMetrics>? onWriteMetrics;
+
   /// Drains pending writes, forgets in-memory state, and points the store at
   /// [directory]. Without a directory the store keeps its files in memory,
   /// which is what widget tests need: they run under FakeAsync, where real
@@ -152,6 +178,7 @@ class AtomicFinancialStore {
     _snapshot = null;
     _loading = null;
     _writeQueue = null;
+    onWriteMetrics = null;
     _backend = directory == null ? null : _DirectoryBackend(directory);
   }
 
@@ -426,21 +453,73 @@ class AtomicFinancialStore {
   // Committing
 
   Future<void> _commit(FinancialSnapshot next) async {
-    final backend = await _resolveBackend();
-    final encoded = _encode(next);
+    final timeline = developer.TimelineTask()..start('financial_store_commit');
+    final total = Stopwatch()..start();
+    final phase = Stopwatch();
+    var bytes = 0;
+    var encode = Duration.zero;
+    var backup = Duration.zero;
+    var write = Duration.zero;
+    var verify = Duration.zero;
+    var succeeded = false;
+    try {
+      final backend = await _resolveBackend();
+      phase.start();
+      final encoded = _encode(next);
+      phase.stop();
+      encode = phase.elapsed;
+      bytes = encoded.length;
 
-    // 1. Preserve the current primary as the backup, but only when it is
-    //    intact: a damaged primary must never replace a good backup.
-    final currentBytes = await backend.readIfPresent(primaryFileName);
-    if (currentBytes != null && _verifyBytes(currentBytes) != null) {
-      await backend.writeAtomically(backupFileName, currentBytes);
+      // Preserve the intact primary as the backup before replacing it.
+      phase
+        ..reset()
+        ..start();
+      final currentBytes = await backend.readIfPresent(primaryFileName);
+      if (currentBytes != null && _verifyBytes(currentBytes) != null) {
+        await backend.writeAtomically(backupFileName, currentBytes);
+      }
+      phase.stop();
+      backup = phase.elapsed;
+
+      phase
+        ..reset()
+        ..start();
+      await backend.writeAtomically(primaryFileName, encoded);
+      phase.stop();
+      write = phase.elapsed;
+
+      // A successful commit still requires a verified disk readback.
+      phase
+        ..reset()
+        ..start();
+      await _verifyOnDisk(backend, next.revision);
+      phase.stop();
+      verify = phase.elapsed;
+      succeeded = true;
+    } finally {
+      total.stop();
+      timeline.finish(arguments: {
+        'bytes': bytes,
+        'encode_us': encode.inMicroseconds,
+        'backup_us': backup.inMicroseconds,
+        'write_us': write.inMicroseconds,
+        'verify_us': verify.inMicroseconds,
+        'succeeded': succeeded,
+      });
+      try {
+        onWriteMetrics?.call(FinancialStoreWriteMetrics(
+          bytes: bytes,
+          encode: encode,
+          backup: backup,
+          write: write,
+          verify: verify,
+          total: total.elapsed,
+          succeeded: succeeded,
+        ));
+      } catch (_) {
+        // Diagnostics must not change the persistence result.
+      }
     }
-
-    // 2. Write the new primary to a staging path and rename it into place.
-    await backend.writeAtomically(primaryFileName, encoded);
-
-    // 3. Prove it from disk, not from anything cached in this process.
-    await _verifyOnDisk(backend, next.revision);
   }
 
   Future<void> _verifyOnDisk(

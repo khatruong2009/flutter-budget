@@ -69,6 +69,26 @@ void main() {
     expect(await backup.exists(), isFalse);
   });
 
+  test('commit reports size and phase timings without affecting durability',
+      () async {
+    final metrics = <FinancialStoreWriteMetrics>[];
+    store.onWriteMetrics = metrics.add;
+    await store.updateSection(FinancialSections.transactions, [
+      {'description': 'Rent'}
+    ]);
+
+    expect(metrics, hasLength(1));
+    expect(metrics.single.bytes, greaterThan(0));
+    expect(metrics.single.succeeded, isTrue);
+    expect(metrics.single.total, greaterThanOrEqualTo(metrics.single.write));
+
+    store.onWriteMetrics = (_) => throw StateError('observer failure');
+    await store.updateSection(FinancialSections.transactions, [
+      {'description': 'Coffee'}
+    ]);
+    expect((await store.read()).revision, 2);
+  });
+
   test('commits survive a relaunch and each one keeps the previous as backup',
       () async {
     await store.updateSection(FinancialSections.transactions, [

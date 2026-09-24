@@ -50,6 +50,30 @@ void main() {
     );
   });
 
+  test('cached monthly totals refresh after edits and deletions', () async {
+    final model = TransactionModel();
+    final month = DateTime(2026, 6);
+    await model.addTransaction(
+      TransactionTyp.expense,
+      'Coffee',
+      5,
+      'Eating Out',
+      DateTime(2026, 6, 8),
+    );
+    expect(model.getMonthlySummary(month)['expenses'], 5);
+    expect(model.getCategorySpendingForMonth('Eating Out', month), 5);
+
+    final row = model.transactions.single;
+    await model.updateTransaction(row.id, row.copyWith(amount: 8));
+    expect(model.getMonthlySummary(month)['expenses'], 8);
+    expect(model.getCategorySpendingForMonth('Eating Out', month), 8);
+    expect(model.getRecentTransactions(3), hasLength(1));
+
+    await model.deleteTransactionById(row.id);
+    expect(model.getMonthlySummary(month)['expenses'], 0);
+    expect(model.getRecentTransactions(3), isEmpty);
+  });
+
   test('category budget limits load from preferences', () async {
     SharedPreferences.setMockInitialValues({
       StorageKeys.categoryBudgetLimits: jsonEncode({

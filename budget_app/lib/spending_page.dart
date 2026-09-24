@@ -64,22 +64,6 @@ class SpendingPageState extends State<SpendingPage> {
     super.dispose();
   }
 
-  // calculate total income
-  double calculateTotalIncome(List<Transaction> transactions) {
-    return transactions
-        .where((transaction) => transaction.type == TransactionTyp.income)
-        .map((transaction) => transaction.amount)
-        .fold(0, (previousValue, amount) => previousValue + amount);
-  }
-
-  // calculate total expenses
-  double calculateTotalExpenses(List<Transaction> transactions) {
-    return transactions
-        .where((transaction) => transaction.type == TransactionTyp.expense)
-        .map((transaction) => transaction.amount)
-        .fold(0, (previousValue, amount) => previousValue + amount);
-  }
-
   Future<void> _openTransactionsPage(BuildContext context) {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -468,12 +452,9 @@ class SpendingPageState extends State<SpendingPage> {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final recurringModel = context.watch<RecurringTransactionModel>();
 
-        final totalIncome =
-            calculateTotalIncome(transactionModel.currentMonthTransactions);
-        final totalExpenses =
-            calculateTotalExpenses(transactionModel.currentMonthTransactions);
-        final recentTransactions =
-            transactionModel.getAllTransactionsSorted().take(3).toList();
+        final totalIncome = transactionModel.totalIncome;
+        final totalExpenses = transactionModel.totalExpenses;
+        final recentTransactions = transactionModel.getRecentTransactions(3);
         final selectedBudgetMonth = DateTime(
           transactionModel.selectedMonth.year,
           transactionModel.selectedMonth.month,

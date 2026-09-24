@@ -45,14 +45,11 @@ class _HistoryPageState extends State<HistoryPage> {
         final chartData =
             _getChartDisplayData(allChartData, selectedMonth, _rangeMonths);
         final metrics = _computeMetrics(chartData);
-        final currentReport =
-            _buildMonthReport(model.transactions, selectedMonth);
+        final currentReport = _buildMonthReport(model, selectedMonth);
         final previousYearMonth =
             DateTime(selectedMonth.year - 1, selectedMonth.month);
-        final previousReport =
-            _buildMonthReport(model.transactions, previousYearMonth);
-        final rollingTrendData =
-            _getRollingTrendData(model.transactions, selectedMonth);
+        final previousReport = _buildMonthReport(model, previousYearMonth);
+        final rollingTrendData = _getRollingTrendData(model, selectedMonth);
 
         return BudgiePageScaffold(
           body: SingleChildScrollView(
@@ -155,33 +152,25 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   _MonthlyCashFlowReport _buildMonthReport(
-    List<Transaction> transactions,
+    TransactionModel model,
     DateTime month,
   ) {
-    final monthTransactions = transactions
-        .where((transaction) => _isSameMonth(transaction.date, month))
-        .toList();
-    final income = monthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.income)
-        .fold(0.0, (sum, transaction) => sum + transaction.amount);
-    final expenses = monthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.expense)
-        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    final summary = model.getMonthlySummary(month);
     return _MonthlyCashFlowReport(
       month: DateTime(month.year, month.month),
-      income: income,
-      expenses: expenses,
+      income: summary['income'] ?? 0,
+      expenses: summary['expenses'] ?? 0,
     );
   }
 
   List<MonthCashFlow> _getRollingTrendData(
-    List<Transaction> transactions,
+    TransactionModel model,
     DateTime selectedMonth,
   ) {
     return List.generate(12, (index) {
       final month =
           DateTime(selectedMonth.year, selectedMonth.month - 11 + index);
-      final report = _buildMonthReport(transactions, month);
+      final report = _buildMonthReport(model, month);
       return MonthCashFlow(
         month: report.month,
         netCashFlow: report.netCashFlow,
@@ -189,10 +178,6 @@ class _HistoryPageState extends State<HistoryPage> {
         expenses: report.expenses,
       );
     });
-  }
-
-  bool _isSameMonth(DateTime date, DateTime month) {
-    return date.year == month.year && date.month == month.month;
   }
 
   /// Full grouped amount like the design's `$1,376`; compacts only at
@@ -1281,6 +1266,8 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
   DateTime? _endDate;
   double? _minAmount;
   double? _maxAmount;
+  int _visibleTransactionCount = 50;
+  String? _lastFilterSignature;
 
   @override
   void dispose() {
@@ -1295,6 +1282,20 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
     return Consumer<TransactionModel>(
       builder: (context, model, child) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+        final filterSignature = [
+          _searchQuery,
+          _typeFilter.name,
+          _selectedCategory,
+          _selectedTagId,
+          _startDate?.toIso8601String(),
+          _endDate?.toIso8601String(),
+          _minAmount,
+          _maxAmount,
+        ].join('|');
+        if (_lastFilterSignature != filterSignature) {
+          _visibleTransactionCount = 50;
+          _lastFilterSignature = filterSignature;
+        }
         final availableMonths = model.getAvailableMonths();
         final selectedMonth = model.selectedMonth;
         final filteredTransactions = _getFilteredTransactions(model);
@@ -1348,8 +1349,7 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
 
   List<Transaction> _getFilteredTransactions(TransactionModel model) {
     final query = _searchQuery.toLowerCase();
-    final transactions = List<Transaction>.from(model.transactions)
-      ..sort(Transaction.compareNewestFirst);
+    final transactions = model.getAllTransactionsSorted();
 
     return transactions.where((transaction) {
       if (query.isNotEmpty &&
@@ -2025,7 +2025,8 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
     bool isDark,
   ) {
     final summary = _buildFilteredSummary(transactions);
-    final visibleTransactions = transactions.take(50).toList();
+    final visibleTransactions =
+        transactions.take(_visibleTransactionCount).toList();
     final income = AppColors.getIncome(isDark);
     final danger = AppColors.getDanger(isDark);
 
@@ -2092,12 +2093,22 @@ class _TransactionsDetailPageState extends State<_TransactionsDetailPage> {
           if (transactions.length > visibleTransactions.length) ...[
             const SizedBox(height: 12),
             Center(
-              child: Text(
-                'Showing latest ${visibleTransactions.length} matches',
-                style: AppTypography.rowSubtitle.copyWith(
-                  fontSize: 13,
-                  color: AppColors.getTextSecondaryColor(isDark),
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    'Showing ${visibleTransactions.length} of ${transactions.length} matches',
+                    style: AppTypography.rowSubtitle.copyWith(
+                      fontSize: 13,
+                      color: AppColors.getTextSecondaryColor(isDark),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () =>
+                        setState(() => _visibleTransactionCount += 50),
+                    child: const Text('Load more transactions'),
+                  ),
+                ],
               ),
             ),
           ],

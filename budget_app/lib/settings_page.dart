@@ -735,19 +735,6 @@ class SettingsPageState extends State<SettingsPage> {
                       ),
                       onTap: null,
                     ),
-                    _SettingsRow(
-                      isDark: isDark,
-                      icon: Symbols.privacy_tip_rounded,
-                      iconColor: AppColors.getInfo(isDark),
-                      title: 'Privacy details',
-                      subtitle: 'What stays local and when data is shared',
-                      trailing: Icon(
-                        Symbols.chevron_right_rounded,
-                        size: 20,
-                        color: AppColors.getTextTertiaryColor(isDark),
-                      ),
-                      onTap: () => _showPrivacyDetails(context),
-                    ),
                   ],
                 ),
               ),
@@ -1046,30 +1033,6 @@ class SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
-  void _showPrivacyDetails(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppDesign.getCardColor(dialogContext),
-        title: const Text('Your data in Budgie'),
-        content: const Text(
-          'Transactions, budgets, goals, settings, quick-entry parsing, and '
-          'insights are processed and stored on this device. Budgie does not '
-          'use a cloud account or send financial data to an AI service.\n\n'
-          'Data leaves Budgie only when you choose an export, backup, or share '
-          'action. Files are not encrypted after you share them, so choose '
-          'their destination carefully.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Done'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 const _supportedCurrencies = <String, String>{
@@ -1097,7 +1060,7 @@ const _supportedLocales = <String, String>{
   'ja_JP': 'Japanese (Japan)',
 };
 
-/// Accent-gradient tinted brand card: Budgie mark + privacy summary.
+/// Accent-gradient tinted brand card.
 class _BrandCard extends StatelessWidget {
   final bool isDark;
 
@@ -1152,7 +1115,7 @@ class _BrandCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Local by default · no cloud account',
+                  'Make every dollar count',
                   style: AppTypography.rowSubtitle.copyWith(
                     fontSize: 13,
                     color: AppColors.getTextSecondaryColor(isDark),

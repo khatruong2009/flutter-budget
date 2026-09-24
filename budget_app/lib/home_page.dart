@@ -121,8 +121,9 @@ class _BudgetHomePageState extends State<BudgetHomePage> {
                     ),
                     Navigator(
                       onGenerateRoute: (settings) => MaterialPageRoute(
-                        builder: (context) => SavingsGoalsPage(
-                          model: context.watch<TransactionModel>(),
+                        builder: (context) => Consumer<TransactionModel>(
+                          builder: (context, model, _) =>
+                              SavingsGoalsPage(model: model),
                         ),
                       ),
                     ),

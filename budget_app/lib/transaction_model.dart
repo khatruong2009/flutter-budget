@@ -61,6 +61,13 @@ class CashFlowStatistics {
   }
 }
 
+class _MonthLedger {
+  final List<Transaction> transactions = [];
+  final Map<String, double> categoryExpenses = {};
+  double income = 0;
+  double expenses = 0;
+}
+
 class CategoryBudgetProgress {
   final String category;
   final double spent;
@@ -138,6 +145,10 @@ class CsvImportSummary {
 
 class TransactionModel extends ChangeNotifier with PersistenceStatus {
   List<Transaction> transactions = [];
+  Map<int, _MonthLedger>? _monthLedgerCache;
+  List<Transaction>? _sortedTransactionsCache;
+  List<Transaction>? _cachedTransactionsSource;
+  int _cachedTransactionCount = -1;
   DateTime selectedMonth = DateTime.now();
   DateTime _selectedNetWorthMonth =
       DateTime(DateTime.now().year, DateTime.now().month);
@@ -169,6 +180,52 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
   int get staleNetWorthEntryCount =>
       getStaleNetWorthEntryCountForMonth(_selectedNetWorthMonth);
   bool get hasNetWorthEntries => _netWorthEntries.isNotEmpty;
+
+  int _monthKey(DateTime date) => date.year * 12 + date.month;
+
+  void _invalidateLedgerCache() {
+    _monthLedgerCache = null;
+    _sortedTransactionsCache = null;
+    _cachedTransactionsSource = null;
+    _cachedTransactionCount = -1;
+  }
+
+  @override
+  void notifyListeners() {
+    _invalidateLedgerCache();
+    super.notifyListeners();
+  }
+
+  Map<int, _MonthLedger> _monthLedger() {
+    if (_monthLedgerCache != null &&
+        identical(_cachedTransactionsSource, transactions) &&
+        _cachedTransactionCount == transactions.length) {
+      return _monthLedgerCache!;
+    }
+    _sortedTransactionsCache = null;
+    final months = <int, _MonthLedger>{};
+    for (final transaction in transactions) {
+      final month = months.putIfAbsent(
+        _monthKey(transaction.date),
+        _MonthLedger.new,
+      );
+      month.transactions.add(transaction);
+      if (transaction.type == TransactionTyp.income) {
+        month.income += transaction.amount;
+      } else {
+        month.expenses += transaction.amount;
+        month.categoryExpenses.update(
+          transaction.category,
+          (value) => value + transaction.amount,
+          ifAbsent: () => transaction.amount,
+        );
+      }
+    }
+    _monthLedgerCache = months;
+    _cachedTransactionsSource = transactions;
+    _cachedTransactionCount = transactions.length;
+    return months;
+  }
 
   // method to change selected month
   void selectMonth(DateTime date) {
@@ -204,18 +261,12 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // Calculate total income for selected month
   double get totalIncome {
-    return currentMonthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.income)
-        .map((transaction) => transaction.amount)
-        .fold(0, (previousValue, amount) => previousValue + amount);
+    return _monthLedger()[_monthKey(selectedMonth)]?.income ?? 0;
   }
 
   // Calculate total expenses for selected month
   double get totalExpenses {
-    return currentMonthTransactions
-        .where((transaction) => transaction.type == TransactionTyp.expense)
-        .map((transaction) => transaction.amount)
-        .fold(0, (previousValue, amount) => previousValue + amount);
+    return _monthLedger()[_monthKey(selectedMonth)]?.expenses ?? 0;
   }
 
   /// Adds a transaction. The row is visible immediately; the returned future
@@ -247,6 +298,7 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
   /// Persists [transactions] and confirms the write from disk. Never throws;
   /// a failure flags the section as unsaved and returns false.
   Future<bool> saveTransactions(List<Transaction> transactions) async {
+    _invalidateLedgerCache();
     final saved = await persistSections({
       FinancialSections.transactions:
           transactions.map((t) => t.toJson()).toList(),
@@ -289,6 +341,7 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // load transactions
   Future<void> getTransactions() async {
+    _invalidateLedgerCache();
     final prefs = await SharedPreferences.getInstance();
     final snapshot = await AtomicFinancialStore.instance.read();
     final sections = snapshot.sections;
@@ -380,11 +433,7 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // get the current month's transactions
   List<Transaction> get currentMonthTransactions {
-    return transactions
-        .where((transaction) =>
-            transaction.date.year == selectedMonth.year &&
-            transaction.date.month == selectedMonth.month)
-        .toList();
+    return getTransactionsForMonth(selectedMonth);
   }
 
   /// Replaces the transaction with [id]. Resolves to false when it does not
@@ -678,15 +727,9 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // Get all unique months that have transactions
   List<DateTime> getAvailableMonths() {
-    final monthKeys = <String>{};
-    for (final transaction in transactions) {
-      final key = '${transaction.date.year}-${transaction.date.month}';
-      monthKeys.add(key);
-    }
-
-    final months = monthKeys.map((key) {
-      final parts = key.split('-');
-      return DateTime(int.parse(parts[0]), int.parse(parts[1]));
+    final months = _monthLedger().keys.map((key) {
+      final year = (key - 1) ~/ 12;
+      return DateTime(year, key - year * 12);
     }).toList();
 
     months.sort((a, b) => b.compareTo(a)); // Sort descending (newest first)
@@ -695,11 +738,9 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // Get transactions for a specific month and year
   List<Transaction> getTransactionsForMonth(DateTime month) {
-    return transactions
-        .where((transaction) =>
-            transaction.date.year == month.year &&
-            transaction.date.month == month.month)
-        .toList();
+    return List<Transaction>.of(
+      _monthLedger()[_monthKey(month)]?.transactions ?? const [],
+    );
   }
 
   double? getCategoryBudgetLimit(String category) {
@@ -786,24 +827,13 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
   }
 
   double getCategorySpendingForMonth(String category, DateTime month) {
-    return getTransactionsForMonth(month)
-        .where((transaction) =>
-            transaction.type == TransactionTyp.expense &&
-            transaction.category == category)
-        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return _monthLedger()[_monthKey(month)]?.categoryExpenses[category] ?? 0;
   }
 
   Map<String, double> getCategoryExpensesForMonth(DateTime month) {
-    final totals = <String, double>{};
-    for (final transaction in getTransactionsForMonth(month)
-        .where((item) => item.type == TransactionTyp.expense)) {
-      totals.update(
-        transaction.category,
-        (existing) => existing + transaction.amount,
-        ifAbsent: () => transaction.amount,
-      );
-    }
-    return totals;
+    return Map<String, double>.of(
+      _monthLedger()[_monthKey(month)]?.categoryExpenses ?? const {},
+    );
   }
 
   List<CategoryBudgetProgress> getCategoryBudgetProgressForMonth(
@@ -934,13 +964,9 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // Calculate monthly summary
   Map<String, double> getMonthlySummary(DateTime month) {
-    final monthTransactions = getTransactionsForMonth(month);
-    final income = monthTransactions
-        .where((t) => t.type == TransactionTyp.income)
-        .fold(0.0, (sum, t) => sum + t.amount);
-    final expenses = monthTransactions
-        .where((t) => t.type == TransactionTyp.expense)
-        .fold(0.0, (sum, t) => sum + t.amount);
+    final totals = _monthLedger()[_monthKey(month)];
+    final income = totals?.income ?? 0.0;
+    final expenses = totals?.expenses ?? 0.0;
 
     return {
       'income': income,
@@ -951,9 +977,18 @@ class TransactionModel extends ChangeNotifier with PersistenceStatus {
 
   // Get all transactions sorted by date (newest first)
   List<Transaction> getAllTransactionsSorted() {
-    final sorted = List<Transaction>.from(transactions);
-    sorted.sort(Transaction.compareNewestFirst);
-    return sorted;
+    _monthLedger();
+    _sortedTransactionsCache ??= List<Transaction>.from(transactions)
+      ..sort(Transaction.compareNewestFirst);
+    return List<Transaction>.of(_sortedTransactionsCache!);
+  }
+
+  List<Transaction> getRecentTransactions(int limit) {
+    if (limit <= 0) return const [];
+    _monthLedger();
+    _sortedTransactionsCache ??= List<Transaction>.from(transactions)
+      ..sort(Transaction.compareNewestFirst);
+    return _sortedTransactionsCache!.take(limit).toList();
   }
 
   // Export all transactions to CSV
