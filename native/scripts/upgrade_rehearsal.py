@@ -80,11 +80,27 @@ class Simulator:
     def install(self, app):
         run(["xcrun", "simctl", "install", self.udid, str(app)])
 
+    def enroll_face_id(self):
+        # Simulated biometrics so App Lock screens can be passed.
+        run(["xcrun", "simctl", "spawn", self.udid, "notifyutil", "-s", "com.apple.BiometricKit.enrollmentChanged", "1"], check=False)
+        run(["xcrun", "simctl", "spawn", self.udid, "notifyutil", "-p", "com.apple.BiometricKit.enrollmentChanged"], check=False)
+
+    def face_id_match(self):
+        run(["xcrun", "simctl", "spawn", self.udid, "notifyutil", "-p", "com.apple.BiometricKit_Sim.pearl.match"], check=False)
+
     def launch(self, env=None, wait=6):
         child = {f"SIMCTL_CHILD_{k}": v for k, v in (env or {}).items()}
         run(["xcrun", "simctl", "terminate", self.udid, BUNDLE], check=False)
+        # A summary left by an earlier Swift run must not be attributed to
+        # this launch.
+        try:
+            (self.data_container() / "Library" / "Caches" / "budgie-rehearsal.json").unlink()
+        except (FileNotFoundError, RuntimeError):
+            pass
         run(["xcrun", "simctl", "launch", self.udid, BUNDLE], env=child)
         time.sleep(wait)
+        self.face_id_match()
+        time.sleep(3)
 
     def terminate(self):
         run(["xcrun", "simctl", "terminate", self.udid, BUNDLE], check=False)
@@ -293,6 +309,7 @@ class Rehearsal:
     def fresh(self):
         self.sim.erase()
         self.sim.boot()
+        self.sim.enroll_face_id()
 
     def shot(self, scenario, name):
         self.sim.screenshot(self.out / scenario / f"{name}.png")
@@ -314,7 +331,7 @@ class Rehearsal:
         inject_store(self.sim, FIXTURES / "store" / "typical" / "input")
         inject_prefs(self.sim, {"flutter.themeMode": {"type": "string", "value": "dark"},
                                 "flutter.onboarding_completed": {"type": "bool", "value": True}})
-        self.sim.launch(wait=12)
+        self.sim.launch(wait=20)
         self.shot(name, "1-flutter-before")
         self.sim.terminate()
         before = pull(self.sim, self.out / name / "1-flutter")
@@ -330,7 +347,7 @@ class Rehearsal:
         self.sim.terminate()
         edited = pull(self.sim, self.out / name / "3-swift-edited")
         self.sim.install(self.flutter_app)
-        self.sim.launch(wait=12)
+        self.sim.launch(wait=25)
         self.shot(name, "4-flutter-after-downgrade")
         self.sim.terminate()
         back = pull(self.sim, self.out / name / "4-flutter-back")
@@ -362,7 +379,7 @@ class Rehearsal:
                     legacyKeysInBackup=sorted(k for k in backup_prefs if k.startswith("flutter.")))
         # Then the Flutter build over it.
         self.sim.install(self.flutter_app)
-        self.sim.launch(wait=12)
+        self.sim.launch(wait=25)
         self.shot(name, "2-flutter-after")
         self.sim.terminate()
         back = pull(self.sim, self.out / name / "2-flutter-back")
@@ -376,19 +393,22 @@ class Rehearsal:
         self.fresh()
         self.sim.install(self.flutter_app)
         inject_store(self.sim, FIXTURES / "store" / "typical" / "input")
-        store = self.sim.data_container() / "Library" / "Application Support" / "financial_store"
-        stamps = {p.name: p.stat().st_mtime_ns for p in store.iterdir()}
         self.sim.install(self.swift_app)
-        env = {"BUDGIE_REHEARSAL_SUMMARY": "1", "BUDGIE_SIMULATE_LOCKED_SECONDS": "12"}
-        self.sim.launch(env, wait=4)
-        self.shot(name, "1-while-locked")
+        # Reinstalling moves the data container; resolve paths afterwards.
         support = self.sim.data_container() / "Library" / "Application Support"
+        store = support / "financial_store"
+        stamps = {p.name: (p.stat().st_mtime_ns, p.stat().st_size) for p in store.iterdir()}
+        env = {"BUDGIE_REHEARSAL_SUMMARY": "1", "BUDGIE_SIMULATE_LOCKED_SECONDS": "15"}
+        child = {f"SIMCTL_CHILD_{k}": v for k, v in env.items()}
+        run(["xcrun", "simctl", "launch", self.sim.udid, BUNDLE], env=child)
+        time.sleep(6)
+        self.shot(name, "1-while-locked")
         during = {
-            "storeUnchanged": {p.name: p.stat().st_mtime_ns for p in store.iterdir()} == stamps,
+            "storeUnchanged": {p.name: (p.stat().st_mtime_ns, p.stat().st_size) for p in store.iterdir()} == stamps,
             "preNativeFolderExists": (support / "pre-native-migration").exists(),
             "summaryWritten": (self.sim.data_container() / "Library" / "Caches" / "budgie-rehearsal.json").exists(),
         }
-        time.sleep(12)
+        time.sleep(15)
         self.shot(name, "2-after-unlock")
         self.sim.terminate()
         after = pull(self.sim, self.out / name / "after")
