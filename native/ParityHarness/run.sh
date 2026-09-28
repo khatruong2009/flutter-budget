@@ -7,9 +7,10 @@
 # In the copy, and only there:
 #   - a stub .env is added (budget_app bundles .env as an asset; its tests
 #     cannot build without one). It holds a dummy key.
-#   - every `DateTime.now()` in lib/ becomes `parityNow()` (lib/parity_clock.dart),
-#     which returns DateTime.now() unless a test pins the clock. This is the
-#     only change to app code and it is mechanical.
+#   - every `DateTime.now()` in lib/ becomes `parityNow()` and every
+#     `Uuid().v4()` becomes `parityUuidV4()` (lib/parity_clock.dart). Both
+#     behave exactly as before unless a test pins the clock or seeds UUIDs.
+#     These are the only changes to app code and they are mechanical.
 #   - the harness tests are copied to test/parity/.
 #
 # Usage: native/ParityHarness/run.sh <mode> [flutter test args...]
@@ -37,15 +38,15 @@ printf 'OPENAI_API_KEY=parity-harness-dummy-key\n' > "$COPY/.env"
 cp "$HARNESS/parity_clock.dart" "$COPY/lib/parity_clock.dart"
 count=0
 while IFS= read -r file; do
-  n=$(grep -c 'DateTime\.now()' "$file" || true)
+  n=$(grep -cE 'DateTime\.now\(\)|Uuid\(\)\.v4\(\)|_uuid\.v4\(\)' "$file" || true)
   count=$((count + n))
-  perl -0pi -e 's/DateTime\.now\(\)/parityNow()/g' "$file"
+  perl -0pi -e 's/DateTime\.now\(\)/parityNow()/g; s/(const )?Uuid\(\)\.v4\(\)/parityUuidV4()/g; s/_uuid\.v4\(\)/parityUuidV4()/g' "$file"
   perl -0pi -e "s/\A/import 'package:budget_app\/parity_clock.dart';\n/" "$file"
-done < <(grep -rl 'DateTime\.now()' "$COPY/lib" | grep -v parity_clock.dart)
-if grep -rq 'DateTime\.now()' "$COPY/lib" --exclude=parity_clock.dart; then
-  echo "clock rewrite incomplete" >&2; exit 1
+done < <(grep -rlE 'DateTime\.now\(\)|Uuid\(\)\.v4\(\)|_uuid\.v4\(\)' "$COPY/lib" | grep -v parity_clock.dart)
+if grep -rqE 'DateTime\.now\(\)|Uuid\(\)\.v4\(\)|_uuid\.v4\(\)' "$COPY/lib" --exclude=parity_clock.dart; then
+  echo "clock/uuid rewrite incomplete" >&2; exit 1
 fi
-echo "clock seam: rewrote $count DateTime.now() call sites"
+echo "seams: rewrote $count DateTime.now()/Uuid().v4() call sites"
 
 mkdir -p "$COPY/test/parity"
 cp "$HARNESS"/parity/*.dart "$COPY/test/parity/"

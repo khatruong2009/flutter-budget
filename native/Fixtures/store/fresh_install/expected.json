@@ -1,7 +1,7 @@
 {
   "scenario": "fresh_install",
   "description": "No files, no preferences.",
-  "commit": "59d6c2d81770c6d8cdec8eb00b6c4c4f526de063",
+  "commit": "e148899f60a58188699fa0d357b91c1665fdcb61",
   "tz": "America/New_York",
   "launchNow": "2026-09-28T09:15:30.250125",
   "load": {

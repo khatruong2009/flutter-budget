@@ -114,6 +114,7 @@ void main() {
     final work = await Directory.systemTemp.createTemp('parity_legacy_typ');
     typicalFiles = Directory('${work.path}/financial_store');
     SharedPreferences.setMockInitialValues({});
+    seedUuids(1);
     await AtomicFinancialStore.instance.resetForTesting(directory: typicalFiles);
     await buildTypicalStore(AppHarness());
     typicalSections = Map<String, dynamic>.from(

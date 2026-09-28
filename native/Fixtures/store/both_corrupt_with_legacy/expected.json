@@ -1,7 +1,7 @@
 {
   "scenario": "both_corrupt_with_legacy",
   "description": "Both files damaged; bare legacy keys present.",
-  "commit": "59d6c2d81770c6d8cdec8eb00b6c4c4f526de063",
+  "commit": "e148899f60a58188699fa0d357b91c1665fdcb61",
   "tz": "America/New_York",
   "launchNow": "2026-09-28T09:15:30.250125",
   "load": {
@@ -20,7 +20,7 @@
   "filesAfterLoad": {
     "financial_store_v2.backup.json.corrupt-*": {
       "size": 41893,
-      "fnv": "24aecfacb7c40d32"
+      "fnv": "-2ecd14d87d3230f5"
     },
     "financial_store_v2.json": {
       "size": 448,
@@ -28,7 +28,7 @@
     },
     "financial_store_v2.json.corrupt-*": {
       "size": 41889,
-      "fnv": "-41d1b485b24dd39b"
+      "fnv": "-6260d005a88167b2"
     }
   },
   "prefsAfterLoad": {
@@ -46,7 +46,7 @@
       },
       "financial_store_v2.backup.json.corrupt-*": {
         "size": 41893,
-        "fnv": "24aecfacb7c40d32"
+        "fnv": "-2ecd14d87d3230f5"
       },
       "financial_store_v2.json": {
         "size": 498,
@@ -54,7 +54,7 @@
       },
       "financial_store_v2.json.corrupt-*": {
         "size": 41889,
-        "fnv": "-41d1b485b24dd39b"
+        "fnv": "-6260d005a88167b2"
       }
     }
   },
@@ -243,7 +243,7 @@
     },
     "financial_store_v2.backup.json.corrupt-*": {
       "size": 41893,
-      "fnv": "24aecfacb7c40d32"
+      "fnv": "-2ecd14d87d3230f5"
     },
     "financial_store_v2.json": {
       "size": 3256,
@@ -251,7 +251,7 @@
     },
     "financial_store_v2.json.corrupt-*": {
       "size": 41889,
-      "fnv": "-41d1b485b24dd39b"
+      "fnv": "-6260d005a88167b2"
     }
   }
 }

@@ -49,6 +49,9 @@ String fnv(List<int> bytes) {
 /// Pins every `DateTime.now()` in the app (see parity_clock.dart).
 void pinClock(DateTime? now) => parityClockOverride = now;
 
+/// Makes generated UUIDs deterministic for reproducible fixtures.
+void seedUuids(int seed) => seedParityUuids(seed);
+
 /// Typed description of a SharedPreferences state, keyed by the on-device
 /// NSUserDefaults key (with the `flutter.` prefix). This is what the Swift
 /// side feeds into its preferences source.

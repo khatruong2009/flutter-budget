@@ -29,6 +29,14 @@ import 'model_summary.dart';
 final bool writeZoneIndependent = parityTz == 'UTC';
 String get zoneDir => 'logic/tz/${parityTz.replaceAll('/', '_')}';
 
+/// IEEE-754 bits as 16 lowercase hex digits (two unsigned 32-bit halves;
+/// Dart's getUint64 returns a signed int).
+String bitsHex(double d) {
+  final data = ByteData(8)..setFloat64(0, d);
+  return data.getUint32(0).toRadixString(16).padLeft(8, '0') +
+      data.getUint32(4).toRadixString(16).padLeft(8, '0');
+}
+
 Map<String, Object?> dt(DateTime d) => {
       'iso': d.toIso8601String(),
       'us': d.microsecondsSinceEpoch,
@@ -70,7 +78,8 @@ void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     await AtomicFinancialStore.instance.resetForTesting();
-    pinClock(null);
+    pinClock(DateTime(2026, 1, 1, 12));
+    seedUuids(3);
   });
 
   test('dates', () {
@@ -228,7 +237,7 @@ void main() {
           'nextOccurrence': after.nextOccurrence.toIso8601String(),
           'isActive': after.isActive,
         });
-        pinClock(null);
+        pinClock(DateTime(2026, 1, 1, 12));
       }
     }
 
@@ -332,7 +341,7 @@ void main() {
         asOf: asOf,
       );
       results.add(breakdownJson(b));
-      pinClock(null);
+      pinClock(DateTime(2026, 1, 1, 12));
     }
     writeJson('$fixturesRoot/$zoneDir/safe_to_spend.json', {
       'tz': parityTz,
@@ -461,7 +470,7 @@ void main() {
       'doubles': [
         for (final d in doubles)
           {
-            'bits': (ByteData(8)..setFloat64(0, d)).getUint64(0).toRadixString(16).padLeft(16, '0'),
+            'bits': bitsHex(d),
             'json': jsonEncode(d),
             'toString': d.toString(),
             'fixed2': d.abs() < 1e21 ? d.toStringAsFixed(2) : null,

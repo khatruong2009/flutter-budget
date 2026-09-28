@@ -55,10 +55,13 @@ void main() {
     final work = await scratch('typical');
     typical = Directory('${work.path}/financial_store');
     SharedPreferences.setMockInitialValues({});
+    seedUuids(1);
     await store.resetForTesting(directory: typical);
     await buildTypicalStore(AppHarness());
     await store.resetForTesting();
   });
+
+  setUp(() => seedUuids(2));
 
   Directory variant(String name, void Function(Directory dir) mutate) {
     final dir = Directory('${Directory.systemTemp.path}/parity_variant_$name');

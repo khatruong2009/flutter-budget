@@ -56,6 +56,7 @@ Future<Map<String, Object?>> expectFor(
   if (input.existsSync()) copyDir(input, dir);
   SharedPreferences.setMockInitialValues(Map.of(prefs));
   pinClock(launchNow);
+  seedUuids(1001);
   await store.resetForTesting(directory: dir);
 
   final result = <String, Object?>{'launchNow': iso(launchNow)};
@@ -100,6 +101,7 @@ Future<Map<String, Object?>> expectFor(
     pinClock(launchNow);
     try {
       await store.resetForTesting(directory: appDir);
+      seedUuids(1002);
       final loaded = AppHarness();
       await loaded.initialize(generate: false);
       result['appBeforeGenerate'] = summarize(loaded, asOf: launchNow);
@@ -113,6 +115,7 @@ Future<Map<String, Object?>> expectFor(
       SharedPreferences.setMockInitialValues(Map.of(prefs));
       pinClock(launchNow);
       await store.resetForTesting(directory: launchDir);
+      seedUuids(1003);
       final launched = AppHarness();
       await launched.initialize(generate: true);
       result['appAfterGenerate'] = summarize(launched, asOf: launchNow);
