@@ -1,0 +1,10 @@
+{
+  "flutter.starting_assets": {
+    "type": "double",
+    "value": 3200.0
+  },
+  "flutter.starting_liabilities": {
+    "type": "double",
+    "value": 900.0
+  }
+}

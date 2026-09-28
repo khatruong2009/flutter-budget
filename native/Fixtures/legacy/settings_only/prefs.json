@@ -1,0 +1,10 @@
+{
+  "flutter.base_currency_code": {
+    "type": "string",
+    "value": "GBP"
+  },
+  "flutter.auto_lock_timeout_seconds": {
+    "type": "int",
+    "value": 30
+  }
+}

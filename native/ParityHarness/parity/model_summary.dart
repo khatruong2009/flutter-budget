@@ -59,7 +59,7 @@ Map<String, Object?> summarize(AppHarness app, {required DateTime asOf}) {
 
   final safeToSpend = <String, Object?>{};
   for (final month in months) {
-    final b = SafeToSpendCalculator.calculate(
+    final b = const SafeToSpendCalculator().calculate(
       transactions: model.transactions,
       recurringTransactions: app.recurringModel.recurringTransactions,
       categoryBudgetLimits: model.categoryBudgetLimits,

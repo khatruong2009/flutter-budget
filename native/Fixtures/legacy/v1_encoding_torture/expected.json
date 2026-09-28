@@ -1,0 +1,285 @@
+{
+  "scenario": "v1_encoding_torture",
+  "description": "Checksum verifies only with Dart-identical re-encoding.",
+  "commit": "59d6c2d81770c6d8cdec8eb00b6c4c4f526de063",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "revision": 77,
+    "schemaVersion": 2,
+    "sections": {
+      "fnv": "39936bbc416fe922",
+      "length": 3438,
+      "keys": [
+        "transactions",
+        "categoryBudgetLimits",
+        "appSettings"
+      ],
+      "json": "{\"transactions\":[{\"id\":\"enc-1\",\"type\":\"expense\",\"description\":\"a/b é 😀 \\u0001    \\\"q\\\" \\\\ \\t \\ud83d end\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2023-01-02T03:04:05.006007\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-02T03:04:05.006\",\"updatedAt\":\"2023-01-02T03:04:05.006\"},{\"id\":\"enc-num-0\",\"type\":\"expense\",\"description\":\"n0\",\"amount\":0.30000000000000004,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-1\",\"type\":\"expense\",\"description\":\"n1\",\"amount\":1e-7,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-2\",\"type\":\"expense\",\"description\":\"n2\",\"amount\":1e+21,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-3\",\"type\":\"expense\",\"description\":\"n3\",\"amount\":100000000000000000000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-4\",\"type\":\"expense\",\"description\":\"n4\",\"amount\":123456789012345680000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-5\",\"type\":\"expense\",\"description\":\"n5\",\"amount\":5e-324,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-6\",\"type\":\"expense\",\"description\":\"n6\",\"amount\":1.7976931348623157e+308,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-7\",\"type\":\"expense\",\"description\":\"n7\",\"amount\":0.000001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-8\",\"type\":\"expense\",\"description\":\"n8\",\"amount\":0.00001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-9\",\"type\":\"expense\",\"description\":\"n9\",\"amount\":-0.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-10\",\"type\":\"expense\",\"description\":\"n10\",\"amount\":100.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-11\",\"type\":\"expense\",\"description\":\"n11\",\"amount\":12.5,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"}],\"categoryBudgetLimits\":{\"General\":12,\"Große Ausgaben\":3.5},\"appSettings\":{\"baseCurrencyCode\":\"JPY\",\"localeOverride\":\"ja_JP\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":true}}"
+    }
+  },
+  "filesAfterLoad": {
+    "financial_store_v2.json": {
+      "size": 3605,
+      "fnv": "-756295bf72b80ac"
+    }
+  },
+  "prefsAfterLoad": {},
+  "afterOneCommit": {
+    "revision": 78,
+    "files": {
+      "financial_store_v2.backup.json": {
+        "size": 3605,
+        "fnv": "-756295bf72b80ac"
+      },
+      "financial_store_v2.json": {
+        "size": 3656,
+        "fnv": "5e54b42f5a3a1dd1"
+      }
+    }
+  },
+  "appBeforeGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 13,
+    "sortedIds": [
+      "enc-num-9",
+      "enc-num-8",
+      "enc-num-7",
+      "enc-num-6",
+      "enc-num-5",
+      "enc-num-4",
+      "enc-num-3",
+      "enc-num-2",
+      "enc-num-11",
+      "enc-num-10",
+      "enc-num-1",
+      "enc-num-0",
+      "enc-1"
+    ],
+    "availableMonths": [
+      "2023-01-01T00:00:00.000"
+    ],
+    "monthly": {
+      "2023-01": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 1.7976931348623157e+308,
+          "net": -1.7976931348623157e+308
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 1.7976931348623157e+308,
+        "transactionIds": [
+          "enc-1",
+          "enc-num-0",
+          "enc-num-1",
+          "enc-num-2",
+          "enc-num-3",
+          "enc-num-4",
+          "enc-num-5",
+          "enc-num-6",
+          "enc-num-7",
+          "enc-num-8",
+          "enc-num-9",
+          "enc-num-10",
+          "enc-num-11"
+        ],
+        "categoryExpenses": {
+          "General": 1.7976931348623157e+308
+        }
+      }
+    },
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 0.0,
+        "liabilities": 0.0,
+        "netWorth": 0.0,
+        "change": null,
+        "hasData": false,
+        "tracked": 0,
+        "updated": 0,
+        "stale": 0,
+        "entries": []
+      }
+    },
+    "netWorthHistory24": [],
+    "netWorthHistory4": [],
+    "categoryBudgetLimits": {
+      "General": 12.0,
+      "Große Ausgaben": 3.5
+    },
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {
+      "2023-01": {
+        "month": "2023-01-01T00:00:00.000",
+        "asOf": "2023-01-31T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 1.7976931348623157e+308,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 3.5,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -1.7976931348623157e+308,
+        "isOverCommitted": true,
+        "overCommitment": 1.7976931348623157e+308,
+        "dailyAllowance": 0.0
+      }
+    },
+    "appSettings": {
+      "baseCurrencyCode": "JPY",
+      "localeOverride": "ja_JP",
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 0,
+      "hideBalances": true
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterInit": {
+    "fnv": "-f0510bf8f6f1211",
+    "length": 6312,
+    "keys": [
+      "transactions",
+      "categoryBudgetLimits",
+      "appSettings",
+      "categories"
+    ],
+    "json": "{\"transactions\":[{\"id\":\"enc-1\",\"type\":\"expense\",\"description\":\"a/b é 😀 \\u0001    \\\"q\\\" \\\\ \\t \\ud83d end\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2023-01-02T03:04:05.006007\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-02T03:04:05.006\",\"updatedAt\":\"2023-01-02T03:04:05.006\"},{\"id\":\"enc-num-0\",\"type\":\"expense\",\"description\":\"n0\",\"amount\":0.30000000000000004,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-1\",\"type\":\"expense\",\"description\":\"n1\",\"amount\":1e-7,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-2\",\"type\":\"expense\",\"description\":\"n2\",\"amount\":1e+21,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-3\",\"type\":\"expense\",\"description\":\"n3\",\"amount\":100000000000000000000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-4\",\"type\":\"expense\",\"description\":\"n4\",\"amount\":123456789012345680000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-5\",\"type\":\"expense\",\"description\":\"n5\",\"amount\":5e-324,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-6\",\"type\":\"expense\",\"description\":\"n6\",\"amount\":1.7976931348623157e+308,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-7\",\"type\":\"expense\",\"description\":\"n7\",\"amount\":0.000001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-8\",\"type\":\"expense\",\"description\":\"n8\",\"amount\":0.00001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-9\",\"type\":\"expense\",\"description\":\"n9\",\"amount\":-0.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-10\",\"type\":\"expense\",\"description\":\"n10\",\"amount\":100.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-11\",\"type\":\"expense\",\"description\":\"n11\",\"amount\":12.5,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"}],\"categoryBudgetLimits\":{\"General\":12,\"Große Ausgaben\":3.5},\"appSettings\":{\"baseCurrencyCode\":\"JPY\",\"localeOverride\":\"ja_JP\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":true},\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gro-e-ausgaben\",\"type\":\"expense\",\"name\":\"Große Ausgaben\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":13,\"isArchived\":false,\"isBuiltIn\":false}]}"
+  },
+  "revisionAfterInit": 79,
+  "appAfterGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 13,
+    "sortedIds": [
+      "enc-num-9",
+      "enc-num-8",
+      "enc-num-7",
+      "enc-num-6",
+      "enc-num-5",
+      "enc-num-4",
+      "enc-num-3",
+      "enc-num-2",
+      "enc-num-11",
+      "enc-num-10",
+      "enc-num-1",
+      "enc-num-0",
+      "enc-1"
+    ],
+    "availableMonths": [
+      "2023-01-01T00:00:00.000"
+    ],
+    "monthly": {
+      "2023-01": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 1.7976931348623157e+308,
+          "net": -1.7976931348623157e+308
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 1.7976931348623157e+308,
+        "transactionIds": [
+          "enc-1",
+          "enc-num-0",
+          "enc-num-1",
+          "enc-num-2",
+          "enc-num-3",
+          "enc-num-4",
+          "enc-num-5",
+          "enc-num-6",
+          "enc-num-7",
+          "enc-num-8",
+          "enc-num-9",
+          "enc-num-10",
+          "enc-num-11"
+        ],
+        "categoryExpenses": {
+          "General": 1.7976931348623157e+308
+        }
+      }
+    },
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 0.0,
+        "liabilities": 0.0,
+        "netWorth": 0.0,
+        "change": null,
+        "hasData": false,
+        "tracked": 0,
+        "updated": 0,
+        "stale": 0,
+        "entries": []
+      }
+    },
+    "netWorthHistory24": [],
+    "netWorthHistory4": [],
+    "categoryBudgetLimits": {
+      "General": 12.0,
+      "Große Ausgaben": 3.5
+    },
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {
+      "2023-01": {
+        "month": "2023-01-01T00:00:00.000",
+        "asOf": "2023-01-31T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 1.7976931348623157e+308,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 3.5,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -1.7976931348623157e+308,
+        "isOverCommitted": true,
+        "overCommitment": 1.7976931348623157e+308,
+        "dailyAllowance": 0.0
+      }
+    },
+    "appSettings": {
+      "baseCurrencyCode": "JPY",
+      "localeOverride": "ja_JP",
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 0,
+      "hideBalances": true
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterGenerate": {
+    "fnv": "-f0510bf8f6f1211",
+    "length": 6312,
+    "keys": [
+      "transactions",
+      "categoryBudgetLimits",
+      "appSettings",
+      "categories"
+    ],
+    "json": "{\"transactions\":[{\"id\":\"enc-1\",\"type\":\"expense\",\"description\":\"a/b é 😀 \\u0001    \\\"q\\\" \\\\ \\t \\ud83d end\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2023-01-02T03:04:05.006007\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-02T03:04:05.006\",\"updatedAt\":\"2023-01-02T03:04:05.006\"},{\"id\":\"enc-num-0\",\"type\":\"expense\",\"description\":\"n0\",\"amount\":0.30000000000000004,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-1\",\"type\":\"expense\",\"description\":\"n1\",\"amount\":1e-7,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-2\",\"type\":\"expense\",\"description\":\"n2\",\"amount\":1e+21,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-3\",\"type\":\"expense\",\"description\":\"n3\",\"amount\":100000000000000000000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-4\",\"type\":\"expense\",\"description\":\"n4\",\"amount\":123456789012345680000.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-5\",\"type\":\"expense\",\"description\":\"n5\",\"amount\":5e-324,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-6\",\"type\":\"expense\",\"description\":\"n6\",\"amount\":1.7976931348623157e+308,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-7\",\"type\":\"expense\",\"description\":\"n7\",\"amount\":0.000001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-8\",\"type\":\"expense\",\"description\":\"n8\",\"amount\":0.00001,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-9\",\"type\":\"expense\",\"description\":\"n9\",\"amount\":-0.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-10\",\"type\":\"expense\",\"description\":\"n10\",\"amount\":100.0,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"},{\"id\":\"enc-num-11\",\"type\":\"expense\",\"description\":\"n11\",\"amount\":12.5,\"category\":\"General\",\"date\":\"2023-01-03T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2023-01-03T00:00:00.000\",\"updatedAt\":\"2023-01-03T00:00:00.000\"}],\"categoryBudgetLimits\":{\"General\":12,\"Große Ausgaben\":3.5},\"appSettings\":{\"baseCurrencyCode\":\"JPY\",\"localeOverride\":\"ja_JP\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":true},\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gro-e-ausgaben\",\"type\":\"expense\",\"name\":\"Große Ausgaben\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":13,\"isArchived\":false,\"isBuiltIn\":false}]}"
+  },
+  "revisionAfterGenerate": 79,
+  "filesAfterGenerate": {
+    "financial_store_v2.backup.json": {
+      "size": 6297,
+      "fnv": "-329c5f9e439fada8"
+    },
+    "financial_store_v2.json": {
+      "size": 6479,
+      "fnv": "-1b2f1b03f26ff3c5"
+    }
+  }
+}

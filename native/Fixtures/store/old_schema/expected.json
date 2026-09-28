@@ -1,0 +1,603 @@
+{
+  "scenario": "old_schema",
+  "description": "Rows missing ids/timestamps/tagIds, duplicate and blank ids, legacy monthKey snapshots, template without isActive, lenient savings goal, non-positive budget limits, sparse categories. Written through the real store.",
+  "commit": "59d6c2d81770c6d8cdec8eb00b6c4c4f526de063",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "revision": 1,
+    "schemaVersion": 2,
+    "sections": {
+      "fnv": "01449db528b52c4a",
+      "length": 1527,
+      "keys": [
+        "transactions",
+        "netWorthEntries",
+        "recurringTransactions",
+        "savingsGoals",
+        "categoryBudgetLimits",
+        "categories",
+        "selectedNetWorthMonth"
+      ],
+      "json": "{\"transactions\":[{\"type\":\"expense\",\"description\":\"no id, no timestamps, no tags\",\"amount\":12,\"category\":\"Groceries\",\"date\":\"2025-03-04T00:00:00.000\"},{\"id\":\"dup-id\",\"type\":\"income\",\"description\":\"first dup\",\"amount\":100.0,\"category\":\"Salary\",\"date\":\"2025-03-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[]},{\"id\":\"dup-id\",\"type\":\"expense\",\"description\":\"second dup\",\"amount\":5.5,\"category\":\"General\",\"date\":\"2025-03-02T08:00:00.000\",\"createdAt\":12345},{\"id\":\"   \",\"type\":\"EXPENSE\",\"description\":\"blank id, odd type\",\"amount\":1.25,\"category\":\"General\",\"date\":\"2025-03-05T00:00:00.000\",\"tagIds\":[\"t1\",7,null]}],\"netWorthEntries\":[{\"id\":\"nw-legacy\",\"name\":\"Legacy Savings\",\"type\":\"asset\",\"createdAt\":\"2024-12-01T10:00:00.000\",\"snapshots\":[{\"monthKey\":\"2024-12\",\"amount\":800},{\"monthKey\":\"2025-01\",\"updatedAt\":\"2025-01-15T09:30:00.000\",\"amount\":900.5},{\"monthKey\":\"2025-02\",\"updatedAt\":\"2025-03-02T09:30:00.000\",\"amount\":950.0}]}],\"recurringTransactions\":[{\"id\":\"rt-old\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"pattern\":\"monthly\",\"startDate\":\"2025-01-10T00:00:00.000\",\"nextOccurrence\":\"2025-04-10T00:00:00.000\",\"dayOfMonth\":10}],\"savingsGoals\":[{\"name\":\"  \",\"targetAmount\":\"1500.50\",\"currentAmount\":-3,\"targetDate\":\"\"}],\"categoryBudgetLimits\":{\"Groceries\":250,\"Zero\":0,\"Negative\":-5.0},\"categories\":[{\"id\":\"expense-general\",\"name\":\"General\"},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"sortOrder\":3.0}],\"selectedNetWorthMonth\":\"2025-02-17T13:00:00.000\"}"
+    }
+  },
+  "filesAfterLoad": {
+    "financial_store_v2.json": {
+      "size": 1690,
+      "fnv": "-4d778217523a5e20"
+    }
+  },
+  "prefsAfterLoad": {},
+  "afterOneCommit": {
+    "revision": 2,
+    "files": {
+      "financial_store_v2.backup.json": {
+        "size": 1690,
+        "fnv": "-4d778217523a5e20"
+      },
+      "financial_store_v2.json": {
+        "size": 1693,
+        "fnv": "-7a191c48b39c9030"
+      }
+    }
+  },
+  "appBeforeGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 4,
+    "sortedIds": [
+      "d2c46b8c-f211-49a3-b8a5-5d9890cbe468",
+      "1baaf7bd-c04c-44b8-ba6c-eb4563078306",
+      "0aad8531-50bc-44ad-ada9-c7fb4ddf103b",
+      "dup-id"
+    ],
+    "availableMonths": [
+      "2025-03-01T00:00:00.000"
+    ],
+    "monthly": {
+      "2025-03": {
+        "summary": {
+          "income": 101.25,
+          "expenses": 17.5,
+          "net": 83.75
+        },
+        "totalIncome": 101.25,
+        "totalExpenses": 17.5,
+        "transactionIds": [
+          "1baaf7bd-c04c-44b8-ba6c-eb4563078306",
+          "dup-id",
+          "0aad8531-50bc-44ad-ada9-c7fb4ddf103b",
+          "d2c46b8c-f211-49a3-b8a5-5d9890cbe468"
+        ],
+        "categoryExpenses": {
+          "Groceries": 12.0,
+          "General": 5.5
+        }
+      }
+    },
+    "selectedNetWorthMonth": "2025-02-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2025-02-01T00:00:00.000",
+      "2025-01-01T00:00:00.000",
+      "2024-12-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 0,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 950.0
+          }
+        ]
+      },
+      "2025-02": {
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "change": 49.5,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 950.0
+          }
+        ]
+      },
+      "2025-01": {
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "change": 100.5,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 900.5
+          }
+        ]
+      },
+      "2024-12": {
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 800.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2025-02-01T00:00:00.000",
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2025-01-15T00:00:00.000",
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2024-12-01T00:00:00.000",
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2025-02-01T00:00:00.000",
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2025-01-15T00:00:00.000",
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2024-12-01T00:00:00.000",
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {
+      "Groceries": 250.0
+    },
+    "savingsGoals": [
+      {
+        "id": "savings_goal_hmpqw82op9_2",
+        "isCompleted": false,
+        "suggestedMonthlyContribution": 1500.5
+      }
+    ],
+    "recurring": [
+      {
+        "id": "rt-old",
+        "nextOccurrence": "2025-04-10T00:00:00.000",
+        "isActive": true
+      }
+    ],
+    "safeToSpend": {
+      "2025-03": {
+        "month": "2025-03-01T00:00:00.000",
+        "asOf": "2025-03-31T00:00:00.000",
+        "actualIncome": 101.25,
+        "expectedIncome": 0.0,
+        "actualExpenses": 17.5,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 238.0,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -154.25,
+        "isOverCommitted": true,
+        "overCommitment": 154.25,
+        "dailyAllowance": 0.0
+      }
+    },
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterInit": {
+    "fnv": "-4497fcb4b2c3d113",
+    "length": 2572,
+    "keys": [
+      "transactions",
+      "netWorthEntries",
+      "recurringTransactions",
+      "savingsGoals",
+      "categoryBudgetLimits",
+      "categories",
+      "selectedNetWorthMonth"
+    ],
+    "json": "{\"transactions\":[{\"id\":\"1baaf7bd-c04c-44b8-ba6c-eb4563078306\",\"type\":\"expense\",\"description\":\"no id, no timestamps, no tags\",\"amount\":12.0,\"category\":\"Groceries\",\"date\":\"2025-03-04T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-04T00:00:00.000\",\"updatedAt\":\"2025-03-04T00:00:00.000\"},{\"id\":\"dup-id\",\"type\":\"income\",\"description\":\"first dup\",\"amount\":100.0,\"category\":\"Salary\",\"date\":\"2025-03-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-01T00:00:00.000\",\"updatedAt\":\"2025-03-01T00:00:00.000\"},{\"id\":\"0aad8531-50bc-44ad-ada9-c7fb4ddf103b\",\"type\":\"expense\",\"description\":\"second dup\",\"amount\":5.5,\"category\":\"General\",\"date\":\"2025-03-02T08:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-02T08:00:00.000\",\"updatedAt\":\"2025-03-02T08:00:00.000\"},{\"id\":\"d2c46b8c-f211-49a3-b8a5-5d9890cbe468\",\"type\":\"income\",\"description\":\"blank id, odd type\",\"amount\":1.25,\"category\":\"General\",\"date\":\"2025-03-05T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[\"t1\"],\"createdAt\":\"2025-03-05T00:00:00.000\",\"updatedAt\":\"2025-03-05T00:00:00.000\"}],\"netWorthEntries\":[{\"id\":\"nw-legacy\",\"name\":\"Legacy Savings\",\"type\":\"asset\",\"createdAt\":\"2024-12-01T10:00:00.000\",\"snapshots\":[{\"monthKey\":\"2024-12\",\"amount\":800},{\"monthKey\":\"2025-01\",\"updatedAt\":\"2025-01-15T09:30:00.000\",\"amount\":900.5},{\"monthKey\":\"2025-02\",\"updatedAt\":\"2025-03-02T09:30:00.000\",\"amount\":950.0}]}],\"recurringTransactions\":[{\"id\":\"rt-old\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"pattern\":\"monthly\",\"startDate\":\"2025-01-10T00:00:00.000\",\"nextOccurrence\":\"2025-04-10T00:00:00.000\",\"dayOfMonth\":10}],\"savingsGoals\":[{\"name\":\"  \",\"targetAmount\":\"1500.50\",\"currentAmount\":-3,\"targetDate\":\"\"}],\"categoryBudgetLimits\":{\"Groceries\":250,\"Zero\":0,\"Negative\":-5.0},\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-general\",\"type\":\"income\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":false}],\"selectedNetWorthMonth\":\"2025-02-17T13:00:00.000\"}"
+  },
+  "revisionAfterInit": 4,
+  "appAfterGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 7,
+    "sortedIds": [
+      "eb7216a9-2a99-4459-bbb0-82f70919a20f",
+      "af24b605-ac10-437f-a24f-cfe9c317e8f9",
+      "d408d629-0046-4702-a6df-5180fa2924f0",
+      "a1851763-b4a3-44d0-8f83-b7ef07322689",
+      "2fb68741-54d2-4f11-8673-5af25054cba6",
+      "1983ca53-5012-4cab-bf01-539b3e45d26b",
+      "dup-id"
+    ],
+    "availableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2026-08-01T00:00:00.000",
+      "2026-07-01T00:00:00.000",
+      "2025-03-01T00:00:00.000"
+    ],
+    "monthly": {
+      "2026-09": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 20.0,
+          "net": -20.0
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 20.0,
+        "transactionIds": [
+          "eb7216a9-2a99-4459-bbb0-82f70919a20f"
+        ],
+        "categoryExpenses": {
+          "General": 20.0
+        }
+      },
+      "2026-08": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 20.0,
+          "net": -20.0
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 20.0,
+        "transactionIds": [
+          "af24b605-ac10-437f-a24f-cfe9c317e8f9"
+        ],
+        "categoryExpenses": {
+          "General": 20.0
+        }
+      },
+      "2026-07": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 20.0,
+          "net": -20.0
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 20.0,
+        "transactionIds": [
+          "d408d629-0046-4702-a6df-5180fa2924f0"
+        ],
+        "categoryExpenses": {
+          "General": 20.0
+        }
+      },
+      "2025-03": {
+        "summary": {
+          "income": 101.25,
+          "expenses": 17.5,
+          "net": 83.75
+        },
+        "totalIncome": 101.25,
+        "totalExpenses": 17.5,
+        "transactionIds": [
+          "2fb68741-54d2-4f11-8673-5af25054cba6",
+          "dup-id",
+          "1983ca53-5012-4cab-bf01-539b3e45d26b",
+          "a1851763-b4a3-44d0-8f83-b7ef07322689"
+        ],
+        "categoryExpenses": {
+          "Groceries": 12.0,
+          "General": 5.5
+        }
+      }
+    },
+    "selectedNetWorthMonth": "2025-02-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2025-02-01T00:00:00.000",
+      "2025-01-01T00:00:00.000",
+      "2024-12-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 0,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 950.0
+          }
+        ]
+      },
+      "2025-02": {
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "change": 49.5,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 950.0
+          }
+        ]
+      },
+      "2025-01": {
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "change": 100.5,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 900.5
+          }
+        ]
+      },
+      "2024-12": {
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 1,
+        "updated": 1,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "nw-legacy",
+            "amount": 800.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2025-02-01T00:00:00.000",
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2025-01-15T00:00:00.000",
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2024-12-01T00:00:00.000",
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2025-02-01T00:00:00.000",
+        "assets": 950.0,
+        "liabilities": 0.0,
+        "netWorth": 950.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2025-01-15T00:00:00.000",
+        "assets": 900.5,
+        "liabilities": 0.0,
+        "netWorth": 900.5,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      },
+      {
+        "date": "2024-12-01T00:00:00.000",
+        "assets": 800.0,
+        "liabilities": 0.0,
+        "netWorth": 800.0,
+        "assetCount": 1,
+        "liabilityCount": 0,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {
+      "Groceries": 250.0
+    },
+    "savingsGoals": [
+      {
+        "id": "savings_goal_hmpqw82op9_3",
+        "isCompleted": false,
+        "suggestedMonthlyContribution": 1500.5
+      }
+    ],
+    "recurring": [
+      {
+        "id": "rt-old",
+        "nextOccurrence": "2026-10-10T00:00:00.000",
+        "isActive": true
+      }
+    ],
+    "safeToSpend": {
+      "2026-09": {
+        "month": "2026-09-01T00:00:00.000",
+        "asOf": "2026-09-28T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 20.0,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 250.0,
+        "plannedGoalContributions": 1500.5,
+        "daysRemaining": 3,
+        "safeToSpend": -1770.5,
+        "isOverCommitted": true,
+        "overCommitment": 1770.5,
+        "dailyAllowance": 0.0
+      },
+      "2026-08": {
+        "month": "2026-08-01T00:00:00.000",
+        "asOf": "2026-08-31T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 20.0,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 250.0,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -270.0,
+        "isOverCommitted": true,
+        "overCommitment": 270.0,
+        "dailyAllowance": 0.0
+      },
+      "2026-07": {
+        "month": "2026-07-01T00:00:00.000",
+        "asOf": "2026-07-31T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 20.0,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 250.0,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -270.0,
+        "isOverCommitted": true,
+        "overCommitment": 270.0,
+        "dailyAllowance": 0.0
+      },
+      "2025-03": {
+        "month": "2025-03-01T00:00:00.000",
+        "asOf": "2025-03-31T00:00:00.000",
+        "actualIncome": 101.25,
+        "expectedIncome": 0.0,
+        "actualExpenses": 17.5,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 238.0,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -154.25,
+        "isOverCommitted": true,
+        "overCommitment": 154.25,
+        "dailyAllowance": 0.0
+      }
+    },
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": -20.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterGenerate": {
+    "fnv": "-596da89aff7f8dcd",
+    "length": 3511,
+    "keys": [
+      "transactions",
+      "netWorthEntries",
+      "recurringTransactions",
+      "savingsGoals",
+      "categoryBudgetLimits",
+      "categories",
+      "selectedNetWorthMonth"
+    ],
+    "json": "{\"transactions\":[{\"id\":\"2fb68741-54d2-4f11-8673-5af25054cba6\",\"type\":\"expense\",\"description\":\"no id, no timestamps, no tags\",\"amount\":12.0,\"category\":\"Groceries\",\"date\":\"2025-03-04T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-04T00:00:00.000\",\"updatedAt\":\"2025-03-04T00:00:00.000\"},{\"id\":\"dup-id\",\"type\":\"income\",\"description\":\"first dup\",\"amount\":100.0,\"category\":\"Salary\",\"date\":\"2025-03-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-01T00:00:00.000\",\"updatedAt\":\"2025-03-01T00:00:00.000\"},{\"id\":\"1983ca53-5012-4cab-bf01-539b3e45d26b\",\"type\":\"expense\",\"description\":\"second dup\",\"amount\":5.5,\"category\":\"General\",\"date\":\"2025-03-02T08:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2025-03-02T08:00:00.000\",\"updatedAt\":\"2025-03-02T08:00:00.000\"},{\"id\":\"a1851763-b4a3-44d0-8f83-b7ef07322689\",\"type\":\"income\",\"description\":\"blank id, odd type\",\"amount\":1.25,\"category\":\"General\",\"date\":\"2025-03-05T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[\"t1\"],\"createdAt\":\"2025-03-05T00:00:00.000\",\"updatedAt\":\"2025-03-05T00:00:00.000\"},{\"id\":\"d408d629-0046-4702-a6df-5180fa2924f0\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"date\":\"2026-07-10T00:00:00.000\",\"recurringTemplateId\":\"rt-old\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"af24b605-ac10-437f-a24f-cfe9c317e8f9\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"date\":\"2026-08-10T00:00:00.000\",\"recurringTemplateId\":\"rt-old\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"eb7216a9-2a99-4459-bbb0-82f70919a20f\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"date\":\"2026-09-10T00:00:00.000\",\"recurringTemplateId\":\"rt-old\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}],\"netWorthEntries\":[{\"id\":\"nw-legacy\",\"name\":\"Legacy Savings\",\"type\":\"asset\",\"createdAt\":\"2024-12-01T10:00:00.000\",\"snapshots\":[{\"monthKey\":\"2024-12\",\"amount\":800},{\"monthKey\":\"2025-01\",\"updatedAt\":\"2025-01-15T09:30:00.000\",\"amount\":900.5},{\"monthKey\":\"2025-02\",\"updatedAt\":\"2025-03-02T09:30:00.000\",\"amount\":950.0}]}],\"recurringTransactions\":[{\"id\":\"rt-old\",\"type\":\"expense\",\"description\":\"Old template without isActive\",\"amount\":20.0,\"category\":\"General\",\"pattern\":\"monthly\",\"startDate\":\"2025-01-10T00:00:00.000\",\"nextOccurrence\":\"2026-10-10T00:00:00.000\",\"dayOfMonth\":10,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"name\":\"  \",\"targetAmount\":\"1500.50\",\"currentAmount\":-3,\"targetDate\":\"\"}],\"categoryBudgetLimits\":{\"Groceries\":250,\"Zero\":0,\"Negative\":-5.0},\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-general\",\"type\":\"income\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":false}],\"selectedNetWorthMonth\":\"2025-02-17T13:00:00.000\"}"
+  },
+  "revisionAfterGenerate": 8,
+  "filesAfterGenerate": {
+    "financial_store_v2.backup.json": {
+      "size": 3645,
+      "fnv": "29ce309b76b910fd"
+    },
+    "financial_store_v2.json": {
+      "size": 3678,
+      "fnv": "7e210d66052fdbc7"
+    }
+  }
+}

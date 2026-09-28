@@ -28,3 +28,9 @@ budget_app/.env
 # Beads local issue tracker (local-only)
 .beads/
 .beads.gate.lock
+
+# Native Swift build products
+native/**/.build/
+native/**/DerivedData/
+native/**/*.xcuserstate
+native/**/xcuserdata/

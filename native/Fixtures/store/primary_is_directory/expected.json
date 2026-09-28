@@ -1,0 +1,17 @@
+{
+  "scenario": "primary_is_directory",
+  "description": "A directory where the primary should be: a read error, never an empty store.",
+  "commit": "59d6c2d81770c6d8cdec8eb00b6c4c4f526de063",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "error": "FinancialStoreException"
+  },
+  "filesAfterLoad": {
+    "financial_store_v2.backup.json": {
+      "size": 41894,
+      "fnv": "1918317c42229d3d"
+    }
+  },
+  "prefsAfterLoad": {}
+}

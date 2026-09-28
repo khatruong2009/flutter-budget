@@ -51,7 +51,7 @@ mkdir -p "$COPY/test/parity"
 cp "$HARNESS"/parity/*.dart "$COPY/test/parity/"
 
 cd "$COPY"
-flutter pub get --offline >/dev/null 2>&1 || flutter pub get >/dev/null
+flutter pub get --offline >/dev/null 2>&1 || flutter pub get >/dev/null 2>&1
 
 export PARITY_FIXTURES="$FIXTURES"
 export PARITY_COMMIT="$COMMIT"
