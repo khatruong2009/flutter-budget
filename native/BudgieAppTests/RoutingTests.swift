@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import Budgie
+@testable import Runner
 
 @MainActor
 final class RoutingTests: XCTestCase {

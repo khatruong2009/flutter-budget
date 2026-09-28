@@ -1,88 +1,113 @@
 import SwiftUI
 import UIKit
 
+// UIKit lifecycle on purpose (MIGRATION_SPEC section 11.5).
+//
+// iOS persists each scene session with the class name of its delegate and
+// restores it on the next launch without asking the app again. The SwiftUI
+// `App` lifecycle stores `SwiftUI.AppSceneDelegate`, which does not exist in
+// the Flutter binary: reinstalling the Flutter build over this app then
+// showed a black screen (found in the upgrade rehearsal). The Flutter app
+// stores `Runner.SceneDelegate` under "Default Configuration". This app uses
+// the same module name (`Runner`), class name and configuration, so sessions
+// saved by either app restore in both.
+
 @main
-struct BudgieApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @State private var model = AppModel()
-    @Environment(\.scenePhase) private var scenePhase
-
-    var body: some Scene {
-        WindowGroup {
-            RootView()
-                .environment(model)
-                .preferredColorScheme(model.colorScheme)
-                .onOpenURL { model.open($0) }
-                .task {
-                    ShortcutInbox.shared.deliver = { [model] type in model.handleShortcut(type) }
-                    await model.start()
-                }
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .background {
-                AppModel.registerShortcuts()
-                // Like the Flutter app: retry unsaved changes on backgrounding.
-                if model.hasUnsavedChanges { Task { await model.retrySaves() } }
-            }
-        }
-    }
-}
-
-extension AppModel {
-    var colorScheme: ColorScheme? {
-        switch themeMode {
-        case .light: .light
-        case .dark: .dark
-        case .system: nil
-        }
-    }
-}
-
-/// Quick actions arrive through the scene delegate, sometimes before SwiftUI
-/// has built the model; they wait here.
-@MainActor
-final class ShortcutInbox {
-    static let shared = ShortcutInbox()
-    private var pending: [String] = []
-    var deliver: ((String) -> Void)? {
-        didSet {
-            guard let deliver else { return }
-            pending.forEach(deliver)
-            pending = []
-        }
-    }
-
-    func receive(_ type: String) {
-        if let deliver { deliver(type) } else { pending.append(type) }
-    }
-}
-
-final class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(
-        _ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        if let shortcut = options.shortcutItem {
-            MainActor.assumeIsolated { ShortcutInbox.shared.receive(shortcut.type) }
-        }
-        let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
-        configuration.delegateClass = SceneDelegate.self
-        return configuration
-    }
+final class AppDelegate: UIResponder, UIApplicationDelegate {
+    @MainActor static let model = AppModel()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Replaces the Flutter build's dynamic items (which included voice).
         AppModel.registerShortcuts()
         return true
     }
+
+    func application(
+        _ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = SceneDelegate.self
+        return configuration
+    }
 }
 
-final class SceneDelegate: NSObject, UIWindowSceneDelegate {
+/// Drives SwiftUI's `scenePhase` from the UIKit scene callbacks.
+@MainActor
+@Observable
+final class SceneState {
+    var phase: ScenePhase = .inactive
+}
+
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+    private let sceneState = MainActor.assumeIsolated { SceneState() }
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        MainActor.assumeIsolated {
+            let model = AppDelegate.model
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = UIHostingController(
+                rootView: AppRoot(model: model, sceneState: sceneState) { [weak window] style in
+                    window?.overrideUserInterfaceStyle = style
+                })
+            window.makeKeyAndVisible()
+            self.window = window
+            if let url = connectionOptions.urlContexts.first?.url { model.open(url) }
+            if let shortcut = connectionOptions.shortcutItem { model.handleShortcut(shortcut.type) }
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        MainActor.assumeIsolated { AppDelegate.model.open(url) }
+    }
+
     func windowScene(
         _ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        MainActor.assumeIsolated { ShortcutInbox.shared.receive(shortcutItem.type) }
+        MainActor.assumeIsolated { AppDelegate.model.handleShortcut(shortcutItem.type) }
         completionHandler(true)
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        MainActor.assumeIsolated { sceneState.phase = .active }
+    }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        MainActor.assumeIsolated { sceneState.phase = .inactive }
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        MainActor.assumeIsolated { sceneState.phase = .inactive }
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        MainActor.assumeIsolated {
+            sceneState.phase = .background
+            AppModel.registerShortcuts()
+            // Like the Flutter app: retry unsaved changes on backgrounding.
+            let model = AppDelegate.model
+            if model.hasUnsavedChanges { Task { await model.retrySaves() } }
+        }
+    }
+}
+
+/// Root of the hosting controller: environment, theme, bootstrap.
+struct AppRoot: View {
+    let model: AppModel
+    let sceneState: SceneState
+    let applyInterfaceStyle: (UIUserInterfaceStyle) -> Void
+
+    var body: some View {
+        RootView()
+            .environment(model)
+            .environment(\.scenePhase, sceneState.phase)
+            .onChange(of: model.themeMode, initial: true) { _, mode in
+                applyInterfaceStyle(mode == .light ? .light : mode == .dark ? .dark : .unspecified)
+            }
+            .task { await model.start() }
     }
 }

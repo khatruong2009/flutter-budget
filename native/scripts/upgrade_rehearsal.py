@@ -216,10 +216,39 @@ def pull(sim, dest):
     if summary.exists():
         shutil.copy2(summary, dest / "swift-summary.json")
     return {
+        "sceneDelegateClasses": scene_delegate_classes(container),
         "files": sorted(p.name for p in (dest / "financial_store").iterdir()) if (dest / "financial_store").exists() else [],
         "preNativeSnapshots": sorted(p.name for p in (dest / "pre-native-migration").iterdir()) if (dest / "pre-native-migration").exists() else [],
         "flutterPrefKeys": sorted(k for k in prefs if k.startswith("flutter.")),
     }
+
+
+def scene_delegate_classes(container):
+    """Delegate class names iOS persisted for the app's scene sessions. They
+    must exist in both binaries (Runner.SceneDelegate), or the other app
+    restores a session it cannot instantiate and shows a black screen."""
+    path = container / "Library" / "Saved Application State" / f"{BUNDLE}.savedState" / "KnownSceneSessions" / "data.data"
+    found = set()
+
+    def walk(value):
+        if isinstance(value, dict):
+            for v in value.values():
+                walk(v)
+        elif isinstance(value, list):
+            for v in value:
+                walk(v)
+        elif isinstance(value, bytes):
+            try:
+                walk(plistlib.loads(value))
+            except Exception:
+                pass
+        elif isinstance(value, str) and value.endswith("SceneDelegate"):
+            found.add(value)
+
+    if path.exists():
+        with open(path, "rb") as f:
+            walk(plistlib.load(f))
+    return sorted(found)
 
 
 def typed_prefs(prefs):

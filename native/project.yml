@@ -50,13 +50,20 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UILaunchScreen:
           UIColorName: launch-screen-background
+        # Same shape as the Flutter app's Info.plist (see BudgieApp.swift).
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy
         PRODUCT_NAME: Budgie
+        # Scene sessions persist "<module>.SceneDelegate"; must match Flutter's.
+        PRODUCT_MODULE_NAME: Runner
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO

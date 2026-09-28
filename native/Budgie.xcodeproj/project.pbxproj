@@ -514,6 +514,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy;
+				PRODUCT_MODULE_NAME = Runner;
 				PRODUCT_NAME = Budgie;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -534,6 +535,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy;
+				PRODUCT_MODULE_NAME = Runner;
 				PRODUCT_NAME = Budgie;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
