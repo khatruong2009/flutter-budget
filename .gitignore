@@ -24,3 +24,7 @@ budget_app/lib/.env
 budget_app/.env
 budget_app/.env
 budget_app/.env
+
+# Beads local issue tracker (local-only)
+.beads/
+.beads.gate.lock

@@ -1,7 +1,7 @@
 # Budgie native migration spec
 
-Status: DRAFT for review (end of Phase 0). Nothing in Phase 2+ starts until the
-decisions in section 14 are answered.
+Status: APPROVED 2026-09-28. All section 14 decisions resolved as recommended;
+Q7 = option (a). See 14.0.
 
 Source of truth: `budget_app/` at commit `b69008d`. Research notes backing every
 claim are in `native/docs/research/` (A-I). Where this spec and a research note
@@ -512,7 +512,23 @@ reason if needed). No `.env`, no API keys in the binary.
 
 ---------------------------------------------------------------------------------
 
-## 14. Decisions I need from you
+## 14. Decisions
+
+### 14.0 Resolutions (approved 2026-09-28)
+
+| Q | Decision |
+|---|---|
+| Q1 | Replicate Dart date math exactly (DST drift, same-day safe-to-spend exclusion, `inDays` truncation). Fix later in both apps; tracked in PARITY_GAPS. |
+| Q2 | Swift preserves `nextOccurrence`/`isActive` on edit (cursor recomputed only when schedule fields change, never backwards); pause = `isActive=false`; generated rows + cursor in one commit. |
+| Q3 | Both files unreadable: set aside like Dart, then a blocking "data could not be read" screen; no write until the user chooses "Start fresh". |
+| Q4 | Deployment target iOS 17.0. |
+| Q5 | No extra header keys; use `native.lastCommittedChecksum`. |
+| Q6 | Provisional: marketing version 4.0.0 (full rewrite). Build number to be set above the last App Store Connect upload before any submission; ask first. |
+| Q7 | Option (a): `native/ParityHarness/` against a `git archive` copy of `budget_app` in scratch. Nothing in `budget_app/` changes. |
+| Q8 | Beads set up (prefix `budgie`, local-only, no remotes). |
+| Q9 | XcodeGen; commit `project.yml` and the generated `Budgie.xcodeproj`. |
+
+### 14.1 Questions as asked
 
 **Q1. Bug-compatible or fixed date math?** Dart advances weekly/biweekly
 templates by 168/336 elapsed hours, so after a DST change they drift an hour
