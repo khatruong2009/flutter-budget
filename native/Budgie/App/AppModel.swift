@@ -153,6 +153,7 @@ final class AppModel {
         }
         phase = .ready
         #if DEBUG
+        await RehearsalSummary.performScriptedEditsIfRequested(self)
         RehearsalSummary.writeIfRequested(self)
         #endif
     }
@@ -292,6 +293,14 @@ final class AppModel {
     func setThemeMode(_ mode: ThemeMode) {
         themeMode = mode
         preferences.set(.string(mode.rawValue), forKey: PreferenceKey.themeMode)
+    }
+
+    func categories(for type: TransactionType) -> [CategoryInfo] {
+        data?.categoryPicker(for: type) ?? CategoryCatalog.pickerList(CategoryCatalog.builtIn, type: type, usedNames: [])
+    }
+
+    func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {
+        data?.categoryInfo(named: name, type: type)
     }
 
     var moneyFormatter: MoneyFormatter {

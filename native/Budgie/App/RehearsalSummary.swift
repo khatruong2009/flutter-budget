@@ -8,6 +8,25 @@ import Foundation
 /// the numbers the Flutter models compute from the same files.
 @MainActor
 enum RehearsalSummary {
+    /// BUDGIE_REHEARSAL_EDIT=1: makes one of every MVP edit through the
+    /// model, so the rehearsal can reinstall the Flutter build over
+    /// Swift-written data.
+    static func performScriptedEditsIfRequested(_ model: AppModel) async {
+        guard ProcessInfo.processInfo.environment["BUDGIE_REHEARSAL_EDIT"] == "1", let data = model.data else { return }
+        let calendar = model.calendar
+        let today = calendar.month(of: model.now)
+        await model.addTransaction(type: .expense, description: "Rehearsal ☕️ \"swift\", edit", amount: 1200, category: "Groceries", date: model.now)
+        await model.addTransaction(type: .income, description: "Rehearsal income", amount: 0.1 + 0.2, category: "Salary", date: calendar.date(today.year, today.month, 1))
+        if let first = data.transactions.first {
+            await model.updateTransaction(id: first.id, .init(type: first.type, description: first.description + " (edited in Swift)", amount: 42, category: first.category, date: first.date))
+        }
+        if data.transactions.count > 5 { await model.deleteTransaction(id: data.transactions[4].id) }
+        await model.addTemplate(.init(type: .expense, description: "Rehearsal monthly", amount: 99.5, category: "Housing", pattern: .monthly, startDate: calendar.date(today.year, today.month, 1), dayOfMonth: 31, dayOfWeek: nil))
+        if let template = model.data?.templates.first { await model.setTemplateActive(id: template.id, false) }
+        await model.setBaseCurrency("gbp")
+        model.setThemeMode(.light)
+    }
+
     static func writeIfRequested(_ model: AppModel) {
         guard ProcessInfo.processInfo.environment["BUDGIE_REHEARSAL_SUMMARY"] == "1", let data = model.data else { return }
         let calendar = data.calendar

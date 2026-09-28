@@ -66,8 +66,12 @@ void main() {
     final name = dir.uri.pathSegments.where((s) => s.isNotEmpty).last;
     test(name, () async {
       final problems = <String>[];
-      final swift = jsonDecode(File('${dir.path}/swift.json').readAsStringSync())
-          as Map<String, dynamic>;
+      // swift.json is optional: files pulled from a simulator have no
+      // Swift-side expectation, only the load checks below.
+      final swiftFile = File('${dir.path}/swift.json');
+      final swift = swiftFile.existsSync()
+          ? jsonDecode(swiftFile.readAsStringSync()) as Map<String, dynamic>
+          : <String, dynamic>{};
       final prefs = prefsFrom(File('${dir.path}/prefs.json'));
 
       // Work on a copy: loading may legitimately write (restore, migration).
@@ -79,11 +83,11 @@ void main() {
       pinClock(launchNow);
       await AtomicFinancialStore.instance.resetForTesting(directory: storeDir);
       final snapshot = await AtomicFinancialStore.instance.read();
-      if (snapshot.revision != swift['revision']) {
+      if (swift.isNotEmpty && snapshot.revision != swift['revision']) {
         problems.add('revision: dart ${snapshot.revision} swift ${swift['revision']}');
       }
       final canonical = sectionsJson(snapshot);
-      if (canonical['fnv'] != swift['sectionsFnv']) {
+      if (swift.isNotEmpty && canonical['fnv'] != swift['sectionsFnv']) {
         problems.add('sections differ: dart ${canonical['fnv']} swift ${swift['sectionsFnv']}');
       }
       final filesBefore = listing(storeDir);

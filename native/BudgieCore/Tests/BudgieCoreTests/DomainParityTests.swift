@@ -271,3 +271,20 @@ struct LogicParityTests {
         #expect(sorted.map(\.id) == fixture["newestFirst"].array.compactMap(\.string))
     }
 }
+
+@Suite("Categories")
+struct CategoryTests {
+    @Test("the typical store's categories load with Dart defaults; missing section gives the seeds")
+    func load() throws {
+        let scenario = try Scenario(Fixtures.url("store/typical"))
+        let snapshot = StoreFile.decode(scenario.fileSystem.snapshot[StoreFile.primaryName]!)!
+        let categories = CategoryCatalog.load(snapshot.sections[Section.categories])
+        #expect(categories.contains { $0.name == "Pet Food" && $0.type == .expense && $0.iconIdentifier == "paw" })
+        #expect(categories.contains { $0.name == "Side Gig ✨" && $0.type == .income })
+        #expect(CategoryCatalog.load(nil) == CategoryCatalog.builtIn)
+        #expect(CategoryCatalog.load(.array([.object(JSONObject(ordered: [("name", .string("x"))]))])) == CategoryCatalog.builtIn)
+        let picker = CategoryCatalog.pickerList(categories, type: .expense, usedNames: ["Groceries", "Legacy Only"])
+        #expect(picker.first?.name == "General")
+        #expect(picker.last?.name == "Legacy Only")
+    }
+}
