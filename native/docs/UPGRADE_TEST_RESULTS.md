@@ -33,6 +33,68 @@ later runs enroll simulated Face ID.
 | S3, S5 | PASS, as run 1. |
 | S4 | Reported FAIL ("store changed / pre-native folder exists while locked"). Investigated before accepting: timestamps showed the writes at 18:26:49, i.e. when the simulated 15 s lock ended, while the "during lock" check had run after a `simctl io screenshot` call that wrote its file at 18:26:43 but returned late. A standalone 0.5 s poll confirmed no read or write until 16.8 s after launch (15 s lock + startup). Root cause: the measurement, not the app. S4 now polls the whole window and takes its screenshot without blocking. |
 
-## Run 3: final, on the finished MVP
+## Run 3: 20260928-183853 (finished MVP, fresh builds of both apps)
 
-(filled in below)
+| Scenario | Result |
+|---|---|
+| S1 | Data PASS (0 differences both directions, Flutter models no problems). **UI FAIL on downgrade:** the Flutter build showed a black screen after the Swift app had run, although it loaded and saved the data. |
+| S3, S5 | PASS. |
+| S4 | PASS: first write 18.8 s after launch with a 15 s simulated lock; nothing read or written while locked. |
+
+Investigation of the S1 black screen (not accepted as a timing artefact the
+second time): reproduced deterministically only when the Swift app had run
+before the Flutter install. The app's `KnownSceneSessions` held a scene
+session whose delegate class was `SwiftUI.AppSceneDelegate` (the SwiftUI
+`App` lifecycle); iOS restores a saved session with its stored class
+without consulting the app, and the Flutter binary has no such class.
+Deleting the saved session made Flutter render immediately: cause
+confirmed. Fix (commit 81fc729): the Swift app uses the UIKit lifecycle with
+module `Runner`, a `SceneDelegate` and the `Default Configuration` scene
+manifest, exactly as the Flutter app declares (MIGRATION_SPEC 11.5, R23).
+The same rehearsal also showed that the earlier run-1 black frame was this
+bug, not only a slow launch.
+
+## Run 4: 20260928-185629 (after the scene fix, fresh builds)
+
+| Scenario | Result |
+|---|---|
+| S1 upgrade | PASS: 0 differences; pre-native copy byte-identical; theme and onboarding carried; widget App Group value written. |
+| S1 downgrade | PASS: Flutter renders (its App Lock prompt), loads the Swift-written store (backup = Swift's last revision byte for byte), Flutter models report no problems, numbers equal Swift's. |
+| S3 legacy-only | PASS: migrated, 11 legacy keys removed and preserved in the pre-native snapshot, numbers equal Flutter's; Flutter then loads the Swift-migrated store. |
+| S4 locked launch | PASS: first write 18.1 s after launch with a 15 s simulated lock. |
+| S5 damage | PASS: truncated primary restored from backup (145 transactions); both damaged set aside and blocked without writing. |
+
+The report's `sceneDelegateClasses` field was empty in this run because the
+extractor looked only for class names; with the Info.plist manifest iOS
+stores the configuration by name. Fixed and re-run in run 5.
+
+## Run 5: 20260928-190549 (S1 only, extractor fixed)
+
+PASS. The persisted scene configuration is `Default Configuration` after
+every step, whichever app wrote it last (Flutter, Swift, Swift after edits,
+Flutter after downgrade). 0 differences; no Dart-side problems; both apps
+render after each switch.
+
+## UI flow (XCUITest, `native/scripts/ui_flow.sh`)
+
+PASS on a fresh install (`Budgie-UITest` simulator, 66 s): add expense,
+edit its amount from History, add a monthly recurring template (today's
+occurrence generated immediately, as Flutter does), pause it, Net Worth
+empty state, switch theme to Dark, add and delete an income. The store it
+wrote was loaded by the real Flutter models with no problems: amounts are
+Dart doubles (`20.0`, `900.0`), the template is `isActive: false`, the
+deleted row is gone, `flutter.themeMode` is `dark`.
+
+## Not verified on the simulator
+
+- Real prewarm / locked-container behaviour (simulator cannot do it; the
+  gate logic is covered by S4 and unit tests). Pre-ship item.
+- Home screen widget rendering and taps, quick actions from the home
+  screen, `budgetapp://` links through the system "Open in Budgie?" prompt:
+  these need SpringBoard interaction the automation here cannot drive (the
+  simulator control tool requires per-device approval, which was not
+  granted). Covered instead by: the widget source being byte-identical to
+  the Flutter one, the App Group values verified in S1, and unit tests of
+  the link and shortcut mapping.
+- Face ID prompts in screenshots: simulated matches were not always
+  delivered in time, so several screenshots show the passcode fallback.

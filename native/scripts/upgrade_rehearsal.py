@@ -242,7 +242,9 @@ def scene_delegate_classes(container):
                 walk(plistlib.loads(value))
             except Exception:
                 pass
-        elif isinstance(value, str) and value.endswith("SceneDelegate"):
+        elif isinstance(value, str) and (value.endswith("SceneDelegate") or value.endswith("Configuration")):
+            # A configuration resolved from Info.plist is stored by name
+            # only ("Default Configuration"); an explicit one by class.
             found.add(value)
 
     if path.exists():

@@ -467,6 +467,19 @@ Drop: microphone/speech strings (voice out of scope), `UIMainStoryboardFile`.
 Add `PrivacyInfo.xcprivacy` (UserDefaults reason `CA92.1`; file timestamp
 reason if needed). No `.env`, no API keys in the binary.
 
+### 11.5 Scene sessions (found in the Phase 3 rehearsal)
+
+iOS persists every scene session with its configuration, including the
+delegate class name, in `Library/Saved Application State/<bundle>.savedState/
+KnownSceneSessions`, and restores it at the next launch without consulting
+the app. The Flutter app stores `Runner.SceneDelegate` under
+`Default Configuration`. MUST: the Swift app uses the UIKit lifecycle with
+module name `Runner`, a `SceneDelegate` class and the same configuration
+name and Info.plist scene manifest, so either binary can restore a session
+the other saved. (With the SwiftUI `App` lifecycle the stored class is
+`SwiftUI.AppSceneDelegate`, and a Flutter build installed afterwards shows a
+black screen.) The rehearsal records the persisted class after every step.
+
 ---------------------------------------------------------------------------------
 
 ## 12. Business logic parity (MVP subset)
@@ -509,6 +522,7 @@ reason if needed). No `.env`, no API keys in the binary.
 | R20 | Prewarm cannot be rehearsed on the simulator | injected gate tests + real-device check before ship | section 16 |
 | R21 | Duplicate transactions after template edit (existing Flutter bug) | 14 Q2 | `TemplateEditTests` |
 | R22 | CFBundleVersion not greater than uploaded build | 14 Q6 | release checklist |
+| R23 | Persisted scene session names a delegate class the other binary lacks (black screen after switching apps) | UIKit lifecycle, `Runner.SceneDelegate`, same configuration (11.5) | rehearsal S1 downgrade screenshot + `sceneDelegateClasses` in report.json |
 
 ---------------------------------------------------------------------------------
 
