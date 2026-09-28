@@ -34,3 +34,4 @@ native/**/.build/
 native/**/DerivedData/
 native/**/*.xcuserstate
 native/**/xcuserdata/
+native/**/__pycache__/
