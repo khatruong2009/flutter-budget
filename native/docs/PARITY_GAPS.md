@@ -63,6 +63,18 @@ UPGRADE_TEST_RESULTS.md).
 - A preference with an unexpected type reads as absent; Dart would throw.
 - Numbers typed into Swift are validated finite; Dart would fail to save a
   NaN/Infinity forever.
+- App Lock on a device with no passcode lets the user in with a message
+  (Flutter shows its lock screen with an unlock button that cannot
+  succeed). Without a passcode there is nothing to authenticate against.
+- Editing a transaction without touching the amount keeps the stored
+  value exactly; the Flutter form re-parses its 2-decimal prefill.
+
+## Known MVP limitations
+
+- A sheet open when the app goes to the background (e.g. the transaction
+  form) is not covered by the App Lock privacy cover.
+- Net Worth is read-only; the selected net worth month is not persisted.
+- No iPad layout (the Flutter app is iPhone-only too).
 
 ## Platform
 

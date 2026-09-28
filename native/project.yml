@@ -98,12 +98,26 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: $(BUILT_PRODUCTS_DIR)/Budgie.app/Budgie
         BUNDLE_LOADER: $(TEST_HOST)
+  BudgieUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: BudgieUITests
+    dependencies:
+      - target: Budgie
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Budgie
 schemes:
   Budgie:
     build:
       targets:
         Budgie: all
         BudgieAppTests: [test]
+        BudgieUITests: [test]
     test:
       targets:
         - BudgieAppTests
+        - BudgieUITests

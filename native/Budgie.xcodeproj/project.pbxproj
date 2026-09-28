@@ -20,6 +20,7 @@
 		A3485DE6C0615E9EFB029C1C /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62925024DEA9AC91020BF16 /* HistoryView.swift */; };
 		A40BFB68E6EE2FF18619167F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBE5D912C19A6258BE48F99 /* RootView.swift */; };
 		B91242CD5E29A921F06A5593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6462237A82B43EB73DD31CEB /* Assets.xcassets */; };
+		BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */; };
 		C02683C5A3EEAFEFAA011A50 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758855687C3C7914C62089 /* SettingsView.swift */; };
 		C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4458A9E28C360553F6FF40A7 /* RoutingTests.swift */; };
 		CE980D7CA160D8759B63F6AF /* NetWorthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */; };
@@ -40,6 +41,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = E5A93A25BB0A7E19A213CFE0;
 			remoteInfo = BudgetWidgetsExtension;
+		};
+		A43490FCFB70755DFC21EB64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE4FAB550D5DAEC3DC332F5C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D89C6551928154644BDAE069;
+			remoteInfo = Budgie;
 		};
 		DD55C5EED2754F0FFF0E1544 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -82,10 +90,12 @@
 		85B00317C27AB7F1D24A6577 /* SpendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingView.swift; sourceTree = "<group>"; };
 		8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgets.swift; sourceTree = "<group>"; };
 		8AF71D235C2D853C59C3B393 /* RecurringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringView.swift; sourceTree = "<group>"; };
+		8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVPFlowUITests.swift; sourceTree = "<group>"; };
 		95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BudgetWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BBE2F4BB26B18F1B815C284 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		9C21DAB29DB3416D2D18C2B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9E758855687C3C7914C62089 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A47E1740CF8EF748E64F594A /* BudgieUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BudgieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B26060D2DC9FBC934F4E5A81 /* RehearsalSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RehearsalSummary.swift; sourceTree = "<group>"; };
 		B27CE2454178753AB2F698B0 /* BudgieAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BudgieAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -148,12 +158,21 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		3D025C807F45FB00FB783484 /* BudgieUITests */ = {
+			isa = PBXGroup;
+			children = (
+				8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */,
+			);
+			path = BudgieUITests;
+			sourceTree = "<group>";
+		};
 		A1AD42B95D245F5534D0A257 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */,
 				0A12631956871BA18AFA9044 /* Budgie.app */,
 				B27CE2454178753AB2F698B0 /* BudgieAppTests.xctest */,
+				A47E1740CF8EF748E64F594A /* BudgieUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,6 +211,7 @@
 				F229E154C4E15B49B104F1FE /* BudgetWidgets */,
 				1EC690ECEE653D7A2C642B5C /* Budgie */,
 				0E73655C9F5727E62CC36F88 /* BudgieAppTests */,
+				3D025C807F45FB00FB783484 /* BudgieUITests */,
 				12BA3467E8BAFE73FE9781F5 /* Packages */,
 				A1AD42B95D245F5534D0A257 /* Products */,
 			);
@@ -212,6 +232,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5AB03A5A194A6BCC3F4F45A5 /* BudgieUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2A377208A6322B5E2571103 /* Build configuration list for PBXNativeTarget "BudgieUITests" */;
+			buildPhases = (
+				2D80FC4B66B96B3A1EA9E893 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EF10BAAA26A265ABB0764D04 /* PBXTargetDependency */,
+			);
+			name = BudgieUITests;
+			packageProductDependencies = (
+			);
+			productName = BudgieUITests;
+			productReference = A47E1740CF8EF748E64F594A /* BudgieUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		979F2429C802FAFF885BDF8C /* BudgieAppTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA370F2961F5F75B49C5F35A /* Build configuration list for PBXNativeTarget "BudgieAppTests" */;
@@ -279,6 +317,11 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					5AB03A5A194A6BCC3F4F45A5 = {
+						DevelopmentTeam = TJ37GFZKW2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = D89C6551928154644BDAE069;
+					};
 					979F2429C802FAFF885BDF8C = {
 						DevelopmentTeam = TJ37GFZKW2;
 						ProvisioningStyle = Automatic;
@@ -313,6 +356,7 @@
 				D89C6551928154644BDAE069 /* Budgie */,
 				E5A93A25BB0A7E19A213CFE0 /* BudgetWidgetsExtension */,
 				979F2429C802FAFF885BDF8C /* BudgieAppTests */,
+				5AB03A5A194A6BCC3F4F45A5 /* BudgieUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -338,6 +382,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2D80FC4B66B96B3A1EA9E893 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		444DBBFA4B6F2940A45C9CB0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -391,9 +443,48 @@
 			target = E5A93A25BB0A7E19A213CFE0 /* BudgetWidgetsExtension */;
 			targetProxy = 9576836E5421DD418F630187 /* PBXContainerItemProxy */;
 		};
+		EF10BAAA26A265ABB0764D04 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D89C6551928154644BDAE069 /* Budgie */;
+			targetProxy = A43490FCFB70755DFC21EB64 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		22729B539F5D5B41C802365F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Budgie;
+			};
+			name = Release;
+		};
+		5591A2D593D9ED45B896EB48 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.khatruong.budgetbuddy.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Budgie;
+			};
+			name = Debug;
+		};
 		6F93874808BB5B61563F3CD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -659,6 +750,15 @@
 			buildConfigurations = (
 				6F93874808BB5B61563F3CD9 /* Debug */,
 				EB7BF9EE64B24212E2CE7299 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F2A377208A6322B5E2571103 /* Build configuration list for PBXNativeTarget "BudgieUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5591A2D593D9ED45B896EB48 /* Debug */,
+				22729B539F5D5B41C802365F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

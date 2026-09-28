@@ -35,6 +35,20 @@
                ReferencedContainer = "container:Budgie.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5AB03A5A194A6BCC3F4F45A5"
+               BuildableName = "BudgieUITests.xctest"
+               BlueprintName = "BudgieUITests"
+               ReferencedContainer = "container:Budgie.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -61,6 +75,17 @@
                BlueprintIdentifier = "979F2429C802FAFF885BDF8C"
                BuildableName = "BudgieAppTests.xctest"
                BlueprintName = "BudgieAppTests"
+               ReferencedContainer = "container:Budgie.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5AB03A5A194A6BCC3F4F45A5"
+               BuildableName = "BudgieUITests.xctest"
+               BlueprintName = "BudgieUITests"
                ReferencedContainer = "container:Budgie.xcodeproj">
             </BuildableReference>
          </TestableReference>
