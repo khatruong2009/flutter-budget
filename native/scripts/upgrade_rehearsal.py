@@ -398,17 +398,41 @@ class Rehearsal:
         support = self.sim.data_container() / "Library" / "Application Support"
         store = support / "financial_store"
         stamps = {p.name: (p.stat().st_mtime_ns, p.stat().st_size) for p in store.iterdir()}
-        env = {"BUDGIE_REHEARSAL_SUMMARY": "1", "BUDGIE_SIMULATE_LOCKED_SECONDS": "15"}
+        lock_seconds = 15
+        env = {"BUDGIE_REHEARSAL_SUMMARY": "1", "BUDGIE_SIMULATE_LOCKED_SECONDS": str(lock_seconds)}
         child = {f"SIMCTL_CHILD_{k}": v for k, v in env.items()}
+        summary = self.sim.data_container() / "Library" / "Caches" / "budgie-rehearsal.json"
+        started = time.time()
         run(["xcrun", "simctl", "launch", self.sim.udid, BUNDLE], env=child)
-        time.sleep(6)
-        self.shot(name, "1-while-locked")
+        # Poll the whole window (screenshots can return late, so none are
+        # taken until the first write is seen).
+        first_write = {}
+        shot = None
+        while time.time() - started < lock_seconds + 10:
+            elapsed = round(time.time() - started, 1)
+            if shot is None and elapsed >= 5:
+                # Non-blocking, so a slow screenshot cannot delay the checks.
+                shot = subprocess.Popen(["xcrun", "simctl", "io", self.sim.udid, "screenshot",
+                                         str(self.out / name / "1-while-locked.png")],
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            state = {
+                "store": {p.name: (p.stat().st_mtime_ns, p.stat().st_size) for p in store.iterdir()} != stamps,
+                "preNative": (support / "pre-native-migration").exists(),
+                "summary": summary.exists(),
+            }
+            for key, happened in state.items():
+                if happened and key not in first_write:
+                    first_write[key] = elapsed
+            if len(first_write) == 3:
+                break
+            time.sleep(0.5)
+        if shot:
+            shot.wait()
         during = {
-            "storeUnchanged": {p.name: (p.stat().st_mtime_ns, p.stat().st_size) for p in store.iterdir()} == stamps,
-            "preNativeFolderExists": (support / "pre-native-migration").exists(),
-            "summaryWritten": (self.sim.data_container() / "Library" / "Caches" / "budgie-rehearsal.json").exists(),
+            "lockSeconds": lock_seconds,
+            "firstWriteSecondsAfterLaunch": first_write,
+            "nothingWrittenWhileLocked": all(t >= lock_seconds for t in first_write.values()),
         }
-        time.sleep(15)
         self.shot(name, "2-after-unlock")
         self.sim.terminate()
         after = pull(self.sim, self.out / name / "after")

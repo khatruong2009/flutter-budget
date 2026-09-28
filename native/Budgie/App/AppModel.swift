@@ -226,7 +226,7 @@ final class AppModel {
     @discardableResult
     func addTransaction(type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime) async -> Bool {
         guard data != nil, amount.isFinite else { return false }
-        data!.addTransaction(type: type, description: description, amount: amount, category: category, date: date, id: newID(), now: now)
+        _ = data!.addTransaction(type: type, description: description, amount: amount, category: category, date: date, id: newID(), now: now)
         return await persist([Section.transactions])
     }
 

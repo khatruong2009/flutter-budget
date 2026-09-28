@@ -101,8 +101,6 @@ public enum CategoryCatalog {
 }
 
 extension FinancialData {
-    public var categories: [CategoryInfo] { CategoryCatalog.load(sections[Section.categories]) }
-
     public func categoryPicker(for type: TransactionType) -> [CategoryInfo] {
         var used: [String] = []
         for transaction in transactions where transaction.type == type && !used.contains(transaction.category) {

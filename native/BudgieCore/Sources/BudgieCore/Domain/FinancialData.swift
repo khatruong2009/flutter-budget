@@ -25,6 +25,8 @@ public struct FinancialData: Sendable {
     /// `categoryBudgetLimits` in stored order, values > 0 only.
     public private(set) var budgetLimits: [(String, Double)] = []
     public private(set) var selectedNetWorthMonth: DartDateTime
+    /// Parsed once at load; the MVP never edits categories.
+    public private(set) var categories: [CategoryInfo] = []
     public var appSettings: AppSettings
     /// Raw sections as loaded, for patch-in-place writes of sections the
     /// typed layer only partly understands.
@@ -113,6 +115,8 @@ public struct FinancialData: Sendable {
         {
             data.selectedNetWorthMonth = calendar.month(of: parsed)
         }
+
+        data.categories = CategoryCatalog.load(sections[Section.categories])
 
         if case .object(let limits)? = sections[Section.categoryBudgetLimits] {
             for key in limits.keys {
@@ -243,7 +247,28 @@ public struct FinancialData: Sendable {
 
     /// `getAllTransactionsSorted` (compareNewestFirst).
     public func transactionsNewestFirst() -> [TransactionRecord] {
-        transactions.sorted { TransactionRecord.newestFirst($0, $1, calendar: calendar) }
+        FinancialData.sortNewestFirst(transactions, calendar: calendar)
+    }
+
+    /// One month's transactions, newest first.
+    public func transactionsNewestFirst(inMonth month: DartDateTime) -> [TransactionRecord] {
+        let key = calendar.ledgerMonthKey(month)
+        return FinancialData.sortNewestFirst(transactions.filter { calendar.ledgerMonthKey($0.date) == key }, calendar: calendar)
+    }
+
+    /// `Transaction.compareNewestFirst` with its keys computed once per row
+    /// (calendar day, createdAt, id as UTF-16), so 10k rows sort quickly.
+    static func sortNewestFirst(_ rows: [TransactionRecord], calendar: DartCalendar) -> [TransactionRecord] {
+        let keyed = rows.map { record -> (day: Int64, created: Int64, id: [UInt16], record: TransactionRecord) in
+            let f = record.date.fields
+            return (calendar.date(f.year, f.month, f.day).microsecondsSinceEpoch, record.createdAt.microsecondsSinceEpoch,
+                    Array(record.id.utf16), record)
+        }
+        return keyed.sorted { a, b in
+            if a.day != b.day { return a.day > b.day }
+            if a.created != b.created { return a.created > b.created }
+            return b.id.lexicographicallyPrecedes(a.id)
+        }.map(\.record)
     }
 
     /// Widget value (`_syncWidgetCashFlow`): current calendar month's income
