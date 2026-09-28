@@ -66,6 +66,55 @@ struct SwiftOutputForDartTests {
         }
     }
 
+    @Test("domain: stores after Swift edits (every mutation the MVP can make)")
+    func edited() async throws {
+        for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k"] {
+            let scenario = try Scenario(Fixtures.url("store/\(name)"))
+            guard var data = try await launch(scenario) else { continue }
+            let calendar = data.calendar
+            let now = scenario.launchNow
+            let store = scenario.makeStore()
+            _ = try await store.read()
+            func id() -> String { UUID().uuidString.lowercased() }
+
+            let added = data.addTransaction(
+                type: .expense, description: "Swift ☕️ \"quoted\", comma", amount: 1200, category: "Groceries",
+                date: calendar.date(2026, 9, 27, 18, 30), id: id(), now: now)
+            _ = data.addTransaction(type: .income, description: "", amount: 0.1 + 0.2, category: "Salary",
+                                    date: now, id: id(), now: now)
+            if let first = data.transactions.first {
+                data.updateTransaction(id: first.id, .init(type: .expense, description: first.description + " (edited)", amount: 42,
+                                                           category: "Health", date: calendar.date(2026, 2, 28)), now: now)
+            }
+            data.updateTransaction(id: added.id, .init(type: .income, description: added.description, amount: 1e-7,
+                                                       category: added.category, date: added.date), now: now)
+            if data.transactions.count > 3 { data.deleteTransaction(id: data.transactions[2].id) }
+
+            let monthly = RecurringTemplate.make(
+                id: id(), type: .expense, description: "Swift rent", amount: 1500, category: "Housing", pattern: .monthly,
+                startDate: calendar.date(2026, 1, 31), dayOfMonth: 31, dayOfWeek: nil)
+            let weekly = RecurringTemplate.make(
+                id: id(), type: .income, description: "Swift pay", amount: 800, category: "Salary", pattern: .weekly,
+                startDate: calendar.date(2026, 9, 1, 9), dayOfMonth: nil, dayOfWeek: calendar.date(2026, 9, 1).weekday)
+            data.addTemplate(monthly)
+            data.addTemplate(weekly)
+            _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: id)
+            data.updateTemplate(id: monthly.id, .init(type: .expense, description: "Swift rent (edited)", amount: 1550,
+                                                      category: "Housing", pattern: .monthly, startDate: calendar.date(2026, 1, 15),
+                                                      dayOfMonth: 15, dayOfWeek: nil))
+            data.setTemplateActive(id: weekly.id, false)
+            data.appSettings.baseCurrencyCode = "EUR"
+            data.appSettings.appLockEnabled.toggle()
+
+            let snapshot = try await store.updateSections([
+                (Section.transactions, data.transactionsSection()),
+                (Section.recurringTransactions, data.templatesSection()),
+                (Section.appSettings, data.appSettingsSection()),
+            ])
+            try SwiftOutput.emit("edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
+        }
+    }
+
     @Test("store: damaged inputs recovered by Swift, then saved")
     func recovered() async throws {
         for name in ["primary_truncated", "primary_stale", "primary_missing", "backup_corrupt", "tmp_leftover_valid_newer", "both_corrupt_with_legacy"] {
