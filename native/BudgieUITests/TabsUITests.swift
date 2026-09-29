@@ -95,10 +95,19 @@ final class TabsUITests: XCTestCase {
         XCTAssertEqual(rows.count, 1)
         XCTAssertTrue(match.label.contains(Self.description))
 
-        // Swipe to delete, confirmed in the alert. The first drag on the
-        // page dismisses the search keyboard, so put it away first.
-        if app.keyboards.firstMatch.exists { search.typeText("\n") }
-        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 3))
+        // Swipe to delete with the search keyboard still up, confirmed in
+        // the alert. The row starts under the keyboard (a swipe there
+        // swipe-types into the field), so first scroll it into view with an
+        // upward drag above the keyboard, which leaves the keyboard up.
+        let keyboard = app.keyboards.firstMatch
+        XCTAssertTrue(keyboard.exists, "the search keyboard is up")
+        if !match.isHittable {
+            let window = app.windows.firstMatch
+            window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55))
+                .press(forDuration: 0.05, thenDragTo: window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.15)))
+        }
+        XCTAssertTrue(match.isHittable, "the row is above the keyboard")
+        XCTAssertTrue(keyboard.exists, "scrolling up kept the keyboard up")
         match.swipeLeft()
         let alert = app.alerts["Delete Transaction"]
         XCTAssertTrue(alert.waitForExistence(timeout: 5))

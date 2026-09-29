@@ -329,8 +329,9 @@ UPGRADE_TEST_RESULTS.md).
   sheet chrome (44x4 handle) with plain rows (no Material ripple); the From/To
   date picker is the shared graphical day picker sheet (Cancel / OK) instead
   of Material's calendar dialog.
-- Flow SEE ALL: dragging the page dismisses the keyboard (the decimal pad has
-  no return key); Flutter keeps it up.
+- Flow SEE ALL: dragging the page down into the keyboard dismisses it
+  interactively (the decimal pad has no return key); scrolling up leaves it
+  up, and rows scrolled above it still swipe to delete. Flutter keeps it up.
 - Flow SEE ALL accessibility: rows read "description, category, date, signed
   amount" with an edit hint and a Delete action; filter controls are
   labelled. Flutter authors no semantics on this page.
