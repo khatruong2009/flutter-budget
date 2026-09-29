@@ -69,6 +69,8 @@ struct NetWorthView: View {
             entrySection("Assets", entries: assets, month: month, formatter: formatter)
             entrySection("Liabilities", entries: liabilities, month: month, formatter: formatter)
         }
+        .scrollContentBackground(.hidden)
+        .contentMargins(.top, 4, for: .scrollContent)
     }
 
     // MARK: Header
