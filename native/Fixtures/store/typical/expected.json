@@ -1,7 +1,7 @@
 {
   "scenario": "typical",
   "description": "Sixteen months driven through the real models; every section, every enum, awkward strings and numbers, edits, deletes, recurring generation, net worth carry-forward.",
-  "commit": "e148899f60a58188699fa0d357b91c1665fdcb61",
+  "commit": "959921d674058da3e0835996298e42375b88ccf6",
   "tz": "America/New_York",
   "launchNow": "2026-09-28T09:15:30.250125",
   "load": {

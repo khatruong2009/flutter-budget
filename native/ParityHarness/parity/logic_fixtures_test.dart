@@ -354,6 +354,94 @@ void main() {
     });
   });
 
+  test('safe to spend, randomized differential corpus', () async {
+    final random = Random(424242 + parityTz.codeUnits.fold(0, (a, b) => a + b));
+    const categories = ['Groceries', 'Eating Out', 'Housing', 'Health', 'Travel'];
+    DateTime randomTime(DateTime month) {
+      final day = random.nextInt(34) - 2; // spills into neighbour months
+      final kind = random.nextInt(4);
+      if (kind == 0) return DateTime(month.year, month.month, day);
+      return DateTime(month.year, month.month, day, random.nextInt(24),
+          random.nextInt(60), random.nextInt(60), random.nextInt(1000), random.nextInt(1000));
+    }
+
+    double money() => (random.nextInt(200000) + 1) / 100.0;
+    final cases = <Map<String, Object?>>[];
+    for (var i = 0; i < 400; i++) {
+      final month = DateTime(2024 + random.nextInt(4), random.nextInt(12) + 1);
+      final transactions = [
+        for (var t = 0; t < random.nextInt(25); t++)
+          Transaction(
+            id: 'r$i-t$t',
+            type: random.nextInt(3) == 0 ? TransactionTyp.income : TransactionTyp.expense,
+            description: 'x',
+            amount: money(),
+            category: categories[random.nextInt(categories.length)],
+            date: randomTime(month),
+            createdAt: DateTime(2024),
+            updatedAt: DateTime(2024),
+          ),
+      ];
+      final recurring = <RecurringTransaction>[];
+      for (var r = 0; r < random.nextInt(5); r++) {
+        final pattern = RecurrencePattern.values[random.nextInt(3)];
+        final start = randomTime(DateTime(month.year, month.month - random.nextInt(3)));
+        recurring.add(RecurringTransaction(
+          id: 'r$i-rt$r',
+          type: random.nextInt(3) == 0 ? TransactionTyp.income : TransactionTyp.expense,
+          description: 'rt',
+          amount: money(),
+          category: categories[random.nextInt(categories.length)],
+          pattern: pattern,
+          startDate: start,
+          nextOccurrence: randomTime(month),
+          dayOfMonth: pattern == RecurrencePattern.monthly
+              ? (random.nextInt(5) == 0 ? null : random.nextInt(31) + 1)
+              : null,
+          dayOfWeek: pattern == RecurrencePattern.monthly ? null : start.weekday,
+          isActive: random.nextInt(5) != 0,
+        ));
+      }
+      final limits = <String, double>{
+        for (final c in categories)
+          if (random.nextBool()) c: random.nextInt(4) == 0 ? 0.0 : money(),
+      };
+      final asOfMonth = DateTime(month.year, month.month + random.nextInt(3) - 1);
+      final asOf = randomTime(asOfMonth);
+      pinClock(asOf);
+      final goals = [
+        for (var g = 0; g < random.nextInt(3); g++)
+          SavingsGoal(
+            id: 'r$i-g$g',
+            name: 'g',
+            targetAmount: money() * 10,
+            currentAmount: money() * random.nextInt(12),
+            targetDate: DateTime(asOf.year, asOf.month + random.nextInt(30) - 6, random.nextInt(28) + 1),
+            createdAt: DateTime(2023),
+          ),
+      ];
+      final b = const SafeToSpendCalculator().calculate(
+        transactions: transactions,
+        recurringTransactions: recurring,
+        categoryBudgetLimits: limits,
+        savingsGoals: goals,
+        month: month,
+        asOf: asOf,
+      );
+      cases.add({
+        'month': month.toIso8601String(),
+        'asOf': asOf.toIso8601String(),
+        'transactions': transactions.map((t) => t.toJson()).toList(),
+        'recurring': recurring.map((r) => r.toJson()).toList(),
+        'limits': limits,
+        'goals': goals.map((g) => g.toJson()).toList(),
+        'result': breakdownJson(b),
+      });
+      pinClock(DateTime(2026, 1, 1, 12));
+    }
+    writeJson('$fixturesRoot/$zoneDir/safe_to_spend_random.json', {'tz': parityTz, 'cases': cases});
+  });
+
   test('csv export', () async {
     if (!writeZoneIndependent) return;
     final temp = await Directory.systemTemp.createTemp('parity_csv');

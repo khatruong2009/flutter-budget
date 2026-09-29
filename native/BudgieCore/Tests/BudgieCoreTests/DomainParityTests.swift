@@ -288,3 +288,45 @@ struct CategoryTests {
         #expect(picker.last?.name == "Legacy Only")
     }
 }
+
+@Suite("Safe-to-spend: randomized differential corpus against the Dart calculator")
+struct SafeToSpendRandomTests {
+    @Test("400 random scenarios per zone", arguments: fixtureZones)
+    func random(zone: String) throws {
+        let calendar = DartCalendar(timeZone: TimeZone(identifier: zone)!)
+        let fixture = J(try JSONParser.parse([UInt8](Fixtures.data(zoneDirectory(zone) + "/safe_to_spend_random.json"))))
+        let cases = fixture["cases"].array
+        #expect(cases.count == 400)
+        var failures: [String] = []
+        for (index, c) in cases.enumerated() {
+            let asOf = try calendar.parse(c["asOf"].string!)
+            let month = try calendar.parse(c["month"].string!)
+            let transactions = c["transactions"].array.map { TransactionRecord.parse($0.value!, calendar: calendar, newID: { "x" })! }
+            let templates = c["recurring"].array.map { RecurringTemplate.parse($0.value!, calendar: calendar, newID: { "x" })! }
+            let limits = c["limits"].keys.map { ($0, c["limits"][$0].double!) }
+            let goals = c["goals"].array.map { SavingsGoalRecord.parse($0.value!, calendar: calendar, now: asOf, newID: { "g" })! }
+            let b = SafeToSpend.calculate(
+                transactions: transactions, templates: templates, budgetLimits: limits, savingsGoals: goals,
+                month: month, asOf: asOf, wallClock: asOf, calendar: calendar)
+            let w = c["result"]
+            let pairs: [(String, Double?, Double?)] = [
+                ("actualIncome", b.actualIncome, w["actualIncome"].double),
+                ("expectedIncome", b.expectedIncome, w["expectedIncome"].double),
+                ("actualExpenses", b.actualExpenses, w["actualExpenses"].double),
+                ("upcoming", b.upcomingRecurringExpenses, w["upcomingRecurringExpenses"].double),
+                ("reserve", b.flexibleBudgetReserve, w["flexibleBudgetReserve"].double),
+                ("goals", b.plannedGoalContributions, w["plannedGoalContributions"].double),
+                ("safeToSpend", b.safeToSpend, w["safeToSpend"].double),
+                ("daily", b.dailyAllowance, w["dailyAllowance"].double),
+                ("days", Double(b.daysRemaining), w["daysRemaining"].double),
+            ]
+            for (name, swift, dart) in pairs where swift != dart {
+                failures.append("#\(index) \(name): swift \(String(describing: swift)) dart \(String(describing: dart))")
+            }
+            if b.asOf.toIso8601String() != w["asOf"].string || b.month.toIso8601String() != w["month"].string {
+                failures.append("#\(index) dates: swift \(b.asOf.toIso8601String()) dart \(w["asOf"].string ?? "")")
+            }
+        }
+        #expect(failures.isEmpty, "\(zone): \(failures.count) mismatches, first: \(failures.prefix(10))")
+    }
+}

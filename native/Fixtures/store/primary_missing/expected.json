@@ -1,7 +1,7 @@
 {
   "scenario": "primary_missing",
   "description": "Only the backup exists.",
-  "commit": "e148899f60a58188699fa0d357b91c1665fdcb61",
+  "commit": "959921d674058da3e0835996298e42375b88ccf6",
   "tz": "America/New_York",
   "launchNow": "2026-09-28T09:15:30.250125",
   "load": {
