@@ -18,14 +18,35 @@ struct RootView: View {
         #endif
     }
 
-    @ViewBuilder private var phaseView: some View {
+    /// Phase changes cross-fade over 450ms, as Flutter's AnimatedSwitcher.
+    private var phaseKey: Int {
+        switch model.phase {
+        case .waitingForUnlock: 0
+        case .starting: 1
+        case .blocked: 2
+        case .ready: 3
+        }
+    }
+
+    private var phaseView: some View {
+        ZStack {
+            phaseContent
+                .id(phaseKey)
+                .transition(.opacity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(BudgieColor.background)
+        .motion(.easeOut(duration: 0.45), value: phaseKey)
+    }
+
+    @ViewBuilder private var phaseContent: some View {
         switch model.phase {
         case .waitingForUnlock:
             StatusScreen(
                 symbol: "lock.fill", title: "Unlock your iPhone",
                 message: "Budgie opens your data once your iPhone is unlocked.")
         case .starting:
-            ProgressView()
+            OpeningView()
         case .blocked(let blocker):
             BlockedView(blocker: blocker)
         case .ready:
@@ -40,7 +61,7 @@ struct StatusScreen: View {
     let message: String
 
     var body: some View {
-        ContentUnavailableView(title, systemImage: symbol, description: Text(message))
+        EmptyStateView(symbol: symbol, title: title, message: message)
     }
 }
 

@@ -39,3 +39,27 @@ private struct ReducibleAnimation<V: Equatable>: ViewModifier {
         content.animation(reduceMotion ? nil : animation, value: value)
     }
 }
+
+/// Flutter `Curves` as plain functions, for timeline-driven animations.
+enum FlutterCurve {
+    /// `Curves.easeOut`: cubic bezier (0, 0, 0.58, 1).
+    static func easeOut(_ x: Double) -> Double {
+        let x2 = 0.58
+        var u = x
+        for _ in 0..<12 {
+            let xu = 3 * (1 - u) * u * u * x2 + u * u * u
+            let dx = 6 * (1 - u) * u * x2 + 3 * u * u * (1 - x2)
+            if abs(dx) < 1e-9 { break }
+            u = min(max(u - (xu - x) / dx, 0), 1)
+        }
+        return 3 * (1 - u) * u * u + u * u * u
+    }
+
+    /// `Curves.easeOutCubic`: cubic bezier (0.33, 1, 0.68, 1) ~ 1 - (1 - x)^3.
+    static func easeOutCubic(_ x: Double) -> Double { 1 - pow(1 - x, 3) }
+
+    /// Flutter `Interval(begin, end, curve:)` applied to progress `t`.
+    static func interval(_ t: Double, _ begin: Double, _ end: Double, _ curve: (Double) -> Double) -> Double {
+        curve(min(max((t - begin) / (end - begin), 0), 1))
+    }
+}

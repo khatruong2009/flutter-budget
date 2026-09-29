@@ -73,6 +73,10 @@
 	<dict>
 		<key>UIColorName</key>
 		<string>launch-screen-background</string>
+		<key>UIImageName</key>
+		<string>logo</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<false/>
 	</dict>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

@@ -63,7 +63,7 @@ private struct FabFace: View {
     let t: Double
 
     var body: some View {
-        let ping = Self.easeOut(t)
+        let ping = FlutterCurve.easeOut(t)
         let flare = sin(.pi * t)
         let accent = BudgieColor.accent
         ZStack {
@@ -84,19 +84,6 @@ private struct FabFace: View {
                 .foregroundStyle(BudgieColor.onAccent)
                 .scaleEffect(1 + 0.22 * flare)
         }
-    }
-
-    /// Flutter `Curves.easeOut`: cubic bezier (0, 0, 0.58, 1).
-    static func easeOut(_ x: Double) -> Double {
-        let x2 = 0.58
-        var u = x
-        for _ in 0..<12 {
-            let xu = 3 * (1 - u) * u * u * x2 + u * u * u
-            let dx = 6 * (1 - u) * u * x2 + 3 * u * u * (1 - x2)
-            if abs(dx) < 1e-9 { break }
-            u = min(max(u - (xu - x) / dx, 0), 1)
-        }
-        return 3 * (1 - u) * u * u + u * u * u
     }
 }
 

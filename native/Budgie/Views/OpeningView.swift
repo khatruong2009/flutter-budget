@@ -1,0 +1,90 @@
+import SwiftUI
+
+/// The brand screen shown while the store opens (`_OpeningScreen`), dark in
+/// both themes and continuous with the launch screen (the 120pt mark on
+/// #0A0A12, centred). Over 1.4s the accent washes rise, the mark lifts to
+/// 1.03, "Budgie" and "BUDGET IN BALANCE" fade up, then three dots pulse.
+/// Reduce Motion shows the final state without the pulse.
+struct OpeningView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var start = Date()
+
+    private static let logoSize: CGFloat = 120
+    private static let accent = Color(hex: 0x818CF8)
+
+    var body: some View {
+        TimelineView(.animation(paused: reduceMotion)) { context in
+            let elapsed = reduceMotion ? 10 : context.date.timeIntervalSince(start)
+            let t = min(elapsed / 1.4, 1)
+            GeometryReader { geometry in
+                let size = geometry.size
+                let base = min(size.width, size.height)
+                let glow = FlutterCurve.interval(t, 0, 0.55, FlutterCurve.easeOut)
+                let lift = 1 + 0.03 * FlutterCurve.interval(t, 0, 0.55, FlutterCurve.easeOutCubic)
+                let nameIn = FlutterCurve.interval(t, 0.2, 0.55, FlutterCurve.easeOut)
+                let nameRise = 1 - FlutterCurve.interval(t, 0.2, 0.55, FlutterCurve.easeOutCubic)
+                let taglineIn = FlutterCurve.interval(t, 0.35, 0.7, FlutterCurve.easeOut)
+                let taglineRise = 1 - FlutterCurve.interval(t, 0.35, 0.7, FlutterCurve.easeOutCubic)
+                let loaderIn = FlutterCurve.interval(t, 0.8, 1, FlutterCurve.easeOut)
+                let center = CGPoint(x: size.width / 2, y: size.height / 2)
+
+                ZStack {
+                    BudgieColor.openingGradient
+                    wash(at: center, radius: base * 0.46, alpha: 0.16 * glow)
+                    wash(at: center, radius: base * 0.26, alpha: 0.20 * glow)
+                    wash(at: CGPoint(x: size.width * 0.5, y: -size.height * 0.06), radius: base * 0.7, alpha: 0.05 * glow)
+                    Ellipse()
+                        .fill(Color.black.opacity(0.45 * glow))
+                        .frame(width: 88, height: 18)
+                        .blur(radius: 5)
+                        .position(x: center.x, y: center.y + Self.logoSize / 2 + 8)
+                    Image("logo")
+                        .resizable().scaledToFit()
+                        .frame(width: Self.logoSize, height: Self.logoSize)
+                        .scaleEffect(lift)
+                        .position(center)
+                    VStack(spacing: Metrics.spacingS) {
+                        Text("Budgie")
+                            .textStyle(.displayMedium)
+                            .tracking(0)
+                            .foregroundStyle(Color(hex: 0xF2F2FA))
+                            .opacity(nameIn)
+                            .offset(y: 0.35 * 34 * nameRise)
+                        Text("BUDGET IN BALANCE")
+                            .textStyle(.eyebrow)
+                            .tracking(2.8)
+                            .foregroundStyle(Color(hex: 0x9A9AB5))
+                            .opacity(taglineIn)
+                            .offset(y: 0.5 * 13 * taglineRise)
+                    }
+                    .frame(width: size.width)
+                    .position(x: center.x, y: center.y + Self.logoSize / 2 + Metrics.spacingL + 30)
+                    dots(phase: reduceMotion ? nil : elapsed.truncatingRemainder(dividingBy: 1.2) / 1.2)
+                        .opacity(loaderIn)
+                        .position(x: center.x, y: size.height * 0.92)
+                }
+            }
+        }
+        .ignoresSafeArea()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Budgie is opening")
+    }
+
+    private func wash(at point: CGPoint, radius: CGFloat, alpha: Double) -> some View {
+        Circle()
+            .fill(RadialGradient(colors: [Self.accent.opacity(alpha), Self.accent.opacity(0)], center: .center, startRadius: 0, endRadius: radius))
+            .frame(width: radius * 2, height: radius * 2)
+            .position(point)
+    }
+
+    /// `_PulsingDots`: 7pt accent dots, opacity 0.25-1 on a wave offset by
+    /// a third of the 1.2s cycle each.
+    private func dots(phase: Double?) -> some View {
+        HStack(spacing: Metrics.spacingS) {
+            ForEach(0..<3, id: \.self) { index in
+                let wave = phase.map { (sin(($0 - Double(index) / 3) * 2 * .pi) + 1) / 2 } ?? 0.6
+                Circle().fill(Self.accent).frame(width: 7, height: 7).opacity(0.25 + 0.75 * wave)
+            }
+        }
+    }
+}

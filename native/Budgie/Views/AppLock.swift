@@ -82,50 +82,69 @@ private struct AppLockModifier: ViewModifier {
     }
 }
 
-private struct PrivacyCover: View {
+/// The app-switcher cover (`_AppSwitcherPrivacyCover`): opaque #0A0A12 in
+/// both themes, 72pt mark, "Budgie", "App preview hidden".
+struct PrivacyCover: View {
     var body: some View {
         ZStack {
-            Theme.background.ignoresSafeArea()
-            VStack(spacing: 16) {
-                Image("logo")
-                    .resizable().scaledToFit()
-                    .frame(width: 96, height: 96)
-                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-                Text("Budgie").font(.title2.weight(.semibold))
+            Color(hex: 0x0A0A12).ignoresSafeArea()
+            VStack(spacing: 0) {
+                Image("logo").resizable().scaledToFit().frame(width: 72, height: 72)
+                Text("Budgie")
+                    .textStyle(.headingLarge)
+                    .foregroundStyle(Color(hex: 0xF2F2FA))
+                    .padding(.top, Metrics.spacingM)
+                Text("App preview hidden")
+                    .textStyle(.bodyMedium)
+                    .foregroundStyle(Color(hex: 0x9A9AB5))
+                    .padding(.top, Metrics.spacingXS)
             }
         }
         .accessibilityHidden(true)
     }
 }
 
-private struct LockScreen: View {
+/// The lock screen (`_LockScreen`), in the redesign tokens: lock symbol,
+/// "Budgie is locked", the reason or the last error, and an Unlock button.
+struct LockScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     let onUnlock: () -> Void
     @State private var attempted = false
     @State private var authenticating = false
-    @State private var message: String?
+    @State private var error: String?
+    @State private var biometry = DeviceAuth.biometryName
 
     var body: some View {
         ZStack {
-            PrivacyCover()
-            VStack {
-                Spacer()
-                if let message {
-                    Text(message).font(.footnote).foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center).padding(.horizontal, 32).padding(.bottom, 12)
-                }
-                Button {
+            BudgieColor.background.ignoresSafeArea()
+            VStack(spacing: 0) {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 48, weight: .semibold))
+                    .foregroundStyle(BudgieColor.accent)
+                    .accessibilityHidden(true)
+                Text("Budgie is locked")
+                    .textStyle(.headingLarge)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .padding(.top, Metrics.spacingL)
+                    .accessibilityAddTraits(.isHeader)
+                Text(error ?? "Authenticate to view your financial data.")
+                    .textStyle(.bodyMedium)
+                    .foregroundStyle(error == nil ? BudgieColor.textSecondary : BudgieColor.danger)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, Metrics.spacingS)
+                PillButton(
+                    title: authenticating ? "Authenticating…" : "Unlock",
+                    symbol: biometry == "Face ID" ? "faceid" : biometry == "Touch ID" ? "touchid" : "lock.open",
+                    filled: true, height: 52
+                ) {
                     unlock()
-                } label: {
-                    Text("Unlock").font(.headline).frame(maxWidth: 240)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
                 .disabled(authenticating)
-                .padding(.bottom, 64)
+                .padding(.top, Metrics.spacingL)
             }
+            .frame(maxWidth: 360)
+            .padding(Metrics.spacingXL)
         }
-        .tint(Theme.accent)
         // Evaluating while the scene is inactive fails, so wait for active.
         // Auto-attempt once; the Unlock button retries.
         .onChange(of: scenePhase, initial: true) { _, phase in
@@ -138,19 +157,18 @@ private struct LockScreen: View {
     private func unlock() {
         guard !authenticating else { return }
         authenticating = true
-        message = nil
+        error = nil
         Task {
-            let outcome = await DeviceAuth.authenticate(reason: "Unlock Budgie")
+            let outcome = await DeviceAuth.authenticate(reason: "Unlock Budgie to view your financial data")
             authenticating = false
             switch outcome {
             case .success:
                 onUnlock()
             case .failed:
-                break
-            case .unavailable(let reason):
+                error = "Authentication was not completed."
+            case .unavailable:
                 // No passcode: there is nothing to lock against, and keeping
                 // the data hidden forever would lock the owner out.
-                message = reason
                 onUnlock()
             }
         }

@@ -62,6 +62,7 @@
 		F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0675028D226C1972E3D145CE /* LicencesView.swift */; };
 		F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */; };
 		F9767309B73C53816105EC4E /* GlowFab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C875B09356D4582C3026F /* GlowFab.swift */; };
+		FD479E8C2B938A9B867681C1 /* OpeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C12C3082F408F35ED722A /* OpeningView.swift */; };
 		FE5B9B30E0779A3107D02108 /* BudgetWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */; };
 		FFD6FC8084D6A1535D6930D8 /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350D625134954C5DEC15E069 /* Progress.swift */; };
 /* End PBXBuildFile section */
@@ -112,6 +113,7 @@
 		0C99D0A6C29A6319DA1FBF36 /* TextStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyles.swift; sourceTree = "<group>"; };
 		16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonthTests.swift; sourceTree = "<group>"; };
 		16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1C1C12C3082F408F35ED722A /* OpeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningView.swift; sourceTree = "<group>"; };
 		213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Bold.ttf"; sourceTree = "<group>"; };
 		26BB2E615765EF1D846843C2 /* Gabarito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-ExtraBold.ttf"; sourceTree = "<group>"; };
 		30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SplineSansMono.txt"; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				F62925024DEA9AC91020BF16 /* HistoryView.swift */,
 				30909C3F10B6B69B9FE7DE2C /* MainView.swift */,
 				36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */,
+				1C1C12C3082F408F35ED722A /* OpeningView.swift */,
 				8AF71D235C2D853C59C3B393 /* RecurringView.swift */,
 				DBBE5D912C19A6258BE48F99 /* RootView.swift */,
 				9E758855687C3C7914C62089 /* SettingsView.swift */,
@@ -608,6 +611,7 @@
 				A9B03492676EA93C0DFF401B /* Metrics.swift in Sources */,
 				310FFC1574711FF99182A14F /* Motion.swift in Sources */,
 				CE980D7CA160D8759B63F6AF /* NetWorthView.swift in Sources */,
+				FD479E8C2B938A9B867681C1 /* OpeningView.swift in Sources */,
 				492795C0458BFC819E94B678 /* Pills.swift in Sources */,
 				FFD6FC8084D6A1535D6930D8 /* Progress.swift in Sources */,
 				EBEA70BE1580B123E8739B8A /* ProtectedDataMonitor.swift in Sources */,

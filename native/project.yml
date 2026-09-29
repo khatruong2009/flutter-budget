@@ -59,8 +59,12 @@ targets:
           - SplineSansMono-Medium.ttf
           - SplineSansMono-SemiBold.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        # The Flutter launch storyboard: the 120pt mark centred on #0A0A12,
+        # continuous with OpeningView.
         UILaunchScreen:
           UIColorName: launch-screen-background
+          UIImageName: logo
+          UIImageRespectsSafeAreaInsets: false
         # Same shape as the Flutter app's Info.plist (see BudgieApp.swift).
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false

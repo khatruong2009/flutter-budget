@@ -1,6 +1,11 @@
 #if DEBUG
 import SwiftUI
 
+private enum GalleryScreen: String, Identifiable {
+    case opening, lock, cover
+    var id: Self { self }
+}
+
 /// Every design-system component on one scrolling page, for screenshot
 /// comparison with `docs/research/screenshots` in light and dark. Opened
 /// with `BUDGIE_DESIGN_GALLERY=1` (launch environment) or from Settings in
@@ -14,6 +19,7 @@ struct DesignGalleryView: View {
     @State private var sheet = false
     @State private var dialog = false
     @State private var deleted = 0
+    @State private var fullScreen: GalleryScreen?
 
     var body: some View {
         ScrollView {
@@ -55,6 +61,16 @@ struct DesignGalleryView: View {
             .padding(24)
             .presentationDetents([.medium])
             .budgieSheetChrome()
+        }
+        .fullScreenCover(item: $fullScreen) { screen in
+            ZStack(alignment: .topTrailing) {
+                switch screen {
+                case .opening: OpeningView()
+                case .lock: LockScreen(onUnlock: {})
+                case .cover: PrivacyCover()
+                }
+                Button("Close") { fullScreen = nil }.padding(.top, 60).padding(.trailing, 20)
+            }
         }
         .budgieDialog(isPresented: $dialog) {
             VStack(alignment: .leading, spacing: 16) {
@@ -271,6 +287,11 @@ struct DesignGalleryView: View {
             HStack(spacing: 12) {
                 PillButton(title: "Toast", color: BudgieColor.income) { model.showToast(.addedTo(month: model.selectedMonth, now: model.now)) }
                 PillButton(title: "Error toast", color: BudgieColor.danger) { model.showToast(.saveFailed) }
+            }
+            HStack(spacing: 12) {
+                PillButton(title: "Opening") { fullScreen = .opening }
+                PillButton(title: "Lock") { fullScreen = .lock }
+                PillButton(title: "Cover") { fullScreen = .cover }
             }
             GlowCard {
                 EmptyStateView(kind: .noResults)
