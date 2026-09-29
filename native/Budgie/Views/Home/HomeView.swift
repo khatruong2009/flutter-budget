@@ -12,7 +12,7 @@ struct HomeView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var sheet: HomeSheet?
     @State private var monthPanelOpen = false
-    @State private var showsAllTransactions = false
+    @State private var page: HomePage?
     /// A category picked in the quick-expense sheet; its form opens once
     /// that sheet has been dismissed.
     @State private var pendingQuickCategory: String?
@@ -33,7 +33,7 @@ struct HomeView: View {
         }
         .background(BudgieColor.background)
         .toolbar(.hidden, for: .navigationBar)
-        .navigationDestination(isPresented: $showsAllTransactions) { TransactionsView() }
+        .navigationDestination(item: $page) { _ in TransactionsView() }
         .overlay(alignment: .bottomTrailing) {
             GlowFab(label: "Add transaction") {
                 sheet = .add(.expense)
@@ -130,7 +130,7 @@ struct HomeView: View {
 
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Recent activity", link: "SEE ALL", linkAccessibilityLabel: "See all transactions") {
-                showsAllTransactions = true
+                page = .transactions
             }
             RecentActivityCard(rows: model.ledger.recent(3), formatter: formatter)
         }
@@ -144,6 +144,14 @@ struct HomeView: View {
         .padding(.horizontal, Metrics.pageHorizontal)
         .padding(.top, 24)
     }
+}
+
+/// The page Home pushes from SEE ALL. Pushed by item, never with
+/// `navigationDestination(isPresented:)`: that form rebuilt the pushed page
+/// each time an accessibility client read the screen, which kept the main
+/// thread busy under XCUITest (see UI_SPEC "Shell").
+private enum HomePage {
+    case transactions
 }
 
 /// Home's sheets, one at a time.

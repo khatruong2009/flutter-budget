@@ -11,7 +11,7 @@ struct FlowView: View {
     @Environment(AppModel.self) private var model
     @State private var rangeMonths = CashFlowMath.defaultRange
     @State private var sheet: FlowSheet?
-    @State private var showsTransactions = false
+    @State private var page: FlowPage?
     @State private var pillTaps = 0
     /// Range tile taps: Flutter's `selectionClick` fires on every tile tap,
     /// the already-selected one included.
@@ -46,9 +46,9 @@ struct FlowView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: "Transactions", link: "SEE ALL", linkAccessibilityLabel: "See all transactions") {
-                        showsTransactions = true
+                        page = .transactions
                     }
-                    TransactionsPreviewCard(rows: model.ledger.recent(3), formatter: formatter) { showsTransactions = true }
+                    TransactionsPreviewCard(rows: model.ledger.recent(3), formatter: formatter) { page = .transactions }
                 }
                 .padding(.horizontal, Metrics.pageHorizontal)
                 .padding(.top, 16)
@@ -57,7 +57,7 @@ struct FlowView: View {
         }
         .background(BudgieColor.background)
         .toolbar(.hidden, for: .navigationBar)
-        .navigationDestination(isPresented: $showsTransactions) { FlowTransactionsView() }
+        .navigationDestination(item: $page) { _ in FlowTransactionsView() }
         .sensoryFeedback(.selection, trigger: rangePicks)
         .sheet(item: $sheet) { item in
             switch item {
@@ -89,6 +89,12 @@ struct FlowView: View {
         .accessibilityHint("Chooses how many months the chart and the averages cover")
         .accessibilityIdentifier("flow.rangePill")
     }
+}
+
+/// The page Flow pushes from SEE ALL and the preview rows. Pushed by item,
+/// never with `navigationDestination(isPresented:)` (see UI_SPEC "Shell").
+private enum FlowPage {
+    case transactions
 }
 
 /// The Flow tab's sheets, one at a time.

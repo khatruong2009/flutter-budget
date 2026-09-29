@@ -42,6 +42,15 @@ the gear in the Home header; Recurring is a row under Settings > Data; the
 month's transaction list (Transactions) is pushed from Home's "SEE ALL".
 Goals is `GoalsView` (see "Goals" below).
 
+Pages are pushed with a `NavigationLink` or `navigationDestination(item:)`,
+never `navigationDestination(isPresented:)`. With `isPresented` the stack
+re-installs the pushed page (a fresh root view in its hosting controller)
+whenever the tab root's preferences are re-derived, and an accessibility
+client re-derives them on every read of the screen. Each re-install
+updates the navigation bar, which the client reads again, so under
+XCUITest the first SEE ALL push re-rendered its page about 200 times a
+second for up to a minute (budgie-uia.55).
+
 An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
 above the tabs whenever `model.hasUnsavedChanges`; it never hides data.
