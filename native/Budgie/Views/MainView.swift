@@ -24,7 +24,7 @@ struct MainView: View {
             NavigationStack { UpcomingTabView(title: "Goals", symbol: "flag") }
                 .tabItem { Label("Goals", systemImage: "flag") }
                 .tag(Tab.goals)
-            NavigationStack { UpcomingTabView(title: "Spending", symbol: "chart.pie") }
+            NavigationStack { SpendView() }
                 .tabItem { Label("Spend", systemImage: "chart.pie") }
                 .tag(Tab.spend)
             NavigationStack { UpcomingTabView(title: "Cash flow", symbol: "chart.bar") }

@@ -34,6 +34,8 @@
 		6D1605A29F887E72113F51C8 /* SplineSansMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */; };
 		6D4565D119A57E52E7C3DD79 /* TransactionFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8BD160059B70E88B177161 /* TransactionFormValidationTests.swift */; };
 		727666CCDFE3450761B5F522 /* SplineSansMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */; };
+		767CAD064D77B2559BDEF73E /* SpendPaletteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58876583DBD69473AF4D7388 /* SpendPaletteTests.swift */; };
+		7F0043E5208FE859AD441807 /* CategoryRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A7F03EBB3F2E8A5DBEAEF3 /* CategoryRows.swift */; };
 		8F1656985A23437F8FCD8BA5 /* BudgetWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		90F6E489893123A00170EE80 /* Gabarito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */; };
 		9C36A3158406EA3338A36968 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D39DC37012306B07E6140E /* Colors.swift */; };
@@ -41,6 +43,7 @@
 		9D1EF823D7C304C67FA2BFC3 /* Chrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = F311E0C1EEAE984A312B2AFD /* Chrome.swift */; };
 		A20040AA4462073164A2FAA5 /* RehearsalSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26060D2DC9FBC934F4E5A81 /* RehearsalSummary.swift */; };
 		A40BFB68E6EE2FF18619167F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBE5D912C19A6258BE48F99 /* RootView.swift */; };
+		A8F316E1477447807BAC7E6B /* SpendMonthSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE125D1B288D8EDAC940049 /* SpendMonthSheet.swift */; };
 		A9B03492676EA93C0DFF401B /* Metrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4ACB3F3FD965A3ADF042E88 /* Metrics.swift */; };
 		B714CE63FA132A02FE2E4890 /* BudgetLimitSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68B7F4E5776878A1B4E5DF5 /* BudgetLimitSheet.swift */; };
 		B77F656D6050715E177A0D57 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C1B7F8DAB0F15009E0A853 /* Fonts.swift */; };
@@ -49,6 +52,8 @@
 		BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */; };
 		C02683C5A3EEAFEFAA011A50 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758855687C3C7914C62089 /* SettingsView.swift */; };
 		C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4458A9E28C360553F6FF40A7 /* RoutingTests.swift */; };
+		C35E109FAF11D13E350D06D0 /* CategoryTransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B0B5D6C0E064C559ED1CF2 /* CategoryTransactionsView.swift */; };
+		CBFB72E304409F034FF1BDA6 /* SpendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ECF37EA2E6079B4908AC93 /* SpendView.swift */; };
 		CE980D7CA160D8759B63F6AF /* NetWorthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */; };
 		CEE0A6CF48F8336095F2D33A /* SpringBoardProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3C216CCEAB63E8F1DC75E1 /* SpringBoardProbe.swift */; };
 		CFDDCE5E5079FBD2F0A2DB72 /* ToastHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */; };
@@ -67,6 +72,7 @@
 		F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0675028D226C1972E3D145CE /* LicencesView.swift */; };
 		F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */; };
 		F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */; };
+		F6E09BF9F2A3745B683508F9 /* DonutChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345A926E74D4C24BFC4677CE /* DonutChart.swift */; };
 		F87B54CFDC9BC885E883C3FD /* SafeToSpendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2B3CA4D2ADC1BBBBA64532 /* SafeToSpendSheet.swift */; };
 		F9767309B73C53816105EC4E /* GlowFab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C875B09356D4582C3026F /* GlowFab.swift */; };
 		FBECFD4FBDB6F096E092588B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5BEE45B350EE7D82AA1717 /* HomeView.swift */; };
@@ -114,6 +120,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00ECF37EA2E6079B4908AC93 /* SpendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendView.swift; sourceTree = "<group>"; };
 		05C1B7F8DAB0F15009E0A853 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		0675028D226C1972E3D145CE /* LicencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicencesView.swift; sourceTree = "<group>"; };
 		0A12631956871BA18AFA9044 /* Budgie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Budgie.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,6 +137,7 @@
 		30909C3F10B6B69B9FE7DE2C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		31BFEBF0FCFDE676131B233F /* BudgetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgets.entitlements; sourceTree = "<group>"; };
 		31D535FCA57003E013F50CD1 /* ToastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
+		345A926E74D4C24BFC4677CE /* DonutChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonutChart.swift; sourceTree = "<group>"; };
 		350D625134954C5DEC15E069 /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
 		3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIntegrationUITests.swift; sourceTree = "<group>"; };
 		36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWorthView.swift; sourceTree = "<group>"; };
@@ -137,17 +145,20 @@
 		37D39DC37012306B07E6140E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		423B124988FC6629658BB700 /* ProtectedDataMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedDataMonitor.swift; sourceTree = "<group>"; };
 		4458A9E28C360553F6FF40A7 /* RoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingTests.swift; sourceTree = "<group>"; };
+		48B0B5D6C0E064C559ED1CF2 /* CategoryTransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTransactionsView.swift; sourceTree = "<group>"; };
 		4A98DC9BE2B7642524497EC0 /* Glow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Glow.swift; sourceTree = "<group>"; };
 		5177241A386AE7A9E235D4AD /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
 		51ADA0B74BB5F802C9C663C8 /* HomeMonthPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMonthPanel.swift; sourceTree = "<group>"; };
 		55D5F50F2340127241F06169 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormView.swift; sourceTree = "<group>"; };
+		58876583DBD69473AF4D7388 /* SpendPaletteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendPaletteTests.swift; sourceTree = "<group>"; };
 		5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Medium.ttf"; sourceTree = "<group>"; };
 		5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPickerDateTests.swift; sourceTree = "<group>"; };
 		6462237A82B43EB73DD31CEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6B2B3CA4D2ADC1BBBBA64532 /* SafeToSpendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeToSpendSheet.swift; sourceTree = "<group>"; };
 		6FB0B4F7B497DD7C0697DC03 /* Budgie.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budgie.entitlements; sourceTree = "<group>"; };
 		706B0B604B43DD43AB07DA98 /* Pills.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pills.swift; sourceTree = "<group>"; };
+		85A7F03EBB3F2E8A5DBEAEF3 /* CategoryRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryRows.swift; sourceTree = "<group>"; };
 		8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgets.swift; sourceTree = "<group>"; };
 		8AF71D235C2D853C59C3B393 /* RecurringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringView.swift; sourceTree = "<group>"; };
 		8BBD70AF06C9C13FFE5A573C /* Headers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Headers.swift; sourceTree = "<group>"; };
@@ -187,6 +198,7 @@
 		F398A47C7525A397743A430C /* QuickExpenseSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickExpenseSheet.swift; sourceTree = "<group>"; };
 		F6490075274592AC5E0C6D3B /* BudgieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgieApp.swift; sourceTree = "<group>"; };
 		F75251F37466F9FEAEBF3294 /* BudgetsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetsSection.swift; sourceTree = "<group>"; };
+		FBE125D1B288D8EDAC940049 /* SpendMonthSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendMonthSheet.swift; sourceTree = "<group>"; };
 		FDF2F936CC7D305389BBED49 /* FontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +222,7 @@
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
 				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
+				58876583DBD69473AF4D7388 /* SpendPaletteTests.swift */,
 				31D535FCA57003E013F50CD1 /* ToastTests.swift */,
 				AC8BD160059B70E88B177161 /* TransactionFormValidationTests.swift */,
 			);
@@ -371,6 +384,7 @@
 				57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */,
 				514EFB27FD7334874C93272C /* Home */,
 				FE5100C54D7940ADA83FE021 /* Settings */,
+				E48FC3D0C4D8FB9DE65C56FD /* Spend */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -383,6 +397,18 @@
 				3AF96E679407416D249E985D /* Fonts */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		E48FC3D0C4D8FB9DE65C56FD /* Spend */ = {
+			isa = PBXGroup;
+			children = (
+				85A7F03EBB3F2E8A5DBEAEF3 /* CategoryRows.swift */,
+				48B0B5D6C0E064C559ED1CF2 /* CategoryTransactionsView.swift */,
+				345A926E74D4C24BFC4677CE /* DonutChart.swift */,
+				FBE125D1B288D8EDAC940049 /* SpendMonthSheet.swift */,
+				00ECF37EA2E6079B4908AC93 /* SpendView.swift */,
+			);
+			path = Spend;
 			sourceTree = "<group>";
 		};
 		EDEE5D681134A7D04A01E49B = {
@@ -630,10 +656,13 @@
 				D92EB23D1CA2485689CF5FBB /* BudgetsSection.swift in Sources */,
 				065E436387B2E9B2EA0A50EA /* BudgieApp.swift in Sources */,
 				5C9906BF143C4B6C61F3E2DE /* Cards.swift in Sources */,
+				7F0043E5208FE859AD441807 /* CategoryRows.swift in Sources */,
+				C35E109FAF11D13E350D06D0 /* CategoryTransactionsView.swift in Sources */,
 				9D1EF823D7C304C67FA2BFC3 /* Chrome.swift in Sources */,
 				9C36A3158406EA3338A36968 /* Colors.swift in Sources */,
 				EEA3E162B9DA087682C4F671 /* DesignGalleryView.swift in Sources */,
 				EA0E34188ED90C9D7CE8E5B4 /* DiagnosticsView.swift in Sources */,
+				F6E09BF9F2A3745B683508F9 /* DonutChart.swift in Sources */,
 				EF6689C3C15DA5A2F51B5FB6 /* Fields.swift in Sources */,
 				B77F656D6050715E177A0D57 /* Fonts.swift in Sources */,
 				5C46FB7738C7E9B39B128951 /* Glow.swift in Sources */,
@@ -657,6 +686,8 @@
 				A40BFB68E6EE2FF18619167F /* RootView.swift in Sources */,
 				F87B54CFDC9BC885E883C3FD /* SafeToSpendSheet.swift in Sources */,
 				C02683C5A3EEAFEFAA011A50 /* SettingsView.swift in Sources */,
+				A8F316E1477447807BAC7E6B /* SpendMonthSheet.swift in Sources */,
+				CBFB72E304409F034FF1BDA6 /* SpendView.swift in Sources */,
 				F174FC9D4CF16A0B6E067ABC /* TextStyles.swift in Sources */,
 				ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */,
 				019973BB81938BA8AA3F5CC2 /* Toast.swift in Sources */,
@@ -692,6 +723,7 @@
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
 				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,
+				767CAD064D77B2559BDEF73E /* SpendPaletteTests.swift in Sources */,
 				DD3477A856F81761EDAE932E /* ToastTests.swift in Sources */,
 				6D4565D119A57E52E7C3DD79 /* TransactionFormValidationTests.swift in Sources */,
 			);

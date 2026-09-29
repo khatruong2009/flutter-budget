@@ -31,7 +31,7 @@ in its own `NavigationStack`: Home (`dollarsign.circle`), Worth
 pushed pages keep the system bar and back gesture. Settings is pushed from
 the gear in the Home header; Recurring is a row under Settings > Data; the
 month's transaction list (Transactions) is pushed from Home's "SEE ALL".
-Goals, Spend and Flow show a placeholder until their Phase 2 streams land.
+Goals and Flow show a placeholder until their Phase 2 streams land.
 
 An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
@@ -83,6 +83,54 @@ Month chip strip (months with data, newest first; page-local selection),
 monthly summary card, rows of the selected month grouped under pinned
 `yMMMd` day headers. Tap to edit (D7), swipe left to delete with a
 "Delete Transaction" confirmation. Reads `model.ledger` only.
+
+## Spend (spec full-app/04 section 1.1; Flutter `category_page.dart`)
+
+`SpendView` (`Views/Spend/`), titled "Categories". Its month is local to the
+tab (never `model.selectedMonth`): the newest month with any transaction,
+re-resolved with `SpendMonth.resolve` on every ledger change; a month that
+loses its last row falls back to the newest and clears the slice and the
+expanded tail. `CategoryBreakdown.build` runs once per render from the
+ledger's month summaries (no transaction scan).
+
+- Header: `BudgieHeader` with a `MonthPill` (`MMMM`, hidden with no
+  months). The pill opens `SpendMonthSheet`: card fill, 26pt top corners
+  with the border along the top only, 40x4 grabber, "Select month", one
+  56pt row per month with data (`yMMMM`, newest first, the list capped at
+  320pt), the selected row accent with a check. Picking closes the sheet
+  and clears the slice and tail. Haptics: light (pill), selection (open),
+  selection (pick).
+- Empty states: "No Expenses Yet" (no months) and "No Expenses" (the
+  month's expense total is 0; the pill stays), `chart.pie`.
+- Donut (`DonutChart`, 240pt, D16 `Canvas` from `DonutGeometry`): the
+  accent glow is a filled blurred circle behind the ring, so it tints the
+  band inside it and the gaps; the centre disc is the page background.
+  The ring sweeps in over 500 ms (Flutter `easeOut`) on first appearance
+  and on a month change only (the ring is keyed by month), instant under
+  Reduce Motion. The whole square takes taps; `DonutGeometry.tap` selects,
+  deselects or ignores, and the selection haptic plays only on a change.
+  Centre: "SPENT", whole-unit total and the delta pill, or the selected
+  slice's name, value and percent. VoiceOver: one adjustable element,
+  "Spending by category", valued "Spent $X, up 12% vs August" or
+  "<name>, <amount>, <percent>"; swipe up/down selects slices.
+- List (`GlowListCard`): up to six ranked rows (tile in the rank colour
+  with the active category's icon by exact name, else the grid; name;
+  `Record.subtitle(money:)`; whole-unit amount; a 6pt bar against the
+  largest category), the selected slice's row tinted (200 ms), then
+  "N more categories" (expands in place) or "Show less". Row taps play a
+  light impact; a category row pushes `CategoryTransactionsView`.
+- Drill-in (`CategoryTransactionsView`): system back bar with the
+  category as title, the tinted "TOTAL SPENT" card (two decimals, text
+  glow, `MMMM yyyy` and count pills, 56pt tile), "TRANSACTIONS", then the
+  month's expense rows of that exact category name, newest first. Rows tap
+  to edit and swipe to delete (awaited, then "Transaction deleted" or the
+  save-failed toast). Colour and icon follow the category's current rank;
+  with no rows left it shows "No Transactions" under the card.
+- State (month, slice, tail, pushed drill-in) survives tab switches.
+- Accessibility identifiers: `spend.monthPill`, `spend.monthSheet`,
+  `spend.month.<yyyy-MM>`, `spend.donut`, `spend.row.<rank>`,
+  `spend.tail`, `spend.showLess`, `spend.empty`, `spend.drillIn.summary`,
+  `spend.drillIn.row`.
 
 ## Net Worth (read-only in the MVP)
 

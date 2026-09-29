@@ -19,7 +19,7 @@ UPGRADE_TEST_RESULTS.md).
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
-| Spend (category donut), Flow (history charts, year-over-year) tabs | derived | Not available; the Transactions page (Home > SEE ALL) lists transactions. |
+| Flow (history charts, year-over-year) tab | derived | Not available; the Transactions page (Home > SEE ALL) lists transactions. |
 | Hide balances toggle, locale override picker, auto-lock timeout picker | `appSettings` | Honoured when set by the Flutter app; no toggles in the MVP. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
@@ -189,6 +189,32 @@ UPGRADE_TEST_RESULTS.md).
   handle; the divider uses the border token.
 - Quick-expense sheet: a native sheet at 66% or 90% height; Flutter's
   draggable sheet also shrinks to 36% and closes there.
+- Spend drill-in (like D7): rows open the edit form and swipe to delete;
+  the delete is awaited and shows "Transaction deleted" or the save-failed
+  toast (Flutter's rows do nothing on tap, and its delete is fire-and-forget
+  with no snackbar). The swipe's medium haptic fires at the 40% threshold
+  and the row springs back while the confirmation shows, as on SEE ALL.
+- Spend drill-in: the colour and icon follow the category's current rank
+  in the month (Flutter keeps the ones it was pushed with, so a delete that
+  re-ranks the category shows a different colour there than on the list).
+- Spend drill-in: the system navigation bar (back button, edge swipe,
+  category title in cardTitle) instead of Flutter's 36pt header; the back
+  tap has no light haptic.
+- Spend empty states: `EmptyStateView`'s plain 56pt symbol in the
+  secondary colour instead of Flutter's 96pt expense-gradient tile with a
+  white glyph.
+- Spend donut: VoiceOver reads it as one adjustable element ("Spending by
+  category", the total or the selected slice as its value; swipe up/down
+  selects slices). Flutter's donut has no semantics.
+- Spend tab: the month, selected slice, expanded tail and a pushed
+  drill-in survive a tab switch, and the donut does not sweep again
+  (Flutter's tab pages are probably rebuilt; not verified on device).
+- Spend tab: under Reduce Motion a changed bar value jumps (Flutter only
+  skips the first fill and still tweens month changes).
+- Spend tail row: the tile's neutral fill is the hairline token (white 6%
+  dark, ink 6% light; Flutter's light value is black 5%).
+- Spend month sheet: a native sheet (system scrim, drag to dismiss)
+  sized to its content, instead of Material's bottom sheet.
 
 ## Known MVP limitations
 
