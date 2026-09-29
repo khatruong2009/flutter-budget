@@ -9,19 +9,30 @@
 /* Begin PBXBuildFile section */
 		028D66A8DEDBB39EA3F4B3D4 /* SystemIntegrationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */; };
 		065E436387B2E9B2EA0A50EA /* BudgieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6490075274592AC5E0C6D3B /* BudgieApp.swift */; };
+		0860E2AFB8E9781A5396C119 /* SplineSansMono-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */; };
 		0BDCBA1F7A98D49F747333A5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30909C3F10B6B69B9FE7DE2C /* MainView.swift */; };
 		25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE53DE5AD70779A34E32BD53 /* AppModel.swift */; };
 		281973279A82457BDE68EAD0 /* BudgieCore in Frameworks */ = {isa = PBXBuildFile; productRef = B54562B75CAA02C6A251ACA7 /* BudgieCore */; };
+		291034520F1F8FCA0E5EEE5C /* Gabarito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */; };
 		4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */; };
 		4304245839AF010DA282B048 /* RecurringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF71D235C2D853C59C3B393 /* RecurringView.swift */; };
 		4A4CECF3184C530EAD660520 /* SpendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B00317C27AB7F1D24A6577 /* SpendingView.swift */; };
+		4BCAFD264E95D9E742AE05BA /* Gabarito-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26BB2E615765EF1D846843C2 /* Gabarito-ExtraBold.ttf */; };
 		5416B7A70F85D0A149C0BA4C /* BudgetWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B580B965259798CC484798A5 /* BudgetWidgetsBundle.swift */; };
+		5AC290014BC51785886288D1 /* FontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDF2F936CC7D305389BBED49 /* FontTests.swift */; };
+		626B03DE04BB702D62F699F5 /* Gabarito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B252B4E7CB90F0EE19AF2304 /* Gabarito-SemiBold.ttf */; };
+		6D1605A29F887E72113F51C8 /* SplineSansMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */; };
+		727666CCDFE3450761B5F522 /* SplineSansMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */; };
 		7768DCA424CD0AB9B8D060B9 /* SpendingSafeToSpendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D2A5927C5027562C662C4D6 /* SpendingSafeToSpendSheet.swift */; };
 		8F1656985A23437F8FCD8BA5 /* BudgetWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		90F6E489893123A00170EE80 /* Gabarito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */; };
+		9C6AEF96E6D5E17D4C028A17 /* OFL-Gabarito.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */; };
 		A20040AA4462073164A2FAA5 /* RehearsalSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26060D2DC9FBC934F4E5A81 /* RehearsalSummary.swift */; };
 		A3485DE6C0615E9EFB029C1C /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62925024DEA9AC91020BF16 /* HistoryView.swift */; };
 		A40BFB68E6EE2FF18619167F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBE5D912C19A6258BE48F99 /* RootView.swift */; };
+		B77F656D6050715E177A0D57 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C1B7F8DAB0F15009E0A853 /* Fonts.swift */; };
 		B91242CD5E29A921F06A5593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6462237A82B43EB73DD31CEB /* Assets.xcassets */; };
+		BC10481C46C47C6063FFDA2B /* OFL-SplineSansMono.txt in Resources */ = {isa = PBXBuildFile; fileRef = 30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */; };
 		BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */; };
 		C02683C5A3EEAFEFAA011A50 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758855687C3C7914C62089 /* SettingsView.swift */; };
 		C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4458A9E28C360553F6FF40A7 /* RoutingTests.swift */; };
@@ -33,6 +44,8 @@
 		EBEA70BE1580B123E8739B8A /* ProtectedDataMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B124988FC6629658BB700 /* ProtectedDataMonitor.swift */; };
 		ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D5F50F2340127241F06169 /* Theme.swift */; };
 		F08842C77D36FF5B33731EB9 /* TransactionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */; };
+		F091B01D59169689CBB3EDB6 /* Gabarito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */; };
+		F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0675028D226C1972E3D145CE /* LicencesView.swift */; };
 		F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */; };
 		FE5B9B30E0779A3107D02108 /* BudgetWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */; };
 /* End PBXBuildFile section */
@@ -76,10 +89,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		05C1B7F8DAB0F15009E0A853 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		0675028D226C1972E3D145CE /* LicencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicencesView.swift; sourceTree = "<group>"; };
 		0A12631956871BA18AFA9044 /* Budgie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Budgie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD33E49D26968C2B1B81588 /* BudgieCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BudgieCore; path = BudgieCore; sourceTree = SOURCE_ROOT; };
 		16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonthTests.swift; sourceTree = "<group>"; };
 		16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Bold.ttf"; sourceTree = "<group>"; };
+		26BB2E615765EF1D846843C2 /* Gabarito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-ExtraBold.ttf"; sourceTree = "<group>"; };
+		30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SplineSansMono.txt"; sourceTree = "<group>"; };
 		30909C3F10B6B69B9FE7DE2C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		31BFEBF0FCFDE676131B233F /* BudgetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgets.entitlements; sourceTree = "<group>"; };
 		3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIntegrationUITests.swift; sourceTree = "<group>"; };
@@ -89,6 +107,7 @@
 		5177241A386AE7A9E235D4AD /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
 		55D5F50F2340127241F06169 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormView.swift; sourceTree = "<group>"; };
+		5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Medium.ttf"; sourceTree = "<group>"; };
 		6462237A82B43EB73DD31CEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6FB0B4F7B497DD7C0697DC03 /* Budgie.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budgie.entitlements; sourceTree = "<group>"; };
 		7D2A5927C5027562C662C4D6 /* SpendingSafeToSpendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingSafeToSpendSheet.swift; sourceTree = "<group>"; };
@@ -96,22 +115,29 @@
 		8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgets.swift; sourceTree = "<group>"; };
 		8AF71D235C2D853C59C3B393 /* RecurringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringView.swift; sourceTree = "<group>"; };
 		8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVPFlowUITests.swift; sourceTree = "<group>"; };
+		91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-Gabarito.txt"; sourceTree = "<group>"; };
 		95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BudgetWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-Regular.ttf"; sourceTree = "<group>"; };
 		9BBE2F4BB26B18F1B815C284 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		9C21DAB29DB3416D2D18C2B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Regular.ttf"; sourceTree = "<group>"; };
 		9E758855687C3C7914C62089 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		9F3C216CCEAB63E8F1DC75E1 /* SpringBoardProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringBoardProbe.swift; sourceTree = "<group>"; };
 		A47E1740CF8EF748E64F594A /* BudgieUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BudgieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B252B4E7CB90F0EE19AF2304 /* Gabarito-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-SemiBold.ttf"; sourceTree = "<group>"; };
 		B26060D2DC9FBC934F4E5A81 /* RehearsalSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RehearsalSummary.swift; sourceTree = "<group>"; };
 		B27CE2454178753AB2F698B0 /* BudgieAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BudgieAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B580B965259798CC484798A5 /* BudgetWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetsBundle.swift; sourceTree = "<group>"; };
 		C220A1E54BB67BBBA14FCB8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-SemiBold.ttf"; sourceTree = "<group>"; };
 		DBBE5D912C19A6258BE48F99 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		DE53DE5AD70779A34E32BD53 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-Medium.ttf"; sourceTree = "<group>"; };
 		EB6AFCF97303B1CC30CF62C5 /* SpringBoardProbe.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpringBoardProbe.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F62925024DEA9AC91020BF16 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		F6490075274592AC5E0C6D3B /* BudgieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgieApp.swift; sourceTree = "<group>"; };
+		FDF2F936CC7D305389BBED49 /* FontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +155,7 @@
 		0E73655C9F5727E62CC36F88 /* BudgieAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
 				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
 			);
@@ -149,10 +176,28 @@
 				6FB0B4F7B497DD7C0697DC03 /* Budgie.entitlements */,
 				C220A1E54BB67BBBA14FCB8E /* Info.plist */,
 				3CD6A363414638889F7507A8 /* App */,
+				800048EC9D716FB064F51AC7 /* DesignSystem */,
 				C95CA22DD745D62FD724FF27 /* Resources */,
 				C6F8E3EA2E4EE87E1C748F6E /* Views */,
 			);
 			path = Budgie;
+			sourceTree = "<group>";
+		};
+		3AF96E679407416D249E985D /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */,
+				26BB2E615765EF1D846843C2 /* Gabarito-ExtraBold.ttf */,
+				5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */,
+				9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */,
+				B252B4E7CB90F0EE19AF2304 /* Gabarito-SemiBold.ttf */,
+				91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */,
+				30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */,
+				E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */,
+				98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */,
+				DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		3CD6A363414638889F7507A8 /* App */ = {
@@ -173,6 +218,22 @@
 				3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */,
 			);
 			path = BudgieUITests;
+			sourceTree = "<group>";
+		};
+		6B473A6B3E51F4F4576EAACA /* Typography */ = {
+			isa = PBXGroup;
+			children = (
+				05C1B7F8DAB0F15009E0A853 /* Fonts.swift */,
+			);
+			path = Typography;
+			sourceTree = "<group>";
+		};
+		800048EC9D716FB064F51AC7 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				6B473A6B3E51F4F4576EAACA /* Typography */,
+			);
+			path = DesignSystem;
 			sourceTree = "<group>";
 		};
 		8A60D3B8543A761CABADCFF1 /* SpringBoardProbe */ = {
@@ -210,6 +271,7 @@
 				85B00317C27AB7F1D24A6577 /* SpendingView.swift */,
 				55D5F50F2340127241F06169 /* Theme.swift */,
 				57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */,
+				FE5100C54D7940ADA83FE021 /* Settings */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -219,6 +281,7 @@
 			children = (
 				B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */,
 				16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */,
+				3AF96E679407416D249E985D /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -246,6 +309,14 @@
 				9C21DAB29DB3416D2D18C2B8 /* Info.plist */,
 			);
 			path = BudgetWidgets;
+			sourceTree = "<group>";
+		};
+		FE5100C54D7940ADA83FE021 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				0675028D226C1972E3D145CE /* LicencesView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,7 +479,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */,
+				F091B01D59169689CBB3EDB6 /* Gabarito-Bold.ttf in Resources */,
+				4BCAFD264E95D9E742AE05BA /* Gabarito-ExtraBold.ttf in Resources */,
+				90F6E489893123A00170EE80 /* Gabarito-Medium.ttf in Resources */,
+				291034520F1F8FCA0E5EEE5C /* Gabarito-Regular.ttf in Resources */,
+				626B03DE04BB702D62F699F5 /* Gabarito-SemiBold.ttf in Resources */,
+				9C6AEF96E6D5E17D4C028A17 /* OFL-Gabarito.txt in Resources */,
+				BC10481C46C47C6063FFDA2B /* OFL-SplineSansMono.txt in Resources */,
 				D0394324CE04DAE91A138496 /* PrivacyInfo.xcprivacy in Resources */,
+				727666CCDFE3450761B5F522 /* SplineSansMono-Medium.ttf in Resources */,
+				6D1605A29F887E72113F51C8 /* SplineSansMono-Regular.ttf in Resources */,
+				0860E2AFB8E9781A5396C119 /* SplineSansMono-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +521,9 @@
 				25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */,
 				065E436387B2E9B2EA0A50EA /* BudgieApp.swift in Sources */,
 				EA0E34188ED90C9D7CE8E5B4 /* DiagnosticsView.swift in Sources */,
+				B77F656D6050715E177A0D57 /* Fonts.swift in Sources */,
 				A3485DE6C0615E9EFB029C1C /* HistoryView.swift in Sources */,
+				F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */,
 				0BDCBA1F7A98D49F747333A5 /* MainView.swift in Sources */,
 				CE980D7CA160D8759B63F6AF /* NetWorthView.swift in Sources */,
 				EBEA70BE1580B123E8739B8A /* ProtectedDataMonitor.swift in Sources */,
@@ -476,6 +559,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
 				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,
 			);

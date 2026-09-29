@@ -47,6 +47,17 @@ targets:
             CFBundleURLName: com.khatruong.budgetbuddy
             CFBundleURLSchemes: [budgetapp]
         NSFaceIDUsageDescription: Budgie uses Face ID to protect your financial data when App Lock is enabled.
+        # Bundled at the app bundle root (spec 01 section 4); OFL texts ship
+        # beside them and show in Settings > About > Licences.
+        UIAppFonts:
+          - Gabarito-Regular.ttf
+          - Gabarito-Medium.ttf
+          - Gabarito-SemiBold.ttf
+          - Gabarito-Bold.ttf
+          - Gabarito-ExtraBold.ttf
+          - SplineSansMono-Regular.ttf
+          - SplineSansMono-Medium.ttf
+          - SplineSansMono-SemiBold.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UILaunchScreen:
           UIColorName: launch-screen-background

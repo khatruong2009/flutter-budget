@@ -41,6 +41,17 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Budgie uses Face ID to protect your financial data when App Lock is enabled.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Gabarito-Regular.ttf</string>
+		<string>Gabarito-Medium.ttf</string>
+		<string>Gabarito-SemiBold.ttf</string>
+		<string>Gabarito-Bold.ttf</string>
+		<string>Gabarito-ExtraBold.ttf</string>
+		<string>SplineSansMono-Regular.ttf</string>
+		<string>SplineSansMono-Medium.ttf</string>
+		<string>SplineSansMono-SemiBold.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
