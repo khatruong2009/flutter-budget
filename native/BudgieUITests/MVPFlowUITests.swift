@@ -95,7 +95,9 @@ final class MVPFlowUITests: XCTestCase {
 
         // Theme: the Light | Dark | Auto pills on the Theme row.
         openSettings()
-        app.buttons["Dark"].firstMatch.tap()
+        let dark = app.buttons["Dark"].firstMatch
+        dark.tap()
+        XCTAssertTrue(dark.wait(for: \.isSelected, toEqual: true, timeout: 5), "Dark selected")
 
         // Add an income from the Home pill, then delete it from SEE ALL.
         homeRoot()
@@ -111,5 +113,23 @@ final class MVPFlowUITests: XCTestCase {
         XCTAssertTrue(confirm.waitForExistence(timeout: 5))
         confirm.tap()
         XCTAssertTrue(doomed.waitForNonExistence(timeout: 5))
+
+        // Settings last (they change how every amount above is formatted),
+        // so ui_flow.sh's Dart check reads a non-default appSettings section.
+        openSettings()
+        let currency = app.buttons["settings.currency"]
+        XCTAssertTrue(currency.waitForExistence(timeout: 5))
+        currency.tap()
+        let euro = app.buttons["Euro"]
+        XCTAssertTrue(euro.waitForExistence(timeout: 5))
+        euro.tap()
+        XCTAssertTrue(euro.waitForNonExistence(timeout: 5), "currency sheet closed")
+        XCTAssertEqual(currency.value as? String, "Euro (EUR)")
+
+        let hide = app.switches["settings.hideBalances"]
+        XCTAssertTrue(hide.waitForExistence(timeout: 5))
+        hide.tap()
+        let hidden = app.switches.matching(NSPredicate(format: "identifier == 'settings.hideBalances' AND value == '1'"))
+        XCTAssertTrue(hidden.firstMatch.waitForExistence(timeout: 5), "Hide balances on")
     }
 }

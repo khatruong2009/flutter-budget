@@ -48,6 +48,9 @@ private struct AppLockModifier: ViewModifier {
     @Environment(AppModel.self) private var model
     @Environment(\.scenePhase) private var scenePhase
     @State private var backgroundedAt: ContinuousClock.Instant?
+    /// Settings' enable prompt made the scene inactive: no cover until the
+    /// scene is active again (or goes to the background).
+    @State private var coverHeld = false
 
     private var enabled: Bool { model.data?.appSettings.appLockEnabled == true }
     private var timeout: Int { model.data?.appSettings.autoLockTimeoutSeconds ?? 0 }
@@ -57,7 +60,7 @@ private struct AppLockModifier: ViewModifier {
             .overlay {
                 if model.isLocked {
                     LockScreen { model.markUnlocked() }
-                } else if enabled && scenePhase != .active {
+                } else if enabled && scenePhase != .active && !coverHeld {
                     PrivacyCover()
                 }
             }
@@ -66,11 +69,20 @@ private struct AppLockModifier: ViewModifier {
                 // lock the session that is already open.
                 if isOn { model.markUnlocked() }
             }
+            .onChange(of: model.isEnablingAppLock) { _, enabling in
+                if enabling {
+                    coverHeld = true
+                } else if scenePhase == .active {
+                    coverHeld = false
+                }
+            }
             .onChange(of: scenePhase) { _, phase in
                 switch phase {
                 case .background:
                     backgroundedAt = .now
+                    coverHeld = false
                 case .active:
+                    if !model.isEnablingAppLock { coverHeld = false }
                     if let since = backgroundedAt, since.duration(to: .now) >= .seconds(max(timeout, 0)) {
                         model.relock()
                     }

@@ -474,6 +474,15 @@ UPGRADE_TEST_RESULTS.md).
 - Settings is pushed from the Home gear (D2): the system navigation bar
   (back button and swipe) carries the "Settings" title (26/800) at the
   leading edge; there is no floating-dock bottom padding.
+- The `appSettings` section keeps unknown keys and the stored key order
+  when Swift rewrites it (Dart's `_persistAtomic` writes only its five keys,
+  in its own order, dropping anything else).
+- The Home Screen widgets honour Hide balances (D12): the app writes
+  `budgieHideBalances` (Bool) to the App Group at launch, with every cash
+  flow sync and on every Hide balances change, and the widget shows
+  "••••" in a neutral colour instead of the cash flow. Flutter's widget
+  never masks; it reads only `cashFlow` / `cashFlowMonth`, which Swift
+  still writes, so a downgrade just shows the amount again.
 - Settings setters (currency, number format, app lock, lock delay, hide
   balances) change memory, then the preference mirror, then the
   `appSettings` section, awaited, and return the verified result, with
@@ -485,7 +494,9 @@ UPGRADE_TEST_RESULTS.md).
   and the change reverts on relaunch because the stale section beats the
   newer preference).
 - App lock: turning the switch on asks for Face ID / the passcode first
-  ("Turn on App Lock") and keeps the open session unlocked; a device
+  ("Turn on App Lock") and keeps the open session unlocked (the switch
+  stays on while the prompt is up, and the privacy cover is held back until
+  the scene is active again); a device
   without a passcode gets "Set a passcode in the Settings app to use App
   Lock." (Flutter locks the session at once and shows its lock screen).
   The relock clock starts only when the app goes to the background, not on

@@ -172,6 +172,9 @@ final class AppModel {
             snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)
         data = loaded.data
         netWorthRevision &+= 1
+        // Hide balances may have changed where the widget flag was not
+        // written (the Flutter build, a failed settings save).
+        syncWidgetPrivacy()
         if !loaded.pendingWrites.isEmpty {
             await persist(loaded.pendingWrites.map(\.0))
         }
@@ -267,13 +270,32 @@ final class AppModel {
 
     // MARK: - Widget
 
-    /// `_syncWidgetCashFlow`: current month's cash flow into the App Group.
+    /// App Group key for Hide balances (D12). Swift-only: Flutter's widget
+    /// reads just `cashFlow` / `cashFlowMonth` and ignores it.
+    private static let widgetHideBalancesKey = "budgieHideBalances"
+
+    /// `_syncWidgetCashFlow`: current month's cash flow into the App Group,
+    /// with the Hide balances flag the widget masks it by.
     private func syncWidget() {
         guard let data, protectedData.isProtectedDataAvailable else { return }
         let value = data.widgetCashFlow(now: now)
         let defaults = UserDefaults(suiteName: AppIdentifiers.appGroup)
         defaults?.set(value.amount, forKey: "cashFlow")
         defaults?.set(value.month, forKey: "cashFlowMonth")
+        defaults?.set(data.appSettings.hideBalances, forKey: Self.widgetHideBalancesKey)
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Just the Hide balances flag, reloading the widget only when it
+    /// changed (launch, and every Hide balances change, saved or not: the
+    /// widget follows what the app shows).
+    private func syncWidgetPrivacy() {
+        guard let data, protectedData.isProtectedDataAvailable,
+            let defaults = UserDefaults(suiteName: AppIdentifiers.appGroup)
+        else { return }
+        let hidden = data.appSettings.hideBalances
+        guard defaults.object(forKey: Self.widgetHideBalancesKey) as? Bool != hidden else { return }
+        defaults.set(hidden, forKey: Self.widgetHideBalancesKey)
         WidgetCenter.shared.reloadAllTimelines()
     }
 
@@ -603,10 +625,13 @@ final class AppModel {
         await updateSettings("autoLockTimeoutSeconds") { $0.setAutoLockTimeoutSeconds(seconds) }
     }
 
-    /// Dart `setHideBalances`: `moneyFormatter` masks every amount at once.
+    /// Dart `setHideBalances`: `moneyFormatter` masks every amount at once,
+    /// and the Home Screen widget too (D12; Flutter's widget ignores it).
     @discardableResult
     func setHideBalances(_ hidden: Bool) async -> Bool {
-        await updateSettings("hideBalances") { $0.setHideBalances(hidden) }
+        let saved = await updateSettings("hideBalances") { $0.setHideBalances(hidden) }
+        syncWidgetPrivacy()
+        return saved
     }
 
     /// One `AppSettingsProvider` setter: memory, the preference mirror, then
@@ -687,6 +712,13 @@ final class AppModel {
     }
 
     // MARK: - Routing
+
+    /// Settings' "Turn on App Lock" prompt is up. The prompt makes the scene
+    /// inactive, so App Lock holds its privacy cover back until the scene
+    /// is active again (it would flash over Settings as the lock turns on).
+    private(set) var isEnablingAppLock = false
+
+    func setEnablingAppLock(_ enabling: Bool) { isEnablingAppLock = enabling }
 
     /// App Lock is on and this session has not authenticated.
     var isLocked: Bool { data?.appSettings.appLockEnabled == true && !sessionUnlocked }

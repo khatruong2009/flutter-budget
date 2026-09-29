@@ -17,7 +17,6 @@ struct SettingsView: View {
     @State private var destination: Destination?
     @State private var choice: Choice?
     @State private var exportFile: ExportFile?
-    @State private var enablingLock = false
     @State private var notice: String?
 
     var body: some View {
@@ -27,16 +26,26 @@ struct SettingsView: View {
             }
         }
         .background(BudgieColor.background)
+        // The system title names the screen (VoiceOver, the back button of
+        // pushed pages) but is not drawn: the 26pt title sits at the
+        // leading edge instead.
+        .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarBackground(BudgieColor.background, for: .navigationBar)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                Color.clear.frame(width: 1, height: 1).accessibilityHidden(true)
+            }
             SettingsBarTitle {
+                // Capped so the largest text sizes cannot push it past the
+                // bar or into the back button.
                 Text("Settings")
                     .textStyle(.pageTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .fixedSize()
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     .accessibilityAddTraits(.isHeader)
             }
         }
@@ -88,7 +97,7 @@ struct SettingsView: View {
                 action: { choice = .currency }
             ).accessibilityIdentifier("settings.currency")),
             AnyView(SettingsRow(
-                symbol: "globe", color: BudgieColor.info, title: "Number format",
+                symbol: "globe", color: BudgieColor.info, iconSize: SettingsGlyph.full, title: "Number format",
                 subtitle: SettingsOptions.localeLabel(settings.localeOverride),
                 action: { choice = .locale }
             ).accessibilityIdentifier("settings.numberFormat")),
@@ -99,14 +108,14 @@ struct SettingsView: View {
         let delay = SettingsOptions.lockTimeoutLabel(settings.autoLockTimeoutSeconds)
         var rows: [AnyView] = [
             AnyView(SettingsToggleRow(
-                symbol: "lock", color: BudgieColor.accent, title: "App lock",
+                symbol: "lock", color: BudgieColor.accent, iconSize: SettingsGlyph.full, title: "App lock",
                 subtitle: settings.appLockEnabled ? "Lock after \(delay)" : "Require device authentication",
                 isOn: lockBinding, identifier: "settings.appLock"))
         ]
         // Inserted and removed without animation, as in Flutter.
         if settings.appLockEnabled {
             rows.append(AnyView(SettingsRow(
-                symbol: "timer", color: BudgieColor.info, title: "Lock delay", subtitle: delay,
+                symbol: "timer", color: BudgieColor.info, iconSize: SettingsGlyph.full, title: "Lock delay", subtitle: delay,
                 action: { choice = .lockDelay }
             ).accessibilityIdentifier("settings.lockDelay")))
         }
@@ -120,7 +129,9 @@ struct SettingsView: View {
     /// (Flutter's `_dataBusy`).
     private func dataRows(_ data: FinancialData) -> [AnyView] {
         let busy = exportFile != nil
-        let transactionCount = model.ledger.newestFirst.count
+        // What the export writes (Flutter `transactions.length`), current
+        // as soon as a row is added (the ledger index rebuilds later).
+        let transactionCount = data.transactions.count
         func unlessBusy(_ action: @escaping () -> Void) -> (() -> Void)? { busy ? nil : action }
         return [
             AnyView(SettingsRow(
@@ -130,11 +141,13 @@ struct SettingsView: View {
             ).accessibilityIdentifier("settings.recurring")),
             AnyView(SettingsRow(
                 symbol: "arrow.down.to.line", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
+                iconSize: SettingsGlyph.small,
                 title: "Export as CSV", subtitle: "All \(transactionCount) transactions", busy: busy,
                 action: unlessBusy(export)
             ).accessibilityIdentifier("settings.exportCSV")),
             AnyView(SettingsRow(
                 symbol: "arrow.up.to.line", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
+                iconSize: SettingsGlyph.small,
                 title: "Import from CSV", subtitle: "Add transactions from a file",
                 action: unlessBusy { destination = .csvImport })),
             AnyView(SettingsRow(
@@ -153,7 +166,8 @@ struct SettingsView: View {
     private var aboutRows: [AnyView] {
         var rows: [AnyView] = [
             AnyView(SettingsRow(
-                symbol: "info.circle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile, title: "Version",
+                symbol: "info.circle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
+                iconSize: SettingsGlyph.full, title: "Version",
                 subtitle: "Budgie \(Self.version)", action: nil, trailing: { EmptyView() })),
             AnyView(SettingsRow(
                 symbol: "list.bullet.rectangle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
@@ -205,17 +219,18 @@ struct SettingsView: View {
     }
 
     /// Turning the lock on authenticates first and keeps this session
-    /// unlocked; turning it off needs nothing.
+    /// unlocked; turning it off needs nothing. The switch stays on while the
+    /// prompt is up and goes back off only if it fails.
     private var lockBinding: Binding<Bool> {
         Binding(
-            get: { model.data?.appSettings.appLockEnabled == true },
+            get: { model.data?.appSettings.appLockEnabled == true || model.isEnablingAppLock },
             set: { enable in
                 guard enable else {
                     Task { await model.setAppLockEnabled(false) }
                     return
                 }
-                guard !enablingLock else { return }
-                enablingLock = true
+                guard !model.isEnablingAppLock else { return }
+                model.setEnablingAppLock(true)
                 Task {
                     switch await DeviceAuth.authenticate(reason: "Turn on App Lock") {
                     case .success:
@@ -224,7 +239,7 @@ struct SettingsView: View {
                     case .failed: break
                     case .unavailable: notice = "Set a passcode in the Settings app to use App Lock."
                     }
-                    enablingLock = false
+                    model.setEnablingAppLock(false)
                 }
             })
     }
@@ -306,6 +321,7 @@ private struct UpcomingSettingsPage: View {
         EmptyStateView(symbol: symbol, title: title, message: "This arrives in an upcoming update.")
             .frame(maxHeight: .infinity)
             .background(BudgieColor.background)
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
     }
 }

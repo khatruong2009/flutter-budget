@@ -16,6 +16,12 @@ enum CashFlowStore {
     return defaults.double(forKey: "cashFlow")
   }
 
+  /// The app's Hide balances setting (D12), written by the Swift app only;
+  /// false when absent.
+  static func hidesBalances() -> Bool {
+    UserDefaults(suiteName: suiteName)?.bool(forKey: "budgieHideBalances") ?? false
+  }
+
   /// Always Gregorian: the key must match what the Dart side writes from
   /// DateTime.now(), regardless of the device calendar setting.
   private static var gregorian: Calendar {
@@ -38,6 +44,10 @@ enum CashFlowStore {
 /// Logo + cash flow strip shown at the top of every Budgie widget.
 struct BudgieWidgetHeader: View {
   let cashFlow: Double?
+  var hidesBalances = false
+
+  /// MoneyFormatter's masked amount.
+  static let hiddenAmount = "\u{2022}\u{2022}\u{2022}\u{2022}"
 
   var body: some View {
     HStack(spacing: 5) {
@@ -45,7 +55,15 @@ struct BudgieWidgetHeader: View {
         .resizable()
         .scaledToFit()
         .frame(width: 16, height: 16)
-      if let amount = cashFlow {
+      if cashFlow != nil, hidesBalances {
+        // Neutral colour: red/green would still tell the sign.
+        Spacer(minLength: 4)
+        Text(Self.hiddenAmount)
+          .font(.system(size: 12, weight: .bold, design: .rounded))
+          .foregroundColor(.white.opacity(0.75))
+          .lineLimit(1)
+          .accessibilityLabel("Balance hidden")
+      } else if let amount = cashFlow {
         Spacer(minLength: 4)
         Text(Self.formattedAmount(amount))
           .font(.system(size: 12, weight: .bold, design: .rounded))
@@ -77,20 +95,21 @@ struct BudgieWidgetHeader: View {
 struct BudgetQuickActionsEntry: TimelineEntry {
   let date: Date
   let cashFlow: Double?
+  let hidesBalances: Bool
 }
 
 struct BudgetQuickActionsProvider: TimelineProvider {
   func placeholder(in context: Context) -> BudgetQuickActionsEntry {
-    BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read())
+    BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances())
   }
 
   func getSnapshot(in context: Context, completion: @escaping (BudgetQuickActionsEntry) -> Void) {
-    completion(BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read()))
+    completion(BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances()))
   }
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetQuickActionsEntry>) -> Void) {
     let now = Date()
-    let entry = BudgetQuickActionsEntry(date: now, cashFlow: CashFlowStore.read(for: now))
+    let entry = BudgetQuickActionsEntry(date: now, cashFlow: CashFlowStore.read(for: now), hidesBalances: CashFlowStore.hidesBalances())
     completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
   }
 }
@@ -103,7 +122,7 @@ struct BudgetQuickActionsEntryView: View {
 
   var body: some View {
     VStack(spacing: 8) {
-      BudgieWidgetHeader(cashFlow: entry.cashFlow)
+      BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
       actionButton(
         title: "Income",
         icon: "plus.circle.fill",
@@ -162,20 +181,21 @@ struct BudgetQuickActionsWidget: Widget {
 struct BudgetVoiceAddEntry: TimelineEntry {
   let date: Date
   let cashFlow: Double?
+  let hidesBalances: Bool
 }
 
 struct BudgetVoiceAddProvider: TimelineProvider {
   func placeholder(in context: Context) -> BudgetVoiceAddEntry {
-    BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read())
+    BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances())
   }
 
   func getSnapshot(in context: Context, completion: @escaping (BudgetVoiceAddEntry) -> Void) {
-    completion(BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read()))
+    completion(BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances()))
   }
 
   func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetVoiceAddEntry>) -> Void) {
     let now = Date()
-    let entry = BudgetVoiceAddEntry(date: now, cashFlow: CashFlowStore.read(for: now))
+    let entry = BudgetVoiceAddEntry(date: now, cashFlow: CashFlowStore.read(for: now), hidesBalances: CashFlowStore.hidesBalances())
     completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
   }
 }
@@ -187,7 +207,7 @@ struct BudgetVoiceAddEntryView: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      BudgieWidgetHeader(cashFlow: entry.cashFlow)
+      BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
       Spacer(minLength: 0)
       Image(systemName: "mic.fill")
         .font(.system(size: 26))

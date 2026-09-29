@@ -49,23 +49,41 @@ struct SettingsEyebrow: View {
         Text(title)
             .textStyle(.eyebrow)
             .foregroundStyle(BudgieColor.textTertiary)
+            // One line: at accessibility sizes "PERSONALIZATION" would
+            // otherwise break mid-word.
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
             .padding(EdgeInsets(top: 28, leading: 24, bottom: 0, trailing: 24))
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityAddTraits(.isHeader)
     }
 }
 
+/// Material Symbols draw a 20pt icon inside ~2pt of padding, so its glyphs
+/// look smaller than an SF Symbol at 20; these point sizes match the
+/// Settings screenshots' glyphs (most ~15-17pt across; the file arrows 13).
+enum SettingsGlyph {
+    static let standard: CGFloat = 15
+    /// Glyphs that fill their Material box (language, lock, timer, info).
+    static let full: CGFloat = 17
+    /// file_download / file_upload, drawn small in their box.
+    static let small: CGFloat = 13
+}
+
 /// `_SettingsRow` (sp:1227-1310): 40pt tile (the colour at 14% unless
 /// `tile` overrides it), title and a one-line subtitle, then the trailing
 /// view; padding 14 x 12. With `action` the whole row is a button (light
 /// haptic, no visible press state, VoiceOver "title, subtitle"); without
-/// one it is plain.
+/// one it is plain. While `busy` VoiceOver hears "Exporting" for the
+/// subtitle.
 struct SettingsRow<Trailing: View>: View {
     let symbol: String
     let color: Color
     var tile: Color? = nil
+    var iconSize = SettingsGlyph.standard
     let title: String
     let subtitle: String
+    var busy = false
     var action: (() -> Void)? = nil
     @ViewBuilder var trailing: () -> Trailing
 
@@ -73,7 +91,7 @@ struct SettingsRow<Trailing: View>: View {
 
     var body: some View {
         let row = HStack(spacing: 12) {
-            IconTile(symbol: symbol, color: color, background: tile ?? color.opacity(0.14))
+            IconTile(symbol: symbol, color: color, iconSize: iconSize, background: tile ?? color.opacity(0.14))
             SettingsRowText(title: title, subtitle: subtitle, subtitleLines: 1)
             trailing()
         }
@@ -95,7 +113,10 @@ struct SettingsRow<Trailing: View>: View {
             .accessibilityValue(subtitle)
             .accessibilityAddTraits(.isButton)
         } else {
-            row.accessibilityElement(children: .combine)
+            row
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(title)
+                .accessibilityValue(busy ? "Exporting" : subtitle)
         }
     }
 }
@@ -103,11 +124,12 @@ struct SettingsRow<Trailing: View>: View {
 extension SettingsRow where Trailing == SettingsChevron {
     /// A row that opens something: the chevron, or the spinner while `busy`.
     init(
-        symbol: String, color: Color, tile: Color? = nil, title: String, subtitle: String, busy: Bool = false,
-        action: (() -> Void)?
+        symbol: String, color: Color, tile: Color? = nil, iconSize: CGFloat = SettingsGlyph.standard, title: String,
+        subtitle: String, busy: Bool = false, action: (() -> Void)?
     ) {
         self.init(
-            symbol: symbol, color: color, tile: tile, title: title, subtitle: subtitle, action: action,
+            symbol: symbol, color: color, tile: tile, iconSize: iconSize, title: title, subtitle: subtitle, busy: busy,
+            action: action,
             trailing: { SettingsChevron(busy: busy) })
     }
 }
@@ -120,6 +142,7 @@ extension SettingsRow where Trailing == SettingsChevron {
 struct SettingsToggleRow: View {
     let symbol: String
     let color: Color
+    var iconSize = SettingsGlyph.standard
     let title: String
     let subtitle: String
     let isOn: Binding<Bool>
@@ -127,7 +150,7 @@ struct SettingsToggleRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            IconTile(symbol: symbol, color: color, background: color.opacity(0.14))
+            IconTile(symbol: symbol, color: color, iconSize: iconSize, background: color.opacity(0.14))
             SettingsRowText(title: title, subtitle: subtitle, subtitleLines: 1)
                 .accessibilityHidden(true)
             Toggle(title, isOn: isOn)
@@ -142,22 +165,48 @@ struct SettingsToggleRow: View {
 }
 
 /// `_ThemeRow` (sp:1156-1224): the moon tile, "Theme" with a subtitle that
-/// wraps (no line limit), and the Light | Dark | Auto pills.
+/// wraps (no line limit), and the Light | Dark | Auto pills. When the pills
+/// leave the text under 80pt (large text sizes) they move under it.
 struct SettingsThemeRow: View {
     @Binding var selection: Int
 
     var body: some View {
-        HStack(spacing: 12) {
-            IconTile(symbol: "moon", color: BudgieColor.accent, background: BudgieColor.accent.opacity(0.14))
-            SettingsRowText(title: "Theme", subtitle: "Light, dark, or match device", subtitleLines: nil)
-                .accessibilityElement(children: .combine)
-            SegmentedPills(items: ["Light", "Dark", "Auto"], selection: $selection)
-                .fixedSize()
-                .accessibilityElement(children: .contain)
-                .accessibilityLabel("Theme mode")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                tile
+                text.frame(minWidth: 80, idealWidth: 80, maxWidth: .infinity)
+                pills
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    tile
+                    text
+                }
+                pills
+            }
         }
         .padding(.vertical, 14)
         .padding(.horizontal, 12)
+    }
+
+    private var tile: some View {
+        IconTile(
+            symbol: "moon", color: BudgieColor.accent, iconSize: SettingsGlyph.standard,
+            background: BudgieColor.accent.opacity(0.14))
+    }
+
+    private var text: some View {
+        SettingsRowText(title: "Theme", subtitle: "Light, dark, or match device", subtitleLines: nil)
+            .accessibilityElement(children: .combine)
+    }
+
+    /// Capped at AX2 so the three pills still fit the card's width.
+    private var pills: some View {
+        SegmentedPills(items: ["Light", "Dark", "Auto"], selection: $selection)
+            .fixedSize()
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Theme mode")
     }
 }
 
@@ -196,8 +245,9 @@ struct SettingsChevron: View {
                 .frame(width: 20, height: 20)
                 .accessibilityHidden(true)
         } else {
+            // Material's chevron is ~6 x 10 inside its 20pt box.
             Image(systemName: "chevron.right")
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(BudgieColor.textTertiary)
                 .frame(width: 20)
                 .accessibilityHidden(true)
