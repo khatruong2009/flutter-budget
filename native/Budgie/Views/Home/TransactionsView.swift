@@ -84,6 +84,8 @@ struct TransactionsView: View {
             Button("Delete", role: .destructive) {
                 deleteConfirms += 1
                 Task {
+                    // Already gone (deleted elsewhere): nothing failed.
+                    guard model.hasTransaction(id: record.id) else { return }
                     let saved = await model.deleteTransaction(id: record.id)
                     model.showToast(saved ? .transactionDeleted : .saveFailed)
                 }
@@ -224,13 +226,13 @@ private struct MonthChip: View {
             .background {
                 if isSelected {
                     shape.fill(LinearGradient(
-                        colors: [BudgieColor.accent, BudgieColor.accent.opacity(0.8)],
+                        colors: [BudgieColor.primary, BudgieColor.primary.opacity(0.8)],
                         startPoint: .topLeading, endPoint: .bottomTrailing))
                 } else {
                     shape.fill(BudgieColor.surface)
                 }
             }
-            .overlay(shape.strokeBorder(isSelected ? BudgieColor.accent : BudgieColor.border, lineWidth: isSelected ? 2 : 1))
+            .overlay(shape.strokeBorder(isSelected ? BudgieColor.primary : BudgieColor.border, lineWidth: isSelected ? 2 : 1))
             .modifier(ChipShadow(isSelected: isSelected))
             .contentShape(shape)
         }
@@ -246,7 +248,7 @@ private struct ChipShadow: ViewModifier {
 
     func body(content: Content) -> some View {
         if isSelected {
-            content.glow(BudgieColor.accent, blur: 8, alpha: 0.3)
+            content.glow(BudgieColor.primary, blur: 8, alpha: 0.3)
         } else {
             content.shadow(color: .black.opacity(0.06), radius: 2, y: 1)
         }

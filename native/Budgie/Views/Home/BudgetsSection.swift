@@ -13,30 +13,32 @@ struct BudgetsSection: View {
     @State private var nextSheet: BudgetSheet?
 
     var body: some View {
-        let progress = model.budgetProgress(forMonth: model.selectedMonth)
+        // One pass per render for the card and both pickers.
+        let overview =
+            model.budgetOverview(forMonth: model.selectedMonth)
         // Dart `budgets.length < expenseCategories.length`: the rows are the
         // budgeted expense categories, so this holds iff one is unbudgeted.
-        let showsAddRow = !model.unbudgetedCategories().isEmpty
+        let showsAddRow = !overview.unbudgeted.isEmpty
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Budgets", link: "EDIT") { sheet = .edit }
-            GlowListCard(rows: cardRows(progress, showsAddRow: showsAddRow))
+            GlowListCard(rows: cardRows(overview, showsAddRow: showsAddRow))
         }
         .padding(.horizontal, Metrics.pageHorizontal)
         .sheet(item: $sheet, onDismiss: presentNextSheet) { item in
             switch item {
             case .edit:
-                BudgetPickerSheet(kind: .edit, onPick: openLimit(after:), onAdd: { chain(.add) })
+                BudgetPickerSheet(kind: .edit, overview: overview, onPick: openLimit(after:), onAdd: { chain(.add) })
             case .add:
-                BudgetPickerSheet(kind: .add, onPick: openLimit(after:), onAdd: {})
+                BudgetPickerSheet(kind: .add, overview: overview, onPick: openLimit(after:), onAdd: {})
             case .limit(let category, let current):
                 BudgetLimitSheet(category: category, currentLimit: current, formatter: model.moneyFormatter)
             }
         }
     }
 
-    private func cardRows(_ progress: [BudgetProgress], showsAddRow: Bool) -> [BudgetCardRow] {
+    private func cardRows(_ overview: FinancialData.BudgetOverview, showsAddRow: Bool) -> [BudgetCardRow] {
         let formatter = model.moneyFormatter
-        var rows = progress.map { item in
+        var rows = overview.progress.map { item in
             BudgetCardRow(
                 kind: .budget(item, model.categoryInfo(named: item.category, type: .expense)), formatter: formatter
             ) {
@@ -44,7 +46,7 @@ struct BudgetsSection: View {
             }
         }
         if showsAddRow {
-            let subtitle = progress.isEmpty ? "No monthly limits yet" : "Set a limit for another category"
+            let subtitle = overview.progress.isEmpty ? "No monthly limits yet" : "Set a limit for another category"
             rows.append(BudgetCardRow(kind: .add(subtitle: subtitle), formatter: formatter) { sheet = .add })
         }
         return rows
@@ -65,6 +67,12 @@ struct BudgetsSection: View {
         nextSheet = nil
         sheet = next
     }
+
+    /// `_BudgetRow._formatCurrency`: whole units from 100 up, else
+    /// cents, decided on the unrounded value (99.999 is "$100.00").
+    nonisolated static func amount(_ value: Double, _ formatter: MoneyFormatter) -> String {
+        formatter.format(value, decimalDigits: abs(value) >= 100 ? 0 : 2)
+    }
 }
 
 private enum BudgetSheet: Identifiable {
@@ -81,10 +89,6 @@ private enum BudgetSheet: Identifiable {
     }
 }
 
-/// `_BudgetRow._formatCurrency`: whole units from 100 up, else cents.
-private func budgetAmount(_ value: Double, _ formatter: MoneyFormatter) -> String {
-    formatter.format(value, decimalDigits: abs(value) >= 100 ? 0 : 2)
-}
 
 // MARK: - Card rows
 
@@ -120,10 +124,10 @@ private struct BudgetRow: View {
 
     var body: some View {
         let color = statusColor
-        let subtitle = "\(budgetAmount(item.spent, formatter)) of \(budgetAmount(item.limit, formatter))"
+        let subtitle = "\(BudgetsSection.amount(item.spent, formatter)) of \(BudgetsSection.amount(item.limit, formatter))"
         let chip =
             item.isOver
-            ? "\(budgetAmount(abs(item.remaining), formatter)) over" : "\(budgetAmount(item.remaining, formatter)) left"
+            ? "\(BudgetsSection.amount(abs(item.remaining), formatter)) over" : "\(BudgetsSection.amount(item.remaining, formatter)) left"
         Button {
             taps += 1
             action()
@@ -222,6 +226,8 @@ private struct BudgetPickerSheet: View {
     enum Kind { case edit, add }
 
     let kind: Kind
+    /// The section's overview for this render (kept live while open).
+    let overview: FinancialData.BudgetOverview
     let onPick: (String) -> Void
     let onAdd: () -> Void
 
@@ -231,9 +237,9 @@ private struct BudgetPickerSheet: View {
     @State private var bottomInset: CGFloat = 0
 
     var body: some View {
-        let categories = kind == .edit ? model.budgetedCategories() : model.unbudgetedCategories()
+        let categories = kind == .edit ? overview.budgeted : overview.unbudgeted
         // `showAddRow: budgeted.length < expenseCategories.length` (EDIT only).
-        let showsAddRow = kind == .edit && !model.unbudgetedCategories().isEmpty
+        let showsAddRow = kind == .edit && !overview.unbudgeted.isEmpty
         let formatter = model.moneyFormatter
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -255,7 +261,7 @@ private struct BudgetPickerSheet: View {
                 VStack(spacing: 0) {
                     ForEach(categories) { info in
                         BudgetCategoryTile(
-                            info: info, limit: kind == .edit ? model.budgetLimit(for: info.name) : nil,
+                            info: info, limit: kind == .edit ? overview.limit(for: info.name) : nil,
                             formatter: formatter
                         ) { onPick(info.name) }
                     }

@@ -115,9 +115,9 @@ public enum CategoryCatalog {
     }
 
     /// Picker list for a type: active definitions by sort order (Dart
-    /// normalises sort order per type, stable in list order), then any name
-    /// used by an existing transaction of that type without a definition
-    /// (the Flutter app creates definitions for those at launch).
+    /// normalises sort order per type, stable in list order), then any of
+    /// `usedNames` without a definition. Loaded data passes none (see
+    /// `categoryPicker(for:)`).
     public static func pickerList(_ categories: [CategoryInfo], type: TransactionType, usedNames: [String]) -> [CategoryInfo] {
         let defined = categories.enumerated()
             .filter { $0.element.type == type }
@@ -244,12 +244,15 @@ extension FinancialData {
         }
     }
 
+    /// Dart's runtime `expenseCategories` / `incomeCategories` keys
+    /// (`_syncCompatibilityMaps`): the active definitions of `type` by sort
+    /// order, nothing else. No transaction scan: the launch pass
+    /// (`ensureLegacyCategories`, run by `load`) has already defined every
+    /// (type, name) in use, and a name matching an archived definition gets
+    /// none (Dart `_containsName` sees archived ones), so Flutter's list has
+    /// no entry for it either.
     public func categoryPicker(for type: TransactionType) -> [CategoryInfo] {
-        var used: [String] = []
-        for transaction in transactions where transaction.type == type && !used.contains(transaction.category) {
-            used.append(transaction.category)
-        }
-        return CategoryCatalog.pickerList(categories, type: type, usedNames: used)
+        CategoryCatalog.pickerList(categories, type: type, usedNames: [])
     }
 
     public func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {

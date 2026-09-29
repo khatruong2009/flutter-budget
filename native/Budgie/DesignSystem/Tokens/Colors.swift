@@ -32,8 +32,17 @@ enum BudgieColor {
     static let info = dynamic(light: 0x3B82F6, dark: 0x60A5FA)
     static let pink = Color(hex: 0xF0ABFC)
     static let cyan = Color(hex: 0x22D3EE)
+    /// `AppColors.primary`: the same indigo in both modes (unlike `accent`).
+    static let primary = Color(hex: 0x6366F1)
     static let primaryDark = Color(hex: 0x4F46E5)
     static let primaryLight = Color(hex: 0x818CF8)
+    /// The Home spend gauge's fill start (spending_page.dart:1388-1461):
+    /// `accent @ 55%` alpha-blended over `background`, unrounded.
+    static let gaugeFillStart = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 75.45 / 255, green: 81.5 / 255, blue: 144.5 / 255, alpha: 1)
+            : UIColor(red: 166.5 / 255, green: 168.6 / 255, blue: 245.5 / 255, alpha: 1)
+    })
 
     // Dock (unused by the native tab bar; kept for custom chrome)
     static let dockInactiveIcon = dynamic(light: 0x6B7280, dark: 0x8A8AA8)

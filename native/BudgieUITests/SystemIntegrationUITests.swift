@@ -44,7 +44,7 @@ final class SystemIntegrationUITests: XCTestCase {
 
     private func expectForm(_ title: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "app did not open", file: file, line: line)
-        XCTAssertTrue(app.navigationBars[title].waitForExistence(timeout: 20), "\(title) form not shown", file: file, line: line)
+        XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 20), "\(title) form not shown", file: file, line: line)
         snapshot(title)
         app.buttons["Cancel"].tap()
     }
@@ -93,7 +93,7 @@ final class SystemIntegrationUITests: XCTestCase {
         XCTAssertTrue(amount.waitForExistence(timeout: 10))
         amount.tap()
         amount.typeText("12")
-        app.buttons["Save"].tap()
+        app.buttons["Add"].tap()
 
         XCUIDevice.shared.press(.home)
         // Edit mode: long-press an empty spot on the home screen.

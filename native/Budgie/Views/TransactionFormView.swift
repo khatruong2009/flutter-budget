@@ -33,6 +33,9 @@ struct TransactionFormView: View {
     @State private var category: String
     /// Tag ids in insertion order; an edit keeps ids whose tag is gone.
     @State private var selectedTagIds: [String]
+    /// The ids the last rule suggestion put in `selectedTagIds` and the user
+    /// has not toggled since; a type switch drops them.
+    @State private var ruleTagIds: Set<String> = []
     /// The picked day at midnight; nil keeps now (add) or the stored date.
     @State private var pickedDate: DartDateTime?
     @State private var amountError: String?
@@ -170,9 +173,7 @@ struct TransactionFormView: View {
         // Pinned above the keyboard while the fields scroll.
         .safeAreaInset(edge: .bottom, spacing: 0) { footer }
         .onAppear(perform: loadCategories)
-        .onChange(of: type) { _, _ in
-            if !categoryNames.contains(category) { category = categoryNames.first ?? "" }
-        }
+        .onChange(of: type) { _, _ in typeChanged() }
         .onChange(of: amountText) { _, _ in
             amountError = nil
             applySuggestion()
@@ -256,6 +257,7 @@ struct TransactionFormView: View {
                 let selected = selectedTagIds.contains(tag.id)
                 Button {
                     if selected { selectedTagIds.removeAll { $0 == tag.id } } else { selectedTagIds.append(tag.id) }
+                    ruleTagIds.remove(tag.id)
                 } label: {
                     PillChip(
                         label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
@@ -329,6 +331,23 @@ struct TransactionFormView: View {
         loaded = true
     }
 
+    /// The Expense/Income toggle (D5; Flutter's form has none). Back on the
+    /// record's own type an edit gets its stored category again; otherwise a
+    /// category the new type lacks becomes its first. Tags the last rule
+    /// applied go (the record's stored ids and manual picks stay), then the
+    /// new type's rules run on the current description and amount.
+    private func typeChanged() {
+        if let record = editing, record.type == type {
+            category = record.category
+        } else if !categoryNames.contains(category) {
+            category = categoryNames.first ?? ""
+        }
+        let stored = editing?.tagIds ?? []
+        selectedTagIds.removeAll { ruleTagIds.contains($0) && !stored.contains($0) }
+        ruleTagIds = []
+        applySuggestion()
+    }
+
     /// `applySuggestion` (transaction_form.dart:106-121): on every Amount or
     /// Description edit, a matching rule whose category is in the current
     /// list sets the category and replaces the selected tags.
@@ -343,6 +362,7 @@ struct TransactionFormView: View {
         var tags: [String] = []
         for id in rule.tagIds where !tags.contains(id) { tags.append(id) }
         selectedTagIds = tags
+        ruleTagIds = Set(tags)
     }
 
     private func save() async {
@@ -359,6 +379,12 @@ struct TransactionFormView: View {
         let trimmed = DartString.trim(descriptionText)
         let description = trimmed.isEmpty ? "Transaction" : trimmed
         let date = resolvedDate()
+        // The row went while the form was open (deleted elsewhere): nothing
+        // to save and nothing failed.
+        if let record = editing, !model.hasTransaction(id: record.id) {
+            dismiss()
+            return
+        }
         saving = true
         let saved: Bool
         if let record = editing {
@@ -387,6 +413,10 @@ struct TransactionFormView: View {
 
     private func delete() async {
         guard let record = editing, !saving else { return }
+        guard model.hasTransaction(id: record.id) else {
+            dismiss()
+            return
+        }
         saving = true
         let deleted = await model.deleteTransaction(id: record.id)
         dismiss()
@@ -552,7 +582,7 @@ private struct FlowLayout: Layout {
 /// The date picker (Flutter `showDatePicker`): a graphical calendar in a
 /// fitted sheet, Cancel / OK. The picker only carries a calendar day, read
 /// back as Gregorian year / month / day in the app's time zone.
-private struct DayPickerSheet: View {
+struct DayPickerSheet: View {
     let calendar: DartCalendar
     let range: ClosedRange<Date>
     let onPick: (DartDateTime) -> Void
@@ -565,22 +595,38 @@ private struct DayPickerSheet: View {
         self.calendar = calendar
         self.onPick = onPick
         let gregorian = Self.gregorian(calendar)
-        func day(_ d: DartDateTime) -> Date {
-            gregorian.date(from: DateComponents(year: d.year, month: d.month, day: d.day)) ?? d.date
-        }
-        // The upper bound is the end of the latest day so it stays pickable.
+        // The whole of the earliest and latest days stay pickable.
+        let lower = gregorian.startOfDay(for: Self.pickerDate(for: earliest, in: gregorian))
         let upper =
             gregorian.date(from: DateComponents(year: latest.year, month: latest.month, day: latest.day, hour: 23, minute: 59))
             ?? latest.date
-        let range = day(earliest)...max(day(earliest), upper)
+        let range = lower...max(lower, upper)
         self.range = range
-        _day = State(initialValue: min(max(day(initial), range.lowerBound), range.upperBound))
+        _day = State(initialValue: min(max(Self.pickerDate(for: initial, in: gregorian), range.lowerBound), range.upperBound))
     }
 
-    private static func gregorian(_ calendar: DartCalendar) -> Calendar {
+    /// Gregorian in the app's zone, weeks starting on the user's first
+    /// weekday (Flutter's picker follows the locale's).
+    nonisolated static func gregorian(
+        _ calendar: DartCalendar, firstWeekday: Int = Calendar.autoupdatingCurrent.firstWeekday
+    ) -> Calendar {
         var gregorian = Calendar(identifier: .gregorian)
         gregorian.timeZone = calendar.timeZone
+        gregorian.firstWeekday = firstWeekday
         return gregorian
+    }
+
+    /// The picker's value for a day: 12:00 local on it, so a DST gap at
+    /// midnight can never move it to a neighbouring day.
+    nonisolated static func pickerDate(for day: DartDateTime, in gregorian: Calendar) -> Date {
+        gregorian.date(from: DateComponents(year: day.year, month: day.month, day: day.day, hour: 12)) ?? day.date
+    }
+
+    /// The stored value for the picker's day: `DateTime(y, m, d)`.
+    nonisolated static func storedDay(from date: Date, in gregorian: Calendar, calendar: DartCalendar) -> DartDateTime? {
+        let parts = gregorian.dateComponents([.year, .month, .day], from: date)
+        guard let year = parts.year, let month = parts.month, let day = parts.day else { return nil }
+        return calendar.date(year, month, day)
     }
 
     var body: some View {
@@ -608,10 +654,7 @@ private struct DayPickerSheet: View {
             HStack(spacing: Metrics.spacingM) {
                 FormButton(title: "Cancel", fill: nil) { dismiss() }
                 FormButton(title: "OK", fill: BudgieColor.primaryGradient) {
-                    let parts = Self.gregorian(calendar).dateComponents([.year, .month, .day], from: day)
-                    if let year = parts.year, let month = parts.month, let dayOfMonth = parts.day {
-                        onPick(calendar.date(year, month, dayOfMonth))
-                    }
+                    if let picked = Self.storedDay(from: day, in: Self.gregorian(calendar), calendar: calendar) { onPick(picked) }
                     dismiss()
                 }
             }

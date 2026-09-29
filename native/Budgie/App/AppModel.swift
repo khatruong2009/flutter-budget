@@ -289,6 +289,12 @@ final class AppModel {
         return await persist([Section.transactions])
     }
 
+    /// Whether a readable transaction with this id is in memory (a false
+    /// update/delete for a missing row is not a save failure).
+    func hasTransaction(id: String) -> Bool {
+        data?.transactionRows.contains { $0.record?.id == id } ?? false
+    }
+
     @discardableResult
     func updateTransaction(id: String, _ edit: TransactionRecord.Edit) async -> Bool {
         guard data != nil, edit.amount.isFinite, data!.updateTransaction(id: id, edit, now: now) else { return false }
@@ -357,19 +363,10 @@ final class AppModel {
         return await persist([Section.categoryBudgetLimits])
     }
 
-    /// Home's budget rows for `month`, from the ledger index.
-    func budgetProgress(forMonth month: DartDateTime) -> [BudgetProgress] {
-        data?.budgetProgress(ledger.summary(forMonth: month)) ?? []
-    }
-
-    /// Budgeted expense categories in category order (EDIT sheet).
-    func budgetedCategories() -> [CategoryInfo] {
-        data?.budgetedCategories() ?? []
-    }
-
-    /// Expense categories without a limit, in category order (Add sheet).
-    func unbudgetedCategories() -> [CategoryInfo] {
-        data?.unbudgetedCategories() ?? []
+    /// Home's budget rows and the Edit/Add picker lists for `month`, in
+    /// one pass over the categories and the ledger month summary.
+    func budgetOverview(forMonth month: DartDateTime) -> FinancialData.BudgetOverview {
+        data?.budgetOverview(ledger.summary(forMonth: month)) ?? .empty
     }
 
     // MARK: - Settings (store section + mirrored preference, like Dart)

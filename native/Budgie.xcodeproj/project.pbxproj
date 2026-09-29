@@ -66,6 +66,7 @@
 		F174FC9D4CF16A0B6E067ABC /* TextStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C99D0A6C29A6319DA1FBF36 /* TextStyles.swift */; };
 		F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0675028D226C1972E3D145CE /* LicencesView.swift */; };
 		F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */; };
+		F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */; };
 		F87B54CFDC9BC885E883C3FD /* SafeToSpendSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2B3CA4D2ADC1BBBBA64532 /* SafeToSpendSheet.swift */; };
 		F9767309B73C53816105EC4E /* GlowFab.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1C875B09356D4582C3026F /* GlowFab.swift */; };
 		FBECFD4FBDB6F096E092588B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5BEE45B350EE7D82AA1717 /* HomeView.swift */; };
@@ -142,6 +143,7 @@
 		55D5F50F2340127241F06169 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormView.swift; sourceTree = "<group>"; };
 		5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Medium.ttf"; sourceTree = "<group>"; };
+		5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPickerDateTests.swift; sourceTree = "<group>"; };
 		6462237A82B43EB73DD31CEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6B2B3CA4D2ADC1BBBBA64532 /* SafeToSpendSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeToSpendSheet.swift; sourceTree = "<group>"; };
 		6FB0B4F7B497DD7C0697DC03 /* Budgie.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budgie.entitlements; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				12EF4E8B0018F1B60120CAF7 /* BudgetLimitParsingTests.swift */,
+				5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */,
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
 				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
@@ -685,6 +688,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47907438A5A27285BBF3E9E8 /* BudgetLimitParsingTests.swift in Sources */,
+				F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */,
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
 				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,

@@ -33,6 +33,12 @@ final class MVPFlowUITests: XCTestCase {
         app.buttons["home.settings"].tap()
     }
 
+    /// Any element whose label contains `text` (Home rows are combined
+    /// accessibility elements, not buttons).
+    private func labelled(_ text: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
+    }
+
     private func type(_ text: String, into field: XCUIElement) {
         field.tap()
         field.typeText(text)
@@ -50,8 +56,9 @@ final class MVPFlowUITests: XCTestCase {
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
         type("12.34", into: amount)
         type("UI test coffee", into: app.textFields["Description"])
-        app.buttons["Save"].tap()
-        XCTAssertTrue(app.staticTexts["UI test coffee"].waitForExistence(timeout: 5))
+        app.buttons["Add"].tap()
+        // Home's Recent activity shows it.
+        XCTAssertTrue(labelled("UI test coffee").waitForExistence(timeout: 5))
 
         // Edit it from the full list (SEE ALL).
         app.buttons["See all transactions"].firstMatch.tap()
@@ -64,7 +71,7 @@ final class MVPFlowUITests: XCTestCase {
         editAmount.press(forDuration: 1.0)
         if app.menuItems["Select All"].waitForExistence(timeout: 2) { app.menuItems["Select All"].tap() }
         editAmount.typeText("20")
-        app.buttons["Save"].tap()
+        app.buttons["Update"].tap()
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS '20.00'")).firstMatch.waitForExistence(timeout: 5))
 
         // Add a recurring template and pause it (Settings > Recurring).
@@ -91,17 +98,19 @@ final class MVPFlowUITests: XCTestCase {
         app.buttons["Theme, System"].firstMatch.tap()
         app.buttons["Dark"].firstMatch.tap()
 
-        // Delete a second transaction from Home.
+        // Add an income from the Home pill, then delete it from SEE ALL.
         homeRoot()
         app.buttons["Income"].firstMatch.tap()
         type("5", into: app.textFields["Amount"])
         type("To delete", into: app.textFields["Description"])
-        app.buttons["Save"].tap()
+        app.buttons["Add"].tap()
+        app.buttons["See all transactions"].firstMatch.tap()
         let doomed = app.buttons.containing(NSPredicate(format: "label CONTAINS 'To delete'")).firstMatch
         XCTAssertTrue(doomed.waitForExistence(timeout: 5))
         doomed.swipeLeft()
-        app.buttons["Delete"].firstMatch.tap()
-        app.buttons["Delete"].firstMatch.tap()  // confirmation
+        let confirm = app.alerts["Delete Transaction"].buttons["Delete"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
         XCTAssertTrue(doomed.waitForNonExistence(timeout: 5))
     }
 }

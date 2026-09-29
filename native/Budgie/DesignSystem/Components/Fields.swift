@@ -42,6 +42,8 @@ struct BudgieField: View {
                     .textInputAutocapitalization(capitalization)
                     .autocorrectionDisabled(keyboard == .decimalPad || keyboard == .numberPad)
                     .focused($focused)
+                    // A prompt replaces the title as the field's label.
+                    .accessibilityLabel(title)
                     .onAppear { if autofocus { focused = true } }
             }
             .padding(.horizontal, 14)

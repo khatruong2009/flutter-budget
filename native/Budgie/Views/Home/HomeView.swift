@@ -173,13 +173,6 @@ private struct SpendGauge: View {
     let income: Double
     let formatter: MoneyFormatter
 
-    /// `accent @ 55%` alpha-blended over the background (the fill's start).
-    private static let fillStart = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 75.45 / 255, green: 81.5 / 255, blue: 144.5 / 255, alpha: 1)
-            : UIColor(red: 166.5 / 255, green: 168.6 / 255, blue: 245.5 / 255, alpha: 1)
-    })
-
     var body: some View {
         let spentLabel = formatter.format(spent, decimalDigits: 0)
         let incomeLabel = formatter.format(income, decimalDigits: 0)
@@ -187,7 +180,7 @@ private struct SpendGauge: View {
             GlowProgressBar(
                 value: income <= 0 ? 0 : spent / income, height: 14, color: BudgieColor.accent,
                 track: BudgieColor.chipSurface,
-                gradient: LinearGradient(colors: [Self.fillStart, BudgieColor.accent], startPoint: .leading, endPoint: .trailing),
+                gradient: LinearGradient(colors: [BudgieColor.gaugeFillStart, BudgieColor.accent], startPoint: .leading, endPoint: .trailing),
                 showThumb: true, trackBorder: BudgieColor.hairline, fillInset: 2)
             HStack {
                 label("SPENT  ", spentLabel)
@@ -383,7 +376,7 @@ private struct RecentRow: View {
         // VoiceOver reads the label then the value, so this sounds the
         // same while the description stays findable on its own.
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(record.description)
+        .accessibilityLabel(record.description.isEmpty ? "Transaction" : record.description)
         .accessibilityValue("\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))")
         .accessibilityAddTraits(.isStaticText)
     }

@@ -107,6 +107,14 @@ struct HomeParityTests {
                 }
                 #expect(status == d["status"].string, "\(s.category) status")
             }
+            // The one-pass overview Home reads agrees with the separate queries.
+            let overview = data.budgetOverview(ledger.summary(forMonth: month))
+            #expect(overview.progress == swift)
+            #expect(overview.budgeted.map(\.id) == data.budgetedCategories().map(\.id))
+            #expect(overview.unbudgeted.map(\.id) == data.unbudgetedCategories().map(\.id))
+            for info in overview.budgeted + overview.unbudgeted {
+                #expect(overview.limit(for: info.name) == data.budgetLimit(for: info.name), "\(info.name) limit")
+            }
         }
     }
 

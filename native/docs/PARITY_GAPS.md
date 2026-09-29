@@ -12,7 +12,6 @@ UPGRADE_TEST_RESULTS.md).
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Savings goals UI | `savingsGoals` | Read (safe-to-spend reserves goal contributions exactly like Flutter); no UI to view/edit. |
-| Budgets UI (limits, progress, edit) | `categoryBudgetLimits` | Read (safe-to-spend flexible reserve); no UI. |
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
@@ -108,6 +107,11 @@ UPGRADE_TEST_RESULTS.md).
 - Transaction form: the date picker's range stretches to include a stored
   date before 2000 or in the future (Flutter's `showDatePicker` asserts).
   The picker is a graphical calendar sheet with Cancel / OK.
+- Transaction form: switching Expense/Income (D5) gives an edit its stored
+  category back on the record's own type (else a category the new type
+  lacks becomes its first), drops the tags the last rule suggestion added
+  (manual picks and the record's stored tags stay), then runs the new
+  type's rules on the current description and amount.
 - Transaction form: the amount icon is the base currency's symbol (Flutter
   always shows `$`); the wheel tiles use the danger/income tokens (Flutter
   uses fixed #EF4444/#10B981 in both themes); tags are redesign pill chips
@@ -126,6 +130,9 @@ UPGRADE_TEST_RESULTS.md).
   read as the decimal key of a keyboard in another locale ("12,5" is 12.5
   under en_US; Flutter reads 125). Only digits and separators are accepted:
   Flutter saved "-5" as 5 and "1e3" as 13; Swift rejects both.
+- Budget limit sheet: an untouched prefill saves the stored limit exactly
+  (99.999 stays 99.999, and 0.001 can be saved); Flutter re-parses the
+  2-decimal prefill, saving 100.0 and refusing "0.00".
 - Budget limit field: filled with the chip-surface token (Flutter's theme
   fill is #F9FAFB light / #15151F dark; dark is identical).
 - Home month panel: a year stepper (previous/next year, light haptic,
@@ -145,8 +152,18 @@ UPGRADE_TEST_RESULTS.md).
   only skips the first fill and still animates changes).
 - Home accessibility: the gauge reads "Spent X of Y income" and the year
   stepper's buttons are labelled; a recent-activity row's VoiceOver label
-  is the description with the rest as its value, which reads the same as
-  Flutter's single label.
+  is the description ("Transaction" when empty) with the rest as its
+  value, which reads the same as Flutter's single label.
+- Category icons: a transaction, template or budget row finds its
+  category's icon by name case-insensitively, archived definitions
+  included (`categoryInfo(named:type:)`). Flutter reads its active
+  `expenseCategories` / `incomeCategories` map by exact name and shows its
+  fallback icon (the grid; a bag or dollar on the recurring list) for an
+  archived category or a case variant.
+- Transactions page (SEE ALL): a row's VoiceOver label reads the amount
+  through the money formatter ("expense $12.50": base currency, masked
+  under Hide balances); Flutter's reads "expense of 12 dollars and 50
+  cents" whatever the currency. Both read the date as yMMMMd.
 - Safe-to-spend breakdown sheet: redesign sheet chrome (card colour, 44x4
   grab handle, 28 radius) instead of Material's default sheet and 32x4
   handle; the divider uses the border token.

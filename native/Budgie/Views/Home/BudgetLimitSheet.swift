@@ -13,6 +13,9 @@ struct BudgetLimitSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var text: String
+    /// What the field opened with; while it still reads this, the stored
+    /// limit is used exactly (the prefill is rounded to cents).
+    private let prefill: String
     @State private var saving = false
     @State private var contentHeight: CGFloat = 0
     @State private var bottomInset: CGFloat = 0
@@ -25,11 +28,19 @@ struct BudgetLimitSheet: View {
         self.currentLimit = currentLimit
         self.formatter = formatter
         // `formatNumber(limit, 2)`, locale-grouped; not masked by Hide balances.
-        _text = State(initialValue: currentLimit.map { formatter.formatNumber($0, decimalDigits: 2) } ?? "")
+        let prefill = currentLimit.map { formatter.formatNumber($0, decimalDigits: 2) } ?? ""
+        self.prefill = prefill
+        _text = State(initialValue: prefill)
+    }
+
+    /// The limit Save writes: the stored one while the field is untouched,
+    /// else the parsed text.
+    private var limit: Double? {
+        Self.limit(text: text, prefill: prefill, currentLimit: currentLimit, formatter: formatter)
     }
 
     var body: some View {
-        let canSave = !saving && Self.parseLimit(text, formatter: formatter) != nil
+        let canSave = !saving && limit != nil
         VStack(alignment: .leading, spacing: 0) {
             header
             field.padding(.top, 24)
@@ -97,6 +108,8 @@ struct BudgetLimitSheet: View {
                     .focused($focused)
                     // Only a hardware keyboard can submit; the decimal pad has no return key.
                     .onSubmit(save)
+                    // The prompt replaces the title as the field's label.
+                    .accessibilityLabel("Limit")
                     .accessibilityHint(Self.helper)
             }
             .padding(.horizontal, 16)
@@ -135,7 +148,7 @@ struct BudgetLimitSheet: View {
     /// `_saveLimit`: re-checks the guard (the submit path), spins, awaits the
     /// verified write, then closes.
     private func save() {
-        guard !saving, let limit = Self.parseLimit(text, formatter: formatter) else { return }
+        guard !saving, let limit else { return }
         saving = true
         Task {
             // A failed write still closes the sheet, as in Flutter: the change
@@ -156,6 +169,14 @@ struct BudgetLimitSheet: View {
     }
 
     // MARK: - Parsing (D6)
+
+    /// An unchanged prefill keeps `currentLimit` exactly (99.999 stays
+    /// 99.999, not the 100.0 its "100.00" parses to; 0.001 stays saveable);
+    /// any edit parses. Flutter always parses the text.
+    nonisolated static func limit(text: String, prefill: String, currentLimit: Double?, formatter: MoneyFormatter) -> Double? {
+        if let currentLimit, text == prefill { return currentLimit }
+        return parseLimit(text, formatter: formatter)
+    }
 
     /// The limit typed into the field, or nil unless it is a finite amount
     /// above 0. Flutter strips `[^0-9.]` and so reads "1.500,00" as 1.5;

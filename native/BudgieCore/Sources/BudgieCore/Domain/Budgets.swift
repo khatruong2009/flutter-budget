@@ -102,23 +102,55 @@ extension FinancialData {
         return categoryPicker(for: .expense).filter { seen.insert(Array($0.name.utf16)).inserted }
     }
 
+    /// Everything Home's budgets section shows, from one pass over the
+    /// expense categories and the limits (`budgetProgress`,
+    /// `budgetedCategories` and `unbudgetedCategories` together).
+    public struct BudgetOverview: Sendable {
+        public let progress: [BudgetProgress]
+        public let budgeted: [CategoryInfo]
+        public let unbudgeted: [CategoryInfo]
+        /// The limits Dart holds, by exact (UTF-16) name.
+        let limits: [[UInt16]: Double]
+
+        public static let empty = BudgetOverview(progress: [], budgeted: [], unbudgeted: [], limits: [:])
+
+        /// `budgetLimit(for:)` from the same pass.
+        public func limit(for category: String) -> Double? { limits[Array(category.utf16)] }
+    }
+
+    public func budgetOverview(_ summary: MonthSummary) -> BudgetOverview {
+        // `budgetLimits` has one entry per exact key, so this is `budgetLimit(for:)`.
+        var limits: [[UInt16]: Double] = [:]
+        for (name, limit) in budgetLimits { limits[Array(name.utf16)] = limit }
+        var budgeted: [CategoryInfo] = [], unbudgeted: [CategoryInfo] = []
+        for info in expenseCategoryKeys() {
+            if limits[Array(info.name.utf16)] != nil { budgeted.append(info) } else { unbudgeted.append(info) }
+        }
+        return BudgetOverview(
+            progress: Self.budgetRows(budgeted, limits: limits, summary: summary), budgeted: budgeted,
+            unbudgeted: unbudgeted, limits: limits)
+    }
+
     /// `_buildBudgetProgressItems` for one month's ledger summary: every
     /// expense category with a limit > 0, spent from the month's category
     /// totals by exact name (0 when absent), sorted by spent descending, then
     /// name in UTF-16 order. Limits whose name is not an expense category
     /// (archived, or a case variant of one) get no row.
     public func budgetProgress(_ summary: MonthSummary) -> [BudgetProgress] {
+        budgetOverview(summary).progress
+    }
+
+    private static func budgetRows(_ budgeted: [CategoryInfo], limits: [[UInt16]: Double], summary: MonthSummary) -> [BudgetProgress] {
         var spentByName: [[UInt16]: Double] = [:]
         for entry in summary.categoryExpenses where spentByName[Array(entry.name.utf16)] == nil {
             spentByName[Array(entry.name.utf16)] = entry.amount
         }
-        let rows = expenseCategoryKeys().compactMap { info -> BudgetProgress? in
-            guard let limit = budgetLimit(for: info.name) else { return nil }
-            return BudgetProgress(category: info.name, spent: spentByName[Array(info.name.utf16)] ?? 0, limit: limit)
+        let rows = budgeted.map { info in
+            BudgetProgress(category: info.name, spent: spentByName[Array(info.name.utf16)] ?? 0, limit: limits[Array(info.name.utf16)]!)
         }
         // `b.spent.compareTo(a.spent)`, then `a.category.compareTo(b.category)`.
         return rows.enumerated().sorted { a, b in
-            let bySpent = Self.dartCompare(b.element.spent, a.element.spent)
+            let bySpent = dartCompare(b.element.spent, a.element.spent)
             if bySpent != 0 { return bySpent < 0 }
             if DartString.precedes(a.element.category, b.element.category) { return true }
             if DartString.precedes(b.element.category, a.element.category) { return false }

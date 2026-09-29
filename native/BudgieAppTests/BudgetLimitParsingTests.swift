@@ -72,4 +72,35 @@ final class BudgetLimitParsingTests: XCTestCase {
         XCTAssertEqual(
             BudgetLimitSheet.currencySymbol(MoneyFormatter(currencyCode: "GBP", hideBalances: true)), "\u{00A3}")
     }
+
+    /// An untouched prefill saves the stored limit exactly; any edit parses.
+    func testUnchangedPrefillKeepsTheStoredLimit() {
+        func limit(_ text: String, stored: Double?) -> Double? {
+            let prefill = stored.map { english.formatNumber($0, decimalDigits: 2) } ?? ""
+            return BudgetLimitSheet.limit(text: text, prefill: prefill, currentLimit: stored, formatter: english)
+        }
+        XCTAssertEqual(english.formatNumber(99.999, decimalDigits: 2), "100.00")
+        XCTAssertEqual(limit("100.00", stored: 99.999), 99.999)
+        XCTAssertEqual(limit("0.00", stored: 0.001), 0.001, "a tiny stored limit stays saveable")
+        XCTAssertEqual(limit("100.0", stored: 99.999), 100, "an edit parses")
+        XCTAssertNil(limit("", stored: 99.999))
+        XCTAssertNil(limit("", stored: nil))
+        XCTAssertEqual(limit("12.5", stored: nil), 12.5)
+    }
+}
+
+/// `_BudgetRow._formatCurrency`: whole units from 100 up, else cents,
+/// decided on the unrounded value.
+final class BudgetAmountFormatTests: XCTestCase {
+    private let english = MoneyFormatter(currencyCode: "USD")
+
+    func testWholeUnitsFromOneHundredElseCents() {
+        XCTAssertEqual(BudgetsSection.amount(99.999, english), "$100.00")
+        XCTAssertEqual(BudgetsSection.amount(99.99, english), "$99.99")
+        XCTAssertEqual(BudgetsSection.amount(100, english), "$100")
+        XCTAssertEqual(BudgetsSection.amount(150, english), "$150")
+        XCTAssertEqual(BudgetsSection.amount(1500, english), "$1,500")
+        XCTAssertEqual(BudgetsSection.amount(42.5, english), "$42.50")
+        XCTAssertEqual(BudgetsSection.amount(0, english), "$0.00")
+    }
 }
