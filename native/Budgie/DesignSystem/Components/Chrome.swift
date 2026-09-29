@@ -142,9 +142,18 @@ struct RecurrenceShape: Shape {
 
 /// A card row that reveals a delete action when swiped left (Flutter
 /// `Dismissible` on the transaction list): past 40% of the width a medium
-/// haptic marks the threshold, and releasing there calls `onDelete` (which
-/// confirms) while the row springs back. Also offered as an accessibility
-/// action, since the gesture is not discoverable with VoiceOver.
+/// haptic marks the threshold, and releasing there (or a leftward fling
+/// faster than 700pt/s, Flutter's minimum fling velocity) calls `onDelete`
+/// (which confirms) while the row springs back. Also offered as an
+/// accessibility action, since the gesture is not discoverable with
+/// VoiceOver.
+///
+/// On iOS 18+ the drag is a UIKit pan that only begins for a leftward,
+/// mostly horizontal movement and that the enclosing scroll view waits for,
+/// so a vertical drag still scrolls and, once the pan begins, the touch is
+/// cancelled for the row's own button (no tap fires). A SwiftUI drag inside
+/// a scroll view does neither there. iOS 17 keeps the SwiftUI drag, which
+/// coexists with scrolling on that release.
 struct SwipeToDeleteRow<Content: View>: View {
     let onDelete: () -> Void
     @ViewBuilder var content: () -> Content
@@ -153,6 +162,7 @@ struct SwipeToDeleteRow<Content: View>: View {
     @State private var offset: CGFloat = 0
     @State private var width: CGFloat = 1
     @State private var armed = false
+    @State private var flings = 0
 
     var body: some View {
         ZStack(alignment: .trailing) {
@@ -171,23 +181,89 @@ struct SwipeToDeleteRow<Content: View>: View {
                 .offset(x: offset)
         }
         .onGeometryChangeCompat { width = max($0.width, 1) }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 20)
-                .onChanged { value in
-                    guard abs(value.translation.width) > abs(value.translation.height) else { return }
-                    offset = min(0, value.translation.width)
-                    let past = -offset > width * 0.4
-                    if past != armed { armed = past }
-                }
-                .onEnded { _ in
-                    let delete = armed
-                    armed = false
-                    withAnimation(reduceMotion ? nil : .spring(duration: 0.3)) { offset = 0 }
-                    if delete { onDelete() }
-                }
-        )
+        .modifier(SwipeGesture(onChanged: dragChanged, onEnded: dragEnded))
         .sensoryFeedback(.impact(weight: .medium), trigger: armed) { _, new in new }
+        .sensoryFeedback(.impact(weight: .medium), trigger: flings)
         .accessibilityAction(named: "Delete", onDelete)
+    }
+
+    private func dragChanged(_ translation: CGFloat) {
+        offset = min(0, translation)
+        let past = -offset > width * 0.4
+        if past != armed { armed = past }
+    }
+
+    /// `cancelled` (the system took the touch) never deletes.
+    private func dragEnded(cancelled: Bool, velocity: CGSize) {
+        let flung = velocity.width < -700 && abs(velocity.width) > abs(velocity.height)
+        let delete = !cancelled && (armed || flung)
+        if delete && !armed { flings += 1 }
+        armed = false
+        withAnimation(reduceMotion ? nil : .spring(duration: 0.3)) { offset = 0 }
+        if delete { onDelete() }
+    }
+}
+
+/// Attaches the row's horizontal drag (see `SwipeToDeleteRow`).
+private struct SwipeGesture: ViewModifier {
+    let onChanged: (CGFloat) -> Void
+    let onEnded: (_ cancelled: Bool, _ velocity: CGSize) -> Void
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.gesture(LeftwardPan(onChanged: onChanged, onEnded: onEnded))
+        } else {
+            content.simultaneousGesture(
+                DragGesture(minimumDistance: 20)
+                    .onChanged { value in
+                        guard abs(value.translation.width) > abs(value.translation.height) else { return }
+                        onChanged(value.translation.width)
+                    }
+                    .onEnded { value in onEnded(false, value.velocity) }
+            )
+        }
+    }
+}
+
+/// A pan that begins only for a leftward, mostly horizontal movement and
+/// that any scroll view pan must wait for.
+@available(iOS 18.0, *)
+private struct LeftwardPan: UIGestureRecognizerRepresentable {
+    let onChanged: (CGFloat) -> Void
+    let onEnded: (_ cancelled: Bool, _ velocity: CGSize) -> Void
+
+    func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator { Coordinator() }
+
+    func makeUIGestureRecognizer(context: Context) -> UIPanGestureRecognizer {
+        let pan = UIPanGestureRecognizer()
+        pan.delegate = context.coordinator
+        return pan
+    }
+
+    func handleUIGestureRecognizerAction(_ recognizer: UIPanGestureRecognizer, context: Context) {
+        switch recognizer.state {
+        case .began, .changed: onChanged(recognizer.translation(in: recognizer.view).x)
+        case .ended:
+            let velocity = recognizer.velocity(in: recognizer.view)
+            onEnded(false, CGSize(width: velocity.x, height: velocity.y))
+        case .cancelled, .failed: onEnded(true, .zero)
+        default: break
+        }
+    }
+
+    @MainActor final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+            guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return false }
+            var motion = pan.translation(in: pan.view)
+            if motion == .zero { motion = pan.velocity(in: pan.view) }
+            return motion.x < 0 && abs(motion.x) > abs(motion.y)
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy other: UIGestureRecognizer
+        ) -> Bool {
+            other.view is UIScrollView && other is UIPanGestureRecognizer
+        }
     }
 }
 

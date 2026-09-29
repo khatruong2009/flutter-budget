@@ -142,6 +142,10 @@ struct RollingAmount: View {
         .frame(width: measured ? natural.width * scale : nil, height: measured ? natural.height * scale : nil)
         .frame(minWidth: 0, maxWidth: .infinity)
         .onGeometryChangeCompat { available = $0.width }
+        // Each reel is an 11-row strip that `clipped()` hides but does not
+        // stop from hit-testing: offset by its digit, a strip reaches up over
+        // the month pill and wheel and swallows their touches.
+        .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 

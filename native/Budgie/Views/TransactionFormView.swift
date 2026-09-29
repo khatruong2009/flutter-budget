@@ -127,51 +127,55 @@ struct TransactionFormView: View {
     // MARK: - Form
 
     private var form: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(title)
-                    .textStyle(.headingMedium)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .frame(maxWidth: .infinity)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-                SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 12)
-                    .accessibilityElement(children: .contain)
-                    .accessibilityLabel("Transaction type")
-                BudgieField(
-                    title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
-                    error: amountError, autofocus: true
-                )
-                .padding(.top, Metrics.spacingM)
-                BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
-                    .padding(.top, Metrics.spacingS)
-                // The wheel carries the "Category" label for VoiceOver.
-                fieldLabel("Category")
-                    .accessibilityHidden(true)
-                    .padding(.top, Metrics.spacingS)
-                categoryWheel
-                if !model.tags.isEmpty {
-                    fieldLabel("Tags")
+        // Flutter's Column(Flexible(scroll), footer): the footer sits below
+        // the scroll area (and above the keyboard) rather than over it, so it
+        // needs no fill of its own and the sheet's side borders run unbroken.
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(title)
+                        .textStyle(.headingMedium)
+                        .foregroundStyle(BudgieColor.textPrimary)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                         .accessibilityAddTraits(.isHeader)
-                        .padding(.top, Metrics.spacingM)
-                    tagChips
-                }
-                DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                    SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 12)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityLabel("Transaction type")
+                    BudgieField(
+                        title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
+                        error: amountError, autofocus: true
+                    )
                     .padding(.top, Metrics.spacingM)
-                if editing != nil {
-                    PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
-                        .disabled(saving)
-                        .opacity(saving ? Metrics.opacityDisabled : 1)
-                        .padding(.top, Metrics.spacingL)
+                    BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
+                        .padding(.top, Metrics.spacingS)
+                    // The wheel carries the "Category" label for VoiceOver.
+                    fieldLabel("Category")
+                        .accessibilityHidden(true)
+                        .padding(.top, Metrics.spacingS)
+                    categoryWheel
+                    if !model.tags.isEmpty {
+                        fieldLabel("Tags")
+                            .accessibilityAddTraits(.isHeader)
+                            .padding(.top, Metrics.spacingM)
+                        tagChips
+                    }
+                    DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                        .padding(.top, Metrics.spacingM)
+                    if editing != nil {
+                        PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
+                            .disabled(saving)
+                            .opacity(saving ? Metrics.opacityDisabled : 1)
+                            .padding(.top, Metrics.spacingL)
+                    }
                 }
+                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
             }
-            .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
+            .scrollDismissesKeyboard(.interactively)
+            footer
         }
-        .scrollDismissesKeyboard(.interactively)
-        // Pinned above the keyboard while the fields scroll.
-        .safeAreaInset(edge: .bottom, spacing: 0) { footer }
         .onAppear(perform: loadCategories)
         .onChange(of: type) { _, _ in typeChanged() }
         .onChange(of: amountText) { _, _ in
@@ -309,7 +313,6 @@ struct TransactionFormView: View {
             .opacity(saving ? Metrics.opacityDisabled : 1)
         }
         .padding(Metrics.spacingM)
-        .background(BudgieColor.card)
     }
 
     // MARK: - Actions

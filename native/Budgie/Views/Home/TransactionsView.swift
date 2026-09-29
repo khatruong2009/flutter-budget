@@ -189,6 +189,9 @@ private struct MonthStrip: View {
                 .padding(.horizontal, Metrics.spacingM)
                 .padding(.vertical, Metrics.spacingS)
             }
+            // A horizontal scroll view takes all the height it is offered;
+            // Flutter's bar is its chips plus 8 above and below (84).
+            .fixedSize(horizontal: false, vertical: true)
             .onChange(of: selected) { _, month in
                 withAnimation(reduceMotion ? nil : Motion.easeOut(Motion.normal)) {
                     proxy.scrollTo(month, anchor: .center)
@@ -364,19 +367,21 @@ private struct TransactionRow: View {
                             .textStyle(.labelLarge)
                             .foregroundStyle(BudgieColor.textPrimary)
                             .multilineTextAlignment(.leading)
-                        if record.recurringTemplateId != nil { RecurrenceGlyph(size: 16) }
+                        if record.recurringTemplateId != nil { RecurrenceGlyph(size: 16).fixedSize() }
                     }
                     Text("\(record.category) \u{2022} \(DartDateFormat.MMMd(record.date))")
                         .textStyle(.caption)
                         .foregroundStyle(BudgieColor.textTertiary)
+                        .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                // Its own width first (Flutter's amount is not flexible), so
+                // the title and subtitle get the rest of the row.
                 Text(amount)
                     .textStyle(Self.amountText)
                     .foregroundStyle(color)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
-                    .frame(maxWidth: 170, alignment: .trailing)
                     .layoutPriority(1)
             }
             .padding(Metrics.spacingM)

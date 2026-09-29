@@ -54,6 +54,9 @@ UPGRADE_TEST_RESULTS.md).
   the page falls back to the newest month with data (Flutter keeps the
   stale month selected, with no chip highlighted and a "No Transactions"
   list).
+- Transactions page: the swipe's medium haptic fires as the drag crosses
+  40% of the width (Flutter's fires on release), and the row springs back
+  while the confirmation shows (Flutter slides it out first).
 - Transactions page: a delete is awaited and shows "Transaction deleted"
   only when the write succeeded, otherwise the save-failed toast (Flutter
   fires and forgets the write and always shows the deleted snackbar).
@@ -139,8 +142,13 @@ UPGRADE_TEST_RESULTS.md).
   keeps the month) sits above the wheel (D13), and the wheel always shows
   `selectedMonth` (Flutter's wheel keeps the month it first showed, so it
   can disagree with the pill).
-- Home month wheel: the native wheel selects when it settles; Flutter
-  selects every month it passes, re-rolling the hero for each.
+- Home month wheel: a custom snapping drum with the CupertinoPicker
+  geometry (34pt rows, diameter ratio 1.07, squeeze 1.45, about five rows
+  in 128pt, 0.447 dimming, band inset 9 / radius 8) that selects every
+  month it passes like Flutter. Rows are compressed and foreshortened but
+  drawn flat (no 3D tilt), and each row is dimmed by its share inside the
+  band (Flutter dims the part of each glyph outside the band). Row height
+  and box scale with Dynamic Type; VoiceOver gets one adjustable "Month".
 - Home hero: the odometer rolls the rounded amount (Flutter's rolling
   widget truncates the cents, so it can show 0.01 less than the halo and
   VoiceOver), is not re-rolled by a text-size change, and scales down to
