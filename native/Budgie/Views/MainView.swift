@@ -38,6 +38,8 @@ struct MainView: View {
         // Opens over the current tab (Flutter), once unlocked (D14, 1A.8).
         .onChange(of: model.pendingAdd, initial: true) { _, _ in openPendingAdd() }
         .onChange(of: model.canOpenRoutes) { _, _ in openPendingAdd() }
+        // Above the tab bar (49pt).
+        .toastHost(bottomInset: 49)
         .appLock()
     }
 

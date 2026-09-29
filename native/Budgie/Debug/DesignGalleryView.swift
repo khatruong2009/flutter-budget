@@ -6,6 +6,7 @@ import SwiftUI
 /// with `BUDGIE_DESIGN_GALLERY=1` (launch environment) or from Settings in
 /// DEBUG builds. Sample values only; nothing reads or writes the store.
 struct DesignGalleryView: View {
+    @Environment(AppModel.self) private var model
     @State private var segment = 2
     @State private var range = 1
     @State private var text = ""
@@ -39,6 +40,7 @@ struct DesignGalleryView: View {
             .padding(.bottom, 120)
         }
         .background(BudgieColor.background)
+        .toastHost()
         .overlay(alignment: .bottomTrailing) {
             GlowFab(label: "Add transaction") {}
                 .padding(Metrics.fabInset)
@@ -265,6 +267,10 @@ struct DesignGalleryView: View {
             HStack(spacing: 12) {
                 PillButton(title: "Sheet") { sheet = true }
                 PillButton(title: "Dialog") { dialog = true }
+            }
+            HStack(spacing: 12) {
+                PillButton(title: "Toast", color: BudgieColor.income) { model.showToast(.addedTo(month: model.selectedMonth, now: model.now)) }
+                PillButton(title: "Error toast", color: BudgieColor.danger) { model.showToast(.saveFailed) }
             }
             GlowCard {
                 EmptyStateView(kind: .noResults)

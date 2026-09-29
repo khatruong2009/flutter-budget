@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		019973BB81938BA8AA3F5CC2 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BDFB9B0442602196E25DA6 /* Toast.swift */; };
 		028D66A8DEDBB39EA3F4B3D4 /* SystemIntegrationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */; };
 		065E436387B2E9B2EA0A50EA /* BudgieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6490075274592AC5E0C6D3B /* BudgieApp.swift */; };
 		08260060690300F8A2D702DE /* Headers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BBD70AF06C9C13FFE5A573C /* Headers.swift */; };
@@ -46,8 +47,10 @@
 		C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4458A9E28C360553F6FF40A7 /* RoutingTests.swift */; };
 		CE980D7CA160D8759B63F6AF /* NetWorthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */; };
 		CEE0A6CF48F8336095F2D33A /* SpringBoardProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3C216CCEAB63E8F1DC75E1 /* SpringBoardProbe.swift */; };
+		CFDDCE5E5079FBD2F0A2DB72 /* ToastHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */; };
 		D0394324CE04DAE91A138496 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */; };
 		DC0ACEC38D74059FC1D891E5 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177241A386AE7A9E235D4AD /* AppLock.swift */; };
+		DD3477A856F81761EDAE932E /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D535FCA57003E013F50CD1 /* ToastTests.swift */; };
 		EA0E34188ED90C9D7CE8E5B4 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBE2F4BB26B18F1B815C284 /* DiagnosticsView.swift */; };
 		EBEA70BE1580B123E8739B8A /* ProtectedDataMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B124988FC6629658BB700 /* ProtectedDataMonitor.swift */; };
 		ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D5F50F2340127241F06169 /* Theme.swift */; };
@@ -114,6 +117,7 @@
 		30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SplineSansMono.txt"; sourceTree = "<group>"; };
 		30909C3F10B6B69B9FE7DE2C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		31BFEBF0FCFDE676131B233F /* BudgetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgets.entitlements; sourceTree = "<group>"; };
+		31D535FCA57003E013F50CD1 /* ToastTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		350D625134954C5DEC15E069 /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
 		3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIntegrationUITests.swift; sourceTree = "<group>"; };
 		36793C9A0F0CCD6CEA6F672A /* NetWorthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWorthView.swift; sourceTree = "<group>"; };
@@ -153,7 +157,9 @@
 		B580B965259798CC484798A5 /* BudgetWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetWidgetsBundle.swift; sourceTree = "<group>"; };
 		BB1C875B09356D4582C3026F /* GlowFab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlowFab.swift; sourceTree = "<group>"; };
 		C220A1E54BB67BBBA14FCB8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D0BDFB9B0442602196E25DA6 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-SemiBold.ttf"; sourceTree = "<group>"; };
+		DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHost.swift; sourceTree = "<group>"; };
 		DBBE5D912C19A6258BE48F99 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		DC281C7ED6BA5AFCAAEF93D5 /* Motion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
 		DE53DE5AD70779A34E32BD53 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -184,6 +190,7 @@
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
 				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
+				31D535FCA57003E013F50CD1 /* ToastTests.swift */,
 			);
 			path = BudgieAppTests;
 			sourceTree = "<group>";
@@ -234,6 +241,7 @@
 				F6490075274592AC5E0C6D3B /* BudgieApp.swift */,
 				423B124988FC6629658BB700 /* ProtectedDataMonitor.swift */,
 				B26060D2DC9FBC934F4E5A81 /* RehearsalSummary.swift */,
+				D0BDFB9B0442602196E25DA6 /* Toast.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -276,6 +284,7 @@
 				8BBD70AF06C9C13FFE5A573C /* Headers.swift */,
 				706B0B604B43DD43AB07DA98 /* Pills.swift */,
 				350D625134954C5DEC15E069 /* Progress.swift */,
+				DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -610,6 +619,8 @@
 				4A4CECF3184C530EAD660520 /* SpendingView.swift in Sources */,
 				F174FC9D4CF16A0B6E067ABC /* TextStyles.swift in Sources */,
 				ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */,
+				019973BB81938BA8AA3F5CC2 /* Toast.swift in Sources */,
+				CFDDCE5E5079FBD2F0A2DB72 /* ToastHost.swift in Sources */,
 				F08842C77D36FF5B33731EB9 /* TransactionFormView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -638,6 +649,7 @@
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
 				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,
+				DD3477A856F81761EDAE932E /* ToastTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

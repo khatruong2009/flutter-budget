@@ -52,6 +52,8 @@ final class AppModel {
     /// Whether this session has passed App Lock. Starts false: a launch
     /// with the lock on is locked until the owner authenticates.
     private(set) var sessionUnlocked = false
+    /// The message shown by the root toast host.
+    private(set) var toast: Toast?
     /// The onboarding tour is showing (set by the onboarding flow).
     private(set) var showsOnboarding = false
     private(set) var themeMode: ThemeMode = .system
@@ -378,6 +380,15 @@ final class AppModel {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(CSVExport.fileName(now: now))
         try Data(CSVExport.export(rows)).write(to: url, options: [.atomic])
         return url
+    }
+
+    // MARK: - Toasts
+
+    func showToast(_ toast: Toast) { self.toast = toast }
+
+    /// Dismisses `id` if it is still the one showing.
+    func dismissToast(_ id: UUID) {
+        if toast?.id == id { toast = nil }
     }
 
     // MARK: - Routing
