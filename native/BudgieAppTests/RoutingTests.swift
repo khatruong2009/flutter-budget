@@ -25,3 +25,20 @@ final class RoutingTests: XCTestCase {
         }
     }
 }
+
+@MainActor
+final class RouteGateTests: XCTestCase {
+    /// Before the data is ready (and, in the app, while locked or during
+    /// onboarding) a route stays queued instead of opening.
+    func testRoutesWaitUntilTheyMayOpen() {
+        let model = AppModel()
+        XCTAssertFalse(model.canOpenRoutes)
+        model.open(URL(string: "budgetapp://add-income")!)
+        XCTAssertNil(model.takePendingAdd())
+        XCTAssertEqual(model.pendingAdd, .income, "the route is kept for later")
+        XCTAssertFalse(model.isLocked, "no data, no lock")
+        model.markUnlocked()
+        model.relock()
+        XCTAssertEqual(model.pendingAdd, .income)
+    }
+}

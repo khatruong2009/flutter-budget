@@ -47,20 +47,16 @@ extension View {
 private struct AppLockModifier: ViewModifier {
     @Environment(AppModel.self) private var model
     @Environment(\.scenePhase) private var scenePhase
-    /// Whether this launch has been unlocked. The modifier is created when
-    /// the data becomes ready, so a fresh `false` means "locked at launch".
-    @State private var unlocked = false
     @State private var backgroundedAt: ContinuousClock.Instant?
 
     private var enabled: Bool { model.data?.appSettings.appLockEnabled == true }
     private var timeout: Int { model.data?.appSettings.autoLockTimeoutSeconds ?? 0 }
 
     func body(content: Content) -> some View {
-        let locked = enabled && !unlocked
         content
             .overlay {
-                if locked {
-                    LockScreen { unlocked = true }
+                if model.isLocked {
+                    LockScreen { model.markUnlocked() }
                 } else if enabled && scenePhase != .active {
                     PrivacyCover()
                 }
@@ -68,7 +64,7 @@ private struct AppLockModifier: ViewModifier {
             .onChange(of: enabled) { _, isOn in
                 // Turning the lock on (Settings authenticated first) must not
                 // lock the session that is already open.
-                if isOn { unlocked = true }
+                if isOn { model.markUnlocked() }
             }
             .onChange(of: scenePhase) { _, phase in
                 switch phase {
@@ -76,7 +72,7 @@ private struct AppLockModifier: ViewModifier {
                     backgroundedAt = .now
                 case .active:
                     if let since = backgroundedAt, since.duration(to: .now) >= .seconds(max(timeout, 0)) {
-                        unlocked = false
+                        model.relock()
                     }
                     backgroundedAt = nil
                 default:

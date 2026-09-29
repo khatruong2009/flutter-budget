@@ -31,7 +31,9 @@ Recurring (`arrow.triangle.2.circlepath`), Settings (`gearshape`). An
 `model.hasUnsavedChanges` (text: "Some changes aren't saved yet." + "Retry"
 calling `model.retrySaves()`); it never hides data. `model.pendingAdd`
 (from quick actions, widget, deep links) opens the add sheet preset to
-income or expense on the Spending tab and is then cleared.
+income or expense over the current tab, once the data is ready, App Lock is
+passed and onboarding is done (`takePendingAdd()`); until then it stays
+queued.
 
 ## Spending
 

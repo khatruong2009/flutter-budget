@@ -46,7 +46,14 @@ final class AppModel {
     private(set) var data: FinancialData?
     private(set) var loadReport: FinancialStore.LoadReport?
     private(set) var backupOutcome: PreNativeMigrationBackup.Outcome?
+    /// A quick action, widget or deep link waiting to open the add form.
+    /// Views take it with `takePendingAdd()` once routes may open.
     var pendingAdd: AddRoute?
+    /// Whether this session has passed App Lock. Starts false: a launch
+    /// with the lock on is locked until the owner authenticates.
+    private(set) var sessionUnlocked = false
+    /// The onboarding tour is showing (set by the onboarding flow).
+    private(set) var showsOnboarding = false
     private(set) var themeMode: ThemeMode = .system
     private(set) var hasUnsavedChanges = false
     private(set) var lastSaveError: String?
@@ -374,6 +381,27 @@ final class AppModel {
     }
 
     // MARK: - Routing
+
+    /// App Lock is on and this session has not authenticated.
+    var isLocked: Bool { data?.appSettings.appLockEnabled == true && !sessionUnlocked }
+
+    func markUnlocked() { sessionUnlocked = true }
+
+    /// After the lock timeout in the background.
+    func relock() { sessionUnlocked = false }
+
+    /// Routes open only over unlocked, onboarded data: a quick action or
+    /// deep link on a locked launch waits for the unlock (it used to open
+    /// the form above the lock screen).
+    var canOpenRoutes: Bool { phase == .ready && !isLocked && !showsOnboarding }
+
+    /// The pending add route, cleared, when it may open now; otherwise nil
+    /// and the route stays queued.
+    func takePendingAdd() -> AddRoute? {
+        guard canOpenRoutes, let route = pendingAdd else { return nil }
+        pendingAdd = nil
+        return route
+    }
 
     func open(_ url: URL) {
         let action = url.host?.isEmpty == false ? url.host! : (url.pathComponents.dropFirst().first ?? "")

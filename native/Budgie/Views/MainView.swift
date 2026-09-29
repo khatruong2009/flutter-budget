@@ -35,13 +35,15 @@ struct MainView: View {
         .sheet(item: $addRoute) { route in
             TransactionFormView(mode: .add(route == .income ? .income : .expense))
         }
-        .onChange(of: model.pendingAdd, initial: true) { _, route in
-            guard let route else { return }
-            tab = .spending
-            addRoute = route
-            model.pendingAdd = nil
-        }
+        // Opens over the current tab (Flutter), once unlocked (D14, 1A.8).
+        .onChange(of: model.pendingAdd, initial: true) { _, _ in openPendingAdd() }
+        .onChange(of: model.canOpenRoutes) { _, _ in openPendingAdd() }
         .appLock()
+    }
+
+    private func openPendingAdd() {
+        guard addRoute == nil, let route = model.takePendingAdd() else { return }
+        addRoute = route
     }
 }
 

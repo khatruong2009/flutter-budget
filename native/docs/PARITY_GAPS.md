@@ -68,6 +68,9 @@ UPGRADE_TEST_RESULTS.md).
   `isBuiltIn`, say). Swift writes the list only when a definition was added
   or a sort order changed, and patches just those keys, so unknown keys
   survive.
+- A quick action, widget tap or deep link on a locked launch opens its
+  form only after App Lock is passed (Flutter pushes it on the root
+  navigator, above the lock screen).
 - A preference with an unexpected type reads as absent; Dart would throw.
 - Numbers typed into Swift are validated finite; Dart would fail to save a
   NaN/Infinity forever.
