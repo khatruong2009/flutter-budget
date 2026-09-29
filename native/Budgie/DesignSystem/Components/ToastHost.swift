@@ -2,7 +2,7 @@ import SwiftUI
 
 extension View {
     /// Hosts `model.toast` along the bottom edge (floating, radius 12,
-    /// success or danger fill), dismissing it after its duration. VoiceOver
+    /// success, danger or neutral fill), dismissing it after its duration. VoiceOver
     /// announces it.
     func toastHost(bottomInset: CGFloat = 0) -> some View {
         modifier(ToastHost(bottomInset: bottomInset))
@@ -38,16 +38,20 @@ private struct ToastHost: ViewModifier {
 
 /// Flutter's SnackBar text is M3 `onInverseSurface` (a dark neutral in dark
 /// mode, near-white in light), not white: `onAccent` (#0A0A12 / #FFFFFF)
-/// keeps it legible on the bright dark-mode green and rose.
+/// keeps it legible on the bright dark-mode green and rose. The neutral
+/// style stands in for M3 `inverseSurface` / `onInverseSurface` with the
+/// primary text colour as the fill and the page background as the text
+/// (#111827 on #F9FAFB light, #F2F2FA on #0A0A12 dark).
 private struct ToastView: View {
     @Environment(AppModel.self) private var model
     let toast: Toast
 
     var body: some View {
+        let foreground = toast.style == .neutral ? BudgieColor.background : BudgieColor.onAccent
         HStack(spacing: 12) {
             Text(toast.message)
                 .textStyle(.bodySmall)
-                .foregroundStyle(BudgieColor.onAccent)
+                .foregroundStyle(foreground)
                 .frame(maxWidth: .infinity, alignment: .leading)
             if toast.action == .retrySaves {
                 Button("Retry") {
@@ -55,14 +59,21 @@ private struct ToastView: View {
                     Task { await model.retrySaves() }
                 }
                 .textStyle(.labelSmall)
-                .foregroundStyle(BudgieColor.onAccent)
+                .foregroundStyle(foreground)
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(toast.style == .danger ? BudgieColor.danger : BudgieColor.income,
-                    in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous))
+        .background(fill, in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous))
         .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
         .accessibilityElement(children: .combine)
+    }
+
+    private var fill: Color {
+        switch toast.style {
+        case .success: BudgieColor.income
+        case .danger: BudgieColor.danger
+        case .neutral: BudgieColor.textPrimary
+        }
     }
 }

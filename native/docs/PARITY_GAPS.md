@@ -13,7 +13,7 @@ UPGRADE_TEST_RESULTS.md).
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
-| Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter. BudgieCore and AppModel implement add, edit with the rename cascade, archive/restore and move (Fixtures/categories); no management page yet. |
+| Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
@@ -241,6 +241,36 @@ UPGRADE_TEST_RESULTS.md).
   do nothing. With "Show archived" on the moves are Flutter's. Moving an
   unknown id does nothing (Flutter throws "No element"; unreachable from
   the page).
+- Categories page (D1 port of the Material page): the add action is only
+  the bar's "+" (Flutter also shows a FAB running the same action); the
+  title is cardTitle in the navigation bar (Flutter's AppBar title is M3
+  titleLarge, 22 / w400); the row menu is the system `Menu` (Flutter's
+  Material popup menu), with the same items and order.
+- Category editor: the redesign's centred card (`budgieDialog`, as the
+  Goals form) instead of Material's AlertDialog: the title is centred in
+  goalTitle (Flutter: headlineSmall, left), "Name" is a caption above the
+  field (Flutter: a floating label), and Cancel / Add | Save are pills
+  (Flutter: a text and a filled button). The icon and colour choice
+  buttons, their sizes, colours and order are Flutter's.
+- Category editor errors show inline under the Name field and keep the
+  dialog open with the typed name: "Enter a category name" (Flutter's
+  validator) and, before saving, the provider's "A category with this
+  name already exists", which Flutter shows in a SnackBar after the dialog
+  has closed (the input lost). After the first Save the message follows
+  the text as it is edited (Flutter re-validates only on Save). The
+  dialog stays open and inert while the edit saves, and closes on a failed
+  write with the save-failed toast (the change is kept behind the unsaved
+  banner).
+- The category editor's colour rows are 8pt apart, like the icon rows
+  (Flutter's colour `Wrap` sets no run spacing, so its two rows touch).
+- Refused category row actions ("At least one category must remain
+  active") show the danger toast; Flutter shows the default SnackBar
+  (inverse-surface fill, fixed to the bottom edge).
+- `Toast.Style.neutral` stands in for Flutter's default SnackBar with the
+  primary text colour as the fill and the page background as the text
+  (M3 inverseSurface / onInverseSurface from the seed are close but not
+  those tokens), floating with radius 12 like the other toasts (Flutter's
+  default is fixed, full width, radius 4).
 - A quick action, widget tap or deep link on a locked launch opens its
   form only after App Lock is passed (Flutter pushes it on the root
   navigator, above the lock screen).
@@ -552,9 +582,9 @@ UPGRADE_TEST_RESULTS.md).
   Tappable rows read "title, subtitle" once (label and value; Flutter
   merges its button label with the child texts), and the section eyebrows
   are headers.
-- Settings rows whose features land in Phase 3 (Categories, Tags & rules,
-  Import from CSV, Export backup, Import backup) keep Flutter's icon and
-  copy but open an "upcoming update" page.
+- Settings rows whose features land in Phase 3 (Tags & rules, Import from
+  CSV, Export backup, Import backup) keep Flutter's icon and copy but open
+  an "upcoming update" page.
 - Settings > ABOUT also lists Data diagnostics and Licences (the SIL OFL
   texts the bundled fonts require), and Design gallery in debug builds;
   Flutter has only Version. The version is read from the bundle at once

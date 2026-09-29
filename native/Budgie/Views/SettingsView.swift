@@ -7,8 +7,8 @@ import UIKit
 /// back button, then the brand card and the APPEARANCE, PERSONALIZATION,
 /// PRIVACY, DATA and ABOUT cards.
 ///
-/// Differences from Flutter (PARITY_GAPS): Categories, Tags & rules, Import
-/// from CSV and the backup rows open an "upcoming update" page until their
+/// Differences from Flutter (PARITY_GAPS): Tags & rules, Import from CSV
+/// and the backup rows open an "upcoming update" page until their
 /// phase lands; turning App lock on asks for Face ID / the passcode first
 /// (Flutter locks at once); ABOUT also lists Data diagnostics and Licences.
 struct SettingsView: View {
@@ -86,7 +86,8 @@ struct SettingsView: View {
             AnyView(SettingsRow(
                 symbol: "square.on.circle", color: BudgieColor.accent, title: "Categories",
                 subtitle: "\(activeCategories) active · custom names, icons, and order",
-                action: { destination = .categories })),
+                action: { destination = .categories }
+            ).accessibilityIdentifier("settings.categories")),
             AnyView(SettingsRow(
                 symbol: "sparkles", color: BudgieColor.info, title: "Tags & rules",
                 subtitle: "\(data.tags.count) tags · \(data.rules.count) rules",
@@ -296,7 +297,7 @@ struct SettingsView: View {
 
         @MainActor @ViewBuilder var view: some View {
             switch self {
-            case .categories: UpcomingSettingsPage(title: "Categories", symbol: "square.on.circle")
+            case .categories: CategoriesView()
             case .tagsAndRules: UpcomingSettingsPage(title: "Tags & rules", symbol: "sparkles")
             case .recurring: RecurringView()
             case .csvImport: UpcomingSettingsPage(title: "Import from CSV", symbol: "arrow.up.to.line")
