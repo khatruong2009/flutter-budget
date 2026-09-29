@@ -25,11 +25,16 @@ enum SwiftOutput {
     /// `CategoryProvider` must hold after its launch pass (every field, in
     /// stored order, followed by `categoriesAddedAtLaunch` without ids),
     /// and the categories its transactions, templates and rules must carry.
+    /// `tagsRules`, when given, is what Dart's `CategorizationProvider` must
+    /// load (`tags`, and `rules` in its getter's order, bounds as
+    /// `toString`); `newTagIDs` / `newRuleIDs` are rows Swift made, whose
+    /// stored JSON must be Dart's `toJson` byte for byte.
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
         appSettings: AppSettings? = nil, themeMode: String? = nil, categories: FinancialData? = nil,
-        categoriesAddedAtLaunch: [CategoryInfo] = []
+        categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
+        newRuleIDs: [String] = []
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -91,6 +96,16 @@ enum SwiftOutput {
             swift["transactionCategories"] = categories.transactions.map { [$0.id, $0.type.rawValue, $0.category] }
             swift["templateCategories"] = categories.templates.map { [$0.id, $0.type.rawValue, $0.category] }
             swift["ruleCategories"] = categories.rules.sorted { DartString.precedes($0.id, $1.id) }.map { [$0.id, $0.category] }
+        }
+        if let tagsRules {
+            swift["transactionTags"] = tagsRules.tags.map { [$0.id, $0.name, $0.colorToken] }
+            swift["categorizationRules"] = tagsRules.rulesByPriority.map { r -> [Any] in
+                [r.id, r.merchantPattern, r.matchType.rawValue, r.transactionType?.rawValue as Any? ?? NSNull(),
+                 r.minimumAmount.map(DartDouble.format) as Any? ?? NSNull(), r.maximumAmount.map(DartDouble.format) as Any? ?? NSNull(),
+                 r.category, r.tagIds, r.priority, r.isEnabled]
+            }
+            swift["newTagIds"] = newTagIDs
+            swift["newRuleIds"] = newRuleIDs
         }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
@@ -274,6 +289,43 @@ struct SwiftOutputForDartTests {
                 name: "Swift Delete Me", targetAmount: 5, targetDate: now, id: SavingsGoalRecord.makeID(now: now, counter: 2), now: now)!
             data.deleteSavingsGoal(id: doomedGoal.id)
 
+            // Tags and rules: every edit the Tags & rules page makes (before
+            // the category renames, which then carry into these rules):
+            // tags with padding, quotes and emoji; rules of every match
+            // type, both types and none, amount bounds with awkward
+            // lexemes, priorities, disabled, tags in tap order; a rule
+            // re-added under its id (moves to the end); deleting a tag the
+            // rules use (typical's "Work" when present) and a rule.
+            let tagsBefore = data.tags
+            let swiftTag = try data.addTag(name: " Swift ☕️ \"Tag\" ", id: id())
+            let plainTag = try data.addTag(name: "Swift Plain", colorToken: "cyan", id: id())
+            _ = try? data.addTag(name: "swift plain", id: id())
+            var newRuleIDs: [String] = []
+            func addRule(_ draft: RuleDraft, id ruleID: String? = nil) throws {
+                newRuleIDs.append(try data.addRule(draft, id: ruleID ?? id()).id)
+            }
+            try addRule(RuleDraft(
+                merchantPattern: "  Whole \"Foods\" ☕️ ", transactionType: .expense, category: "Groceries",
+                tagIds: [plainTag.id, swiftTag.id] + tagsBefore.prefix(1).map(\.id)))
+            try addRule(RuleDraft(
+                merchantPattern: "SWIFT PAYROLL", matchType: .startsWith, transactionType: .income, minimumAmount: 1000,
+                category: "Salary", priority: 3))
+            try addRule(RuleDraft(
+                merchantPattern: "swift rent", matchType: .exact, transactionType: nil, minimumAmount: -0.0, maximumAmount: 0.1 + 0.2,
+                category: "Housing", tagIds: [swiftTag.id], isEnabled: false))
+            try addRule(RuleDraft(
+                merchantPattern: "swift tiny", transactionType: .expense, minimumAmount: 1e-7, maximumAmount: 1e21,
+                category: "Eating Out", priority: -2))
+            let moved = id()
+            try addRule(RuleDraft(merchantPattern: "swift first", transactionType: .expense, category: "Gift"), id: moved)
+            try addRule(RuleDraft(merchantPattern: "swift moved", transactionType: .income, category: "Gift", tagIds: [plainTag.id]), id: moved)
+            let doomedRule = id()
+            try addRule(RuleDraft(merchantPattern: "swift delete me", transactionType: .expense, category: "Groceries"), id: doomedRule)
+            data.deleteRule(id: doomedRule)
+            data.deleteTag(id: tagsBefore.first?.id ?? swiftTag.id)
+            if let storedRule = data.rules.first(where: { !newRuleIDs.contains($0.id) }) { data.deleteRule(id: storedRule.id) }
+            let newTagIDs = [swiftTag.id, plainTag.id].filter { id in data.tags.contains { $0.id == id } }
+
             // Categories: every edit the Categories page makes. Adds in both
             // types (a taken slug gets a uuid id; an unknown icon is stored
             // as the grid), icon and colour edits, renames that carry
@@ -322,7 +374,8 @@ struct SwiftOutputForDartTests {
             try SwiftOutput.emit(
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
                 budgetLimits: data.budgetLimits, netWorth: data, goals: data, categories: data,
-                categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)))
+                categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)), tagsRules: data,
+                newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } })
         }
     }
 

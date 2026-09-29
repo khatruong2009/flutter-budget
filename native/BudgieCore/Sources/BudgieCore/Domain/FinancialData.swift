@@ -27,7 +27,7 @@ public struct FinancialData: Sendable {
     public internal(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
     public internal(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
     public internal(set) var categoryRows: [StoredRow<CategoryInfo>] = []
-    public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
+    public internal(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
     public internal(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
     /// The `categoryBudgetLimits` object as stored (edits patch it in place,
     /// so untouched entries keep their lexemes; see Budgets.swift). Empty

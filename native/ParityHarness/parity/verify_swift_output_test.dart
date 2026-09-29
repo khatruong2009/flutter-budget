@@ -11,15 +11,19 @@
 //                       "selectedNetWorthMonth", "savingsGoals", "appSettings",
 //                       "themeMode", "categories", "categoriesAddedAtLaunch",
 //                       "transactionCategories", "templateCategories",
-//                       "ruleCategories": what the Dart models must hold}
+//                       "ruleCategories", "transactionTags",
+//                       "categorizationRules": what the Dart models must hold;
+//                       "newTagIds", "newRuleIds": rows Swift made}
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:budget_app/categorization_rule.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/theme_provider.dart';
+import 'package:budget_app/transaction_tag.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -279,6 +283,66 @@ void main() {
             ..sort((a, b) => a.id.compareTo(b.id))))
             [r.id, r.category]
         ]);
+        // Tags and rules the Swift side edited: Dart must load exactly
+        // these (`rules` in its getter's order, bounds as toString); the
+        // rows Swift made must be Dart's `toJson` byte for byte; and the
+        // state must be one Flutter's backup import accepts (unique tag and
+        // rule ids, every rule tag id a tag; backup.dart:124-133).
+        final transactionTags = swift['transactionTags'];
+        if (transactionTags is List) {
+          final provider = app.categorizationProvider;
+          compareRows('transactionTags', [
+            for (final t in provider.tags) [t.id, t.name, t.colorToken]
+          ]);
+          compareRows('categorizationRules', [
+            for (final r in provider.rules)
+              [
+                r.id,
+                r.merchantPattern,
+                r.matchType.name,
+                r.transactionType?.name,
+                r.minimumAmount?.toString(),
+                r.maximumAmount?.toString(),
+                r.category,
+                r.tagIds,
+                r.priority,
+                r.isEnabled,
+              ]
+          ]);
+          void canonical(String section, List<Object?> ids,
+              String Function(Map<String, dynamic>) toJson) {
+            final rows = snapshot.sections[section] as List? ?? const [];
+            for (final id in ids) {
+              final row = rows.whereType<Map<String, dynamic>>()
+                  .where((r) => r['id'] == id)
+                  .toList();
+              if (row.length != 1) {
+                problems.add('$section: ${row.length} rows with Swift id $id');
+              } else if (jsonEncode(row.single) != toJson(row.single)) {
+                problems.add('$section: row $id is not toJson: '
+                    '${jsonEncode(row.single)} vs ${toJson(row.single)}');
+              }
+            }
+          }
+
+          canonical('transactionTags', swift['newTagIds'] as List,
+              (row) => jsonEncode(TransactionTag.fromJson(row).toJson()));
+          canonical('categorizationRules', swift['newRuleIds'] as List,
+              (row) => jsonEncode(CategorizationRule.fromJson(row).toJson()));
+          final tagIds = {for (final t in provider.tags) t.id};
+          final ruleIds = {for (final r in provider.rules) r.id};
+          if (tagIds.length != provider.tags.length ||
+              ruleIds.length != provider.rules.length) {
+            problems.add('duplicate tag or rule ids (backup import refuses)');
+          }
+          for (final r in provider.rules) {
+            for (final id in r.tagIds) {
+              if (!tagIds.contains(id)) {
+                problems.add('rule ${r.id} names unknown tag $id (backup import refuses)');
+              }
+            }
+          }
+        }
         final themeMode = swift['themeMode'];
         if (themeMode is String) {
           final theme = ThemeProvider();

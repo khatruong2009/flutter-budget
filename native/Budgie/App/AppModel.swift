@@ -747,8 +747,85 @@ final class AppModel {
         data?.categoryPicker(for: type) ?? CategoryCatalog.pickerList(CategoryCatalog.builtIn, type: type, usedNames: [])
     }
 
-    /// Transaction tags (`transactionTags`), read-only until tag management.
+    // MARK: - Tags and rules
+
+    /// What a tag or rule edit did: written and verified; changed in memory
+    /// but not written (the unsaved banner and Retry take over, the caller
+    /// shows `Toast.saveFailed`; Flutter is silent); nothing to do (an
+    /// unknown id, where Flutter rewrites the unchanged list); or refused
+    /// with nothing changed, carrying the copy to show (`error.message`).
+    enum TagRuleOutcome: Equatable {
+        case saved, failed, unchanged
+        case rejected(CategorizationEditError)
+    }
+
+    /// Transaction tags (`transactionTags`), in stored order (Flutter's
+    /// `tags`: the page, the form chips and the Flow filter chips).
     var tags: [TransactionTagRecord] { data?.tags ?? [] }
+
+    /// Flutter's `rules` getter, priority descending: the order the Tags &
+    /// rules page lists them and suggestions try them.
+    var rules: [CategorizationRuleRecord] { data?.rulesByPriority ?? [] }
+
+    /// The error adding this tag name would give, else nil.
+    func validateTagName(_ name: String) -> CategorizationEditError? {
+        data?.validateTagName(name)
+    }
+
+    /// Dart `addTag`: the trimmed name, "accent" colour. Writes
+    /// `transactionTags`.
+    @discardableResult
+    func addTag(name: String, colorToken: String = "accent") async -> TagRuleOutcome {
+        let id = newID()
+        return await editTagsAndRules { data throws(CategorizationEditError) in
+            try data.addTag(name: name, colorToken: colorToken, id: id)
+            return [Section.transactionTags]
+        }
+    }
+
+    /// Dart `deleteTag`: the tag goes and every rule drops it; transactions
+    /// keep the id (D9). One commit of `transactionTags` and
+    /// `categorizationRules` (Flutter makes two).
+    @discardableResult
+    func deleteTag(id: String) async -> TagRuleOutcome {
+        await editTagsAndRules { data in data.deleteTag(id: id) }
+    }
+
+    /// Dart `addRule` with a new id. The Flutter dialog's rule sets only
+    /// the pattern, match, type, category and tags (`RuleDraft` defaults
+    /// for the rest). Writes `categorizationRules`.
+    @discardableResult
+    func addRule(_ draft: RuleDraft) async -> TagRuleOutcome {
+        let id = newID()
+        return await editTagsAndRules { data throws(CategorizationEditError) in
+            try data.addRule(draft, id: id)
+            return [Section.categorizationRules]
+        }
+    }
+
+    /// Dart `deleteRule`. Writes `categorizationRules`.
+    @discardableResult
+    func deleteRule(id: String) async -> TagRuleOutcome {
+        await editTagsAndRules { data in data.deleteRule(id: id) ? [Section.categorizationRules] : [] }
+    }
+
+    /// Runs one tag or rule edit on a copy (a refused edit leaves `data`
+    /// untouched), then memory first and one awaited commit of the sections
+    /// it returns.
+    private func editTagsAndRules(
+        _ edit: (inout FinancialData) throws(CategorizationEditError) -> [String]
+    ) async -> TagRuleOutcome {
+        guard var copy = data else { return .unchanged }
+        let sections: [String]
+        do {
+            sections = try edit(&copy)
+        } catch {
+            return .rejected(error)
+        }
+        guard !sections.isEmpty else { return .unchanged }
+        data = copy
+        return await persist(sections) ? .saved : .failed
+    }
 
     /// The form's auto-categorisation (`applySuggestion`,
     /// transaction_form.dart:106-121): the amount text parses with Dart's
@@ -758,6 +835,18 @@ final class AppModel {
         guard let data else { return nil }
         return CategorizationEngine.suggest(
             rules: data.rules, type: type, description: description, amount: DartDouble.tryParse(amountText) ?? 0)
+    }
+
+    /// `applySuggestion` with its gate, for a caller that has no picker
+    /// list of its own (the voice prefill, transaction_form.dart:78-88): the
+    /// first matching rule, or nil when its category is not an active
+    /// category of `type`. Set the category and replace the selected tags
+    /// with `tagIds` (a Set in Flutter: duplicates collapse).
+    func suggestion(type: TransactionType, description: String, amount: Double) -> CategorizationRuleRecord? {
+        guard let data else { return nil }
+        return CategorizationEngine.suggestion(
+            rules: data.rules, type: type, description: description, amount: amount,
+            activeCategoryNames: categories(for: type).map(\.name))
     }
 
     func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {

@@ -100,6 +100,47 @@ public struct CategorizationRuleRecord: Identifiable, Hashable, Sendable {
 }
 
 extension CategorizationRuleRecord {
+    /// A new rule as Dart `CategorizationRule(...).toJson()` writes it
+    /// (categorization_rule.dart:19-31, 59-70): the pattern trimmed, keys in
+    /// Dart's order with null values written, bounds as doubles (`20.0`),
+    /// `tagIds` as given (Flutter passes the selection order).
+    public static func make(id: String, _ draft: RuleDraft) -> CategorizationRuleRecord {
+        let pattern = DartString.trim(draft.merchantPattern)
+        func bound(_ value: Double?) -> JSONValue { value.map { .double($0) } ?? .null }
+        let raw = JSONObject(ordered: [
+            ("id", .string(id)),
+            ("merchantPattern", .string(pattern)),
+            ("matchType", .string(draft.matchType.rawValue)),
+            ("transactionType", draft.transactionType.map { .string($0.rawValue) } ?? .null),
+            ("minimumAmount", bound(draft.minimumAmount)),
+            ("maximumAmount", bound(draft.maximumAmount)),
+            ("category", .string(draft.category)),
+            ("tagIds", .array(draft.tagIds.map { .string($0) })),
+            ("priority", .int(draft.priority)),
+            ("isEnabled", .bool(draft.isEnabled)),
+        ])
+        return CategorizationRuleRecord(
+            id: id, merchantPattern: pattern, matchType: draft.matchType, transactionType: draft.transactionType,
+            minimumAmount: draft.minimumAmount, maximumAmount: draft.maximumAmount, category: draft.category,
+            tagIds: draft.tagIds, priority: draft.priority, isEnabled: draft.isEnabled, raw: raw)
+    }
+
+    /// Dart `deleteTag`'s rebuild of a rule with every occurrence of `tagID`
+    /// dropped from `tagIds` (compared as UTF-16). Only that key is patched;
+    /// stored elements Dart ignores (non-strings) stay.
+    func removingTag(_ tagID: String) -> CategorizationRuleRecord {
+        var copy = self
+        let units = Array(tagID.utf16)
+        copy.tagIds.removeAll { DartString.equal($0, tagID) }
+        if case .array(let items)? = raw["tagIds"] {
+            copy.raw["tagIds"] = .array(items.filter { item in
+                if case .string(let s) = item { return s.codeUnits != units }
+                return true
+            })
+        }
+        return copy
+    }
+
     /// The category rename (Dart `CategorizationProvider.renameCategory`
     /// rebuilds the rule with only `category` changed).
     func with(category: String) -> CategorizationRuleRecord {
@@ -130,17 +171,37 @@ extension CategorizationRuleRecord {
     }
 }
 
-/// Dart `CategorizationProvider.suggest` (categorization_provider.dart:152-167).
+/// Dart `CategorizationProvider.rules` and `suggest`
+/// (categorization_provider.dart:26-30, 152-167).
 public enum CategorizationEngine {
-    /// The first rule, by priority descending, that matches. Equal
-    /// priorities keep their stored order (a stable sort; Dart's sort is
-    /// only stable up to 32 rules, see PARITY_GAPS).
+    /// Dart's `rules` getter: priority descending. Equal priorities keep
+    /// their stored order (a stable sort). Dart's `List.sort` is stable only
+    /// up to 33 elements; from 34 rules on its order of equal priorities
+    /// differs (PARITY_GAPS).
+    public static func ordered(_ rules: [CategorizationRuleRecord]) -> [CategorizationRuleRecord] {
+        rules.enumerated().sorted { a, b in
+            a.element.priority != b.element.priority ? a.element.priority > b.element.priority : a.offset < b.offset
+        }.map(\.element)
+    }
+
+    /// Dart `suggest`: the first rule in `ordered` order that matches.
     public static func suggest(
         rules: [CategorizationRuleRecord], type: TransactionType, description: String, amount: Double
     ) -> CategorizationRuleRecord? {
-        let ordered = rules.enumerated().sorted { a, b in
-            a.element.priority != b.element.priority ? a.element.priority > b.element.priority : a.offset < b.offset
-        }
-        return ordered.first { $0.element.matches(type: type, description: description, amount: amount) }?.element
+        ordered(rules).first { $0.matches(type: type, description: description, amount: amount) }
+    }
+
+    /// The transaction form's use of `suggest` (`applySuggestion`,
+    /// transaction_form.dart:106-121): the first matching rule, or nil when
+    /// its category is not one of `activeCategoryNames` (the form's list for
+    /// the type, compared as UTF-16). A later matching rule is not tried.
+    public static func suggestion(
+        rules: [CategorizationRuleRecord], type: TransactionType, description: String, amount: Double,
+        activeCategoryNames: [String]
+    ) -> CategorizationRuleRecord? {
+        guard let rule = suggest(rules: rules, type: type, description: description, amount: amount),
+            activeCategoryNames.contains(where: { DartString.equal($0, rule.category) })
+        else { return nil }
+        return rule
     }
 }

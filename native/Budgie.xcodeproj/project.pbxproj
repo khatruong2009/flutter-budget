@@ -22,6 +22,7 @@
 		1CA4701DA16820AFD9D048D2 /* GoalsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8AD1A2FD9AF25D2A624BFB /* GoalsUITests.swift */; };
 		1CD6C6774725EE4E84DCFF23 /* NetCashFlowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E844E933EE38F40FCF2098F /* NetCashFlowCard.swift */; };
 		1CFC24C829D8C188212843D9 /* WorthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF992CF11791368E3AEC7EC /* WorthUITests.swift */; };
+		200CD3EE72523B4415302864 /* TagRuleModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2238E110E1ADF849421F8C77 /* TagRuleModelTests.swift */; };
 		2028BD40319E041FE4307F31 /* MonthStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C39A24DE28EC428B953C06 /* MonthStrip.swift */; };
 		211FEA986BECCBDB82B92FCF /* AccountEditorInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDA82B10D34CBA6ED21C4CA /* AccountEditorInputTests.swift */; };
 		25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE53DE5AD70779A34E32BD53 /* AppModel.swift */; };
@@ -169,6 +170,7 @@
 		213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Bold.ttf"; sourceTree = "<group>"; };
 		21D98BE7CAA32047DC8ED7BB /* HomeHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHero.swift; sourceTree = "<group>"; };
 		21E66291B8433CB5179F0E37 /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsView.swift; sourceTree = "<group>"; };
+		2238E110E1ADF849421F8C77 /* TagRuleModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRuleModelTests.swift; sourceTree = "<group>"; };
 		26BB2E615765EF1D846843C2 /* Gabarito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-ExtraBold.ttf"; sourceTree = "<group>"; };
 		2DF1B6BD45CD3611914BF395 /* FlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowView.swift; sourceTree = "<group>"; };
 		30903279E7AD171EFDE4B3AB /* OFL-SplineSansMono.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-SplineSansMono.txt"; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
 				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
 				58876583DBD69473AF4D7388 /* SpendPaletteTests.swift */,
+				2238E110E1ADF849421F8C77 /* TagRuleModelTests.swift */,
 				800FA2FCB6FBC4E3D3E72E06 /* TextLineHeightTests.swift */,
 				31D535FCA57003E013F50CD1 /* ToastTests.swift */,
 				AC8BD160059B70E88B177161 /* TransactionFormValidationTests.swift */,
@@ -883,6 +886,7 @@
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
 				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,
 				767CAD064D77B2559BDEF73E /* SpendPaletteTests.swift in Sources */,
+				200CD3EE72523B4415302864 /* TagRuleModelTests.swift in Sources */,
 				11E857F5EF1E31B97EF3D43B /* TextLineHeightTests.swift in Sources */,
 				DD3477A856F81761EDAE932E /* ToastTests.swift in Sources */,
 				6D4565D119A57E52E7C3DD79 /* TransactionFormValidationTests.swift in Sources */,

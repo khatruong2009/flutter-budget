@@ -12,7 +12,7 @@ UPGRADE_TEST_RESULTS.md).
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
-| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
+| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags. BudgieCore and AppModel implement add and delete tag (the tag is stripped from rules) and add and delete rule (Fixtures/tags); no management page yet. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
@@ -40,9 +40,13 @@ UPGRADE_TEST_RESULTS.md).
 - CSV rows with identical timestamps keep input order (Swift stable sort);
   Dart's sort is not stable above 32 rows, so tie order can differ from a
   Flutter export of the same data. Bytes are otherwise identical.
-- Categorization rules with equal priority are tried in stored order (Swift
-  stable sort); Dart's sort is not stable above 32 rules, so with more than
-  32 rules the suggestion among equal-priority matches can differ.
+- Categorization rules with equal priority are listed and tried in stored
+  order (Swift stable sort). Dart's `List.sort` is an insertion sort up to
+  33 elements and a dual-pivot quicksort from 34, so with 34 or more rules
+  Flutter's `rules` getter reorders ties in a fixed pattern (34 tied rules:
+  the 12th comes first and the 1st moves to 12th): the Tags & rules list and
+  the suggestion among equal-priority matches can differ (Fixtures/tags
+  `sort_*`; up to 33 rules they agree).
 - Spend tab: categories with equal month totals keep first-appearance order
   (Swift stable sort); Dart's sort is not stable above 33 categories in a
   month, so there the order of tied categories (their rows, colours and
@@ -208,8 +212,11 @@ UPGRADE_TEST_RESULTS.md).
   hidden; Flutter drops them on its next save (transactions) or fails to
   load (recurring, net worth, goals). For categories, one malformed row
   makes Flutter replace the whole list with the built-in seeds, and for
-  tags and rules it makes Flutter load an empty list; Swift keeps using the
-  readable rows (the seeds only when none are readable).
+  tags and rules it makes Flutter load an empty list, and its next tag or
+  rule save destroys the stored rows; Swift keeps using the readable rows
+  (the seeds only when none are readable). A rule whose `priority` is a
+  number JSON writes as infinite (`1e400`) is one of those rows for Dart
+  (`toInt()` throws); Swift reads it with the largest priority.
 - At launch Flutter rewrites the whole `categories` list in canonical
   `toJson` form whenever it differs from the stored JSON (a row missing
   `isBuiltIn`, say). Swift writes the list only when a definition was added
@@ -235,6 +242,27 @@ UPGRADE_TEST_RESULTS.md).
   save-failed toast. Flutter's `CategoryProvider` throws: the page shows
   "Could not update this category", skips the rename cascade, and no banner
   covers the lost change.
+- Deleting a tag writes `transactionTags` and `categorizationRules` in one
+  commit. Flutter makes two (tags, then rules), so a failed second write
+  left rules naming a deleted tag, which makes its backup import refuse the
+  file. Flutter also rewrites both lists when nothing changed (an unknown
+  tag or rule id); Swift writes nothing then (the stored content is the
+  same either way).
+- Tag and rule edits patch only what changed: a new row has Dart's `toJson`
+  shape, and deleting a tag rewrites just the `tagIds` of the rules naming
+  it (unknown keys, number lexemes, non-string `tagIds` elements Dart
+  ignores, and unreadable rows survive). Flutter rewrites both lists in
+  canonical `toJson` form; on data Flutter wrote itself the bytes are
+  identical (Fixtures/tags).
+- A tag or rule save that fails stays in memory behind the unsaved-changes
+  banner (Retry, or the next save, writes it) and the caller shows the
+  save-failed toast. Flutter is silent: the change stays in memory with no
+  message and is gone after a relaunch.
+- BudgieCore refuses a rule whose trimmed merchant text is empty, whose
+  amount bound is not finite, or that names a tag id no tag has. Flutter's
+  provider accepts all three: its dialog never sends the first (Add does
+  nothing), the second cannot be saved, and the third makes its backup
+  import refuse the file.
 - Category Move up / Move down with archived rows hidden moves the row past
   the previous or next shown row. Flutter moves by one in the full list
   (archived rows included), so a move over a hidden archived row seemed to
