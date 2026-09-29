@@ -15,6 +15,9 @@ struct TransactionFormView: View {
     }
 
     let mode: Mode
+    /// Preselected category for a new entry (the quick-expense sheet); used
+    /// only if it is in the picker list.
+    var initialCategory: String? = nil
 
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -31,8 +34,9 @@ struct TransactionFormView: View {
     @State private var confirmingDelete = false
     @FocusState private var amountFocused: Bool
 
-    init(mode: Mode) {
+    init(mode: Mode, initialCategory: String? = nil) {
         self.mode = mode
+        self.initialCategory = initialCategory
         switch mode {
         case .add(let type):
             _type = State(initialValue: type)
@@ -178,6 +182,7 @@ struct TransactionFormView: View {
             options[kind] = list.map(\.name)
             infos[kind] = Dictionary(list.map { ($0.name, $0) }, uniquingKeysWith: { first, _ in first })
         }
+        if editing == nil, let initialCategory, categoryNames.contains(initialCategory) { category = initialCategory }
         if !categoryNames.contains(category) { category = categoryNames.first ?? "" }
     }
 
