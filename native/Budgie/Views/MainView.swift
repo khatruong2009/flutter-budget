@@ -15,7 +15,7 @@ struct MainView: View {
 
     var body: some View {
         TabView(selection: $tab) {
-            NavigationStack { SpendingView() }
+            NavigationStack { HomeView() }
                 .tabItem { Label("Home", systemImage: "dollarsign.circle") }
                 .tag(Tab.home)
             NavigationStack { NetWorthView() }

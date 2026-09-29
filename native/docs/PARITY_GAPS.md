@@ -22,7 +22,7 @@ UPGRADE_TEST_RESULTS.md).
 | CSV import | ledger | Not available. |
 | Spend (category donut), Flow (history charts, year-over-year) tabs | derived | Not available; the Transactions page (Home > SEE ALL) lists transactions. |
 | Hide balances toggle, locale override picker, auto-lock timeout picker | `appSettings` | Honoured when set by the Flutter app; no toggles in the MVP. |
-| Month picker limited to the selected year | UI state | MVP month selector moves across years. |
+| Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
 ## Flutter behaviour reproduced on purpose (approved Q1; fix in both apps later)
 
@@ -128,6 +128,30 @@ UPGRADE_TEST_RESULTS.md).
   Flutter saved "-5" as 5 and "1e3" as 13; Swift rejects both.
 - Budget limit field: filled with the chip-surface token (Flutter's theme
   fill is #F9FAFB light / #15151F dark; dark is identical).
+- Home month panel: a year stepper (previous/next year, light haptic,
+  keeps the month) sits above the wheel (D13), and the wheel always shows
+  `selectedMonth` (Flutter's wheel keeps the month it first showed, so it
+  can disagree with the pill).
+- Home month wheel: the native wheel selects when it settles; Flutter
+  selects every month it passes, re-rolling the hero for each.
+- Home hero: the odometer rolls the rounded amount (Flutter's rolling
+  widget truncates the cents, so it can show 0.01 less than the halo and
+  VoiceOver), is not re-rolled by a text-size change, and scales down to
+  fit instead of overflowing a narrow screen.
+- Home: the page's bottom padding clears the add button (Flutter lets the
+  Expense/Income pills sit under it); there is no mic button until voice
+  entry returns.
+- Home spend gauge: under Reduce Motion a changed value jumps (Flutter
+  only skips the first fill and still animates changes).
+- Home accessibility: the gauge reads "Spent X of Y income" and the year
+  stepper's buttons are labelled; a recent-activity row's VoiceOver label
+  is the description with the rest as its value, which reads the same as
+  Flutter's single label.
+- Safe-to-spend breakdown sheet: redesign sheet chrome (card colour, 44x4
+  grab handle, 28 radius) instead of Material's default sheet and 32x4
+  handle; the divider uses the border token.
+- Quick-expense sheet: a native sheet at 66% or 90% height; Flutter's
+  draggable sheet also shrinks to 36% and closes there.
 
 ## Known MVP limitations
 

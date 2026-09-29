@@ -45,15 +45,18 @@ struct GlowProgressBar: View {
                         .glow(color, blur: 12, alpha: 0.6)
                         .offset(x: fillInset + border)
                     if showThumb {
+                        // Inside the border box, as Flutter lays it out
+                        // (glow_progress_bar.dart:94-96): centred on the
+                        // fill's end, clamped to [inset, box + inset - height].
                         let minX = fillInset
-                        let maxX = innerWidth + fillInset - height
+                        let maxX = geometry.size.width - border * 2 + fillInset - height
                         if maxX > minX {
                             Circle()
                                 .fill(scheme == .dark ? Color(hex: 0xF2F2FA) : .white)
                                 .overlay { if scheme != .dark { Circle().strokeBorder(color.opacity(0.6), lineWidth: 2) } }
                                 .frame(width: height, height: height)
                                 .glow(color, blur: 12, alpha: 0.8)
-                                .offset(x: min(max(fillInset + fillWidth - height / 2, minX), maxX))
+                                .offset(x: border + min(max(fillInset + fillWidth - height / 2, minX), maxX))
                         }
                     }
                 }

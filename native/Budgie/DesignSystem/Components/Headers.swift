@@ -61,6 +61,8 @@ extension BudgieHeader where Trailing == EmptyView, Accessory == EmptyView {
 struct SectionHeader: View {
     let title: String
     var link: String? = nil
+    /// VoiceOver label for the link; defaults to "<Link>, <title>".
+    var linkAccessibilityLabel: String? = nil
     var action: (() -> Void)? = nil
 
     @State private var taps = 0
@@ -82,7 +84,7 @@ struct SectionHeader: View {
                 .buttonStyle(.plain)
                 .disabled(action == nil)
                 .sensoryFeedback(.impact(weight: .light), trigger: taps)
-                .accessibilityLabel("\(link.capitalized), \(title)")
+                .accessibilityLabel(linkAccessibilityLabel ?? "\(link.capitalized), \(title)")
             }
         }
         .padding(.horizontal, 4)
