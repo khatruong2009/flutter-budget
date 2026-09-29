@@ -19,8 +19,13 @@ public struct MonthSummary: Sendable {
     public var income = 0.0
     public var expenses = 0.0
     /// Expense totals per category in first-appearance order (Dart map order).
+    /// Names are distinct as UTF-16 code units, like Dart map keys: "é" and
+    /// "e\u{301}" are two entries.
     public var categoryExpenses: [(name: String, amount: Double)] = []
-    /// Number of expense rows per category.
+    /// Expense row count of each `categoryExpenses` entry (same index).
+    public var categoryExpenseCounts: [Int] = []
+    /// Number of expense rows per category. Swift `String` keys merge
+    /// canonically equivalent names; `categoryExpenseCounts` keeps them apart.
     public var expenseCounts: [String: Int] = [:]
     /// Rows of both types (a month with rows but no totals is not "no data").
     public var transactionCount = 0
@@ -65,7 +70,7 @@ public struct LedgerIndex: Sendable {
 
     public static func build(_ transactions: [TransactionRecord], calendar: DartCalendar) -> LedgerIndex {
         var summaries: [Int: MonthSummary] = [:]
-        var categoryIndex: [Int: [String: Int]] = [:]
+        var categoryIndex: [Int: [[UInt16]: Int]] = [:]
         var keyed: [(row: LedgerRow, created: Int64, id: [UInt16])] = []
         keyed.reserveCapacity(transactions.count)
 
@@ -84,11 +89,15 @@ public struct LedgerIndex: Sendable {
                 summary.income += record.amount
             } else {
                 summary.expenses += record.amount
-                if let index = categoryIndex[monthKey]?[record.category] {
+                // Dart map keys compare as code units, not canonically.
+                let key = Array(record.category.utf16)
+                if let index = categoryIndex[monthKey]?[key] {
                     summary.categoryExpenses[index].amount += record.amount
+                    summary.categoryExpenseCounts[index] += 1
                 } else {
-                    categoryIndex[monthKey, default: [:]][record.category] = summary.categoryExpenses.count
+                    categoryIndex[monthKey, default: [:]][key] = summary.categoryExpenses.count
                     summary.categoryExpenses.append((record.category, record.amount))
+                    summary.categoryExpenseCounts.append(1)
                 }
                 summary.expenseCounts[record.category, default: 0] += 1
             }

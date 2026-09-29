@@ -47,6 +47,10 @@ UPGRADE_TEST_RESULTS.md).
 - Categorization rules with equal priority are tried in stored order (Swift
   stable sort); Dart's sort is not stable above 32 rules, so with more than
   32 rules the suggestion among equal-priority matches can differ.
+- Spend tab: categories with equal month totals keep first-appearance order
+  (Swift stable sort); Dart's sort is not stable above 33 categories in a
+  month, so there the order of tied categories (their rows, colours and
+  which of them fall into "Other") can differ (Fixtures/spend `forty_ties`).
 
 ## Deliberate differences (approved)
 

@@ -43,6 +43,50 @@ public enum DartString {
         return String(result)
     }
 
+    /// Dart `String.toUpperCase` on the VM: the simple (one-to-one) Unicode
+    /// uppercase mapping of each scalar ("ß" and "ﬁ" stay, U+1F80 becomes
+    /// U+1F88), from the VM's Unicode 5.1 case tables: a mapping to or from
+    /// a later character (Georgian Mtavruli, "ȿ" to U+2C7E, ...) is not
+    /// applied. Swift exposes only the full mappings, so a scalar whose full
+    /// uppercase is several scalars takes its titlecase when that is a single
+    /// scalar (the iota-subscript Greek letters) and is otherwise unchanged.
+    /// Verified for every scalar against Fixtures/spend/strings.json.
+    public static func uppercase(_ text: String) -> String {
+        func inDartTables(_ scalar: Unicode.Scalar) -> Bool {
+            guard let age = scalar.properties.age else { return false }
+            return (age.major, age.minor) <= (5, 1)
+        }
+        var result = String.UnicodeScalarView()
+        for scalar in text.unicodeScalars {
+            var mapped = scalar.properties.uppercaseMapping.unicodeScalars
+            if mapped.count != 1 { mapped = scalar.properties.titlecaseMapping.unicodeScalars }
+            if mapped.count == 1, inDartTables(scalar), inDartTables(mapped.first!) {
+                result.append(contentsOf: mapped)
+            } else {
+                result.append(scalar)
+            }
+        }
+        return String(result)
+    }
+
+    /// Dart `String.hashCode` on the VM (JIT and AOT share the runtime's
+    /// `String::Hash`): Jenkins one-at-a-time over the UTF-16 code units,
+    /// finalised, masked to 30 bits, with 0 mapped to 1. Not the web
+    /// (dart2js) value. Verified against Fixtures/spend/strings.json.
+    public static func hashCode(_ text: String) -> Int {
+        var hash: UInt32 = 0
+        for unit in text.utf16 {
+            hash &+= UInt32(unit)
+            hash &+= hash << 10
+            hash ^= hash >> 6
+        }
+        hash &+= hash << 3
+        hash ^= hash >> 11
+        hash &+= hash << 15
+        hash &= (1 << 30) - 1
+        return hash == 0 ? 1 : Int(hash)
+    }
+
     /// Dart `a == b`.
     public static func equal(_ a: String, _ b: String) -> Bool {
         a.utf16.elementsEqual(b.utf16)

@@ -82,6 +82,9 @@ case "$MODE" in
     if wants home_fixtures_test.dart; then
       TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/home_fixtures_test.dart "$@"
     fi
+    if wants spend_fixtures_test.dart; then
+      TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/spend_fixtures_test.dart "$@"
+    fi
     ;;
   verify)
     export SWIFT_OUT="${SWIFT_OUT:-$FIXTURES/swift-written}"
