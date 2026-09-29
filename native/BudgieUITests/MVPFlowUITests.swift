@@ -44,6 +44,17 @@ final class MVPFlowUITests: XCTestCase {
         field.typeText(text)
     }
 
+    /// Empties a focused field one delete at a time. Not the edit menu's
+    /// Select All: that needs a long press to raise a system menu within a
+    /// short wait, and when the menu is late the old step skipped it and
+    /// typed after the old amount.
+    private func clear(_ field: XCUIElement) {
+        for _ in 0..<20 {
+            guard let value = field.value as? String, !value.isEmpty, value != field.placeholderValue else { return }
+            field.typeText(XCUIKeyboardKey.delete.rawValue)
+        }
+    }
+
     func testCoreFlow() throws {
         XCTAssertTrue(app.tabBars.buttons["Home"].waitForExistence(timeout: 20))
         for name in ["Worth", "Goals", "Spend", "Flow"] {
@@ -68,9 +79,9 @@ final class MVPFlowUITests: XCTestCase {
         let editAmount = app.textFields["Amount"]
         XCTAssertTrue(editAmount.waitForExistence(timeout: 5))
         editAmount.tap()
-        editAmount.press(forDuration: 1.0)
-        if app.menuItems["Select All"].waitForExistence(timeout: 2) { app.menuItems["Select All"].tap() }
+        clear(editAmount)
         editAmount.typeText("20")
+        XCTAssertEqual(editAmount.value as? String, "20")
         app.buttons["Update"].tap()
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS '20.00'")).firstMatch.waitForExistence(timeout: 5))
 

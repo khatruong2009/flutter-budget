@@ -33,6 +33,19 @@ final class GoalsUITests: XCTestCase {
         field.typeText(text)
     }
 
+    /// Waits for a short-lived element by checking back to back.
+    /// `waitForExistence` first checks about a second in and then once a
+    /// second, and the celebration is removed 1.6s after it starts: that
+    /// first check landed about 1.6s after the submit tap, at the edge of
+    /// the celebration's lifetime.
+    private func waitForTransient(_ element: XCUIElement, timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            if element.exists { return true }
+        } while Date() < deadline
+        return false
+    }
+
     private func text(_ label: String) -> XCUIElement {
         app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
     }
@@ -57,7 +70,7 @@ final class GoalsUITests: XCTestCase {
         XCTAssertTrue(finish.waitForExistence(timeout: 5))
         finish.tap()
         app.buttons["goals.allocate.submit"].tap()
-        XCTAssertTrue(element("goals.celebration").waitForExistence(timeout: 2))
+        XCTAssertTrue(waitForTransient(element("goals.celebration"), timeout: 2), "celebration shown")
         XCTAssertTrue(addMoney.waitForNonExistence(timeout: 5), "a complete goal has no Add money")
 
         // Rename it from the actions sheet.

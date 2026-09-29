@@ -29,13 +29,31 @@ final class WorthUITests: XCTestCase {
         field.typeText(text)
     }
 
-    /// Replaces a field's text (the editor prefills the balance).
+    /// Replaces a field's text (the editor prefills the balance). One
+    /// delete at a time: the balance field regroups its commas on every
+    /// edit, and a burst of deletes races that rewrite and loses keys
+    /// ("1,000" kept "10", so "1250" became "101,250").
     private func replace(_ field: XCUIElement, with text: String) {
         field.tap()
-        if let value = field.value as? String, !value.isEmpty {
-            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count))
+        for _ in 0..<20 {
+            guard let value = field.value as? String, !value.isEmpty, value != field.placeholderValue else { break }
+            field.typeText(XCUIKeyboardKey.delete.rawValue)
         }
         field.typeText(text)
+    }
+
+    /// Scrolls the page until `element` is wholly above the floating tab
+    /// bar. A fresh install's only account row sits almost entirely behind
+    /// the bar, so XCUITest aims at the row's one visible corner: a tap
+    /// there still reaches the row's button, but a long press there never
+    /// starts the context menu and the button fires on release instead
+    /// (the editor opens, not the menu).
+    private func revealAboveTabBar(_ element: XCUIElement) {
+        let tabBar = app.tabBars.firstMatch
+        for _ in 0..<3 where element.frame.maxY > tabBar.frame.minY {
+            app.swipeUp()
+        }
+        XCTAssertLessThanOrEqual(element.frame.maxY, tabBar.frame.minY, "\(element) is behind the tab bar")
     }
 
     /// net_worth_page_widget_test.dart:18: the add button opens "Add
@@ -70,18 +88,21 @@ final class WorthUITests: XCTestCase {
         XCTAssertFalse(element("worth.editor").exists)
 
         // Tap the row: the editor, prefilled; change the balance and save.
+        revealAboveTabBar(row)
         row.tap()
         XCTAssertTrue(element("worth.editor").waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Edit account"].exists)
         let balance = app.textFields["Asset balance"]
         XCTAssertEqual(balance.value as? String, "1,000")
         replace(balance, with: "1250")
+        XCTAssertEqual(balance.value as? String, "1,250")
         app.buttons["worth.editor.save"].tap()
         XCTAssertTrue(element("worth.editor").waitForNonExistence(timeout: 5))
         XCTAssertTrue(row.waitForExistence(timeout: 5))
-        XCTAssertTrue(row.label.contains("1,250"), row.label)
+        XCTAssertEqual(row.label, "\(Self.account), $1,250")
 
         // Long-press: View History.
+        revealAboveTabBar(row)
         row.press(forDuration: 1.0)
         let viewHistory = app.buttons["View History"]
         XCTAssertTrue(viewHistory.waitForExistence(timeout: 5))
@@ -100,6 +121,7 @@ final class WorthUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 5))
 
         // Long-press: Delete Account, confirmed.
+        revealAboveTabBar(row)
         row.press(forDuration: 1.0)
         let deleteAction = app.buttons["Delete Account"]
         XCTAssertTrue(deleteAction.waitForExistence(timeout: 5))
