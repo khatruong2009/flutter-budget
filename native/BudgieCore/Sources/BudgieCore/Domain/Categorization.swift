@@ -98,3 +98,40 @@ public struct CategorizationRuleRecord: Identifiable, Hashable, Sendable {
             priority: priority, isEnabled: isEnabled, raw: object)
     }
 }
+
+extension CategorizationRuleRecord {
+    /// Dart `CategorizationRule.matches` (categorization_rule.dart:72-89):
+    /// disabled or an empty pattern never matches; the type must agree when
+    /// the rule has one; both amount bounds are inclusive; then the trimmed,
+    /// lowercased description is compared with the lowercased pattern as
+    /// UTF-16 code units.
+    public func matches(type: TransactionType, description: String, amount: Double) -> Bool {
+        if !isEnabled || merchantPattern.isEmpty { return false }
+        if let transactionType, transactionType != type { return false }
+        if let minimumAmount, amount < minimumAmount { return false }
+        if let maximumAmount, amount > maximumAmount { return false }
+
+        let candidate = DartString.lowercase(DartString.trim(description))
+        let pattern = DartString.lowercase(merchantPattern)
+        switch matchType {
+        case .contains: return DartString.contains(candidate, pattern)
+        case .startsWith: return DartString.hasPrefix(candidate, pattern)
+        case .exact: return DartString.equal(candidate, pattern)
+        }
+    }
+}
+
+/// Dart `CategorizationProvider.suggest` (categorization_provider.dart:152-167).
+public enum CategorizationEngine {
+    /// The first rule, by priority descending, that matches. Equal
+    /// priorities keep their stored order (a stable sort; Dart's sort is
+    /// only stable up to 32 rules, see PARITY_GAPS).
+    public static func suggest(
+        rules: [CategorizationRuleRecord], type: TransactionType, description: String, amount: Double
+    ) -> CategorizationRuleRecord? {
+        let ordered = rules.enumerated().sorted { a, b in
+            a.element.priority != b.element.priority ? a.element.priority > b.element.priority : a.offset < b.offset
+        }
+        return ordered.first { $0.element.matches(type: type, description: description, amount: amount) }?.element
+    }
+}

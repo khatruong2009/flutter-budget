@@ -30,9 +30,9 @@ public struct FinancialData: Sendable {
     public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
     public private(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
     /// The `categoryBudgetLimits` object as stored (edits patch it in place,
-    /// so untouched entries keep their lexemes). Empty when absent or not an
-    /// object, as Dart reads it.
-    public private(set) var budgetLimitsObject = JSONObject()
+    /// so untouched entries keep their lexemes; see Budgets.swift). Empty
+    /// when absent or not an object, as Dart reads it.
+    public internal(set) var budgetLimitsObject = JSONObject()
     public private(set) var selectedNetWorthMonth: DartDateTime
     public var appSettings: AppSettings
     /// Raw sections as loaded. Only the `appSettings` serializer reads it
@@ -52,14 +52,22 @@ public struct FinancialData: Sendable {
 
     /// `categoryBudgetLimits` as Dart loads it: numeric values > 0, in
     /// stored key order. Derived from the stored object on every read, so it
-    /// is never stale after a write.
+    /// is never stale after a write. Keys compare as UTF-16 code units, and a
+    /// repeated key keeps its first position and its last value, as Dart's
+    /// `jsonDecode` map does.
     public var budgetLimits: [(String, Double)] {
-        var result: [(String, Double)] = []
-        for key in budgetLimitsObject.keys {
-            guard let value = budgetLimitsObject[key]?.numberValue?.doubleValue, value > 0 else { continue }
-            result.append((key, value))
+        var order: [[UInt16]] = []
+        var entries: [[UInt16]: (name: String, value: JSONValue)] = [:]
+        for member in budgetLimitsObject.members {
+            let units = member.key.codeUnits
+            if entries[units] == nil { order.append(units) }
+            entries[units] = (member.key.value, member.value)
         }
-        return result
+        return order.compactMap { units in
+            let entry = entries[units]!
+            guard let value = entry.value.numberValue?.doubleValue, value > 0 else { return nil }
+            return (entry.name, value)
+        }
     }
 
     /// Section writes the load itself requires (Dart saves these during

@@ -1,0 +1,464 @@
+{
+  "tz": "America/New_York",
+  "sections": "{\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-old-hobby\",\"type\":\"expense\",\"name\":\"Old Hobby\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":8,\"isArchived\":true,\"isBuiltIn\":false},{\"id\":\"expense-zeta\",\"type\":\"expense\",\"name\":\"Zeta\",\"iconIdentifier\":\"book\",\"colorToken\":\"accent\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"expense-alpha\",\"type\":\"expense\",\"name\":\"alpha\",\"iconIdentifier\":\"book\",\"colorToken\":\"accent\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Travel\":200.0,\"Old Hobby\":50.0,\"groceries\":30.0,\"Budget Only\":75.0,\"Health\":100.0,\"Pets\":100.0,\"Zero\":0,\"Clothing\":20.0,\"Zeta\":10.0,\"alpha\":10.0},\"transactions\":[{\"id\":\"g1\",\"type\":\"expense\",\"description\":\"g1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-03T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g2\",\"type\":\"expense\",\"description\":\"g2\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g3\",\"type\":\"expense\",\"description\":\"g3\",\"amount\":30.0,\"category\":\"groceries\",\"date\":\"2026-09-05T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e1\",\"type\":\"expense\",\"description\":\"e1\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-06T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h1\",\"type\":\"expense\",\"description\":\"h1\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"he\",\"type\":\"expense\",\"description\":\"he\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-10T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"p1\",\"type\":\"expense\",\"description\":\"p1\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-11T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"c1\",\"type\":\"expense\",\"description\":\"c1\",\"amount\":50.0,\"category\":\"Clothing\",\"date\":\"2026-09-12T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"o1\",\"type\":\"expense\",\"description\":\"o1\",\"amount\":10.0,\"category\":\"Old Hobby\",\"date\":\"2026-09-13T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"z1\",\"type\":\"expense\",\"description\":\"z1\",\"amount\":5.0,\"category\":\"Zeta\",\"date\":\"2026-09-14T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":5.0,\"category\":\"alpha\",\"date\":\"2026-09-14T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"income\",\"description\":\"s1\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T09:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g4\",\"type\":\"expense\",\"description\":\"g4\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-31T23:59:59.999\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g5\",\"type\":\"expense\",\"description\":\"g5\",\"amount\":0.2,\"category\":\"Groceries\",\"date\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"t1\",\"type\":\"expense\",\"description\":\"t1\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-15T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e2\",\"type\":\"expense\",\"description\":\"e2\",\"amount\":85.0,\"category\":\"Eating Out\",\"date\":\"2026-08-15T12:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"income\",\"description\":\"s2\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T09:00:00.000\",\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+  "expenseCategories": [
+    "General",
+    "Eating Out",
+    "Groceries",
+    "Travel",
+    "Health",
+    "Housing",
+    "Pets",
+    "Clothing",
+    "Zeta",
+    "alpha",
+    "Budget Only"
+  ],
+  "limits": [
+    [
+      "Groceries",
+      "4079000000000000"
+    ],
+    [
+      "Eating Out",
+      "4059000000000000"
+    ],
+    [
+      "Housing",
+      "408f400000000000"
+    ],
+    [
+      "Travel",
+      "4069000000000000"
+    ],
+    [
+      "Old Hobby",
+      "4049000000000000"
+    ],
+    [
+      "groceries",
+      "403e000000000000"
+    ],
+    [
+      "Budget Only",
+      "4052c00000000000"
+    ],
+    [
+      "Health",
+      "4059000000000000"
+    ],
+    [
+      "Pets",
+      "4059000000000000"
+    ],
+    [
+      "Clothing",
+      "4034000000000000"
+    ],
+    [
+      "Zeta",
+      "4024000000000000"
+    ],
+    [
+      "alpha",
+      "4024000000000000"
+    ]
+  ],
+  "budgeted": [
+    "Eating Out",
+    "Groceries",
+    "Travel",
+    "Health",
+    "Housing",
+    "Pets",
+    "Clothing",
+    "Zeta",
+    "alpha",
+    "Budget Only"
+  ],
+  "unbudgeted": [
+    "General"
+  ],
+  "months": [
+    {
+      "month": "2026-07-01T00:00:00.000",
+      "rows": [
+        {
+          "category": "Budget Only",
+          "spent": "0000000000000000",
+          "limit": "4052c00000000000",
+          "remaining": "4052c00000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Clothing",
+          "spent": "0000000000000000",
+          "limit": "4034000000000000",
+          "remaining": "4034000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Eating Out",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Groceries",
+          "spent": "0000000000000000",
+          "limit": "4079000000000000",
+          "remaining": "4079000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Health",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Housing",
+          "spent": "0000000000000000",
+          "limit": "408f400000000000",
+          "remaining": "408f400000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Pets",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Travel",
+          "spent": "0000000000000000",
+          "limit": "4069000000000000",
+          "remaining": "4069000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Zeta",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "alpha",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "month": "2026-08-01T00:00:00.000",
+      "rows": [
+        {
+          "category": "Travel",
+          "spent": "4068ffae147ae148",
+          "limit": "4069000000000000",
+          "remaining": "3f847ae147ae0000",
+          "progress": "3fefff972474538f",
+          "isOver": false,
+          "status": "warning"
+        },
+        {
+          "category": "Eating Out",
+          "spent": "4055400000000000",
+          "limit": "4059000000000000",
+          "remaining": "402e000000000000",
+          "progress": "3feb333333333333",
+          "isOver": false,
+          "status": "warning"
+        },
+        {
+          "category": "Groceries",
+          "spent": "3fd3333333333334",
+          "limit": "4079000000000000",
+          "remaining": "4078fb3333333333",
+          "progress": "3f489374bc6a7efb",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Budget Only",
+          "spent": "0000000000000000",
+          "limit": "4052c00000000000",
+          "remaining": "4052c00000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Clothing",
+          "spent": "0000000000000000",
+          "limit": "4034000000000000",
+          "remaining": "4034000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Health",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Housing",
+          "spent": "0000000000000000",
+          "limit": "408f400000000000",
+          "remaining": "408f400000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Pets",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Zeta",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "alpha",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "month": "2026-09-01T00:00:00.000",
+      "rows": [
+        {
+          "category": "Housing",
+          "spent": "408f40147ae147ae",
+          "limit": "408f400000000000",
+          "remaining": "bf847ae147ae0000",
+          "progress": "3ff0000a7c5ac472",
+          "isOver": true,
+          "status": "over"
+        },
+        {
+          "category": "Groceries",
+          "spent": "4079000000000000",
+          "limit": "4079000000000000",
+          "remaining": "0000000000000000",
+          "progress": "3ff0000000000000",
+          "isOver": false,
+          "status": "warning"
+        },
+        {
+          "category": "Health",
+          "spent": "4055400000000000",
+          "limit": "4059000000000000",
+          "remaining": "402e000000000000",
+          "progress": "3feb333333333333",
+          "isOver": false,
+          "status": "warning"
+        },
+        {
+          "category": "Eating Out",
+          "spent": "40553f5c28f5c28f",
+          "limit": "4059000000000000",
+          "remaining": "402e051eb851eb88",
+          "progress": "3feb32617c1bda51",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Clothing",
+          "spent": "4049000000000000",
+          "limit": "4034000000000000",
+          "remaining": "c03e000000000000",
+          "progress": "4004000000000000",
+          "isOver": true,
+          "status": "over"
+        },
+        {
+          "category": "Pets",
+          "spent": "4049000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4049000000000000",
+          "progress": "3fe0000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Zeta",
+          "spent": "4014000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4014000000000000",
+          "progress": "3fe0000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "alpha",
+          "spent": "4014000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4014000000000000",
+          "progress": "3fe0000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Budget Only",
+          "spent": "0000000000000000",
+          "limit": "4052c00000000000",
+          "remaining": "4052c00000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Travel",
+          "spent": "0000000000000000",
+          "limit": "4069000000000000",
+          "remaining": "4069000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "month": "2026-10-01T00:00:00.000",
+      "rows": [
+        {
+          "category": "Budget Only",
+          "spent": "0000000000000000",
+          "limit": "4052c00000000000",
+          "remaining": "4052c00000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Clothing",
+          "spent": "0000000000000000",
+          "limit": "4034000000000000",
+          "remaining": "4034000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Eating Out",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Groceries",
+          "spent": "0000000000000000",
+          "limit": "4079000000000000",
+          "remaining": "4079000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Health",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Housing",
+          "spent": "0000000000000000",
+          "limit": "408f400000000000",
+          "remaining": "408f400000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Pets",
+          "spent": "0000000000000000",
+          "limit": "4059000000000000",
+          "remaining": "4059000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Travel",
+          "spent": "0000000000000000",
+          "limit": "4069000000000000",
+          "remaining": "4069000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "Zeta",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        },
+        {
+          "category": "alpha",
+          "spent": "0000000000000000",
+          "limit": "4024000000000000",
+          "remaining": "4024000000000000",
+          "progress": "0000000000000000",
+          "isOver": false,
+          "status": "ok"
+        }
+      ]
+    }
+  ]
+}

@@ -137,6 +137,19 @@ void main() {
         if (catRaw > 0 && app.categoryProvider.categories.length < catRaw) {
           problems.add('categories: raw $catRaw loaded ${app.categoryProvider.categories.length}');
         }
+        // Budget limits the Swift side wrote: Dart must hold exactly these,
+        // in this order (values compared as Dart's toString).
+        final budgetLimits = swift['categoryBudgetLimits'];
+        if (budgetLimits is List) {
+          final dart = jsonEncode([
+            for (final e in app.transactionModel.categoryBudgetLimits.entries)
+              [e.key, e.value.toString()]
+          ]);
+          final expected = jsonEncode(budgetLimits);
+          if (dart != expected) {
+            problems.add('budget limits: dart $dart swift $expected');
+          }
+        }
         if (app.transactionModel.hasUnsavedChanges ||
             app.recurringModel.hasUnsavedChanges) {
           problems.add('a model reports unsaved changes after load');

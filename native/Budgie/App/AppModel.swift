@@ -336,6 +336,42 @@ final class AppModel {
         return await persist([Section.recurringTransactions])
     }
 
+    // MARK: - Budgets
+
+    /// Dart `getCategoryBudgetLimit`: exact name, nil when there is none.
+    func budgetLimit(for category: String) -> Double? {
+        data?.budgetLimit(for: category)
+    }
+
+    /// Dart `setCategoryBudgetLimit` (trimmed; `limit <= 0` removes).
+    @discardableResult
+    func setBudgetLimit(category: String, limit: Double) async -> Bool {
+        guard data != nil, data!.setBudgetLimit(category: category, limit: limit) else { return false }
+        return await persist([Section.categoryBudgetLimits])
+    }
+
+    /// Dart `removeCategoryBudgetLimit`.
+    @discardableResult
+    func removeBudgetLimit(category: String) async -> Bool {
+        guard data != nil, data!.removeBudgetLimit(category: category) else { return false }
+        return await persist([Section.categoryBudgetLimits])
+    }
+
+    /// Home's budget rows for `month`, from the ledger index.
+    func budgetProgress(forMonth month: DartDateTime) -> [BudgetProgress] {
+        data?.budgetProgress(ledger.summary(forMonth: month)) ?? []
+    }
+
+    /// Budgeted expense categories in category order (EDIT sheet).
+    func budgetedCategories() -> [CategoryInfo] {
+        data?.budgetedCategories() ?? []
+    }
+
+    /// Expense categories without a limit, in category order (Add sheet).
+    func unbudgetedCategories() -> [CategoryInfo] {
+        data?.unbudgetedCategories() ?? []
+    }
+
     // MARK: - Settings (store section + mirrored preference, like Dart)
 
     func setBaseCurrency(_ code: String) async {
@@ -364,6 +400,16 @@ final class AppModel {
 
     /// Transaction tags (`transactionTags`), read-only until tag management.
     var tags: [TransactionTagRecord] { data?.tags ?? [] }
+
+    /// The form's auto-categorisation (`applySuggestion`,
+    /// transaction_form.dart:106-121): the amount text parses with Dart's
+    /// `double.tryParse(text) ?? 0`. The caller applies the rule only if its
+    /// category is in the current picker list.
+    func suggestion(type: TransactionType, description: String, amountText: String) -> CategorizationRuleRecord? {
+        guard let data else { return nil }
+        return CategorizationEngine.suggest(
+            rules: data.rules, type: type, description: description, amount: DartDouble.tryParse(amountText) ?? 0)
+    }
 
     func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {
         data?.categoryInfo(named: name, type: type)

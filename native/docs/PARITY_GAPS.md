@@ -45,6 +45,9 @@ UPGRADE_TEST_RESULTS.md).
 - CSV rows with identical timestamps keep input order (Swift stable sort);
   Dart's sort is not stable above 32 rows, so tie order can differ from a
   Flutter export of the same data. Bytes are otherwise identical.
+- Categorization rules with equal priority are tried in stored order (Swift
+  stable sort); Dart's sort is not stable above 32 rules, so with more than
+  32 rules the suggestion among equal-priority matches can differ.
 
 ## Deliberate differences (approved)
 

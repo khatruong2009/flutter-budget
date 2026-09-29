@@ -12,7 +12,13 @@ enum SwiftOutput {
     }
 
     /// Saves the store files and prefs of `fileSystem`/`preferences` as a case.
-    static func emit(_ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot) throws {
+    /// `budgetLimits`, when given, is what Dart's `categoryBudgetLimits`
+    /// must hold after loading the case (the verifier checks key order and
+    /// values, the latter as Dart's `toString`).
+    static func emit(
+        _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
+        budgetLimits: [(String, Double)]? = nil
+    ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
         let storeDir = caseDir.appendingPathComponent("financial_store")
@@ -33,10 +39,13 @@ enum SwiftOutput {
         }
         try JSONSerialization.data(withJSONObject: typed, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("prefs.json"))
-        let swift: [String: Any] = [
+        var swift: [String: Any] = [
             "revision": snapshot.revision,
             "sectionsFnv": canonicalSections(snapshot).fnv,
         ]
+        if let budgetLimits {
+            swift["categoryBudgetLimits"] = budgetLimits.map { [$0.0, DartDouble.format($0.1)] }
+        }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -106,10 +115,24 @@ struct SwiftOutputForDartTests {
             data.appSettings.baseCurrencyCode = "EUR"
             data.appSettings.appLockEnabled.toggle()
 
+            // Budgets: a new key, an existing key (typical), a trimmed key, a
+            // key Dart dropped at load (old_schema's "Zero":0, appended), a
+            // removal, and a limit <= 0. old_schema's "Groceries":250 int
+            // lexeme stays untouched next to the patched entries.
+            data.setBudgetLimit(category: "Swift Budget ☕️", limit: 123.45)
+            data.setBudgetLimit(category: "Eating Out", limit: 175.25)
+            data.setBudgetLimit(category: "  Travel \u{FEFF}", limit: 99.99)
+            data.setBudgetLimit(category: "Zero", limit: 20)
+            data.removeBudgetLimit(category: "Pet Food")
+            data.setBudgetLimit(category: "Cafe\u{301}", limit: 1e-7)
+            data.setBudgetLimit(category: "Housing", limit: 0)
+
             // Every section through its typed serializer, as the app's
             // save and retry paths write them.
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
-            try SwiftOutput.emit("edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
+            try SwiftOutput.emit(
+                "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
+                budgetLimits: data.budgetLimits)
         }
     }
 

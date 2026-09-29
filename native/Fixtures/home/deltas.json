@@ -1,0 +1,847 @@
+{
+  "tz": "America/New_York",
+  "deltas": [
+    {
+      "current": "0000000000000000",
+      "previous": "0000000000000000",
+      "delta": null,
+      "label": "No August data"
+    },
+    {
+      "current": "8000000000000000",
+      "previous": "0000000000000000",
+      "delta": null,
+      "label": "No August data"
+    },
+    {
+      "current": "0000000000000000",
+      "previous": "8000000000000000",
+      "delta": null,
+      "label": "No August data"
+    },
+    {
+      "current": "4014000000000000",
+      "previous": "0000000000000000",
+      "delta": {
+        "bits": "4059000000000000",
+        "isNaN": false
+      },
+      "label": "+100.0% vs August"
+    },
+    {
+      "current": "c014000000000000",
+      "previous": "0000000000000000",
+      "delta": {
+        "bits": "4059000000000000",
+        "isNaN": false
+      },
+      "label": "+100.0% vs August"
+    },
+    {
+      "current": "0000000000000000",
+      "previous": "4014000000000000",
+      "delta": {
+        "bits": "c059000000000000",
+        "isNaN": false
+      },
+      "label": "-100.0% vs August"
+    },
+    {
+      "current": "4059000000000000",
+      "previous": "4049000000000000",
+      "delta": {
+        "bits": "4059000000000000",
+        "isNaN": false
+      },
+      "label": "+100.0% vs August"
+    },
+    {
+      "current": "4049000000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "c049000000000000",
+        "isNaN": false
+      },
+      "label": "-50.0% vs August"
+    },
+    {
+      "current": "4059000000000000",
+      "previous": "c049000000000000",
+      "delta": {
+        "bits": "c072c00000000000",
+        "isNaN": false
+      },
+      "label": "-300.0% vs August"
+    },
+    {
+      "current": "c049000000000000",
+      "previous": "c049000000000000",
+      "delta": {
+        "bits": "8000000000000000",
+        "isNaN": false
+      },
+      "label": "+-0.0% vs August"
+    },
+    {
+      "current": "4049000000000000",
+      "previous": "4049000000000000",
+      "delta": {
+        "bits": "0000000000000000",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "c059000000000000",
+      "previous": "4049000000000000",
+      "delta": {
+        "bits": "c072c00000000000",
+        "isNaN": false
+      },
+      "label": "-300.0% vs August"
+    },
+    {
+      "current": "3ff0000000000000",
+      "previous": "4008000000000000",
+      "delta": {
+        "bits": "c050aaaaaaaaaaaa",
+        "isNaN": false
+      },
+      "label": "-66.7% vs August"
+    },
+    {
+      "current": "4020000000000000",
+      "previous": "401c000000000000",
+      "delta": {
+        "bits": "402c924924924924",
+        "isNaN": false
+      },
+      "label": "+14.3% vs August"
+    },
+    {
+      "current": "40a9000000000000",
+      "previous": "40a7700000000000",
+      "delta": {
+        "bits": "401aaaaaaaaaaaab",
+        "isNaN": false
+      },
+      "label": "+6.7% vs August"
+    },
+    {
+      "current": "40459ae147ae147b",
+      "previous": "40934a3d70a3d70a",
+      "delta": {
+        "bits": "c0581fff781a8ad1",
+        "isNaN": false
+      },
+      "label": "-96.5% vs August"
+    },
+    {
+      "current": "01a56e1fc2f8f359",
+      "previous": "7e37e43c8800759c",
+      "delta": {
+        "bits": "c059000000000000",
+        "isNaN": false
+      },
+      "label": "-100.0% vs August"
+    },
+    {
+      "current": "7e37e43c8800759c",
+      "previous": "01a56e1fc2f8f359",
+      "delta": {
+        "bits": "7ff0000000000000",
+        "isNaN": false
+      },
+      "label": "+Infinity% vs August"
+    },
+    {
+      "current": "4059028f5c28f5c3",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fa47ae147ae1800",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "4058fd70a3d70a3d",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "bfa47ae147ae1800",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4058fccccccccccd",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "bfa9999999999800",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059033333333333",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fa9999999999800",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "3fd3333333333334",
+      "previous": "3fd3333333333333",
+      "delta": {
+        "bits": "3d14d55555555556",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "4059000000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "0000000000000000",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "4069000000000000",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "0000000000000000",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "408f400000000000",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "0000000000000000",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "4059033333333333",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fa9999999999800",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "4069033333333333",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fa9999999999800",
+        "isNaN": false
+      },
+      "label": "+0.0% vs August"
+    },
+    {
+      "current": "408f3ff5c28f5c29",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf40624dd2f1999a",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059066666666666",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fb9999999999800",
+        "isNaN": false
+      },
+      "label": "+0.1% vs August"
+    },
+    {
+      "current": "4069066666666666",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fb9999999999800",
+        "isNaN": false
+      },
+      "label": "+0.1% vs August"
+    },
+    {
+      "current": "408f3feb851eb852",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf50624dd2f1999a",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "405909999999999a",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fc3333333333400",
+        "isNaN": false
+      },
+      "label": "+0.2% vs August"
+    },
+    {
+      "current": "406909999999999a",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fc3333333333400",
+        "isNaN": false
+      },
+      "label": "+0.2% vs August"
+    },
+    {
+      "current": "408f3fe147ae147b",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf589374bc6a6667",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "40590ccccccccccd",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fc99999999999ff",
+        "isNaN": false
+      },
+      "label": "+0.2% vs August"
+    },
+    {
+      "current": "40690ccccccccccd",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fc99999999999ff",
+        "isNaN": false
+      },
+      "label": "+0.2% vs August"
+    },
+    {
+      "current": "408f3fd70a3d70a4",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf60624dd2f1999a",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059100000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fd0000000000000",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "4069100000000000",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fd0000000000000",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "408f3fcccccccccd",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf647ae147ae0000",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059133333333333",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fd3333333333300",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "4069133333333333",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fd3333333333300",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "408f3fc28f5c28f6",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf689374bc6a6667",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059166666666666",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fd6666666666600",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "4069166666666666",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fd6666666666600",
+        "isNaN": false
+      },
+      "label": "+0.3% vs August"
+    },
+    {
+      "current": "408f3fb851eb851f",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf6cac083126cccd",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "405919999999999a",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fd99999999999ff",
+        "isNaN": false
+      },
+      "label": "+0.4% vs August"
+    },
+    {
+      "current": "406919999999999a",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fd99999999999ff",
+        "isNaN": false
+      },
+      "label": "+0.4% vs August"
+    },
+    {
+      "current": "408f3fae147ae148",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf70624dd2f1999a",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "40591ccccccccccd",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fdccccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "40691ccccccccccd",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fdccccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "408f3fa3d70a3d71",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf726e978d4fcccd",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059200000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe0000000000000",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "4069200000000000",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe0000000000000",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "408f3f999999999a",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf747ae147ae0000",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059233333333333",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe1999999999980",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "4069233333333333",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe1999999999980",
+        "isNaN": false
+      },
+      "label": "+0.5% vs August"
+    },
+    {
+      "current": "408f3f8f5c28f5c3",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf76872b020c3333",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059266666666666",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe3333333333300",
+        "isNaN": false
+      },
+      "label": "+0.6% vs August"
+    },
+    {
+      "current": "4069266666666666",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe3333333333300",
+        "isNaN": false
+      },
+      "label": "+0.6% vs August"
+    },
+    {
+      "current": "408f3f851eb851ec",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf789374bc6a6667",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "405929999999999a",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe4cccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.7% vs August"
+    },
+    {
+      "current": "406929999999999a",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe4cccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.7% vs August"
+    },
+    {
+      "current": "408f3f7ae147ae14",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf7a9fbe76c8cccd",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "40592ccccccccccd",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe6666666666680",
+        "isNaN": false
+      },
+      "label": "+0.7% vs August"
+    },
+    {
+      "current": "40692ccccccccccd",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe6666666666680",
+        "isNaN": false
+      },
+      "label": "+0.7% vs August"
+    },
+    {
+      "current": "408f3f70a3d70a3d",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf7cac083126ffff",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059300000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe8000000000000",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "4069300000000000",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe8000000000000",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "408f3f6666666666",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf7eb851eb853333",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059333333333333",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fe9999999999981",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "4069333333333333",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fe9999999999981",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "408f3f5c28f5c28f",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf80624dd2f1b333",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059366666666666",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3feb333333333300",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "4069366666666666",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3feb333333333300",
+        "isNaN": false
+      },
+      "label": "+0.8% vs August"
+    },
+    {
+      "current": "408f3f51eb851eb8",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf816872b020cccd",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "405939999999999a",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3feccccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.9% vs August"
+    },
+    {
+      "current": "406939999999999a",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3feccccccccccd00",
+        "isNaN": false
+      },
+      "label": "+0.9% vs August"
+    },
+    {
+      "current": "408f3f47ae147ae1",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf826e978d4fe666",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "40593ccccccccccd",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3fee666666666681",
+        "isNaN": false
+      },
+      "label": "+1.0% vs August"
+    },
+    {
+      "current": "40693ccccccccccd",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3fee666666666681",
+        "isNaN": false
+      },
+      "label": "+1.0% vs August"
+    },
+    {
+      "current": "408f3f3d70a3d70a",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf8374bc6a7f0000",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    },
+    {
+      "current": "4059400000000000",
+      "previous": "4059000000000000",
+      "delta": {
+        "bits": "3ff0000000000000",
+        "isNaN": false
+      },
+      "label": "+1.0% vs August"
+    },
+    {
+      "current": "4069400000000000",
+      "previous": "4069000000000000",
+      "delta": {
+        "bits": "3ff0000000000000",
+        "isNaN": false
+      },
+      "label": "+1.0% vs August"
+    },
+    {
+      "current": "408f3f3333333333",
+      "previous": "408f400000000000",
+      "delta": {
+        "bits": "bf847ae147ae1999",
+        "isNaN": false
+      },
+      "label": "-0.0% vs August"
+    }
+  ],
+  "previousMonths": [
+    {
+      "month": "2026-01-01T00:00:00.000",
+      "previous": "2025-12-01T00:00:00.000",
+      "label": "December"
+    },
+    {
+      "month": "2026-02-01T00:00:00.000",
+      "previous": "2026-01-01T00:00:00.000",
+      "label": "January"
+    },
+    {
+      "month": "2026-03-01T00:00:00.000",
+      "previous": "2026-02-01T00:00:00.000",
+      "label": "February"
+    },
+    {
+      "month": "2026-04-01T00:00:00.000",
+      "previous": "2026-03-01T00:00:00.000",
+      "label": "March"
+    },
+    {
+      "month": "2026-05-01T00:00:00.000",
+      "previous": "2026-04-01T00:00:00.000",
+      "label": "April"
+    },
+    {
+      "month": "2026-06-01T00:00:00.000",
+      "previous": "2026-05-01T00:00:00.000",
+      "label": "May"
+    },
+    {
+      "month": "2026-07-01T00:00:00.000",
+      "previous": "2026-06-01T00:00:00.000",
+      "label": "June"
+    },
+    {
+      "month": "2026-08-01T00:00:00.000",
+      "previous": "2026-07-01T00:00:00.000",
+      "label": "July"
+    },
+    {
+      "month": "2026-09-01T00:00:00.000",
+      "previous": "2026-08-01T00:00:00.000",
+      "label": "August"
+    },
+    {
+      "month": "2026-10-01T00:00:00.000",
+      "previous": "2026-09-01T00:00:00.000",
+      "label": "September"
+    },
+    {
+      "month": "2026-11-01T00:00:00.000",
+      "previous": "2026-10-01T00:00:00.000",
+      "label": "October"
+    },
+    {
+      "month": "2026-12-01T00:00:00.000",
+      "previous": "2026-11-01T00:00:00.000",
+      "label": "November"
+    },
+    {
+      "month": "2027-01-01T00:00:00.000",
+      "previous": "2026-12-01T00:00:00.000",
+      "label": "December"
+    },
+    {
+      "month": "2026-03-31T23:30:00.000",
+      "previous": "2026-02-01T00:00:00.000",
+      "label": "February"
+    },
+    {
+      "month": "2000-01-15T00:00:00.000",
+      "previous": "1999-12-01T00:00:00.000",
+      "label": "December"
+    }
+  ]
+}
