@@ -25,7 +25,7 @@ public struct FinancialData: Sendable {
     public private(set) var transactionRows: [StoredRow<TransactionRecord>] = []
     public private(set) var templateRows: [StoredRow<RecurringTemplate>] = []
     public internal(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
-    public private(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
+    public internal(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
     public internal(set) var categoryRows: [StoredRow<CategoryInfo>] = []
     public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
     public private(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []

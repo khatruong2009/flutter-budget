@@ -450,6 +450,65 @@ final class AppModel {
         return await persist([Section.netWorthEntries])
     }
 
+    // MARK: - Savings goals
+
+    /// Dart's process-wide `SavingsGoal._idCounter`: advanced only by a
+    /// goal that is actually added.
+    private var savingsGoalIDCounter = 0
+
+    /// The Goals tab's list (`_sortedGoals`): incomplete first, then target
+    /// date ascending, stable.
+    var savingsGoals: [SavingsGoalRecord] { SavingsGoalRecord.sorted(data?.savingsGoals ?? []) }
+
+    /// The summary card's totals and ring.
+    var savingsGoalsSummary: SavingsGoalsSummary { SavingsGoalsSummary(goals: data?.savingsGoals ?? []) }
+
+    /// The goal with this id (dialogs follow it live).
+    func savingsGoal(id: String) -> SavingsGoalRecord? {
+        data?.savingsGoal(id: id)
+    }
+
+    /// Dart `addSavingsGoal`: the trimmed name, the target date's local
+    /// midnight, a Flutter-format id. False without a write for a blank name
+    /// or a target that is not a positive finite number.
+    @discardableResult
+    func addSavingsGoal(name: String, targetAmount: Double, targetDate: DartDateTime) async -> Bool {
+        let now = self.now
+        guard data != nil, targetAmount.isFinite,
+            data!.addSavingsGoal(
+                name: name, targetAmount: targetAmount, targetDate: targetDate,
+                id: SavingsGoalRecord.makeID(now: now, counter: savingsGoalIDCounter), now: now) != nil
+        else { return false }
+        savingsGoalIDCounter += 1
+        return await persist([Section.savingsGoals])
+    }
+
+    /// Dart `updateSavingsGoal` (the edit form): name, target, saved amount
+    /// and target date (not normalised); `completedAt` follows the amount.
+    @discardableResult
+    func updateSavingsGoal(id: String, _ edit: SavingsGoalRecord.Edit) async -> Bool {
+        guard data != nil, edit.targetAmount.isFinite, edit.currentAmount.isFinite,
+            data!.updateSavingsGoal(id: id, edit, now: now)
+        else { return false }
+        return await persist([Section.savingsGoals])
+    }
+
+    /// Dart `deleteSavingsGoal`: every goal with this id.
+    @discardableResult
+    func deleteSavingsGoal(id: String) async -> Bool {
+        guard data != nil, data!.deleteSavingsGoal(id: id) else { return false }
+        return await persist([Section.savingsGoals])
+    }
+
+    /// Dart `allocateToSavingsGoal` (Add money): no transaction is created.
+    /// Whether it completes the goal is `willComplete(allocating:)` on the
+    /// goal as shown before the dialog, as in Flutter.
+    @discardableResult
+    func allocateToSavingsGoal(id: String, amount: Double) async -> Bool {
+        guard data != nil, amount.isFinite, data!.allocateToSavingsGoal(id: id, amount: amount, now: now) else { return false }
+        return await persist([Section.savingsGoals])
+    }
+
     // MARK: - Settings (store section + mirrored preference, like Dart)
 
     func setBaseCurrency(_ code: String) async {

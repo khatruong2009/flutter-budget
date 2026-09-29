@@ -91,6 +91,12 @@ case "$MODE" in
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/worth_fixtures_test.dart "$@"
       done
     fi
+    if wants goals_fixtures_test.dart; then
+      rm -rf "$FIXTURES/goals"
+      for tz in America/New_York America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/goals_fixtures_test.dart "$@"
+      done
+    fi
     if wants flow_fixtures_test.dart; then
       rm -rf "$FIXTURES/flow"
       for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do

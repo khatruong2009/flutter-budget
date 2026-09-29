@@ -8,7 +8,8 @@
 //   prefs.json         typed preferences (optional)
 //   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>",
 //                       optional "categoryBudgetLimits", "netWorthEntries",
-//                       "selectedNetWorthMonth": what the Dart models must hold}
+//                       "selectedNetWorthMonth", "savingsGoals": what the Dart
+//                       models must hold}
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
@@ -172,6 +173,27 @@ void main() {
           final expected = jsonEncode(netWorthEntries);
           if (dart != expected) {
             problems.add('net worth entries: dart $dart swift $expected');
+          }
+        }
+        // Savings goals the Swift side wrote: Dart must hold exactly these,
+        // in this order (amounts as Dart's toString).
+        final savingsGoals = swift['savingsGoals'];
+        if (savingsGoals is List) {
+          final dart = jsonEncode([
+            for (final g in app.transactionModel.savingsGoals)
+              [
+                g.id,
+                g.name,
+                g.targetAmount.toString(),
+                g.currentAmount.toString(),
+                iso(g.targetDate),
+                iso(g.createdAt),
+                g.completedAt == null ? null : iso(g.completedAt!),
+              ]
+          ]);
+          final expected = jsonEncode(savingsGoals);
+          if (dart != expected) {
+            problems.add('savings goals: dart $dart swift $expected');
           }
         }
         final selectedNetWorthMonth = swift['selectedNetWorthMonth'];

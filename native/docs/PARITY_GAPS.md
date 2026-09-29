@@ -11,7 +11,7 @@ UPGRADE_TEST_RESULTS.md).
 | Flutter feature | Stored in | MVP status |
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
-| Savings goals UI | `savingsGoals` | Read (safe-to-spend reserves goal contributions exactly like Flutter); no UI to view/edit. |
+| Savings goals UI | `savingsGoals` | Core and model API done (add, edit, delete, add money, status, pace, sort, summary; Fixtures/goals); safe-to-spend reserves goal contributions exactly like Flutter; no Goals tab UI yet. |
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
@@ -53,6 +53,13 @@ UPGRADE_TEST_RESULTS.md).
 - Worth: accounts with the same month value and the same lowercased name
   keep stored order, and snapshots recorded at the same instant keep stored
   order (Swift stable sorts); Dart's sort is not stable above 32 items.
+- Goals: goals with the same completion state and target date keep stored
+  order (Swift stable sort); Dart's sort is not stable above 32 goals.
+- Goals: a goal is "Behind" on its target day unless fully funded (the
+  deadline is 00:00 of that day), and a goal created today for today is
+  "Behind" at once. Overdue goals show "bump to ... to catch up".
+- Goals: on hand-edited data with a zero or negative target, any
+  allocation stamps `completedAt` although the goal never shows Complete.
 
 ## Deliberate differences (approved)
 
@@ -75,6 +82,37 @@ UPGRADE_TEST_RESULTS.md).
 - Net worth amounts must be finite: a NaN/Infinity balance (Flutter's
   editor accepts a 330-digit number as Infinity) is refused before memory
   changes; Flutter keeps it in memory and fails every later save.
+- Savings goal mutations (add, edit, delete, add money) are awaited and
+  return the verified write result. Flutter's return nothing and ignore the
+  save result (its page shows the success snackbar either way; the retry
+  banner still shows). Invalid input and unknown ids write nothing in both.
+- Savings goals: an edited goal is patched in place. `id` and unknown keys
+  survive, and every other key keeps its stored JSON when it already holds
+  the value Flutter would write; otherwise Flutter's value is written (int
+  or string amounts become doubles, a date that fell back to "now" is
+  written out, `completedAt` is always present). Untouched goals and
+  unreadable rows are written back verbatim. Flutter rewrites every goal
+  from `toJson`, dropping unknown keys and pinning fallback dates of all of
+  them. For data Flutter wrote the bytes are identical (Fixtures/goals).
+- Savings goal amounts must be finite: NaN/Infinity (Flutter's form accepts
+  "NaN", "Infinity" and "1e999") are refused before memory changes, as is an
+  allocation whose sum overflows or a goal whose stored amount is a
+  non-finite string (an edit, which replaces both amounts, repairs it).
+  Flutter keeps the value in memory, and then every later save of the model,
+  transactions included, fails until restart. A NaN progress shows 0%
+  (Flutter's card throws).
+- Savings goals: a row Flutter cannot read (not an object, or a non-string
+  `id` or `name`) makes Flutter's whole app load fail (initialization error
+  screen). Swift keeps the row verbatim, hides it, and loads the rest.
+- Savings goals: editing a goal whose id is duplicated patches each copy
+  with the edit, keeping each copy's own `createdAt` and completion stamp
+  (Flutter overwrites every copy with the edited card, `createdAt` and stamp
+  included). Add money and delete act on every copy in both.
+- Savings goals: a new goal's id uses Flutter's format and counter, with
+  the timestamp of its `createdAt` (Flutter reads the clock twice,
+  microseconds apart). A stored goal without an id gets a UUID that is
+  saved with the next goal write; Flutter generates a new
+  `savings_goal_...` id at every launch until a goal save.
 
 - Transactions page: when the selected month loses its last transaction,
   the page falls back to the newest month with data (Flutter keeps the

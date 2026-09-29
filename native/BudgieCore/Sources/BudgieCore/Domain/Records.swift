@@ -471,13 +471,14 @@ public struct NetWorthEntryRecord: Identifiable, Hashable, Sendable {
 
 public struct SavingsGoalRecord: Identifiable, Hashable, Sendable {
     public let id: String
-    public let name: String
-    public let targetAmount: Double
-    public let currentAmount: Double
-    public let targetDate: DartDateTime
+    // Edited only through SavingsGoals.swift, which patches `raw` with them.
+    public internal(set) var name: String
+    public internal(set) var targetAmount: Double
+    public internal(set) var currentAmount: Double
+    public internal(set) var targetDate: DartDateTime
     public let createdAt: DartDateTime
-    public let completedAt: DartDateTime?
-    public let raw: JSONObject
+    public internal(set) var completedAt: DartDateTime?
+    public internal(set) var raw: JSONObject
 
     /// Dart `SavingsGoal.fromJson` (lenient) and constructor clamping. A
     /// missing id gets a fresh one, written into `raw` so the next save

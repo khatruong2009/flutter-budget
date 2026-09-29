@@ -17,9 +17,11 @@ enum SwiftOutput {
     /// values, the latter as Dart's `toString`). `netWorth`, when given, is
     /// what Dart's `netWorthEntries` (order, ids, names, types, dates and
     /// snapshot amounts as `toString`) and `selectedNetWorthMonth` must be.
+    /// `goals`, when given, is what Dart's `savingsGoals` must be (order,
+    /// ids, names, amounts as `toString`, and dates).
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
-        budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil
+        budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -55,6 +57,13 @@ enum SwiftOutput {
             }
             swift["selectedNetWorthMonth"] = netWorth.selectedNetWorthMonth.toIso8601String()
         }
+        if let goals {
+            swift["savingsGoals"] = goals.savingsGoals.map { goal -> [Any] in
+                [goal.id, goal.name, DartDouble.format(goal.targetAmount), DartDouble.format(goal.currentAmount),
+                 goal.targetDate.toIso8601String(), goal.createdAt.toIso8601String(),
+                 goal.completedAt.map { $0.toIso8601String() as Any } ?? NSNull()]
+            }
+        }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -84,7 +93,7 @@ struct SwiftOutputForDartTests {
         }
     }
 
-    @Test("domain: stores after Swift edits (every mutation the MVP can make)")
+    @Test("domain: stores after Swift edits (every mutation the app can make)")
     func edited() async throws {
         for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k"] {
             let scenario = try Scenario(Fixtures.url("store/\(name)"))
@@ -163,12 +172,40 @@ struct SwiftOutputForDartTests {
             data.deleteNetWorthEntry(id: doomed.id)
             data.selectNetWorthMonth(calendar.date(2026, 7, 19, 8))
 
+            // Savings goals: every mutation the Goals tab makes, on new goals
+            // and on goals from the input (typical has some, written by the
+            // Flutter model; unknown_data has foreign-shaped ones).
+            let storedGoals = data.savingsGoals
+            let trip = data.addSavingsGoal(
+                name: " Swift Trip ☕️ ", targetAmount: 1234.5, targetDate: calendar.date(2026, 12, 24, 18),
+                id: SavingsGoalRecord.makeID(now: now, counter: 0), now: now)!
+            let fund = data.addSavingsGoal(
+                name: "Swift \"Fund\"", targetAmount: 0.1 + 0.2, targetDate: calendar.date(2027, 2, 28),
+                id: SavingsGoalRecord.makeID(now: now, counter: 1), now: now)!
+            data.allocateToSavingsGoal(id: trip.id, amount: 1000, now: now)
+            data.allocateToSavingsGoal(id: fund.id, amount: 0.3, now: now)
+            data.allocateToSavingsGoal(id: fund.id, amount: 1e-7, now: now)
+            data.allocateToSavingsGoal(id: fund.id, amount: -0.2, now: now)
+            data.updateSavingsGoal(
+                id: trip.id, .init(name: "Swift Trip", targetAmount: 1500, currentAmount: 1500, targetDate: calendar.date(2027, 1, 2, 9, 30)),
+                now: now)
+            if let first = storedGoals.first {
+                data.allocateToSavingsGoal(id: first.id, amount: 25.5, now: now)
+                data.updateSavingsGoal(
+                    id: first.id, .init(name: first.name + " (Swift)", targetAmount: max(first.targetAmount, 1), currentAmount: first.currentAmount + 25.5,
+                                        targetDate: first.targetDate), now: now)
+            }
+            if storedGoals.count > 1 { data.deleteSavingsGoal(id: storedGoals[storedGoals.count - 1].id) }
+            let doomedGoal = data.addSavingsGoal(
+                name: "Swift Delete Me", targetAmount: 5, targetDate: now, id: SavingsGoalRecord.makeID(now: now, counter: 2), now: now)!
+            data.deleteSavingsGoal(id: doomedGoal.id)
+
             // Every section through its typed serializer, as the app's
             // save and retry paths write them.
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
             try SwiftOutput.emit(
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
-                budgetLimits: data.budgetLimits, netWorth: data)
+                budgetLimits: data.budgetLimits, netWorth: data, goals: data)
         }
     }
 
