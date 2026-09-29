@@ -4,8 +4,8 @@ import Testing
 @testable import BudgieCore
 
 /// Loads a `FinancialData` from raw sections, as the app does at launch.
-func homeData(_ sections: JSONObject) -> FinancialData {
-    let calendar = DartCalendar(timeZone: Scenario.zone)
+func homeData(_ sections: JSONObject, zone: TimeZone = Scenario.zone) -> FinancialData {
+    let calendar = DartCalendar(timeZone: zone)
     let now = calendar.date(2026, 9, 28, 9, 15)
     return FinancialData.load(
         FinancialSnapshot(revision: 1, sections: sections), preferences: InMemoryPreferences([:]), calendar: calendar,

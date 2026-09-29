@@ -151,6 +151,22 @@ struct FlowParityTests {
         #expect(idsFnv(ids) == fixture["sortedIdsFnv"].string, "\(context) order hash")
         #expect(utf16(index.categoryNames) == utf16(fixture["categoryOptions"].array.map(\.string!)), "\(context) category options")
 
+        // Row strings (subtitle, amount), newest first.
+        let rowTexts = index.newestFirst.map { [$0.flowSubtitle, $0.flowAmountText(formatter)] }
+        if fixture["rowTexts"].value != nil {
+            let want = fixture["rowTexts"].array.map { $0.array.map(\.string!) }
+            #expect(want.count == rowTexts.count, "\(context) row texts")
+            for (row, (got, expected)) in zip(index.newestFirst, zip(rowTexts, want)) {
+                #expect(utf16(got) == utf16(expected), "\(context) row \(row.id)")
+            }
+        } else {
+            let joined = rowTexts.map { $0.joined(separator: "\t") }.joined(separator: "\n")
+            #expect(StoreFile.checksum(Array(joined.utf8)) == fixture["rowTextsFnv"].string, "\(context) row texts hash")
+        }
+        for row in index.newestFirst where row.record.type == .expense && row.record.amount == 0 {
+            #expect(row.flowAmountText(formatter) == "$0.00", "\(context) zero expense \(row.id)")
+        }
+
         // Page figures per selected month.
         for selection in fixture["selections"].array {
             let selected = try calendar.parse(selection["selected"].string!)
@@ -238,6 +254,20 @@ struct FlowParityTests {
             let summary = TransactionFilter.summary(matches)
             #expect(summary.count == want["count"].int, "\(here) count")
             #expect(hex(summary.income) == want["income"].string && hex(summary.expenses) == want["expenses"].string, "\(here) sums")
+
+            // The results block on first open (50 rows visible).
+            let texts = want["texts"]
+            #expect(texts.value != nil, "\(here) texts")
+            #expect(TransactionFilter.countText(matches: matches.count, total: index.newestFirst.count) == texts["count"].string, "\(here) count text")
+            #expect(summary.incomeText(formatter) == texts["income"].string, "\(here) income pill")
+            #expect(summary.expensesText(formatter) == texts["expenses"].string, "\(here) expenses pill")
+            #expect(summary.netText(formatter) == texts["net"].string, "\(here) net pill")
+            var pages = FilterPagination()
+            pages.sync(f)
+            let showing = pages.hasMore(matches.count)
+                ? TransactionFilter.showingText(visible: pages.visible(of: matches.count), matches: matches.count) : nil
+            #expect(showing == texts["showing"].string, "\(here) showing")
+            #expect((matches.isEmpty ? f.emptyMessage : nil) == texts["empty"].string, "\(here) empty")
         }
     }
 

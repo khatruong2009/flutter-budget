@@ -24,9 +24,6 @@ public struct MonthSummary: Sendable {
     public var categoryExpenses: [(name: String, amount: Double)] = []
     /// Expense row count of each `categoryExpenses` entry (same index).
     public var categoryExpenseCounts: [Int] = []
-    /// Number of expense rows per category. Swift `String` keys merge
-    /// canonically equivalent names; `categoryExpenseCounts` keeps them apart.
-    public var expenseCounts: [String: Int] = [:]
     /// Rows of both types (a month with rows but no totals is not "no data").
     public var transactionCount = 0
 
@@ -104,16 +101,14 @@ public struct LedgerIndex: Sendable {
             } else {
                 summary.expenses += record.amount
                 // Dart map keys compare as code units, not canonically.
-                let key = Array(record.category.utf16)
-                if let index = categoryIndex[monthKey]?[key] {
+                if let index = categoryIndex[monthKey]?[units] {
                     summary.categoryExpenses[index].amount += record.amount
                     summary.categoryExpenseCounts[index] += 1
                 } else {
-                    categoryIndex[monthKey, default: [:]][key] = summary.categoryExpenses.count
+                    categoryIndex[monthKey, default: [:]][units] = summary.categoryExpenses.count
                     summary.categoryExpenses.append((record.category, record.amount))
                     summary.categoryExpenseCounts.append(1)
                 }
-                summary.expenseCounts[record.category, default: 0] += 1
             }
             summaries[monthKey] = summary
         }

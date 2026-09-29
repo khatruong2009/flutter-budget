@@ -285,6 +285,8 @@ public struct FinancialData: Sendable {
     }
 
     /// Dart `_monthLedger`: per `year*12+month`, sums in list order.
+    /// Category names are distinct as UTF-16 code units, like Dart map keys
+    /// (Swift `==` would merge "é" and "e\u{301}").
     public func monthLedger() -> [Int: MonthTotals] {
         var months: [Int: MonthTotals] = [:]
         for transaction in transactions {
@@ -295,7 +297,8 @@ public struct FinancialData: Sendable {
                 totals.income += transaction.amount
             } else {
                 totals.expenses += transaction.amount
-                if let index = totals.categoryExpenses.firstIndex(where: { $0.0 == transaction.category }) {
+                let units = Array(transaction.category.utf16)
+                if let index = totals.categoryExpenses.firstIndex(where: { $0.0.utf16.elementsEqual(units) }) {
                     totals.categoryExpenses[index].1 += transaction.amount
                 } else {
                     totals.categoryExpenses.append((transaction.category, transaction.amount))

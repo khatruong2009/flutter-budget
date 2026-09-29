@@ -117,15 +117,19 @@ public enum CategoryCatalog {
     /// Picker list for a type: active definitions by sort order (Dart
     /// normalises sort order per type, stable in list order), then any of
     /// `usedNames` without a definition. Loaded data passes none (see
-    /// `categoryPicker(for:)`).
+    /// `categoryPicker(for:)`). A used name is skipped as Dart
+    /// `_containsName` skips it: some definition of the type (archived ones
+    /// and names added earlier in this pass included) whose `toLowerCase()`
+    /// equals the name's `trim().toLowerCase()` as UTF-16 code units.
     public static func pickerList(_ categories: [CategoryInfo], type: TransactionType, usedNames: [String]) -> [CategoryInfo] {
         let defined = categories.enumerated()
             .filter { $0.element.type == type }
             .sorted { ($0.element.sortOrder, $0.offset) < ($1.element.sortOrder, $1.offset) }
             .map(\.element)
         var result = defined.filter { !$0.isArchived }
-        var known = Set(defined.map { $0.name.lowercased() })
-        for name in usedNames where known.insert(name.lowercased()).inserted {
+        var known = Set(defined.map { Array(DartString.lowercase($0.name).utf16) })
+        for name in usedNames where !known.contains(Array(DartString.lowercase(DartString.trim(name)).utf16)) {
+            known.insert(Array(DartString.lowercase(name).utf16))
             result.append(CategoryInfo.make(
                 id: "\(type.rawValue)-legacy-\(name)", type: type, name: name, iconIdentifier: "square_grid_2x2",
                 colorToken: "accent", sortOrder: Int.max, isBuiltIn: false))

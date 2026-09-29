@@ -82,16 +82,19 @@ struct SpendParityTests {
         #expect(mismatches.isEmpty, "\(mismatches.prefix(20).map { String($0, radix: 16) })")
     }
 
-    @Test("the page's breakdown, rows, tail, centre and selections for every dataset")
-    func breakdowns() throws {
+    // Generated under America/New_York. Every dataset date is local noon, so
+    // the Dart output is the same in any zone (a run under Asia/Kolkata
+    // differed only in "tz"); Swift is checked in each fixture zone.
+    @Test("the page's breakdown, rows, tail, centre and selections for every dataset", arguments: fixtureZones)
+    func breakdowns(zone: String) throws {
         let cases = try fixture("breakdowns.json")["cases"].array
         #expect(cases.count == 17)
         let money = MoneyFormatter()
         for c in cases {
-            let label = "\(c["dataset"].string!)/\(c["theme"].string!)"
+            let label = "\(zone) \(c["dataset"].string!)/\(c["theme"].string!)"
             let dark = c["theme"].string == "dark"
             let unstable = c["unstableTies"].bool == true
-            let data = homeData(try JSONParser.parse(c["sections"].string!).objectValue!)
+            let data = homeData(try JSONParser.parse(c["sections"].string!).objectValue!, zone: TimeZone(identifier: zone)!)
             let active = data.categoryPicker(for: .expense).map(\.name)
             #expect(active.map { Array($0.utf16) } == c["expenseCategories"].array.map { units($0.string)! }, "\(label) active")
             let ledger = LedgerIndex.build(data.transactions, calendar: data.calendar)

@@ -11,6 +11,8 @@
 // bounds, the month detail sheet, the preview rows, and (driving the filter
 // controls) the SEE ALL results. The fl_chart control points are checked
 // against the real LineChartPainter path. A mismatch fails the generator.
+// The row strings (`rowTexts`) and the results block's strings
+// (`resultsTexts`) are emitted too, from the same helpers those checks use.
 
 import 'dart:convert';
 import 'dart:io';
@@ -872,10 +874,40 @@ Map<String, Object?> filterSpecJson(FilterSpec spec) {
   };
 }
 
+/// The SEE ALL results block's strings (hp:1998-2101) on first open, when 50
+/// rows are visible: the "N of M" header, the three summary pills, the
+/// "Showing N of M matches" line (null when every match is visible) and the
+/// empty card (null when something matched). `checkFiltersThroughUi` finds
+/// each of these on the real page.
+Map<String, String?> resultsTexts(
+  TransactionModel model,
+  FilterState state,
+  List<Transaction> filtered,
+) {
+  final summary = buildFilteredSummary(filtered);
+  final visible = min(50, filtered.length);
+  return {
+    'count': '${filtered.length} of ${model.transactions.length}',
+    'income': 'Income ${MoneyFormatter.format(summary.income)}',
+    'expenses': 'Expenses ${MoneyFormatter.format(summary.expenses)}',
+    'net':
+        'Net ${MoneyFormatter.formatSigned(summary.income - summary.expenses, plusForPositive: true)}',
+    'showing': filtered.length > visible
+        ? 'Showing $visible of ${filtered.length} matches'
+        : null,
+    'empty': filtered.isEmpty
+        ? (state.hasActiveFilters
+            ? 'No transactions match these filters.'
+            : 'No transactions have been recorded yet.')
+        : null,
+  };
+}
+
 /// One spec's results on one dataset, in `filterMatrix()` order.
 Map<String, Object?> filterResult(
     TransactionModel model, FilterSpec spec, bool hashed) {
-  final filtered = spec.state().filtered(model);
+  final state = spec.state();
+  final filtered = state.filtered(model);
   final summary = buildFilteredSummary(filtered);
   final ids = filtered.map((t) => t.id).toList();
   return {
@@ -883,7 +915,23 @@ Map<String, Object?> filterResult(
     'count': summary.count,
     'income': bitsHex(summary.income),
     'expenses': bitsHex(summary.expenses),
+    'texts': resultsTexts(model, state, filtered),
   };
+}
+
+/// `rowTexts` subtitle and amount of every row, newest first; hashed for
+/// the large dataset as "subtitle\tamount" lines.
+Map<String, Object?> rowTextsJson(List<Transaction> sorted, bool hashed) {
+  final texts = [
+    for (final t in sorted)
+      () {
+        final r = rowTexts(t);
+        return [r.subtitle, r.amount];
+      }()
+  ];
+  return hashed
+      ? {'rowTextsFnv': fnvText(texts.map((r) => r.join('\t')).join('\n'))}
+      : {'rowTexts': texts};
 }
 
 // --- Page views (mirror) -------------------------------------------------------
@@ -1253,22 +1301,11 @@ Future<void> checkFiltersThroughUi(
 
     final state = spec.state();
     final filtered = state.filtered(model);
-    final summary = buildFilteredSummary(filtered);
+    final texts = resultsTexts(model, state, filtered);
     final context = 'filter ui ${jsonEncode(spec.toJson())}';
-    expect(find.text('${filtered.length} of ${model.transactions.length}'),
-        findsOneWidget,
-        reason: context);
-    expect(find.text('Income ${MoneyFormatter.format(summary.income)}'),
-        findsOneWidget,
-        reason: context);
-    expect(find.text('Expenses ${MoneyFormatter.format(summary.expenses)}'),
-        findsOneWidget,
-        reason: context);
-    expect(
-        find.text(
-            'Net ${MoneyFormatter.formatSigned(summary.income - summary.expenses, plusForPositive: true)}'),
-        findsOneWidget,
-        reason: context);
+    for (final key in ['count', 'income', 'expenses', 'net']) {
+      expect(find.text(texts[key]!), findsOneWidget, reason: '$context $key');
+    }
     final visible = filtered.take(50).toList();
     final rows = byTypeName('_TransactionRow');
     expect(rows.evaluate().length, visible.length, reason: context);
@@ -1278,18 +1315,19 @@ Future<void> checkFiltersThroughUi(
           [want.title, want.subtitle, want.amount],
           reason: '$context row $i');
     }
-    if (filtered.length > 50) {
-      expect(find.text('Showing 50 of ${filtered.length} matches'),
-          findsOneWidget,
-          reason: context);
+    expect(find.textContaining(RegExp(r'^Showing \d+ of \d+ matches$')),
+        texts['showing'] == null ? findsNothing : findsOneWidget,
+        reason: '$context showing');
+    if (texts['showing'] != null) {
+      expect(find.text(texts['showing']!), findsOneWidget, reason: context);
     }
-    if (filtered.isEmpty) {
-      expect(
-          find.text(state.hasActiveFilters
-              ? 'No transactions match these filters.'
-              : 'No transactions have been recorded yet.'),
-          findsOneWidget,
-          reason: context);
+    for (final message in [
+      'No transactions match these filters.',
+      'No transactions have been recorded yet.',
+    ]) {
+      expect(find.text(message),
+          texts['empty'] == message ? findsOneWidget : findsNothing,
+          reason: '$context empty');
     }
   }
 }
@@ -1359,7 +1397,13 @@ void main() {
         if (dataset.writeRows) 'sortedIds': [for (final t in sorted) t.id],
         'sortedIdsFnv': fnvText(sorted.map((t) => t.id).join('\n')),
         'categoryOptions': getCategoryOptions(model.transactions),
+        ...rowTextsJson(sorted, !dataset.writeRows),
       };
+      // A zero expense is shown as -0.0, which prints without a sign.
+      for (final t in sorted.where(
+          (t) => t.type == TransactionTyp.expense && t.amount == 0)) {
+        expect(rowTexts(t).amount, '\$0.00', reason: '${dataset.name} ${t.id}');
+      }
 
       // Chart widths as the real page lays them out at 402x874 (checked
       // below when widgets run): card inner width and the trend plot.

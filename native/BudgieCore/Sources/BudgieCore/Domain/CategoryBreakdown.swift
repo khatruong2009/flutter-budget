@@ -224,8 +224,7 @@ public struct CategoryBreakdown: Sendable {
         for (name, limit) in budgetLimits where limits[Array(name.utf16)] == nil { limits[Array(name.utf16)] = limit }
 
         let entries = summary.categoryExpenses
-        let counts = summary.categoryExpenseCounts.count == entries.count
-            ? summary.categoryExpenseCounts : entries.map { summary.expenseCounts[$0.name] ?? 0 }
+        let counts = summary.categoryExpenseCounts
         let total = entries.reduce(0.0) { $0 + $1.amount }
 
         // `sort((a, b) => b.amount.compareTo(a.amount))` (:115). Dart's
