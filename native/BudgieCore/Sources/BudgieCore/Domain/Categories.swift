@@ -134,11 +134,12 @@ public enum CategoryCatalog {
     }
 
     /// SF Symbol for a Flutter icon identifier (CupertinoIcons registry,
-    /// common.dart). Unknown identifiers fall back like Flutter does.
+    /// common.dart; the Cupertino glyph's SF counterpart where one exists).
+    /// Unknown identifiers fall back like Flutter does.
     public static func symbol(for iconIdentifier: String) -> String {
         switch iconIdentifier {
         case "square_grid_2x2": "square.grid.2x2"
-        case "asterisk_circle": "fork.knife.circle"
+        case "asterisk_circle": "asterisk.circle"
         case "cart": "cart"
         case "house": "house"
         case "car": "car"
@@ -149,12 +150,12 @@ public enum CategoryCatalog {
         case "film": "film"
         case "paw": "pawprint"
         case "people": "person.2"
-        case "money": "dollarsign.circle"
+        case "money": "dollarsign"
         case "chart": "chart.bar"
         case "book": "book"
         case "phone": "iphone"
         case "wrench": "hammer"
-        case "leaf": "leaf"
+        case "leaf": "leaf.arrow.circlepath"
         default: "square.grid.2x2"
         }
     }

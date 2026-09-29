@@ -1,44 +1,17 @@
 import BudgieCore
 import SwiftUI
 
-/// The Flutter app's palette (research G section 2.1), light and dark.
+/// Transitional shim over `BudgieColor` for views not yet restyled.
+/// Removed once every view uses the design-system tokens.
 enum Theme {
-    static let accent = dynamic(light: 0x6366F1, dark: 0x818CF8)
-    static let income = dynamic(light: 0x10B981, dark: 0x34D399)
-    static let expense = dynamic(light: 0xEF4444, dark: 0xFB7185)
-    static let warning = dynamic(light: 0xF59E0B, dark: 0xFBBF24)
-    static let background = dynamic(light: 0xF9FAFB, dark: 0x0A0A12)
-    static let card = dynamic(light: 0xFFFFFF, dark: 0x13131F)
+    static let accent = BudgieColor.accent
+    static let income = BudgieColor.income
+    static let expense = BudgieColor.danger
+    static let warning = BudgieColor.warning
+    static let background = BudgieColor.background
+    static let card = BudgieColor.card
 
-    /// Colour for a category `colorToken`.
-    static func color(token: String) -> Color {
-        switch token {
-        case "orange": warning
-        case "green": income
-        case "blue": dynamic(light: 0x3B82F6, dark: 0x60A5FA)
-        case "purple": dynamic(light: 0x8B5CF6, dark: 0xA78BFA)
-        case "cyan": Color(hex: 0x22D3EE)
-        case "pink": Color(hex: 0xF0ABFC)
-        case "red": expense
-        default: accent
-        }
-    }
-
-    static func dynamic(light: UInt32, dark: UInt32) -> Color {
-        Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark) : UIColor(hex: light) })
-    }
-}
-
-extension Color {
-    init(hex: UInt32) { self.init(uiColor: UIColor(hex: hex)) }
-}
-
-extension UIColor {
-    convenience init(hex: UInt32) {
-        self.init(
-            red: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
-            blue: CGFloat(hex & 0xFF) / 255, alpha: 1)
-    }
+    static func color(token: String) -> Color { BudgieColor.category(token) }
 }
 
 /// Icon tile for a category name, using its definition when there is one.
