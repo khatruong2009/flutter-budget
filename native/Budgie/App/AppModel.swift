@@ -263,9 +263,13 @@ final class AppModel {
     // MARK: - Transactions
 
     @discardableResult
-    func addTransaction(type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime) async -> Bool {
+    func addTransaction(
+        type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime, tagIds: [String] = []
+    ) async -> Bool {
         guard data != nil, amount.isFinite else { return false }
-        _ = data!.addTransaction(type: type, description: description, amount: amount, category: category, date: date, id: newID(), now: now)
+        _ = data!.addTransaction(
+            type: type, description: description, amount: amount, category: category, date: date, tagIds: tagIds, id: newID(),
+            now: now)
         transactionsChanged()
         return await persist([Section.transactions])
     }
@@ -342,6 +346,9 @@ final class AppModel {
     func categories(for type: TransactionType) -> [CategoryInfo] {
         data?.categoryPicker(for: type) ?? CategoryCatalog.pickerList(CategoryCatalog.builtIn, type: type, usedNames: [])
     }
+
+    /// Transaction tags (`transactionTags`), read-only until tag management.
+    var tags: [TransactionTagRecord] { data?.tags ?? [] }
 
     func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {
         data?.categoryInfo(named: name, type: type)

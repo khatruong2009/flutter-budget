@@ -79,7 +79,7 @@ struct SwiftOutputForDartTests {
 
             let added = data.addTransaction(
                 type: .expense, description: "Swift ☕️ \"quoted\", comma", amount: 1200, category: "Groceries",
-                date: calendar.date(2026, 9, 27, 18, 30), id: id(), now: now)
+                date: calendar.date(2026, 9, 27, 18, 30), tagIds: ["tag-a", "tag-b"], id: id(), now: now)
             _ = data.addTransaction(type: .income, description: "", amount: 0.1 + 0.2, category: "Salary",
                                     date: now, id: id(), now: now)
             if let first = data.transactions.first {
@@ -87,7 +87,7 @@ struct SwiftOutputForDartTests {
                                                            category: "Health", date: calendar.date(2026, 2, 28)), now: now)
             }
             data.updateTransaction(id: added.id, .init(type: .income, description: added.description, amount: 1e-7,
-                                                       category: added.category, date: added.date), now: now)
+                                                       category: added.category, date: added.date, tagIds: ["tag-b"]), now: now)
             if data.transactions.count > 3 { data.deleteTransaction(id: data.transactions[2].id) }
 
             let monthly = RecurringTemplate.make(

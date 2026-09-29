@@ -196,3 +196,30 @@ struct SectionSerializerTests {
         #expect(data.selectedNetWorthMonthSection().stringValue == "2026-05-01T00:00:00.000")
     }
 }
+
+@Suite("Transaction edits: tags")
+struct TransactionTagEditTests {
+    @Test("tagIds are written only when they change, in the given order; other keys stay untouched")
+    func tags() throws {
+        let calendar = DartCalendar(timeZone: Scenario.zone)
+        let now = calendar.date(2026, 9, 28, 12)
+        let row = try JSONParser.parse(
+            #"{"id":"t","type":"expense","description":"x","amount":5,"category":"Food","date":"2026-09-01T00:00:00.000","tagIds":["b",7,"a"],"z":true,"createdAt":"2026-09-01T00:00:00.000","updatedAt":"2026-09-01T00:00:00.000"}"#)
+        let record = try #require(TransactionRecord.parse(row, calendar: calendar, newID: { "n" }))
+        #expect(record.tagIds == ["b", "a"])
+        let same = record.applying(.init(type: .expense, description: "x", amount: 5, category: "Food", date: record.date, tagIds: ["b", "a"]), now: now)
+        #expect(DartJSON.encodeString(same.raw["tagIds"]!) == #"["b",7,"a"]"#)
+        let kept = record.applying(.init(type: .expense, description: "x", amount: 5, category: "Food", date: record.date), now: now)
+        #expect(DartJSON.encodeString(kept.raw["tagIds"]!) == #"["b",7,"a"]"#)
+        let changed = record.applying(.init(type: .expense, description: "x", amount: 5, category: "Food", date: record.date, tagIds: ["a", "c"]), now: now)
+        #expect(changed.tagIds == ["a", "c"])
+        #expect(DartJSON.encodeString(.object(changed.raw))
+            // (An int amount lexeme is always rewritten as a double on edit.)
+            == #"{"id":"t","type":"expense","description":"x","amount":5.0,"category":"Food","date":"2026-09-01T00:00:00.000","tagIds":["a","c"],"z":true,"createdAt":"2026-09-01T00:00:00.000","updatedAt":"2026-09-28T12:00:00.000"}"#)
+        let noKey = try #require(TransactionRecord.parse(
+            try JSONParser.parse(#"{"id":"u","type":"income","description":"y","amount":1.0,"category":"Pay","date":"2026-09-01T00:00:00.000"}"#),
+            calendar: calendar, newID: { "n" }))
+        let tagged = noKey.applying(.init(type: .income, description: "y", amount: 1, category: "Pay", date: noKey.date, tagIds: ["t1"]), now: now)
+        #expect(DartJSON.encodeString(tagged.raw["tagIds"]!) == #"["t1"]"#)
+    }
+}

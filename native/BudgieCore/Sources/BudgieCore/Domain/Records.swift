@@ -121,13 +121,19 @@ public struct TransactionRecord: Identifiable, Hashable, Sendable {
         public var amount: Double
         public var category: String
         public var date: DartDateTime
+        /// nil keeps the stored tags.
+        public var tagIds: [String]?
 
-        public init(type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime) {
+        public init(
+            type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime,
+            tagIds: [String]? = nil
+        ) {
             self.type = type
             self.description = description
             self.amount = amount
             self.category = category
             self.date = date
+            self.tagIds = tagIds
         }
     }
 
@@ -155,6 +161,10 @@ public struct TransactionRecord: Identifiable, Hashable, Sendable {
         if edit.date != date {
             next.date = edit.date
             next.raw["date"] = .string(edit.date.toIso8601String())
+        }
+        if let tagIds = edit.tagIds, tagIds != self.tagIds {
+            next.tagIds = tagIds
+            next.raw["tagIds"] = .array(tagIds.map { .string($0) })
         }
         let updatedAt = now.isAfter(updatedAt) ? now : updatedAt.adding(microseconds: 1)
         next.updatedAt = updatedAt
