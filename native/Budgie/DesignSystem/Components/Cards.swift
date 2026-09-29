@@ -1,0 +1,140 @@
+import BudgieCore
+import SwiftUI
+
+/// Scales the label while pressed (GlowCard 0.98, PillButton 0.96, FAB 0.95).
+struct PressScaleStyle: ButtonStyle {
+    var scale: CGFloat = 0.98
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? scale : 1)
+            .motion(Motion.press, value: configuration.isPressed)
+    }
+}
+
+/// The redesign's signature card (`glow_card.dart`): card surface, radius
+/// 26, 1pt border, padding 20. With `onTap` it presses to 0.98 with a light
+/// haptic; a long-press-only card gets no press feedback, as in Flutter.
+struct GlowCard<Content: View>: View {
+    var padding: CGFloat = Metrics.cardPadding
+    var radius: CGFloat = Metrics.cardRadius
+    /// Overrides the surface (e.g. the completed-goal tint).
+    var fill: AnyShapeStyle? = nil
+    /// Overrides the 1pt border colour.
+    var border: Color? = nil
+    var onTap: (() -> Void)? = nil
+    var onLongPress: (() -> Void)? = nil
+    @ViewBuilder var content: () -> Content
+
+    @State private var taps = 0
+    @State private var longPresses = 0
+    @State private var pressed = false
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+        let card = content()
+            .padding(padding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(fill ?? AnyShapeStyle(BudgieColor.card), in: shape)
+            .overlay(shape.strokeBorder(border ?? BudgieColor.cardBorder, lineWidth: 1))
+            .contentShape(shape)
+
+        if let onLongPress {
+            // Tap and long press are exclusive, like Flutter's GestureDetector.
+            card
+                .scaleEffect(pressed ? 0.98 : 1)
+                .motion(Motion.press, value: pressed)
+                .onTapGesture {
+                    guard let onTap else { return }
+                    taps += 1
+                    onTap()
+                }
+                .onLongPressGesture(minimumDuration: 0.5) {
+                    longPresses += 1
+                    onLongPress()
+                } onPressingChanged: { isPressing in
+                    pressed = isPressing && onTap != nil
+                }
+                .sensoryFeedback(.impact(weight: .light), trigger: taps)
+                .sensoryFeedback(.impact(weight: .medium), trigger: longPresses)
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(onTap == nil ? [] : .isButton)
+                .accessibilityAction { onTap?() }
+                .accessibilityAction(named: "More actions") { onLongPress() }
+        } else if let onTap {
+            Button {
+                taps += 1
+                onTap()
+            } label: {
+                card
+            }
+            .buttonStyle(PressScaleStyle(scale: 0.98))
+            .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        } else {
+            card
+        }
+    }
+}
+
+/// A GlowCard with 8pt padding and 1pt hairlines inset 12 between rows
+/// (`GlowListCard`).
+struct GlowListCard<Row: View>: View {
+    var radius: CGFloat = Metrics.cardRadius
+    let rows: [Row]
+
+    init(radius: CGFloat = Metrics.cardRadius, rows: [Row]) {
+        self.radius = radius
+        self.rows = rows
+    }
+
+    var body: some View {
+        GlowCard(padding: Metrics.listCardPadding, radius: radius) {
+            VStack(spacing: 0) {
+                ForEach(rows.indices, id: \.self) { index in
+                    if index > 0 { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                    rows[index]
+                }
+            }
+        }
+    }
+}
+
+/// A 1pt list divider in the hairline colour.
+struct Hairline: View {
+    var body: some View {
+        BudgieColor.hairline.frame(height: 1).accessibilityHidden(true)
+    }
+}
+
+/// Tinted rounded-square icon (`IconTile`): colour at 13%, 40pt radius 14
+/// (44pt radius 16), 20pt symbol.
+struct IconTile: View {
+    let symbol: String
+    let color: Color
+    var size: CGFloat = 40
+    var radius: CGFloat? = nil
+    var iconSize: CGFloat = 20
+    /// Overrides the tint (e.g. the grey tail row).
+    var background: Color? = nil
+
+    var body: some View {
+        Image(systemName: symbol)
+            .font(.system(size: iconSize, weight: .medium))
+            .foregroundStyle(color)
+            .frame(width: size, height: size)
+            .background(
+                background ?? color.opacity(0.13),
+                in: RoundedRectangle(cornerRadius: radius ?? (size >= 44 ? 16 : 14), style: .continuous))
+            .accessibilityHidden(true)
+    }
+}
+
+extension IconTile {
+    /// The tile for a category definition (its icon and colour token);
+    /// a name without a definition gets the default grid in accent.
+    init(category info: CategoryInfo?, size: CGFloat = 40) {
+        self.init(
+            symbol: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""),
+            color: BudgieColor.category(info?.colorToken ?? "accent"), size: size)
+    }
+}

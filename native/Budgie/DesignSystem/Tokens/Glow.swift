@@ -42,3 +42,22 @@ extension View {
         modifier(TextGlowModifier(color: color, blur: blur, alpha: alpha))
     }
 }
+
+/// The glow of a shape that has no fill of its own (Flutter draws a
+/// `BoxShadow` for an unfilled decoration; a SwiftUI shadow needs opaque
+/// pixels): the shape filled with the glow colour and blurred, placed behind.
+struct GlowHalo<S: Shape>: View {
+    @Environment(\.colorScheme) private var scheme
+    let shape: S
+    let color: Color
+    var blur: CGFloat = 24
+    var alpha: Double = 0.55
+
+    var body: some View {
+        if scheme == .dark {
+            shape.fill(color.opacity(alpha)).blur(radius: blur / 2).accessibilityHidden(true)
+        } else {
+            shape.fill(color.opacity(0.25)).blur(radius: blur * 0.6 / 2).offset(y: 4).accessibilityHidden(true)
+        }
+    }
+}
