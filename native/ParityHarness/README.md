@@ -12,6 +12,7 @@ to `test/parity/`, and runs `flutter test` there.
 
 ```bash
 native/ParityHarness/run.sh generate            # rewrite native/Fixtures/
+PARITY_ONLY=format_fixtures_test.dart native/ParityHarness/run.sh generate  # one generator only
 SWIFT_OUT=/path native/ParityHarness/run.sh verify
 ```
 
@@ -20,6 +21,7 @@ SWIFT_OUT=/path native/ParityHarness/run.sh verify
 | `store_fixtures_test.dart` | `Fixtures/store/<scenario>/{input/, prefs.json, expected.json}`: typical, 10k, old schema, unknown data, 20 damaged-file states |
 | `legacy_fixtures_test.dart` | `Fixtures/legacy/<scenario>/...`: v1 envelope, v1 backup, bare keys, mixed, settings-only, starting balances |
 | `logic_fixtures_test.dart` | `Fixtures/logic/`: dates, generator, safe-to-spend per time zone (`tz/<zone>/`); CSV bytes, money formatting, number/string encoding, ordering |
+| `format_fixtures_test.dart` | `Fixtures/logic/date_formats.json` (every en_US intl pattern the app uses) and `strings.json` (Dart `trim`, `toLowerCase`, `==`, `contains`, `startsWith`, `compareTo`) |
 | `verify_swift_output_test.dart` | `$SWIFT_OUT/dart-verification.json`; fails on any rejected, skipped or reset data |
 
 `expected.json` records, for the untouched input: the Dart store load

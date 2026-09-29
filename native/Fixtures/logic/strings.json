@@ -1,0 +1,6879 @@
+{
+  "single": [
+    {
+      "s": "",
+      "trim": "",
+      "lower": ""
+    },
+    {
+      "s": " ",
+      "trim": "",
+      "lower": " "
+    },
+    {
+      "s": "  Groceries  ",
+      "trim": "Groceries",
+      "lower": "  groceries  "
+    },
+    {
+      "s": "﻿BOM﻿",
+      "trim": "BOM",
+      "lower": "﻿bom﻿"
+    },
+    {
+      "s": "nel ",
+      "trim": "nel",
+      "lower": "nel "
+    },
+    {
+      "s": "᠎mongolian᠎",
+      "trim": "᠎mongolian᠎",
+      "lower": "᠎mongolian᠎"
+    },
+    {
+      "s": " line ",
+      "trim": "line",
+      "lower": " line "
+    },
+    {
+      "s": "​zero width​",
+      "trim": "​zero width​",
+      "lower": "​zero width​"
+    },
+    {
+      "s": "\t\n\r\u000b\f mixed 　",
+      "trim": "mixed",
+      "lower": "\t\n\r\u000b\f mixed 　"
+    },
+    {
+      "s": "Whole Foods Market",
+      "trim": "Whole Foods Market",
+      "lower": "whole foods market"
+    },
+    {
+      "s": "WHOLE FOODS",
+      "trim": "WHOLE FOODS",
+      "lower": "whole foods"
+    },
+    {
+      "s": "whole",
+      "trim": "whole",
+      "lower": "whole"
+    },
+    {
+      "s": "İstanbul",
+      "trim": "İstanbul",
+      "lower": "istanbul"
+    },
+    {
+      "s": "ISTANBUL",
+      "trim": "ISTANBUL",
+      "lower": "istanbul"
+    },
+    {
+      "s": "ΣΑΣ",
+      "trim": "ΣΑΣ",
+      "lower": "σασ"
+    },
+    {
+      "s": "ẞtraße",
+      "trim": "ẞtraße",
+      "lower": "ßtraße"
+    },
+    {
+      "s": "Café",
+      "trim": "Café",
+      "lower": "café"
+    },
+    {
+      "s": "Café",
+      "trim": "Café",
+      "lower": "café"
+    },
+    {
+      "s": "café",
+      "trim": "café",
+      "lower": "café"
+    },
+    {
+      "s": "ǅ Ǆ ǆ",
+      "trim": "ǅ Ǆ ǆ",
+      "lower": "ǆ ǆ ǆ"
+    },
+    {
+      "s": "😀 Emoji ☕️",
+      "trim": "😀 Emoji ☕️",
+      "lower": "😀 emoji ☕️"
+    },
+    {
+      "s": "𐐀Deseret",
+      "trim": "𐐀Deseret",
+      "lower": "𐐨deseret"
+    },
+    {
+      "s": "a",
+      "trim": "a",
+      "lower": "a"
+    },
+    {
+      "s": "A",
+      "trim": "A",
+      "lower": "a"
+    },
+    {
+      "s": "Z",
+      "trim": "Z",
+      "lower": "z"
+    },
+    {
+      "s": "_",
+      "trim": "_",
+      "lower": "_"
+    },
+    {
+      "s": "ä",
+      "trim": "ä",
+      "lower": "ä"
+    },
+    {
+      "s": "é",
+      "trim": "é",
+      "lower": "é"
+    },
+    {
+      "s": "é",
+      "trim": "é",
+      "lower": "é"
+    }
+  ],
+  "pairs": [
+    {
+      "a": "",
+      "b": "",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": " ",
+      "b": " ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": " ",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "  Groceries  ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "  Groceries  ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "﻿BOM﻿",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "﻿BOM﻿",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "nel ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "nel ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "nel ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "nel ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "᠎mongolian᠎",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "᠎mongolian᠎",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " line ",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": " line ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": " line ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " line ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": " line ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": " line ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "​zero width​",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "​zero width​",
+      "b": "​zero width​",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "​zero width​",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "​zero width​",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "​zero width​",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "​zero width​",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "\t\n\r\u000b\f mixed 　",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "Whole Foods Market",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Whole Foods Market",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "WHOLE FOODS",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "WHOLE FOODS",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "whole",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "whole",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "whole",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "whole",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "İstanbul",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "İstanbul",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "İstanbul",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "İstanbul",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "ISTANBUL",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "A",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ISTANBUL",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "ΣΑΣ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ΣΑΣ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "ẞtraße",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "ẞtraße",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ẞtraße",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "Café",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "Café",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "é",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "Café",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "Café",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Café",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "é",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Café",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "café",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "café",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "a",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "café",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "café",
+      "b": "é",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "ǅ Ǆ ǆ",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ǅ Ǆ ǆ",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": " ",
+      "equal": false,
+      "contains": true,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "😀 Emoji ☕️",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "😀 Emoji ☕️",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "𐐀Deseret",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "𐐀Deseret",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "a",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "a",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "a",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "a",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "A",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "A",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "A",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "A",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "A",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "A",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "A",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "Z",
+      "b": "Z",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "Z",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "Z",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "_",
+      "b": "_",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "_",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "_",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "ä",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "ä",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "ä",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "ä",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "é",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    },
+    {
+      "a": "é",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "",
+      "equal": false,
+      "contains": true,
+      "startsWith": true,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": " ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "  Groceries  ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "﻿BOM﻿",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "nel ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "᠎mongolian᠎",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": " line ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "​zero width​",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "\t\n\r\u000b\f mixed 　",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Whole Foods Market",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "WHOLE FOODS",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "whole",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "İstanbul",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "ISTANBUL",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ΣΑΣ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "ẞtraße",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "café",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ǅ Ǆ ǆ",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "😀 Emoji ☕️",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "𐐀Deseret",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": -1
+    },
+    {
+      "a": "é",
+      "b": "a",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "A",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "Z",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "_",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "ä",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "é",
+      "equal": false,
+      "contains": false,
+      "startsWith": false,
+      "compare": 1
+    },
+    {
+      "a": "é",
+      "b": "é",
+      "equal": true,
+      "contains": true,
+      "startsWith": true,
+      "compare": 0
+    }
+  ]
+}

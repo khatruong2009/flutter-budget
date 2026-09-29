@@ -17,6 +17,10 @@
 #   mode = generate  -> writes native/Fixtures/
 #   mode = verify    -> loads Swift-written files from $SWIFT_OUT (default
 #                       native/Fixtures/swift-written) through the Dart store
+#
+# PARITY_ONLY="a_test.dart b_test.dart" limits `generate` to those harness
+# files (each run under every zone it normally uses), so adding a fixture
+# does not rewrite the rest of the corpus.
 set -euo pipefail
 
 MODE="${1:?usage: run.sh generate|verify [args]}"
@@ -59,12 +63,22 @@ export PARITY_COMMIT="$COMMIT"
 case "$MODE" in
   generate)
     mkdir -p "$FIXTURES"
+    wants() { [ -z "${PARITY_ONLY:-}" ] || [[ " $PARITY_ONLY " == *" $1 "* ]]; }
     # Each generator runs under the zones it needs; see the test files.
-    for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do
-      TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/logic_fixtures_test.dart "$@"
-    done
-    TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/store_fixtures_test.dart "$@"
-    TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/legacy_fixtures_test.dart "$@"
+    if wants logic_fixtures_test.dart; then
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/logic_fixtures_test.dart "$@"
+      done
+    fi
+    if wants format_fixtures_test.dart; then
+      TZ=UTC PARITY_TZ=UTC flutter test test/parity/format_fixtures_test.dart "$@"
+    fi
+    if wants store_fixtures_test.dart; then
+      TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/store_fixtures_test.dart "$@"
+    fi
+    if wants legacy_fixtures_test.dart; then
+      TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/legacy_fixtures_test.dart "$@"
+    fi
     ;;
   verify)
     export SWIFT_OUT="${SWIFT_OUT:-$FIXTURES/swift-written}"

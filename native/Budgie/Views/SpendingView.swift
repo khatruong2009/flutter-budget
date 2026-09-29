@@ -155,15 +155,15 @@ struct SpendingView: View {
             Spacer()
             Menu {
                 Picker("Month", selection: Binding(get: { current }, set: { chosenMonth = $0 })) {
-                    ForEach(months, id: \.self) { Text(SpendingFormat.monthTitle($0)).tag($0) }
+                    ForEach(months, id: \.self) { Text(DartDateFormat.yMMMM($0)).tag($0) }
                 }
             } label: {
                 HStack(spacing: 4) {
-                    Text(SpendingFormat.monthTitle(current)).font(.headline)
+                    Text(DartDateFormat.yMMMM(current)).font(.headline)
                     Image(systemName: "chevron.down").font(.caption.weight(.semibold))
                 }
             }
-            .accessibilityLabel("Month, \(SpendingFormat.monthTitle(current))")
+            .accessibilityLabel("Month, \(DartDateFormat.yMMMM(current))")
             Spacer()
             Button {
                 chosenMonth = calendar.date(f.year, f.month + 1)
@@ -187,24 +187,6 @@ enum SpendingSheet: Identifiable {
         case .edit(let record): "edit-\(record.id)"
         case .breakdown: "breakdown"
         }
-    }
-}
-
-enum SpendingFormat {
-    private static let monthNames = [
-        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-        "November", "December",
-    ]
-
-    static func monthTitle(_ month: DartDateTime) -> String {
-        let f = month.fields
-        return "\(monthNames[(f.month - 1) % 12]) \(f.year)"
-    }
-
-    /// "Sep 28"
-    static func shortDay(_ date: DartDateTime) -> String {
-        let f = date.fields
-        return "\(monthNames[(f.month - 1) % 12].prefix(3)) \(f.day)"
     }
 }
 
@@ -318,7 +300,7 @@ private struct SpendingRow: View {
     var body: some View {
         let isIncome = record.type == .income
         let amount = formatter.formatSigned(isIncome ? record.amount : -record.amount, plusForPositive: true)
-        let day = SpendingFormat.shortDay(record.date)
+        let day = DartDateFormat.MMMd(record.date)
         HStack(spacing: 12) {
             CategoryIcon(info: info)
             VStack(alignment: .leading, spacing: 2) {
