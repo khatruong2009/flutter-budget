@@ -4,8 +4,6 @@ import SwiftUI
 /// Spending tab (UI_SPEC "Spending").
 struct SpendingView: View {
     @Environment(AppModel.self) private var model
-    /// View state only; nil follows the current month (not persisted, like Flutter).
-    @State private var chosenMonth: DartDateTime?
     @State private var sheet: SpendingSheet?
     @State private var pendingDelete: TransactionRecord?
 
@@ -67,7 +65,7 @@ struct SpendingView: View {
     @ViewBuilder
     private func content(_ data: FinancialData) -> some View {
         let calendar = model.calendar
-        let month = chosenMonth ?? calendar.month(of: model.now)
+        let month = model.selectedMonth
         let totals = model.ledger.summary(forMonth: month)
         let rows = model.ledger.newestFirst(inMonth: month).map(\.record)
         let formatter = model.moneyFormatter
@@ -147,14 +145,14 @@ struct SpendingView: View {
         let f = current.fields
         return HStack {
             Button {
-                chosenMonth = calendar.date(f.year, f.month - 1)
+                model.selectMonth(calendar.date(f.year, f.month - 1))
             } label: {
                 Image(systemName: "chevron.left").padding(8)
             }
             .accessibilityLabel("Previous month")
             Spacer()
             Menu {
-                Picker("Month", selection: Binding(get: { current }, set: { chosenMonth = $0 })) {
+                Picker("Month", selection: Binding(get: { current }, set: { model.selectMonth($0) })) {
                     ForEach(months, id: \.self) { Text(DartDateFormat.yMMMM($0)).tag($0) }
                 }
             } label: {
@@ -166,7 +164,7 @@ struct SpendingView: View {
             .accessibilityLabel("Month, \(DartDateFormat.yMMMM(current))")
             Spacer()
             Button {
-                chosenMonth = calendar.date(f.year, f.month + 1)
+                model.selectMonth(calendar.date(f.year, f.month + 1))
             } label: {
                 Image(systemName: "chevron.right").padding(8)
             }

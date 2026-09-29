@@ -12,6 +12,7 @@
 		0BDCBA1F7A98D49F747333A5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30909C3F10B6B69B9FE7DE2C /* MainView.swift */; };
 		25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE53DE5AD70779A34E32BD53 /* AppModel.swift */; };
 		281973279A82457BDE68EAD0 /* BudgieCore in Frameworks */ = {isa = PBXBuildFile; productRef = B54562B75CAA02C6A251ACA7 /* BudgieCore */; };
+		4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */; };
 		4304245839AF010DA282B048 /* RecurringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF71D235C2D853C59C3B393 /* RecurringView.swift */; };
 		4A4CECF3184C530EAD660520 /* SpendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B00317C27AB7F1D24A6577 /* SpendingView.swift */; };
 		5416B7A70F85D0A149C0BA4C /* BudgetWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B580B965259798CC484798A5 /* BudgetWidgetsBundle.swift */; };
@@ -77,6 +78,7 @@
 /* Begin PBXFileReference section */
 		0A12631956871BA18AFA9044 /* Budgie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Budgie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD33E49D26968C2B1B81588 /* BudgieCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BudgieCore; path = BudgieCore; sourceTree = SOURCE_ROOT; };
+		16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonthTests.swift; sourceTree = "<group>"; };
 		16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		30909C3F10B6B69B9FE7DE2C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		31BFEBF0FCFDE676131B233F /* BudgetWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BudgetWidgets.entitlements; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
+				16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */,
 			);
 			path = BudgieAppTests;
 			sourceTree = "<group>";
@@ -474,6 +477,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
+				4081954DA097ACE32C29ED38 /* SelectedMonthTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

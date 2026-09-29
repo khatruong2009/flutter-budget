@@ -56,6 +56,13 @@ final class AppModel {
     /// Bumped whenever `ledger` is replaced; views observe this.
     private(set) var ledgerRevision = 0
     private var ledgerTask: Task<Void, Never>?
+    /// The month Home, Flow and Insights show (Flutter
+    /// `TransactionModel.selectedMonth`): shared, starts at the current
+    /// month, not persisted.
+    private(set) var selectedMonth: DartDateTime = {
+        let calendar = DartCalendar(timeZone: .autoupdatingCurrent)
+        return calendar.month(of: calendar.now())
+    }()
 
     let calendar = DartCalendar(timeZone: .autoupdatingCurrent)
     private let protectedData: ProtectedDataMonitor
@@ -78,6 +85,11 @@ final class AppModel {
     }
 
     var now: DartDateTime { calendar.now() }
+
+    /// Dart `selectMonth`: normalised to `DateTime(year, month)`.
+    func selectMonth(_ month: DartDateTime) {
+        selectedMonth = calendar.month(of: month)
+    }
 
     private func newID() -> String { UUID().uuidString.lowercased() }
 
