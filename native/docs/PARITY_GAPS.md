@@ -118,6 +118,16 @@ UPGRADE_TEST_RESULTS.md).
 - Transaction form: "Make this recurring" turns the same sheet into the
   recurring form for the form's type (Flutter pops the dialog and opens a
   new one); as in Flutter nothing is carried over and an edit is discarded.
+- Budget limit sheet (D6): the field prefix is the base currency's symbol
+  (Flutter hard-codes "$").
+- Budget limit sheet (D6): the limit parses with the number format's
+  separators ("1.500,00" is 1500 under de_DE; Flutter strips `[^0-9.]` and
+  reads 1.5). A lone grouping separator not followed by three digits is
+  read as the decimal key of a keyboard in another locale ("12,5" is 12.5
+  under en_US; Flutter reads 125). Only digits and separators are accepted:
+  Flutter saved "-5" as 5 and "1e3" as 13; Swift rejects both.
+- Budget limit field: filled with the chip-surface token (Flutter's theme
+  fill is #F9FAFB light / #15151F dark; dark is identical).
 
 ## Known MVP limitations
 
