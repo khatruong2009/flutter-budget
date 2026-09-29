@@ -92,7 +92,7 @@ struct RollingAmount: View {
     @State private var rowWidth: CGFloat?
 
     var body: some View {
-        let rowHeight = fontSize * TextSpec.hero.height
+        let rowHeight = TextSpec.hero.lineHeight(scaledSize: fontSize)
         let skeleton = Self.skeleton(of: text)
         let animation: Animation? = reduceMotion ? nil : Motion.easeInOut(0.9)
         let measured = natural.width > 0 && available > 0

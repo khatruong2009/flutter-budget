@@ -767,7 +767,7 @@ private struct PickerSheet: View {
     /// (12 + eyebrow + 8) and 56pt rows stand in, so the sheet opens at its
     /// final height.
     private var detent: PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 12 + 11 * 1.2 + 8
+        let header = headerHeight > 0 ? headerHeight : 12 + 13 + 8
         let rows = listHeight > 0 ? listHeight : CGFloat(options.count) * 56
         let natural = BudgetSheetLayout.handleHeight + header + min(rows, maxListHeight ?? .infinity) + 8
         return .height(min(natural, BudgetSheetLayout.screenHeight * 9 / 16))

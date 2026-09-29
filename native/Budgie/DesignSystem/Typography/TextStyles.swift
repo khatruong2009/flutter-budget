@@ -7,7 +7,8 @@ struct TextSpec: Sendable {
     let face: BudgieFont
     let size: CGFloat
     var tracking: CGFloat = 0
-    /// Flutter `height`. Both faces' natural line height is 1.2 x size.
+    /// Flutter `height`: every line box is `round(size * height)` (see
+    /// `textStyle`). Both faces' natural line height is 1.2 x size.
     var height: CGFloat = 1.2
     var tabular = false
     var uppercase = false
@@ -73,17 +74,47 @@ extension TextSpec {
 
 extension View {
     /// Applies a Flutter text style: face, Dynamic Type size, tracking,
-    /// tabular figures, and Flutter's line height. Heights above the faces'
-    /// natural 1.2 add line spacing; the hero styles (1.0-1.1, single line)
-    /// trim the frame to `size * height` as Flutter lays them out.
+    /// tabular figures, and the line box Flutter gives it in the app.
+    ///
+    /// SkParagraph makes every line `round(size * height)` points tall
+    /// (rounded per line, to whole points). The app's styles inherit
+    /// `leadingDistribution: even` from Material's `Typography` (no style
+    /// sets it), so the difference from the face's natural line height
+    /// (1.2 x size) is split half above and half below the glyphs, the
+    /// first line's ascent and last line's descent included, and the
+    /// rounding lands below. So one line is `round(size * height)` tall and
+    /// N lines N times that, with the baselines where Flutter draws them.
+    /// Heights under 1.2 (the hero styles, single line) trim the frame the
+    /// same way.
     func textStyle(_ spec: TextSpec) -> some View {
         modifier(TextStyleModifier(spec: spec))
     }
 }
 
+extension TextSpec {
+    /// Flutter's line box at a (Dynamic Type) size: `size * height`,
+    /// rounded to whole points as SkParagraph does.
+    func lineHeight(scaledSize: CGFloat) -> CGFloat {
+        (scaledSize * height).rounded()
+    }
+}
+
+extension BudgieFont {
+    /// The face's natural line height (ascender + descender + line gap) as a
+    /// multiple of its size: 1.2 for both Gabarito and Spline Sans Mono.
+    fileprivate var naturalLineHeight: CGFloat { Self.measured[self] ?? 1.2 }
+
+    private static let measured: [BudgieFont: CGFloat] = Dictionary(
+        uniqueKeysWithValues: allCases.compactMap { face in
+            guard let font = UIFont(name: face.postScriptName, size: 100) else { return nil }
+            return (face, (font.ascender - font.descender + font.leading) / 100)
+        })
+}
+
 private struct TextStyleModifier: ViewModifier {
     let spec: TextSpec
     @ScaledMetric private var scaledSize: CGFloat
+    @Environment(\.displayScale) private var displayScale
 
     init(spec: TextSpec) {
         self.spec = spec
@@ -91,13 +122,20 @@ private struct TextStyleModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        let natural: CGFloat = 1.2
+        let natural = scaledSize * spec.face.naturalLineHeight
+        let line = spec.lineHeight(scaledSize: scaledSize)
+        // Half of the unrounded leading goes above the first line.
+        let top = (scaledSize * spec.height - natural) / 2
+        // SwiftUI rounds a Text's height up to the pixel grid; take that
+        // back out of the bottom so the frame is exactly Flutter's.
+        let pixelRounding = (natural * displayScale - 0.001).rounded(.up) / displayScale - natural
         let font = Font.custom(spec.face.postScriptName, fixedSize: scaledSize)
         content
             .font(spec.tabular ? font.monospacedDigit() : font)
             .tracking(spec.tracking)
             .textCase(spec.uppercase ? .uppercase : nil)
-            .lineSpacing(max(0, scaledSize * (spec.height - natural)))
-            .padding(.vertical, min(0, scaledSize * (spec.height - natural) / 2))
+            .lineSpacing(max(0, line - natural))
+            .padding(.top, top)
+            .padding(.bottom, line - natural - top - max(0, pixelRounding))
     }
 }

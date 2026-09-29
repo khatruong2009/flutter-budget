@@ -72,7 +72,7 @@ struct SpendMonthSheet: View {
     /// title, 8, list, 8), so the sheet opens at its final height instead of
     /// resizing once measured.
     private var estimatedHeight: CGFloat {
-        10 + 4 + 16 + 20 * 1.2 + 8 + min(CGFloat(months.count) * 56, 320) + 8
+        10 + 4 + 16 + 24 + 8 + min(CGFloat(months.count) * 56, 320) + 8
     }
 
     /// A Material ListTile: 56pt minimum, 16pt insets, 20pt check.

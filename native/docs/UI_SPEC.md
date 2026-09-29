@@ -22,6 +22,15 @@ pixel copy. Tokens live in `Budgie/Views/Theme.swift`:
 Monospaced digits (`.monospacedDigit()`) for amounts. Respect Dynamic Type
 and VoiceOver labels on every control. No third-party packages.
 
+Text styles (`TextSpec` + `.textStyle`, `DesignSystem/Typography`) reproduce
+Flutter's line box as the app renders it: every line is
+`round(size * height)` points (SkParagraph rounds each line), and the
+leading over the faces' natural 1.2 x size is split evenly above and below
+(Material's `Typography` sets `leadingDistribution: even`, which the
+`AppTypography` styles inherit), so one line of `bodyMedium` (15 / 1.5) is
+23pt and a breakdown row 35pt. The modifier also removes SwiftUI's
+round-up of a Text's height to the pixel grid.
+
 ## Shell
 
 Native `TabView` (Liquid Glass on iOS 26+, accent tint) with five tabs, each

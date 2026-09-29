@@ -72,12 +72,13 @@ struct SafeToSpendSheet: View {
     /// The content's height at the default text size, so the sheet opens at
     /// its final height instead of resizing once measured: 8, the title, 6,
     /// the blurb (two lines when over), 20, six rows, the divider, the total,
-    /// 8, the footer (two lines when over with days left), 24. One line is
-    /// 1.2 x the size; `height` adds the rest between lines.
+    /// 8, the footer (two lines when over with days left), 24. Every line
+    /// is `round(size * height)` (`textStyle`): title 34, body 23, total 26,
+    /// footer 18.
     private var estimatedHeight: CGFloat {
-        let blurb: CGFloat = breakdown.isOverCommitted ? 2 * 15 * 1.2 + 15 * 0.3 : 15 * 1.2
-        let footer: CGFloat = breakdown.isOverCommitted && breakdown.daysRemaining > 0 ? 2 * 13 * 1.2 + 13 * 0.2 : 13 * 1.2
-        return 8 + 28 * 1.2 + 6 + blurb + 20 + 6 * (12 + 15 * 1.2) + 28 + (12 + 17 * 1.2) + 8 + footer + 24
+        let blurbLines: CGFloat = breakdown.isOverCommitted ? 2 : 1
+        let footerLines: CGFloat = breakdown.isOverCommitted && breakdown.daysRemaining > 0 ? 2 : 1
+        return 8 + 34 + 6 + blurbLines * 23 + 20 + 6 * (12 + 23) + 28 + (12 + 26) + 8 + footerLines * 18 + 24
     }
 
     /// `_breakdownFooter` (spending_page.dart:350-360).

@@ -82,7 +82,7 @@ struct BudgetLimitSheet: View {
     /// its final height instead of resizing once measured: 16, the 40pt
     /// header tile, 24, the 56pt field, 6, the helper, 24, the 48pt buttons,
     /// 16.
-    private static let estimatedHeight: CGFloat = 16 + 40 + 24 + 56 + 6 + 12 * 1.2 + 24 + 48 + 16
+    private static let estimatedHeight: CGFloat = 16 + 40 + 24 + 56 + 6 + 15 + 24 + 48 + 16
 
     /// The room left below the content, trimmed off the detent. With the
     /// keyboard up the system keeps the sheet's home-indicator allowance

@@ -282,7 +282,7 @@ private struct BudgetPickerSheet: View {
     /// tiles (12 + the 40pt tile + 12) inside the list's 4 / 12 stand in, so
     /// the sheet opens at its final height.
     private func detent(rows: Int) -> PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 12 + 20 * 1.2 + 8 + 12 * 1.2 + 8
+        let header = headerHeight > 0 ? headerHeight : 12 + 24 + 8 + 15 + 8
         let list = listHeight > 0 ? listHeight : 4 + CGFloat(rows) * 64 + 12
         return .height(min(BudgetSheetLayout.handleHeight + header + list, BudgetSheetLayout.screenHeight * 0.75))
     }

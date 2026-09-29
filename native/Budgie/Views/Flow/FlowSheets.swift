@@ -28,7 +28,7 @@ struct RangeSheet: View {
         .padding(.bottom, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
         // 12 + the eyebrow line + 8, the tiles, 12.
-        .modifier(FlowSheetFit(estimate: 12 + 11 * 1.2 + 8 + CGFloat(CashFlowMath.rangeOptions.count) * 56 + 12))
+        .modifier(FlowSheetFit(estimate: 12 + 13 + 8 + CGFloat(CashFlowMath.rangeOptions.count) * 56 + 12))
     }
 }
 
@@ -104,7 +104,7 @@ struct MonthDetailSheet: View {
         .accessibilityIdentifier("flow.monthDetail")
         // 16, the 44pt tile, 20, the tiles (14 + 16 + 6 + amount + 14), 12,
         // the net row (14 + chipAmount + 14), 24.
-        .modifier(FlowSheetFit(estimate: 16 + 44 + 20 + (14 + 16 + 6 + 16 * 1.2 + 14) + 12 + (14 + 24 * 1.15 + 14) + 24))
+        .modifier(FlowSheetFit(estimate: 16 + 44 + 20 + (14 + 16 + 6 + 19 + 14) + 12 + (14 + 28 + 14) + 24))
     }
 
     /// Net row: padding 16 x 14, radius 16, net colour at 10% with a 30%

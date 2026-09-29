@@ -156,16 +156,12 @@ struct MonthPill: View {
 
     /// `rowTitle` with fontSize 14.
     private static let labelText = TextSpec(face: .gabaritoSemiBold, size: 14, height: 1.25, relativeTo: .subheadline)
-    /// Flutter's 1.25 line box is 0.7pt taller than the face's natural 1.2
-    /// one, which a single line does not get from `textStyle`.
-    @ScaledMetric(relativeTo: .subheadline) private var halfLeading: CGFloat = 14 * 0.05 / 2
 
     var body: some View {
         let pill = HStack(spacing: 6) {
             Text(label)
                 .textStyle(Self.labelText)
                 .foregroundStyle(dimmed ? BudgieColor.textSecondary : BudgieColor.textPrimary)
-                .padding(.vertical, halfLeading)
             // Material `expand_more_rounded` 16 / w500: a small chevron in a 16pt box.
             Image(systemName: "chevron.down")
                 .font(.system(size: 9, weight: .semibold))
