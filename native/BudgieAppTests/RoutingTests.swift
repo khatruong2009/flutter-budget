@@ -1,3 +1,4 @@
+import UIKit
 import XCTest
 
 @testable import Runner
@@ -40,5 +41,132 @@ final class RouteGateTests: XCTestCase {
         model.markUnlocked()
         model.relock()
         XCTAssertEqual(model.pendingAdd, .income)
+    }
+}
+
+/// `AddFormPresenter`: a route opens on top of whatever is presented, is
+/// taken only when it can be presented, and never blocks later routes.
+@MainActor
+final class AddFormPresenterTests: XCTestCase {
+    private var window: UIWindow!
+
+    override func setUp() async throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        window = UIWindow(windowScene: scene)
+    }
+
+    override func tearDown() async throws {
+        window.rootViewController?.dismiss(animated: false)
+        window.isHidden = true
+        window = nil
+    }
+
+    /// Shows `root` in the test window.
+    private func show(_ root: UIViewController) {
+        window.rootViewController = root
+        window.isHidden = false
+    }
+
+    /// Runs the main loop until `condition` holds (UIKit finishes even an
+    /// unanimated presentation on a later turn of the loop).
+    private func settle(until condition: () -> Bool) {
+        let deadline = Date().addingTimeInterval(2)
+        while !condition() && Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+        }
+    }
+
+    /// Stands in for a controller mid-dismissal or mid-presentation.
+    private final class Transitioning: UIViewController {
+        var dismissing = false
+        var presenting = false
+        override var isBeingDismissed: Bool { dismissing }
+        override var isBeingPresented: Bool { presenting }
+    }
+
+    /// Refuses every presentation, as UIKit does from a busy controller.
+    private final class Refusing: UIViewController {
+        override func present(_ controller: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {}
+    }
+
+    /// Reports `shown` as presented without presenting it.
+    private final class Showing: UIViewController {
+        var shown: UIViewController?
+        override var presentedViewController: UIViewController? { shown }
+    }
+
+    func testPresentsFromTheTopmostPresentedController() {
+        let root = UIViewController(), sheet = UIViewController(), picker = UIViewController()
+        XCTAssertNil(AddFormPresenter.presenter(above: nil))
+        XCTAssertNil(AddFormPresenter.presenter(above: root), "not in a window yet")
+        show(root)
+        XCTAssertIdentical(AddFormPresenter.presenter(above: root), root, "nothing presented")
+        root.present(sheet, animated: false)
+        settle { AddFormPresenter.presenter(above: root) != nil }
+        sheet.present(picker, animated: false)
+        settle { AddFormPresenter.presenter(above: root) === picker }
+        XCTAssertIdentical(AddFormPresenter.presenter(above: root), picker, "over a sheet over a sheet")
+    }
+
+    func testWaitsForATransitionAndKeepsTheRoute() {
+        let root = UIViewController(), sheet = Transitioning()
+        show(root)
+        root.present(sheet, animated: false)
+        settle { AddFormPresenter.presenter(above: root) != nil }
+        var pending: AddRoute? = .income
+        let take = { () -> AddRoute? in
+            defer { pending = nil }
+            return pending
+        }
+
+        sheet.dismissing = true
+        XCTAssertNil(AddFormPresenter.presenter(above: root), "the top is being dismissed")
+        XCTAssertNil(AddFormPresenter.open(above: root, take: take) { _ in UIViewController() })
+        XCTAssertEqual(pending, .income, "not taken while nothing can present it")
+        sheet.dismissing = false
+        sheet.presenting = true
+        XCTAssertNil(AddFormPresenter.open(above: root, take: take) { _ in UIViewController() })
+        XCTAssertEqual(pending, .income, "not taken mid-presentation either")
+
+        // Once the transition is over it opens, over the sheet.
+        sheet.presenting = false
+        let form = UIViewController()
+        XCTAssertNil(AddFormPresenter.open(above: root, take: take) { _ in form })
+        XCTAssertNil(pending, "taken")
+        XCTAssertIdentical(form.presentingViewController, sheet, "presented over the sheet")
+    }
+
+    func testEveryLaterRouteOpensToo() {
+        let root = UIViewController()
+        show(root)
+        var opened: [UIViewController] = []
+        for route in [AddRoute.expense, .income, .expense] {
+            settle { AddFormPresenter.presenter(above: root) != nil }
+            let form = UIViewController()
+            XCTAssertNil(AddFormPresenter.open(above: root, take: { route }) { _ in form })
+            XCTAssertNotNil(form.presentingViewController, "\(route) opened")
+            opened.append(form)
+        }
+        XCTAssertIdentical(opened[1].presentingViewController, opened[0], "stacked over the open form")
+        XCTAssertIdentical(opened[2].presentingViewController, opened[1])
+    }
+
+    /// The bug: a refused presentation lost the route. It comes back for
+    /// the caller to queue again.
+    func testARefusedPresentationHandsTheRouteBack() {
+        show(Refusing())
+        let refused = AddFormPresenter.open(above: window.rootViewController, take: { .income }) { _ in UIViewController() }
+        XCTAssertEqual(refused, .income)
+    }
+
+    /// A host with no form over it is about to show its form or to dismiss
+    /// itself (taking anything presented from it along): wait for it.
+    func testWaitsWhileAnAddFormHostHasNoFormUp() {
+        let root = Showing()
+        show(root)
+        root.shown = UIViewController()
+        XCTAssertIdentical(AddFormPresenter.presenter(above: root), root.shown)
+        root.shown = AddFormHost(route: .income, model: AppModel())
+        XCTAssertNil(AddFormPresenter.presenter(above: root))
     }
 }

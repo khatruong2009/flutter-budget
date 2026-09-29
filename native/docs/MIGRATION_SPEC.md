@@ -452,7 +452,10 @@ Types `action_add_expense`, `action_add_income` registered; `action_voice_add`
 is not re-registered, but if an old dynamic item is tapped before the first
 Swift launch replaces the list, it opens add-expense. Deep links `add-income`,
 `add-expense`, `voice-add` (+ `add_income`, `add_expense`, `voice_add`); all
-others ignored. Actions arriving before the gate opens are queued.
+others ignored. Actions arriving before the gate opens are queued. Once it is
+open the form opens on top of whatever is presented, as Flutter's
+`showTransactionForm` on the root navigator does (UI_SPEC "Shell",
+`AddFormPresenter`).
 
 ### 11.3 Face ID lock
 

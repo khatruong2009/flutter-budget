@@ -4,12 +4,11 @@ import SwiftUI
 /// The shell (D2): the native tab bar with Home, Worth, Goals, Spend and
 /// Flow, each tab in its own navigation stack (Liquid Glass on iOS 26+).
 /// Settings is pushed from Home's gear. Also hosts the unsaved-changes
-/// banner, the toasts, the add sheet opened by quick actions / widget /
-/// deep links, and the app lock.
+/// banner, the toasts and the app lock, and opens the add form for quick
+/// actions / widget / deep links (`AddFormPresenter`).
 struct MainView: View {
     @Environment(AppModel.self) private var model
     @State private var tab: Tab = .home
-    @State private var addRoute: AddRoute?
 
     enum Tab: Hashable { case home, worth, goals, spend, flow }
 
@@ -36,20 +35,13 @@ struct MainView: View {
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.hasUnsavedChanges { UnsavedChangesBanner() }
         }
-        .sheet(item: $addRoute) { route in
-            TransactionFormView(mode: .add(route == .income ? .income : .expense))
-        }
-        // Opens over the current tab (Flutter), once unlocked (D14, 1A.8).
-        .onChange(of: model.pendingAdd, initial: true) { _, _ in openPendingAdd() }
-        .onChange(of: model.canOpenRoutes) { _, _ in openPendingAdd() }
+        // Opens over the current tab and anything presented on it
+        // (Flutter), once unlocked (D14, 1A.8).
+        .onChange(of: model.pendingAdd, initial: true) { _, _ in AddFormPresenter.openPendingAdd(model) }
+        .onChange(of: model.canOpenRoutes) { _, _ in AddFormPresenter.openPendingAdd(model) }
         // Above the tab bar (49pt).
         .toastHost(bottomInset: 49)
         .appLock()
-    }
-
-    private func openPendingAdd() {
-        guard addRoute == nil, let route = model.takePendingAdd() else { return }
-        addRoute = route
     }
 }
 

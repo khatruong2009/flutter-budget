@@ -48,7 +48,19 @@ above the tabs whenever `model.hasUnsavedChanges`; it never hides data.
 `model.pendingAdd` (from quick actions, widget, deep links) opens the add
 sheet preset to income or expense over the current tab, once the data is
 ready, App Lock is passed and onboarding is done (`takePendingAdd()`); until
-then it stays queued. Toasts float above the tab bar (`toastHost`).
+then it stays queued. As Flutter pushes the form on the root navigator, it
+opens on top of whatever is presented (a Home sheet, an edit form or its
+date picker, a Goals or Worth dialog, an alert) and leaves that untouched
+underneath; a route arriving while a form is open stacks another. One
+presenter, `AddFormPresenter`, handles every route: from the key window's
+topmost presented controller it presents, unanimated, a transparent
+`.overFullScreen` host whose SwiftUI root shows the form as a normal
+`.sheet` and dismisses itself when the sheet goes. A route is taken only
+when there is a controller to present from; while one is mid-transition it
+stays queued and is retried every 150ms, so no route is lost or blocks the
+next. The screens beneath are hidden from VoiceOver while the host is up.
+Toasts float above the tab bar (`toastHost`), so a toast posted by a form
+opened over a sheet is under that sheet.
 
 ## Home (spec full-app/02; Flutter `spending_page.dart`)
 
