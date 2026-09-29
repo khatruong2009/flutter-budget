@@ -18,7 +18,10 @@ struct BudgetLimitSheet: View {
     private let prefill: String
     @State private var saving = false
     @State private var contentHeight: CGFloat = 0
-    @State private var bottomInset: CGFloat = 0
+    /// The space below the handle with nothing trimmed (the measured height
+    /// plus the slack it was measured with).
+    @State private var untrimmedHeight: CGFloat = 0
+    @State private var keyboardSlack: CGFloat = 0
     @FocusState private var focused: Bool
 
     private static let helper = "Set a positive amount for this category."
@@ -57,15 +60,40 @@ struct BudgetLimitSheet: View {
         // 16 + the chrome's 20pt handle inset = Flutter's 16 + 4 + 16.
         .padding(16)
         .fixedSize(horizontal: false, vertical: true)
-        .onGeometryChangeCompat { contentHeight = $0.height }
+        .onGeometryChangeCompat {
+            contentHeight = $0.height
+            updateKeyboardSlack()
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .onBudgetSheetBottomInset { bottomInset = $0 }
+        .onGeometryChangeCompat {
+            untrimmedHeight = $0.height + keyboardSlack
+            updateKeyboardSlack()
+        }
         .budgieSheetChrome()
         .presentationDetents([
-            contentHeight > 0 ? .height(BudgetSheetLayout.handleHeight + contentHeight + bottomInset) : .medium
+            .height(
+                BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : Self.estimatedHeight) - keyboardSlack)
         ])
         .interactiveDismissDisabled(saving)
         .onAppear { focused = true }
+    }
+
+    /// The content's height at the default text size, so the sheet opens at
+    /// its final height instead of resizing once measured: 16, the 40pt
+    /// header tile, 24, the 56pt field, 6, the helper, 24, the 48pt buttons,
+    /// 16.
+    private static let estimatedHeight: CGFloat = 16 + 40 + 24 + 56 + 6 + 12 * 1.2 + 24 + 48 + 16
+
+    /// The room left below the content, trimmed off the detent. With the
+    /// keyboard up the system keeps the sheet's home-indicator allowance
+    /// above the keyboard as empty space; trimming it leaves the content's
+    /// own 16pt bottom padding as the gap, as in Flutter. Without the
+    /// keyboard the content already reaches into that allowance, so nothing
+    /// is trimmed.
+    private func updateKeyboardSlack() {
+        guard contentHeight > 0, untrimmedHeight > 0 else { return }
+        let slack = max(0, untrimmedHeight - contentHeight)
+        if abs(slack - keyboardSlack) >= 0.5 { keyboardSlack = slack }
     }
 
     private var header: some View {
@@ -90,7 +118,9 @@ struct BudgetLimitSheet: View {
 
     /// The outlined Material field: floating "Limit" label notched into the
     /// border (accent and 2pt while focused), currency prefix, "0.00" hint,
-    /// helper text below.
+    /// helper text below. The fill behind the text field focuses it when the
+    /// padding, prefix or label is tapped; the text field keeps its own
+    /// touches (caret, selection menu).
     private var field: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
         return VStack(alignment: .leading, spacing: 6) {
@@ -115,10 +145,16 @@ struct BudgetLimitSheet: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .frame(minHeight: 56)
-            .background(BudgieColor.chipSurface, in: shape)
+            .background(
+                shape.fill(BudgieColor.chipSurface)
+                    .contentShape(shape)
+                    .onTapGesture { focused = true }
+                    .accessibilityHidden(true)
+            )
             .overlay(
                 shape.strokeBorder(
-                    focused ? BudgieColor.accent : BudgieColor.textTertiary, lineWidth: focused ? 2 : 1))
+                    focused ? BudgieColor.accent : BudgieColor.textTertiary, lineWidth: focused ? 2 : 1)
+                    .allowsHitTesting(false))
             .overlay(alignment: .topLeading) {
                 Text("Limit")
                     .textStyle(.rowSubtitle)
@@ -131,12 +167,12 @@ struct BudgetLimitSheet: View {
                                 .init(color: BudgieColor.chipSurface, location: 0.5),
                             ], startPoint: .top, endPoint: .bottom)
                     )
+                    .contentShape(Rectangle())
+                    .onTapGesture { focused = true }
                     .padding(.leading, 12)
                     .alignmentGuide(.top) { $0.height / 2 }
                     .accessibilityHidden(true)
             }
-            .contentShape(Rectangle())
-            .onTapGesture { focused = true }
             Text(Self.helper)
                 .textStyle(.rowSubtitle)
                 .foregroundStyle(BudgieColor.textSecondary)

@@ -391,11 +391,10 @@ private struct TransactionRow: View {
             .contentShape(card)
         }
         .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
+        // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(
             "\(record.description), \(isIncome ? "income" : "expense") \(amount), category \(record.category), on \(DartDateFormat.yMMMMd(record.date))"
         )
         .accessibilityHint("Double tap to edit, swipe left to delete")
-        .accessibilityAddTraits(.isButton)
     }
 }

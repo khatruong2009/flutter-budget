@@ -245,6 +245,11 @@ UPGRADE_TEST_RESULTS.md).
   dark, ink 6% light; Flutter's light value is black 5%).
 - Spend month sheet: a native sheet (system scrim, drag to dismiss)
   sized to its content, instead of Material's bottom sheet.
+- Home sheets (safe-to-spend breakdown, EDIT / Add pickers, limit sheet):
+  native sheets sized to their content with the system's bottom allowance
+  (floating and inset on iOS 26) instead of Flutter's `SafeArea`; the
+  pickers cap at 75% of the screen, and the limit sheet sits on the
+  keyboard with Flutter's 16pt gap under Save.
 - Flow tab: the chart range and a pushed SEE ALL page survive switching
   tabs (the native `TabView` keeps each tab's state); Flutter's `PageView`
   disposes the tab, so its range resets to 6 months on every tab switch.

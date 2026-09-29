@@ -95,7 +95,10 @@ final class TabsUITests: XCTestCase {
         XCTAssertEqual(rows.count, 1)
         XCTAssertTrue(match.label.contains(Self.description))
 
-        // Swipe to delete, confirmed in the alert.
+        // Swipe to delete, confirmed in the alert. The first drag on the
+        // page dismisses the search keyboard, so put it away first.
+        if app.keyboards.firstMatch.exists { search.typeText("\n") }
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 3))
         match.swipeLeft()
         let alert = app.alerts["Delete Transaction"]
         XCTAssertTrue(alert.waitForExistence(timeout: 5))

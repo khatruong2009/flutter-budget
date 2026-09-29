@@ -220,8 +220,9 @@ private struct BudgetChevron: View {
 
 /// The EDIT and Add a budget pickers (`_showBudgetCategorySheet`,
 /// spending_page.dart:221-312): title, subtitle, then the category tiles
-/// with no dividers. Content-sized up to 75% of the screen height, the
-/// bottom safe inset added outside the cap as in Flutter.
+/// with no dividers. Content-sized up to 75% of the screen height; the
+/// system adds the bottom safe area outside the cap, as Flutter's
+/// `SafeArea` does.
 private struct BudgetPickerSheet: View {
     enum Kind { case edit, add }
 
@@ -234,7 +235,6 @@ private struct BudgetPickerSheet: View {
     @Environment(AppModel.self) private var model
     @State private var headerHeight: CGFloat = 0
     @State private var listHeight: CGFloat = 0
-    @State private var bottomInset: CGFloat = 0
 
     var body: some View {
         let categories = kind == .edit ? overview.budgeted : overview.unbudgeted
@@ -273,15 +273,18 @@ private struct BudgetPickerSheet: View {
             .scrollBounceBehavior(.basedOnSize)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .onBudgetSheetBottomInset { bottomInset = $0 }
         .budgieSheetChrome()
-        .presentationDetents([detent])
+        .presentationDetents([detent(rows: categories.count + (showsAddRow ? 1 : 0))])
     }
 
-    private var detent: PresentationDetent {
-        guard headerHeight > 0 else { return .medium }
-        let natural = BudgetSheetLayout.handleHeight + headerHeight + listHeight
-        return .height(min(natural, BudgetSheetLayout.screenHeight * 0.75) + bottomInset)
+    /// Handle, header and list, at most 75% of the screen. Until measured,
+    /// the default-size header (12 + title + 8 + subtitle + 8) and 64pt
+    /// tiles (12 + the 40pt tile + 12) inside the list's 4 / 12 stand in, so
+    /// the sheet opens at its final height.
+    private func detent(rows: Int) -> PresentationDetent {
+        let header = headerHeight > 0 ? headerHeight : 12 + 20 * 1.2 + 8 + 12 * 1.2 + 8
+        let list = listHeight > 0 ? listHeight : 4 + CGFloat(rows) * 64 + 12
+        return .height(min(BudgetSheetLayout.handleHeight + header + list, BudgetSheetLayout.screenHeight * 0.75))
     }
 
     private var title: String { kind == .edit ? "Edit budgets" : "Add a budget" }
@@ -340,7 +343,9 @@ private struct BudgetCategoryTile: View {
 // MARK: - Sheet sizing
 
 /// Sizes the budget sheets to their content the way Flutter's
-/// `MediaQuery` does: against the full window height.
+/// `MediaQuery` does: against the full window height. A `.height` detent is
+/// the grab handle plus the content: the system accounts for the bottom
+/// safe area (Flutter's `SafeArea`) and the keyboard itself.
 @MainActor
 enum BudgetSheetLayout {
     /// `budgieSheetChrome`'s grab-handle inset: 10 + 4 + 6.
@@ -351,19 +356,5 @@ enum BudgetSheetLayout {
         let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
         let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
         return scene?.keyWindow?.bounds.height ?? scene?.screen.bounds.height ?? 844
-    }
-}
-
-extension View {
-    /// Reports the bottom safe-area inset under a sheet's content: the home
-    /// indicator, or 0 while the sheet sits on the keyboard.
-    func onBudgetSheetBottomInset(_ action: @escaping (CGFloat) -> Void) -> some View {
-        background(
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear { action(proxy.safeAreaInsets.bottom) }
-                    .onChange(of: proxy.safeAreaInsets.bottom) { _, inset in action(inset) }
-            }
-            .ignoresSafeArea(.container, edges: .bottom))
     }
 }

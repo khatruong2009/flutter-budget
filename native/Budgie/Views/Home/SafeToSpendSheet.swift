@@ -4,13 +4,13 @@ import SwiftUI
 /// The breakdown behind Home's safe-to-spend card (`_showSafeToSpendBreakdown`,
 /// spending_page.dart:362-446, 1330-1385): title, blurb, the six signed
 /// rows, a divider, the total and the footer. On the card colour with the
-/// grab handle, sized to its content.
+/// grab handle, sized to its content; the system adds the bottom safe area
+/// (Flutter's `SafeArea`).
 struct SafeToSpendSheet: View {
     let breakdown: SafeToSpendBreakdown
     let formatter: MoneyFormatter
 
     @State private var contentHeight: CGFloat = 0
-    @State private var insets = EdgeInsets()
 
     /// `bodyMedium` w500 / w600 and `bodyLarge` w700 / w800.
     private static let label = TextSpec(face: .gabaritoMedium, size: 15, tracking: -0.2, height: 1.5, relativeTo: .subheadline)
@@ -63,13 +63,21 @@ struct SafeToSpendSheet: View {
             .onGeometryChangeCompat { contentHeight = $0.height }
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(GeometryReader { proxy in
-            Color.clear
-                .onAppear { insets = proxy.safeAreaInsets }
-                .onChange(of: proxy.safeAreaInsets) { _, new in insets = new }
-        })
         .budgieSheetChrome()
-        .presentationDetents(contentHeight > 0 ? [.height(contentHeight + insets.top + insets.bottom)] : [.medium])
+        .presentationDetents([
+            .height(BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : estimatedHeight))
+        ])
+    }
+
+    /// The content's height at the default text size, so the sheet opens at
+    /// its final height instead of resizing once measured: 8, the title, 6,
+    /// the blurb (two lines when over), 20, six rows, the divider, the total,
+    /// 8, the footer (two lines when over with days left), 24. One line is
+    /// 1.2 x the size; `height` adds the rest between lines.
+    private var estimatedHeight: CGFloat {
+        let blurb: CGFloat = breakdown.isOverCommitted ? 2 * 15 * 1.2 + 15 * 0.3 : 15 * 1.2
+        let footer: CGFloat = breakdown.isOverCommitted && breakdown.daysRemaining > 0 ? 2 * 13 * 1.2 + 13 * 0.2 : 13 * 1.2
+        return 8 + 28 * 1.2 + 6 + blurb + 20 + 6 * (12 + 15 * 1.2) + 28 + (12 + 17 * 1.2) + 8 + footer + 24
     }
 
     /// `_breakdownFooter` (spending_page.dart:350-360).
