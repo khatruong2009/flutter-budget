@@ -159,9 +159,11 @@ struct RecurringFormView: View {
 
     private enum Field { case description, amount }
 
-    init(template: RecurringTemplate?) {
+    /// `initialType` is the new template's type (the transaction form's
+    /// "Make this recurring" opens it for the form's type).
+    init(template: RecurringTemplate?, initialType: TransactionType = .expense) {
         self.template = template
-        _type = State(initialValue: template?.type ?? .expense)
+        _type = State(initialValue: template?.type ?? initialType)
         _descriptionText = State(initialValue: template?.description ?? "")
         _amountText = State(initialValue: template.map { Self.amountString($0.amount) } ?? "")
         _category = State(initialValue: template?.category ?? "")

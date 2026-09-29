@@ -13,6 +13,8 @@ struct BudgieField: View {
     var keyboard: UIKeyboardType = .default
     var capitalization: TextInputAutocapitalization = .sentences
     var error: String? = nil
+    /// Focuses the field when it appears (the transaction form's amount).
+    var autofocus = false
 
     @FocusState private var focused: Bool
 
@@ -40,6 +42,7 @@ struct BudgieField: View {
                     .textInputAutocapitalization(capitalization)
                     .autocorrectionDisabled(keyboard == .decimalPad || keyboard == .numberPad)
                     .focused($focused)
+                    .onAppear { if autofocus { focused = true } }
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 52)

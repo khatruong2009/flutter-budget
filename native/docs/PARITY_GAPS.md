@@ -15,7 +15,7 @@ UPGRADE_TEST_RESULTS.md).
 | Budgets UI (limits, progress, edit) | `categoryBudgetLimits` | Read (safe-to-spend flexible reserve); no UI. |
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
-| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Not shown; tags on existing transactions are kept when edited. |
+| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
 | Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter; no editing UI yet. |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
@@ -89,6 +89,35 @@ UPGRADE_TEST_RESULTS.md).
   succeed). Without a passcode there is nothing to authenticate against.
 - Editing a transaction without touching the amount keeps the stored
   value exactly; the Flutter form re-parses its 2-decimal prefill.
+- Transaction form (D5): a card-styled sheet instead of a centred dialog,
+  with an Expense/Income toggle (Flutter's type is fixed by the entry
+  point) and "Edit Expense/Income" titles when editing (Flutter says "Add").
+- Transaction form: saving blocks swipe-to-dismiss, so a failed write
+  always shows its toast (a barrier tap in Flutter drops the snackbar).
+- Transaction form: NaN, Infinity and overflowing amounts ("1e400") are
+  rejected with "Please enter a valid number" (Flutter accepts them).
+- Transaction form: the device's decimal separator is accepted ("12,5" in
+  a comma locale, as the MVP did); Flutter's `double.tryParse` rejects it.
+  Rule suggestions parse the amount the same way.
+- Transaction form: clearing the description on an edit saves
+  "Transaction" (Flutter keeps the old description), and the non-blocking
+  "Description is recommended" warning is dropped (Flutter shows it only
+  while the save is in flight).
+- Transaction form: when a rule changes the category, the wheel scrolls to
+  it (Flutter's wheel stays on the old row while the saved value changes).
+- Transaction form: the date picker's range stretches to include a stored
+  date before 2000 or in the future (Flutter's `showDatePicker` asserts).
+  The picker is a graphical calendar sheet with Cancel / OK.
+- Transaction form: the amount icon is the base currency's symbol (Flutter
+  always shows `$`); the wheel tiles use the danger/income tokens (Flutter
+  uses fixed #EF4444/#10B981 in both themes); tags are redesign pill chips
+  (accent tint with a checkmark when selected) instead of Material
+  FilterChips.
+- Transaction form: an edit offers "Delete Transaction" with a
+  confirmation (Flutter deletes only by swiping the row).
+- Transaction form: "Make this recurring" turns the same sheet into the
+  recurring form for the form's type (Flutter pops the dialog and opens a
+  new one); as in Flutter nothing is carried over and an edit is discarded.
 
 ## Known MVP limitations
 

@@ -1,13 +1,18 @@
 import BudgieCore
 import SwiftUI
 
-/// Add / edit sheet (UI_SPEC "Transaction form").
+/// Add / edit sheet (`transaction_form.dart`, spec 02 section 1.8), as a
+/// card-styled sheet with an Expense/Income toggle (D5).
 ///
 /// Date semantics follow the Flutter form: a new transaction is stamped with
 /// `model.now` unless the user picks a day, which is stored as that day at
 /// midnight (`calendar.date(y, m, d)`); an edit keeps the stored value unless
 /// a day is picked. The `DatePicker` only ever carries a calendar day; stored
 /// values stay `DartDateTime`.
+///
+/// "Make this recurring" swaps this sheet's content for the recurring form
+/// in place (Flutter pops the dialog and opens the recurring one), so every
+/// presenter gets it without a second, stacked sheet.
 struct TransactionFormView: View {
     enum Mode: Hashable {
         case add(TransactionType)
@@ -26,13 +31,20 @@ struct TransactionFormView: View {
     @State private var amountText: String
     @State private var descriptionText: String
     @State private var category: String
-    @State private var pickedDay: Date
-    @State private var dayIsPicked = false
+    /// Tag ids in insertion order; an edit keeps ids whose tag is gone.
+    @State private var selectedTagIds: [String]
+    /// The picked day at midnight; nil keeps now (add) or the stored date.
+    @State private var pickedDate: DartDateTime?
+    @State private var amountError: String?
     @State private var options: [TransactionType: [String]] = [:]
     @State private var infos: [TransactionType: [String: CategoryInfo]] = [:]
+    @State private var loaded = false
     @State private var saving = false
     @State private var confirmingDelete = false
-    @FocusState private var amountFocused: Bool
+    @State private var deleteConfirms = 0
+    @State private var wheelTicks = 0
+    @State private var showingDatePicker = false
+    @State private var showingRecurring = false
 
     init(mode: Mode, initialCategory: String? = nil) {
         self.mode = mode
@@ -43,15 +55,13 @@ struct TransactionFormView: View {
             _amountText = State(initialValue: "")
             _descriptionText = State(initialValue: "")
             _category = State(initialValue: "")
-            _pickedDay = State(initialValue: Date())
+            _selectedTagIds = State(initialValue: [])
         case .edit(let record):
             _type = State(initialValue: record.type)
             _amountText = State(initialValue: DartFixed.toStringAsFixed(record.amount, 2))
             _descriptionText = State(initialValue: record.description)
             _category = State(initialValue: record.category)
-            let fields = record.date.fields
-            _pickedDay = State(
-                initialValue: Calendar.current.date(from: DateComponents(year: fields.year, month: fields.month, day: fields.day)) ?? Date())
+            _selectedTagIds = State(initialValue: record.tagIds)
         }
     }
 
@@ -60,185 +70,553 @@ struct TransactionFormView: View {
         return nil
     }
 
+    var body: some View {
+        Group {
+            if showingRecurring {
+                RecurringFormView(template: nil, initialType: type)
+                    .transition(.opacity)
+            } else {
+                form
+                    .budgieSheetChrome()
+                    .transition(.opacity)
+            }
+        }
+        .motion(Motion.easeOut(Motion.fast), value: showingRecurring)
+    }
+
     // MARK: - Derived values
 
-    private var parsedAmount: Double? { Self.parseAmount(amountText) }
-
-    private var canSave: Bool { parsedAmount != nil && !saving }
-
     /// The category names for the current type; in edit mode the record's own
-    /// category is always present even if the catalog no longer lists it.
+    /// category is kept even if the catalog no longer lists it.
     private var categoryNames: [String] {
         var names = options[type] ?? []
-        if let record = editing, record.type == type, !names.contains(record.category) {
+        if let record = editing, record.type == type, !names.contains(where: { DartString.equal($0, record.category) }) {
             names.append(record.category)
         }
         return names
     }
 
-    private var dateRange: ClosedRange<Date> {
-        let earliest = Calendar.current.date(from: DateComponents(year: 2000, month: 1, day: 1)) ?? .distantPast
-        var latest = Date()
-        if let record = editing {
-            let fields = record.date.fields
-            if let stored = Calendar.current.date(from: DateComponents(year: fields.year, month: fields.month, day: fields.day)) {
-                latest = max(latest, stored)
-            }
-        }
-        return min(earliest, latest)...latest
+    /// The stored date for this save (see the type comment).
+    private func resolvedDate() -> DartDateTime {
+        pickedDate ?? editing?.date ?? model.now
     }
 
-    // MARK: - Body
+    private var title: String {
+        (editing == nil ? "Add " : "Edit ") + (type == .income ? "Income" : "Expense")
+    }
 
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Picker("Type", selection: $type) {
-                        Text("Expense").tag(TransactionType.expense)
-                        Text("Income").tag(TransactionType.income)
-                    }
-                    .pickerStyle(.segmented)
+    private var typeColor: Color { type == .income ? BudgieColor.income : BudgieColor.danger }
+
+    /// The prefix glyph for the base currency (Flutter always shows `$`).
+    private var currencySymbol: String {
+        switch model.moneyFormatter.currencyCode {
+        case "USD", "CAD", "AUD", "MXN": "dollarsign"
+        case "EUR": "eurosign"
+        case "GBP": "sterlingsign"
+        case "JPY", "CNY": "yensign"
+        case "INR": "indianrupeesign"
+        case "KRW": "wonsign"
+        case "BRL": "brazilianrealsign"
+        default: "banknote"
+        }
+    }
+
+    // MARK: - Form
+
+    private var form: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(title)
+                    .textStyle(.headingMedium)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .frame(maxWidth: .infinity)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 12)
+                    .accessibilityElement(children: .contain)
                     .accessibilityLabel("Transaction type")
+                BudgieField(
+                    title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
+                    error: amountError, autofocus: true
+                )
+                .padding(.top, Metrics.spacingM)
+                BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
+                    .padding(.top, Metrics.spacingS)
+                // The wheel carries the "Category" label for VoiceOver.
+                fieldLabel("Category")
+                    .accessibilityHidden(true)
+                    .padding(.top, Metrics.spacingS)
+                categoryWheel
+                if !model.tags.isEmpty {
+                    fieldLabel("Tags")
+                        .accessibilityAddTraits(.isHeader)
+                        .padding(.top, Metrics.spacingM)
+                    tagChips
                 }
-
-                Section {
-                    TextField("Amount", text: $amountText, prompt: Text("0.00"))
-                        .keyboardType(.decimalPad)
-                        .monospacedDigit()
-                        .focused($amountFocused)
-                        .accessibilityLabel("Amount")
-                    TextField("Description", text: $descriptionText, prompt: Text("Optional"))
-                        .textInputAutocapitalization(.sentences)
-                        .accessibilityLabel("Description")
-                } footer: {
-                    if !amountText.isEmpty, parsedAmount == nil {
-                        Text("Enter an amount greater than 0.").foregroundStyle(Theme.expense)
-                    }
-                }
-
-                Section {
-                    Picker("Category", selection: $category) {
-                        ForEach(categoryNames, id: \.self) { name in
-                            Label {
-                                Text(name)
-                            } icon: {
-                                CategoryIcon(info: infos[type]?[name], size: 24)
-                            }
-                            .tag(name)
-                        }
-                    }
-                    DatePicker("Date", selection: dayBinding, in: dateRange, displayedComponents: .date)
-                }
-
+                DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                    .padding(.top, Metrics.spacingM)
                 if editing != nil {
-                    Section {
-                        Button("Delete Transaction", role: .destructive) { confirmingDelete = true }
-                            .disabled(saving)
+                    PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
+                        .disabled(saving)
+                        .opacity(saving ? Metrics.opacityDisabled : 1)
+                        .padding(.top, Metrics.spacingL)
+                }
+            }
+            .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
+        }
+        .scrollDismissesKeyboard(.interactively)
+        // Pinned above the keyboard while the fields scroll.
+        .safeAreaInset(edge: .bottom, spacing: 0) { footer }
+        .onAppear(perform: loadCategories)
+        .onChange(of: type) { _, _ in
+            if !categoryNames.contains(category) { category = categoryNames.first ?? "" }
+        }
+        .onChange(of: amountText) { _, _ in
+            amountError = nil
+            applySuggestion()
+        }
+        .onChange(of: descriptionText) { _, _ in applySuggestion() }
+        .sheet(isPresented: $showingDatePicker) {
+            DayPickerSheet(
+                initial: resolvedDate(), earliest: earliestDay, latest: latestDay, calendar: model.calendar
+            ) { day in
+                pickedDate = day
+            }
+        }
+        .alert("Delete Transaction", isPresented: $confirmingDelete) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                deleteConfirms += 1
+                Task { await delete() }
+            }
+        } message: {
+            Text("Are you sure you want to delete this transaction?")
+        }
+        .sensoryFeedback(.impact(weight: .heavy), trigger: deleteConfirms)
+        .interactiveDismissDisabled(saving)
+    }
+
+    private var typeIndex: Binding<Int> {
+        Binding(get: { type == .income ? 1 : 0 }, set: { type = $0 == 1 ? .income : .expense })
+    }
+
+    private func fieldLabel(_ text: String) -> some View {
+        Text(text)
+            .textStyle(.caption)
+            .foregroundStyle(BudgieColor.textSecondary)
+            .padding(.leading, 4)
+            .padding(.bottom, 6)
+    }
+
+    // MARK: Category wheel
+
+    private var categoryWheel: some View {
+        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+        return Group {
+            if loaded {
+                Picker("Category", selection: wheelSelection) {
+                    ForEach(categoryNames, id: \.self) { name in
+                        CategoryWheelRow(name: name, info: infos[type]?[name], color: typeColor).tag(name)
                     }
                 }
+                .pickerStyle(.wheel)
+                .labelsHidden()
+                .accessibilityLabel("Category")
+                .accessibilityValue(category)
+            } else {
+                Color.clear
             }
-            .navigationTitle(editing == nil ? (type == .income ? "Add Income" : "Add Expense") : "Edit Transaction")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }.disabled(saving)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { Task { await save() } }.disabled(!canSave)
-                }
-            }
-            .confirmationDialog("Delete this transaction?", isPresented: $confirmingDelete, titleVisibility: .visible) {
-                Button("Delete", role: .destructive) { Task { await delete() } }
-                Button("Cancel", role: .cancel) {}
-            }
-            .interactiveDismissDisabled(saving)
         }
-        .tint(Theme.accent)
-        .onAppear {
-            loadCategories()
-            if editing == nil { amountFocused = true }
-        }
-        .onChange(of: type) { _, _ in
-            let names = categoryNames
-            if !names.contains(category) { category = names.first ?? "" }
+        .frame(maxWidth: .infinity)
+        .frame(height: 90)
+        .clipShape(shape)
+        .background(BudgieColor.chipSurface, in: shape)
+        .overlay(shape.strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium))
+        .sensoryFeedback(.selection, trigger: wheelTicks)
+    }
+
+    /// The wheel's own changes (a rule's change moves it without a tick).
+    private var wheelSelection: Binding<String> {
+        Binding(
+            get: { category },
+            set: {
+                guard $0 != category else { return }
+                category = $0
+                wheelTicks += 1
+            })
+    }
+
+    // MARK: Tags
+
+    private var tagChips: some View {
+        FlowLayout(spacing: Metrics.spacingS) {
+            ForEach(model.tags) { tag in
+                let selected = selectedTagIds.contains(tag.id)
+                Button {
+                    if selected { selectedTagIds.removeAll { $0 == tag.id } } else { selectedTagIds.append(tag.id) }
+                } label: {
+                    PillChip(
+                        label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
+                        symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(selected ? .isSelected : [])
+            }
         }
     }
 
-    private var dayBinding: Binding<Date> {
-        Binding(
-            get: { pickedDay },
-            set: {
-                pickedDay = $0
-                dayIsPicked = true
-            })
+    // MARK: Footer
+
+    private var footer: some View {
+        VStack(spacing: Metrics.spacingM) {
+            HStack(spacing: Metrics.spacingM) {
+                FormButton(title: "Cancel", fill: nil) { dismiss() }
+                FormButton(
+                    title: editing == nil ? "Add" : "Update",
+                    fill: type == .income ? BudgieColor.incomeGradient : BudgieColor.expenseGradient, loading: saving
+                ) {
+                    Task { await save() }
+                }
+            }
+            .disabled(saving)
+            Button {
+                showingRecurring = true
+            } label: {
+                HStack(spacing: Metrics.spacingS) {
+                    Image(systemName: "repeat")
+                        .font(.system(size: 17, weight: .medium))
+                        .accessibilityHidden(true)
+                    Text("Make this recurring").textStyle(.caption)
+                }
+                .foregroundStyle(BudgieColor.textSecondary)
+                .padding(.horizontal, Metrics.spacingM)
+                .padding(.vertical, Metrics.spacingS)
+                .background(
+                    BudgieColor.card.opacity(0.5), in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+                        .strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium)
+                )
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(saving)
+            .opacity(saving ? Metrics.opacityDisabled : 1)
+        }
+        .padding(Metrics.spacingM)
+        .background(BudgieColor.card)
     }
 
     // MARK: - Actions
 
     private func loadCategories() {
+        guard !loaded else { return }
         for kind in TransactionType.allCases {
             let list = model.categories(for: kind)
             options[kind] = list.map(\.name)
             infos[kind] = Dictionary(list.map { ($0.name, $0) }, uniquingKeysWith: { first, _ in first })
         }
+        if let record = editing, infos[record.type]?[record.category] == nil,
+            let info = model.categoryInfo(named: record.category, type: record.type)
+        {
+            infos[record.type]?[record.category] = info
+        }
         if editing == nil, let initialCategory, categoryNames.contains(initialCategory) { category = initialCategory }
         if !categoryNames.contains(category) { category = categoryNames.first ?? "" }
+        loaded = true
     }
 
-    /// The stored date for this save (see the type comment).
-    private func resolvedDate() -> DartDateTime {
-        if dayIsPicked {
-            let parts = Calendar.current.dateComponents([.year, .month, .day], from: pickedDay)
-            if let year = parts.year, let month = parts.month, let day = parts.day {
-                return model.calendar.date(year, month, day)
-            }
-        }
-        return editing?.date ?? model.now
+    /// `applySuggestion` (transaction_form.dart:106-121): on every Amount or
+    /// Description edit, a matching rule whose category is in the current
+    /// list sets the category and replaces the selected tags.
+    private func applySuggestion() {
+        guard
+            let rule = model.suggestion(
+                type: type, description: descriptionText,
+                amountText: Self.normalizedAmount(amountText, locale: .current)),
+            let name = (options[type] ?? []).first(where: { DartString.equal($0, rule.category) })
+        else { return }
+        category = name
+        var tags: [String] = []
+        for id in rule.tagIds where !tags.contains(id) { tags.append(id) }
+        selectedTagIds = tags
     }
 
     private func save() async {
-        guard let amount = parsedAmount, !saving else { return }
-        saving = true
-        let trimmed = descriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !saving else { return }
+        let parsed: Double
+        switch Self.validateAmount(amountText) {
+        case .failure(let error):
+            amountError = error.message
+            AccessibilityNotification.Announcement(error.message).post()
+            return
+        case .success(let value):
+            parsed = value
+        }
+        let trimmed = DartString.trim(descriptionText)
         let description = trimmed.isEmpty ? "Transaction" : trimmed
         let date = resolvedDate()
+        saving = true
+        let saved: Bool
         if let record = editing {
             // An untouched amount field keeps the stored value exactly (the
             // prefill is rounded to cents).
-            let amount = amountText == DartFixed.toStringAsFixed(record.amount, 2) ? record.amount : amount
-            await model.updateTransaction(
+            let amount = amountText == DartFixed.toStringAsFixed(record.amount, 2) ? record.amount : parsed
+            saved = await model.updateTransaction(
                 id: record.id,
-                TransactionRecord.Edit(type: type, description: description, amount: amount, category: category, date: date))
+                TransactionRecord.Edit(
+                    type: type, description: description, amount: amount, category: category, date: date,
+                    tagIds: selectedTagIds))
         } else {
-            await model.addTransaction(type: type, description: description, amount: amount, category: category, date: date)
+            saved = await model.addTransaction(
+                type: type, description: description, amount: parsed, category: category, date: date,
+                tagIds: selectedTagIds)
         }
         dismiss()
+        if !saved {
+            model.showToast(.saveFailed)
+        } else if editing == nil,
+            date.year != model.selectedMonth.year || date.month != model.selectedMonth.month
+        {
+            model.showToast(.addedTo(month: date, now: model.now))
+        }
     }
 
     private func delete() async {
         guard let record = editing, !saving else { return }
         saving = true
-        await model.deleteTransaction(id: record.id)
+        let deleted = await model.deleteTransaction(id: record.id)
         dismiss()
+        model.showToast(deleted ? .transactionDeleted : .saveFailed)
     }
 
-    // MARK: - Amount parsing
+    // MARK: - Date range
 
-    /// Digits with at most one decimal separator: the current locale's, or
-    /// '.'. Valid iff finite and greater than 0.
-    static func parseAmount(_ text: String) -> Double? {
-        var normalized = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let separator = Locale.current.decimalSeparator, separator != "." {
-            normalized = normalized.replacingOccurrences(of: separator, with: ".")
+    /// 2000-01-01, or the stored day when it is earlier (Flutter asserts).
+    private var earliestDay: DartDateTime {
+        let floor = model.calendar.date(2000, 1, 1)
+        guard let stored = editing?.date, stored.isBefore(floor) else { return floor }
+        return stored
+    }
+
+    /// Today, or the stored day when it is later (Flutter asserts).
+    private var latestDay: DartDateTime {
+        let now = model.now
+        guard let stored = editing?.date, stored.isAfter(now) else { return now }
+        return stored
+    }
+
+    // MARK: - Amount validation
+
+    enum AmountError: Error, Equatable {
+        case required, invalid, notPositive
+
+        var message: String {
+            switch self {
+            case .required: "Amount is required"
+            case .invalid: "Please enter a valid number"
+            case .notPositive: "Amount must be greater than 0"
+            }
         }
-        guard !normalized.isEmpty,
-            normalized.allSatisfy({ $0 == "." || ("0"..."9").contains($0) }),
-            normalized.filter({ $0 == "." }).count <= 1
-        else { return nil }
-        if normalized.hasPrefix(".") { normalized = "0" + normalized }
-        if normalized.hasSuffix(".") { normalized += "0" }
-        guard let value = Double(normalized), value.isFinite, value > 0 else { return nil }
-        return value
+    }
+
+    /// `validateForm` (transaction_form.dart:152-165): empty is required;
+    /// Dart `double.tryParse` (after mapping the locale's decimal separator
+    /// to '.') nil or non-finite is invalid; `<= 0` is not positive.
+    nonisolated static func validateAmount(_ text: String, locale: Locale = .current) -> Result<Double, AmountError> {
+        if text.isEmpty { return .failure(.required) }
+        guard let value = DartDouble.tryParse(normalizedAmount(text, locale: locale)), value.isFinite else {
+            return .failure(.invalid)
+        }
+        guard value > 0 else { return .failure(.notPositive) }
+        return .success(value)
+    }
+
+    /// The text with the locale's decimal separator (e.g. ',') as '.'.
+    nonisolated static func normalizedAmount(_ text: String, locale: Locale) -> String {
+        guard let separator = locale.decimalSeparator, separator != "." else { return text }
+        return text.replacingOccurrences(of: separator, with: ".")
+    }
+}
+
+// MARK: - Pieces
+
+/// A wheel row (transaction_form.dart:300-335): a 28pt radius-8 tile in the
+/// type colour with a white category symbol, gap 16, the name.
+private struct CategoryWheelRow: View {
+    let name: String
+    let info: CategoryInfo?
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: Metrics.spacingM) {
+            Image(systemName: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""))
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.white)
+                .frame(width: 28, height: 28)
+                .background(color, in: RoundedRectangle(cornerRadius: Metrics.radiusS, style: .continuous))
+                .accessibilityHidden(true)
+            Text(name)
+                .textStyle(.bodyMedium)
+                .foregroundStyle(BudgieColor.textPrimary)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, Metrics.spacingM)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// The footer buttons (`AppButton` medium): 48 high, radius 12; primary is
+/// the type gradient with a white label (and a spinner while saving),
+/// secondary is outlined. Presses to 0.95 with a light haptic; 0.38 opacity
+/// when disabled.
+private struct FormButton: View {
+    let title: String
+    /// nil is the outlined secondary button.
+    let fill: LinearGradient?
+    var loading = false
+    let action: () -> Void
+
+    @Environment(\.isEnabled) private var isEnabled
+    @State private var taps = 0
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+        Button {
+            taps += 1
+            action()
+        } label: {
+            HStack(spacing: Metrics.spacingS) {
+                if loading {
+                    ProgressView().tint(.white).accessibilityHidden(true)
+                }
+                Text(title).textStyle(.buttonMedium)
+            }
+            .foregroundStyle(fill == nil ? BudgieColor.textPrimary : .white)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: 48)
+            .background {
+                if let fill {
+                    shape.fill(fill).shadow(color: .black.opacity(isEnabled ? 0.1 : 0), radius: 4, y: 4)
+                }
+            }
+            .overlay {
+                if fill == nil { shape.strokeBorder(BudgieColor.textPrimary.opacity(0.3), lineWidth: Metrics.borderMedium) }
+            }
+            .contentShape(shape)
+        }
+        .buttonStyle(PressScaleStyle(scale: 0.95))
+        .opacity(isEnabled ? 1 : Metrics.opacityDisabled)
+        .sensoryFeedback(.impact(weight: .light), trigger: taps)
+    }
+}
+
+/// Wrapping rows of chips (Flutter `Wrap`), leading-aligned.
+private struct FlowLayout: Layout {
+    var spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = arrange(width: proposal.width ?? .infinity, subviews: subviews)
+        return CGSize(width: rows.width, height: rows.height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let rows = arrange(width: bounds.width, subviews: subviews)
+        for (index, origin) in rows.origins.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y), proposal: .unspecified)
+        }
+    }
+
+    private func arrange(width: CGFloat, subviews: Subviews) -> (origins: [CGPoint], width: CGFloat, height: CGFloat) {
+        var origins: [CGPoint] = []
+        var x: CGFloat = 0, y: CGFloat = 0, rowHeight: CGFloat = 0, widest: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x > 0 && x + size.width > width {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            origins.append(CGPoint(x: x, y: y))
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+            widest = max(widest, x - spacing)
+        }
+        return (origins, widest, y + rowHeight)
+    }
+}
+
+/// The date picker (Flutter `showDatePicker`): a graphical calendar in a
+/// fitted sheet, Cancel / OK. The picker only carries a calendar day, read
+/// back as Gregorian year / month / day in the app's time zone.
+private struct DayPickerSheet: View {
+    let calendar: DartCalendar
+    let range: ClosedRange<Date>
+    let onPick: (DartDateTime) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var day: Date
+    @State private var height: CGFloat = 480
+
+    init(initial: DartDateTime, earliest: DartDateTime, latest: DartDateTime, calendar: DartCalendar, onPick: @escaping (DartDateTime) -> Void) {
+        self.calendar = calendar
+        self.onPick = onPick
+        let gregorian = Self.gregorian(calendar)
+        func day(_ d: DartDateTime) -> Date {
+            gregorian.date(from: DateComponents(year: d.year, month: d.month, day: d.day)) ?? d.date
+        }
+        // The upper bound is the end of the latest day so it stays pickable.
+        let upper =
+            gregorian.date(from: DateComponents(year: latest.year, month: latest.month, day: latest.day, hour: 23, minute: 59))
+            ?? latest.date
+        let range = day(earliest)...max(day(earliest), upper)
+        self.range = range
+        _day = State(initialValue: min(max(day(initial), range.lowerBound), range.upperBound))
+    }
+
+    private static func gregorian(_ calendar: DartCalendar) -> Calendar {
+        var gregorian = Calendar(identifier: .gregorian)
+        gregorian.timeZone = calendar.timeZone
+        return gregorian
+    }
+
+    var body: some View {
+        ScrollView {
+            content
+                .onGeometryChangeCompat { height = $0.height + 20 }
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .budgieSheetChrome()
+        .presentationDetents([.height(height)])
+    }
+
+    private var content: some View {
+        VStack(spacing: Metrics.spacingM) {
+            Text("Select date")
+                .textStyle(.headingSmall)
+                .foregroundStyle(BudgieColor.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+            DatePicker("Date", selection: $day, in: range, displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .labelsHidden()
+                .tint(BudgieColor.accent)
+                .environment(\.calendar, Self.gregorian(calendar))
+                .environment(\.timeZone, calendar.timeZone)
+            HStack(spacing: Metrics.spacingM) {
+                FormButton(title: "Cancel", fill: nil) { dismiss() }
+                FormButton(title: "OK", fill: BudgieColor.primaryGradient) {
+                    let parts = Self.gregorian(calendar).dateComponents([.year, .month, .day], from: day)
+                    if let year = parts.year, let month = parts.month, let dayOfMonth = parts.day {
+                        onPick(calendar.date(year, month, dayOfMonth))
+                    }
+                    dismiss()
+                }
+            }
+        }
+        .padding(.horizontal, Metrics.spacingM)
+        .padding(.bottom, Metrics.spacingM)
     }
 }
