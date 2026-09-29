@@ -7,6 +7,18 @@ struct RootView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["BUDGIE_DESIGN_GALLERY"] == "1" {
+            DesignGalleryView()
+        } else {
+            phaseView
+        }
+        #else
+        phaseView
+        #endif
+    }
+
+    @ViewBuilder private var phaseView: some View {
         switch model.phase {
         case .waitingForUnlock:
             StatusScreen(

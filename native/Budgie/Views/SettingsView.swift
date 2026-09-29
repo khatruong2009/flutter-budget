@@ -51,6 +51,9 @@ struct SettingsView: View {
                     LabeledContent("Version", value: versionText)
                     NavigationLink("Data diagnostics") { DiagnosticsView() }
                     NavigationLink("Licences") { LicencesView() }
+                    #if DEBUG
+                    NavigationLink("Design gallery") { DesignGalleryView() }
+                    #endif
                 }
             }
             .navigationTitle("Settings")
