@@ -10,6 +10,8 @@ enum BudgieColor {
     static let card = dynamic(light: 0xFFFFFF, dark: 0x13131F)
     static let surface = dynamic(light: 0xFFFFFF, dark: 0x15151F)
     static let chipSurface = dynamic(light: 0xF1F1F7, dark: 0x15151F)
+    /// `MonthPill`'s border: white 8% dark, black 8% light (not `cardBorder`).
+    static let pillBorder = overlay(dark: 0.08, light: 0.08)
     static let cardBorder = dynamic(light: 0x1410_1020, dark: 0x12FF_FFFF, alpha: true)
     static let hairline = dynamic(light: 0x1010_1020, dark: 0x0FFF_FFFF, alpha: true)
     static let border = dynamic(light: 0xFFE5_E7EB, dark: 0x12FF_FFFF, alpha: true)
@@ -43,6 +45,15 @@ enum BudgieColor {
             ? UIColor(red: 75.45 / 255, green: 81.5 / 255, blue: 144.5 / 255, alpha: 1)
             : UIColor(red: 166.5 / 255, green: 168.6 / 255, blue: 245.5 / 255, alpha: 1)
     })
+
+    // Flow charts (history_page.dart)
+    /// The net cash flow bars' zero baseline: white 12% dark, black 12% light.
+    static let chartBaseline = overlay(dark: 0.12, light: 0.12)
+    /// The trend's dashed zero line: white 8% dark, black 12% light.
+    static let chartZeroLine = overlay(dark: 0.08, light: 0.12)
+    /// The trend's end dot: #F2F2FA in both modes, no stroke (Flutter's
+    /// `FlDotCirclePainter`), so it is faint on the light card.
+    static let trendDot = Color(hex: 0xF2F2FA)
 
     // Dock (unused by the native tab bar; kept for custom chrome)
     static let dockInactiveIcon = dynamic(light: 0x6B7280, dark: 0x8A8AA8)
@@ -87,6 +98,11 @@ enum BudgieColor {
 
     static func dynamic(light: UInt32, dark: UInt32, alpha: Bool = false) -> Color {
         Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark, alpha: alpha) : UIColor(hex: light, alpha: alpha) })
+    }
+
+    /// Flutter's `Colors.white` (dark) / `Colors.black` (light) at an alpha.
+    private static func overlay(dark: CGFloat, light: CGFloat) -> Color {
+        Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(white: 1, alpha: dark) : UIColor(white: 0, alpha: light) })
     }
 
     private static func gradient(light: (UInt32, UInt32), dark: (UInt32, UInt32)) -> LinearGradient {

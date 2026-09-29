@@ -13,8 +13,11 @@ struct PressScaleStyle: ButtonStyle {
 }
 
 /// The redesign's signature card (`glow_card.dart`): card surface, radius
-/// 26, 1pt border, padding 20. With `onTap` it presses to 0.98 with a light
-/// haptic; a long-press-only card gets no press feedback, as in Flutter.
+/// 26, 1pt border, padding 20. The content sits inside the border as well
+/// as the padding: Flutter's `Container` adds the border's width to its
+/// padding, so every card is 2pt taller and wider than padding alone. With
+/// `onTap` it presses to 0.98 with a light haptic; a long-press-only card
+/// gets no press feedback, as in Flutter.
 struct GlowCard<Content: View>: View {
     var padding: CGFloat = Metrics.cardPadding
     var radius: CGFloat = Metrics.cardRadius
@@ -33,7 +36,7 @@ struct GlowCard<Content: View>: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         let card = content()
-            .padding(padding)
+            .padding(padding + Metrics.borderThin)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(fill ?? AnyShapeStyle(BudgieColor.card), in: shape)
             .overlay(shape.strokeBorder(border ?? BudgieColor.cardBorder, lineWidth: 1))

@@ -105,7 +105,9 @@ private struct DonutRing: View {
     @State private var sweep = 0.0
 
     var body: some View {
-        DonutArcs(geometry: geometry, colors: colors, selectedIndex: selectedIndex, sweep: sweep)
+        // Under Reduce Motion the ring is whole from the first frame, even
+        // the one before `onAppear` (a month change re-creates this view).
+        DonutArcs(geometry: geometry, colors: colors, selectedIndex: selectedIndex, sweep: reduceMotion ? 1 : sweep)
             .onAppear {
                 guard sweep < 1 else { return }
                 if reduceMotion {
@@ -170,11 +172,12 @@ private struct DonutCentreLabel: View {
             }
         case .slice(let title, let value, let percentText):
             VStack(spacing: 6) {
+                // Flutter's `FittedBox(scaleDown)` has no floor.
                 Text(title)
                     .textStyle(Self.eyebrow)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.3)
+                    .minimumScaleFactor(0.05)
                 hero(value)
                 Text(percentText)
                     .textStyle(.rowSubtitle)

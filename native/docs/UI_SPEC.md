@@ -185,11 +185,14 @@ ledger's month summaries (no transaction scan).
 `FlowTransactionsView`, pushed from Flow (system back). Every transaction,
 newest first, filtered by `TransactionFilter` (all conditions ANDed).
 
-- Header: 'Transactions' (pageTitle) and, when any month has data, the
-  month pill (`MMMM` of `model.selectedMonth`) opening 'SELECT MONTH'
-  (`yMMMM` rows of `ledger.availableMonths`, list capped at 320pt). A pick
-  calls `model.selectMonth` and sets From/To to the month's first and last
-  day (D6 fix).
+- Navigation bar: 'Transactions' (sectionHeader) beside the back button
+  and, when any month has data, the month pill (`MMMM` of
+  `model.selectedMonth`) trailing; the list scrolls under the bar. The pill
+  opens 'SELECT MONTH' (`yMMMM` rows of `ledger.availableMonths`, list
+  capped at 320pt). A pick calls `model.selectMonth` and
+  `filter.limit(toMonth:calendar:)` (From/To = the month's first and last
+  day, D6 fix). While `filter.isLimited(toMonth:calendar:)` is false the
+  pill is dimmed and no month is ticked.
 - Filters card: 'Filters' + 'RESET' (only while `filter.isActive`; clears
   every filter and the amount text). Search field (description only, D8;
   hint 'Search descriptions'; a minus button clears it while the trimmed
@@ -200,7 +203,8 @@ newest first, filtered by `TransactionFilter` (all conditions ANDed).
   clears it) when tags exist. From / To buttons ('Any date' or `MMM d`)
   opening the day picker (2000-01-01 to Dec 31 of now.year + 10; the other
   bound moves when crossed). Min / Max amount fields (decimal pad, floating
-  label, base-currency prefix while floated; `TransactionFilter.parseAmount`).
+  label, base-currency prefix while floated; parsed by `AmountInput.parse`
+  with the money format's separators, 0 and up, D6).
 - Results: 'Results' + "{matches} of {all}", pills 'Income ...', 'Expenses
   ...', 'Net ...' over every match, then one list card of rows (tile,
   description, "{category} · {MMM d}", signed amount). 50 rows at first;
@@ -210,7 +214,8 @@ newest first, filtered by `TransactionFilter` (all conditions ANDed).
   been recorded yet.'
 - Rows (D7): tap opens the edit form; swipe left (or the VoiceOver Delete
   action) confirms "Delete Transaction" and awaits `deleteTransaction`.
-- Rows are built lazily (`LazyVStack`); the filtered rows and summary are
+- Rows are keyed by transaction id and built lazily (`LazyVStack`); each
+  row's card slice takes no touches. The filtered rows and summary are
   cached per filter + `ledgerRevision`. Money goes through
   `model.moneyFormatter` (Hide balances masks rows and pills).
 - UI-test identifiers: `flow.all.month`, `flow.all.search`,

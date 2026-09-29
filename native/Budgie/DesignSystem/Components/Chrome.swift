@@ -179,12 +179,14 @@ struct SwipeToDeleteRow<Content: View>: View {
             }
             content()
                 .offset(x: offset)
+                // On the row's own element (the stack is not one), so
+                // VoiceOver offers "Delete" there.
+                .accessibilityAction(named: "Delete", onDelete)
         }
         .onGeometryChangeCompat { width = max($0.width, 1) }
         .modifier(SwipeGesture(onChanged: dragChanged, onEnded: dragEnded))
         .sensoryFeedback(.impact(weight: .medium), trigger: armed) { _, new in new }
         .sensoryFeedback(.impact(weight: .medium), trigger: flings)
-        .accessibilityAction(named: "Delete", onDelete)
     }
 
     private func dragChanged(_ translation: CGFloat) {

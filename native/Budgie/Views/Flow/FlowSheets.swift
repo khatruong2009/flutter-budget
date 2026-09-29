@@ -27,7 +27,8 @@ struct RangeSheet: View {
         }
         .padding(.bottom, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .modifier(FlowSheetFit())
+        // 12 + the eyebrow line + 8, the tiles, 12.
+        .modifier(FlowSheetFit(estimate: 12 + 11 * 1.2 + 8 + CGFloat(CashFlowMath.rangeOptions.count) * 56 + 12))
     }
 }
 
@@ -101,7 +102,9 @@ struct MonthDetailSheet: View {
         // Top: 16 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 20.
         .padding(EdgeInsets(top: 16, leading: 20, bottom: 24, trailing: 20))
         .accessibilityIdentifier("flow.monthDetail")
-        .modifier(FlowSheetFit())
+        // 16, the 44pt tile, 20, the tiles (14 + 16 + 6 + amount + 14), 12,
+        // the net row (14 + chipAmount + 14), 24.
+        .modifier(FlowSheetFit(estimate: 16 + 44 + 20 + (14 + 16 + 6 + 16 * 1.2 + 14) + 12 + (14 + 24 * 1.15 + 14) + 24))
     }
 
     /// Net row: padding 16 x 14, radius 16, net colour at 10% with a 30%
@@ -177,22 +180,21 @@ private struct MonthDetailTile: View {
 
 /// Sizes a Flow sheet to its content (Flutter's modal sheet wraps a
 /// `mainAxisSize.min` column) and applies the redesign chrome with the Flow
-/// sheets' 24pt top radius, as the safe-to-spend sheet does.
+/// sheets' 24pt top radius. The detent is the grab handle's inset plus the
+/// content: the system adds the bottom safe area (Flutter's `SafeArea`)
+/// itself. Until the content is measured it uses `estimate`, the content's
+/// height at the default text size, so the sheet opens at its final height
+/// instead of resizing from `.medium`.
 private struct FlowSheetFit: ViewModifier {
+    let estimate: CGFloat
     @State private var contentHeight: CGFloat = 0
-    @State private var insets = EdgeInsets()
 
     func body(content: Content) -> some View {
         ScrollView {
             content.onGeometryChangeCompat { contentHeight = $0.height }
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(GeometryReader { proxy in
-            Color.clear
-                .onAppear { insets = proxy.safeAreaInsets }
-                .onChange(of: proxy.safeAreaInsets) { _, new in insets = new }
-        })
         .budgieSheetChrome(radius: Metrics.flowSheetRadius)
-        .presentationDetents(contentHeight > 0 ? [.height(contentHeight + insets.top + insets.bottom)] : [.medium])
+        .presentationDetents([.height(BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : estimate))])
     }
 }

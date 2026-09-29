@@ -85,7 +85,7 @@ D2 notes:
 | D14 | Quick actions: open over the current tab (Flutter) or switch to Home (MVP) | Open over the current tab. |
 | D17 | Minimum iOS: stay on 17 (Liquid Glass only on 26+) or raise to 26 | Stay on 17. Design and review the look on 26+ first, and check that it degrades cleanly on 17. |
 | D15 | Recurring look and copy | Redesign card language, Flutter copy ("Bi-weekly", "Next Occurrence"). Keep the approved MVP behaviours (pause/resume, cursor-preserving edit, add button). |
-| D16 | Chart curves | Swift Charts `.catmullRom` for lines. A custom `Shape` for the donut and the cash-flow bars, for exact geometry. |
+| D16 | Chart curves | Swift Charts where it matches the Flutter chart. A custom `Shape` for the donut and the cash-flow bars, for exact geometry. The Flow 12-month trend is a custom `Path` reproducing fl_chart's cubic curve (smoothness 0.35, flat first tangent, overshoot allowed), not Swift Charts `.catmullRom` (decided 2026-09-29). |
 
 ## 3. Cross-cutting rules for every workstream
 

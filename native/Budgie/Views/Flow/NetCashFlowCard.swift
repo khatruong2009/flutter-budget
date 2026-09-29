@@ -49,8 +49,8 @@ private struct NetCashFlowBars: View {
             // half of it on either side.
             let gap = (width - barWidth * count) / count
             ZStack(alignment: .topLeading) {
-                // Zero baseline: white 12% dark, black 12% light, under the bars.
-                Color.primary.opacity(0.12)
+                // Zero baseline, under the bars.
+                BudgieColor.chartBaseline
                     .frame(width: width, height: 1)
                     .offset(y: CashFlowMath.barBaselineY)
                     .accessibilityHidden(true)

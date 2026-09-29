@@ -28,7 +28,8 @@ public struct TransactionFilter: Equatable, Sendable {
     /// Inclusive local calendar days; only the date part is compared.
     public private(set) var from: DartDateTime?
     public private(set) var to: DartDateTime?
-    /// Inclusive bounds on `amount`, whatever the type (`parseAmount`).
+    /// Inclusive bounds on `amount`, whatever the type. The app reads its
+    /// fields with the locale-aware parse (D6); `parseAmount` is Flutter's.
     public var minAmount: Double?
     public var maxAmount: Double?
 
@@ -60,6 +61,27 @@ public struct TransactionFilter: Equatable, Sendable {
 
     /// RESET (`_resetFilters`): clears every filter and the search text.
     public mutating func reset() { self = TransactionFilter() }
+
+    /// The SEE ALL month pill's pick (D6; Flutter's pill filters nothing):
+    /// From the month's first day, To its last (`DateTime(y, m + 1, 0)`).
+    /// `month` may be any instant in the month.
+    public mutating func limit(toMonth month: DartDateTime, calendar: DartCalendar) {
+        let bounds = Self.monthBounds(month, calendar: calendar)
+        from = bounds.first
+        to = bounds.last
+    }
+
+    /// Whether From/To are exactly `month`'s first and last days, as
+    /// `limit(toMonth:calendar:)` sets them; compared as local calendar days.
+    public func isLimited(toMonth month: DartDateTime, calendar: DartCalendar) -> Bool {
+        guard let from, let to else { return false }
+        let bounds = Self.monthBounds(month, calendar: calendar)
+        return Self.dayKey(from) == Self.dayKey(bounds.first) && Self.dayKey(to) == Self.dayKey(bounds.last)
+    }
+
+    private static func monthBounds(_ month: DartDateTime, calendar: DartCalendar) -> (first: DartDateTime, last: DartDateTime) {
+        (calendar.date(month.year, month.month), calendar.date(month.year, month.month + 1, 0))
+    }
 
     /// `_getFilteredTransactions` (`hp:1350-1391`) over `index.newestFirst`.
     /// Search is description only (D8): `description.toLowerCase()
@@ -124,6 +146,8 @@ public struct TransactionFilter: Equatable, Sendable {
     /// nil, then `double.tryParse` (optional sign, ".5", "5.", exponents;
     /// hex and grouping are rejected). Non-finite results ("NaN",
     /// "Infinity", "1e400") are nil here; Dart keeps them (PARITY_GAPS).
+    /// Kept for the parity tests: the app's Min / Max fields parse with the
+    /// money format's separators instead (D6).
     public static func parseAmount(_ text: String) -> Double? {
         let normalized = DartString.trim(String(decoding: text.utf16.filter { $0 != 0x2C }, as: UTF16.self))
         if normalized.isEmpty { return nil }

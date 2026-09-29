@@ -141,28 +141,42 @@ struct SegmentedPills: View {
     }
 }
 
-/// Month/range selector pill (`MonthPill`): chip surface, 8% border, label
-/// 14/600 and a chevron.
+/// Month/range selector pill (`MonthPill`, budgie_header.dart:80-132):
+/// chip surface and a 1pt 8% border around padding 16 x 9 (Flutter's
+/// Container adds the border's width to the padding), the label in
+/// `rowTitle` at 14 (w600, height 1.25) and a 16pt `expand_more` chevron,
+/// 6 apart. `dimmed` greys the label for a pill whose choice is no longer
+/// applied (the SEE ALL month after the dates changed).
 struct MonthPill: View {
     let label: String
+    var dimmed = false
     var action: (() -> Void)? = nil
 
     @State private var taps = 0
 
+    /// `rowTitle` with fontSize 14.
+    private static let labelText = TextSpec(face: .gabaritoSemiBold, size: 14, height: 1.25, relativeTo: .subheadline)
+    /// Flutter's 1.25 line box is 0.7pt taller than the face's natural 1.2
+    /// one, which a single line does not get from `textStyle`.
+    @ScaledMetric(relativeTo: .subheadline) private var halfLeading: CGFloat = 14 * 0.05 / 2
+
     var body: some View {
         let pill = HStack(spacing: 6) {
             Text(label)
-                .font(.custom(BudgieFont.gabaritoSemiBold.postScriptName, size: 14, relativeTo: .subheadline))
-                .foregroundStyle(BudgieColor.textPrimary)
+                .textStyle(Self.labelText)
+                .foregroundStyle(dimmed ? BudgieColor.textSecondary : BudgieColor.textPrimary)
+                .padding(.vertical, halfLeading)
+            // Material `expand_more_rounded` 16 / w500: a small chevron in a 16pt box.
             Image(systemName: "chevron.down")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.system(size: 9, weight: .semibold))
                 .foregroundStyle(BudgieColor.textSecondary)
+                .frame(width: 16, height: 16)
                 .accessibilityHidden(true)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 9)
+        .padding(.horizontal, 16 + Metrics.borderThin)
+        .padding(.vertical, 9 + Metrics.borderThin)
         .background(BudgieColor.chipSurface, in: Capsule())
-        .overlay(Capsule().strokeBorder(Color.primary.opacity(0.08), lineWidth: 1))
+        .overlay(Capsule().strokeBorder(BudgieColor.pillBorder, lineWidth: Metrics.borderThin))
 
         if let action {
             Button {

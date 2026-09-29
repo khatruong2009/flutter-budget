@@ -3,15 +3,18 @@ import XCTest
 
 @testable import Runner
 
-/// The budget limit sheet's locale-aware parse (D6): Flutter strips
-/// `[^0-9.]`, which reads "1.500,00" as 1.5.
-final class BudgetLimitParsingTests: XCTestCase {
+/// The decimal fields' locale-aware parse (D6), shared by the budget limit
+/// sheet (a limit above 0) and the Flow SEE ALL Min / Max amounts (0 and
+/// up). Flutter's limit strips `[^0-9.]` ("1.500,00" is 1.5) and its filter
+/// drops ',' ("12,5" is 125).
+final class AmountInputTests: XCTestCase {
     private let english = MoneyFormatter(currencyCode: "USD")
     private let german = MoneyFormatter(currencyCode: "EUR", locale: "de_DE")
     private let french = MoneyFormatter(currencyCode: "EUR", locale: "fr_FR")
 
+    /// The budget limit: an edited field (no stored limit), above 0.
     private func parse(_ text: String, _ formatter: MoneyFormatter) -> Double? {
-        BudgetLimitSheet.parseLimit(text, formatter: formatter)
+        BudgetLimitSheet.limit(text: text, prefill: "", currentLimit: nil, formatter: formatter)
     }
 
     func testGroupedAmountsInTheirOwnLocale() {
@@ -43,7 +46,7 @@ final class BudgetLimitParsingTests: XCTestCase {
         XCTAssertNil(parse("1,5,0", english))
     }
 
-    func testRejectsEmptyZeroNegativeAndNonNumericText() {
+    func testLimitRejectsEmptyZeroNegativeAndNonNumericText() {
         XCTAssertNil(parse("", english))
         XCTAssertNil(parse(".", english))
         XCTAssertNil(parse("0", english))
@@ -64,13 +67,33 @@ final class BudgetLimitParsingTests: XCTestCase {
     }
 
     func testSeparatorsAndCurrencySymbolFollowTheFormat() {
-        XCTAssertTrue(BudgetLimitSheet.separators(english) == (",", "."))
-        XCTAssertTrue(BudgetLimitSheet.separators(german) == (".", ","))
-        XCTAssertEqual(BudgetLimitSheet.currencySymbol(english), "$")
-        XCTAssertEqual(BudgetLimitSheet.currencySymbol(german), "\u{20AC}")
-        XCTAssertEqual(BudgetLimitSheet.currencySymbol(MoneyFormatter(currencyCode: "BRL")), "R$")
+        XCTAssertTrue(AmountInput.separators(english) == (",", "."))
+        XCTAssertTrue(AmountInput.separators(german) == (".", ","))
+        XCTAssertEqual(AmountInput.currencySymbol(english), "$")
+        XCTAssertEqual(AmountInput.currencySymbol(german), "\u{20AC}")
+        XCTAssertEqual(AmountInput.currencySymbol(MoneyFormatter(currencyCode: "BRL")), "R$")
         XCTAssertEqual(
-            BudgetLimitSheet.currencySymbol(MoneyFormatter(currencyCode: "GBP", hideBalances: true)), "\u{00A3}")
+            AmountInput.currencySymbol(MoneyFormatter(currencyCode: "GBP", hideBalances: true)), "\u{00A3}")
+    }
+
+    /// Filter bounds take 0 and up; blank or unreadable text is no bound.
+    func testFilterBoundsAcceptZeroAndFollowTheFormat() {
+        func bound(_ text: String, _ formatter: MoneyFormatter) -> Double? { AmountInput.parse(text, formatter: formatter) }
+        XCTAssertEqual(bound("0", english), 0)
+        XCTAssertEqual(bound("0,00", german), 0)
+        XCTAssertEqual(bound("12,5", english), 12.5, "Flutter drops the comma: 125")
+        XCTAssertEqual(bound("12,5", german), 12.5)
+        XCTAssertEqual(bound("1.234,56", german), 1234.56, "Flutter reads 1.23456")
+        XCTAssertEqual(bound("1,234.56", english), 1234.56)
+        XCTAssertEqual(bound("1\u{202F}234,5", french), 1234.5)
+        XCTAssertNil(bound("", english))
+        XCTAssertNil(bound("   ", english))
+        XCTAssertNil(bound("-5", english))
+        XCTAssertNil(bound("+5", english))
+        XCTAssertNil(bound("1e3", english))
+        XCTAssertNil(bound("NaN", english))
+        XCTAssertNil(bound("Infinity", english))
+        XCTAssertNil(bound("0x10", english))
     }
 
     /// An untouched prefill saves the stored limit exactly; any edit parses.

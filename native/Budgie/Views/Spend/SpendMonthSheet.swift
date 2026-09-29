@@ -6,7 +6,8 @@ import SwiftUI
 /// top edge only, a 40x4 grabber, "Select month", then one row per month
 /// with transactions (newest first, `yMMMM`), at most 320pt tall before it
 /// scrolls. The selected month is accent with a check. Picking a month
-/// closes the sheet at once.
+/// closes the sheet at once. Sized to the content; the system adds the
+/// bottom safe area (Flutter's `SafeArea`).
 struct SpendMonthSheet: View {
     let months: [DartDateTime]
     let selected: DartDateTime?
@@ -15,7 +16,6 @@ struct SpendMonthSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var listHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
-    @State private var bottomInset: CGFloat = 0
 
     private static let radius: CGFloat = 26
     /// `rowTitle` at 16 (the ListTile title).
@@ -42,15 +42,16 @@ struct SpendMonthSheet: View {
                 .padding(.horizontal, 12)
                 .onGeometryChangeCompat { listHeight = $0.height }
             }
-            .frame(height: min(listHeight, 320))
+            // 56pt rows until measured, so the sheet never measures an
+            // empty list.
+            .frame(height: min(listHeight > 0 ? listHeight : CGFloat(months.count) * 56, 320))
             .scrollBounceBehavior(.basedOnSize)
             .padding(.vertical, 8)
         }
         .fixedSize(horizontal: false, vertical: true)
         .onGeometryChangeCompat { contentHeight = $0.height }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .onBudgetSheetBottomInset { bottomInset = $0 }
-        .presentationDetents([contentHeight > 0 ? .height(contentHeight + bottomInset) : .medium])
+        .presentationDetents([.height(contentHeight > 0 ? contentHeight : estimatedHeight)])
         .presentationDragIndicator(.hidden)
         .presentationCornerRadius(Self.radius)
         .presentationBackground {
@@ -65,6 +66,13 @@ struct SpendMonthSheet: View {
                 .ignoresSafeArea()
         }
         .accessibilityIdentifier("spend.monthSheet")
+    }
+
+    /// The content's height at the default text size (10, grabber, 16,
+    /// title, 8, list, 8), so the sheet opens at its final height instead of
+    /// resizing once measured.
+    private var estimatedHeight: CGFloat {
+        10 + 4 + 16 + 20 * 1.2 + 8 + min(CGFloat(months.count) * 56, 320) + 8
     }
 
     /// A Material ListTile: 56pt minimum, 16pt insets, 20pt check.

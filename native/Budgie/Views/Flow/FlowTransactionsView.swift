@@ -2,13 +2,16 @@ import BudgieCore
 import SwiftUI
 
 /// Every transaction, filterable: the page Flow's "SEE ALL" pushes (Flutter
-/// `_TransactionsDetailPage`, history_page.dart:1248-2119). A header with the
-/// shared-month pill, the filters card, the results summary, and the matches
+/// `_TransactionsDetailPage`, history_page.dart:1248-2119). The title and
+/// the shared-month pill sit in the navigation bar beside the native back
+/// button (D2), then the filters card, the results summary, and the matches
 /// newest first, 50 at a time.
 ///
 /// Differences from Flutter (PARITY_GAPS): rows open the edit form and swipe
 /// to delete (D7), and picking a month also sets the From/To filters to that
-/// month (D6; Flutter's pill changes only the shared month).
+/// month (D6; Flutter's pill changes only the shared month). The pill is
+/// dimmed, and the month is not ticked, while From/To are not exactly that
+/// month (D6).
 ///
 /// The filtered rows and their summary are cached and recomputed only when
 /// the filter or `model.ledgerRevision` changes, never per body pass.
@@ -40,21 +43,12 @@ struct FlowTransactionsView: View {
 
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
-                BudgieHeader(title: "Transactions") {
-                    if !ledger.availableMonths.isEmpty {
-                        MonthPill(label: DartDateFormat.MMMM(model.selectedMonth)) { sheet = .month }
-                            .accessibilityLabel("Month")
-                            .accessibilityValue(DartDateFormat.yMMMM(model.selectedMonth))
-                            .accessibilityIdentifier("flow.all.month")
-                    }
-                }
-
                 FiltersCard(
                     filter: $filter, minText: $minText, maxText: $maxText, tags: model.tags,
-                    currencySymbol: BudgetLimitSheet.currencySymbol(formatter)
+                    currencySymbol: AmountInput.currencySymbol(formatter)
                 ) { sheet = $0 }
                 .padding(.horizontal, Metrics.pageHorizontal)
-                .padding(.top, 20)
+                .padding(.top, 12)
 
                 if let results {
                     resultsHeader(results, total: ledger.newestFirst.count, formatter: formatter)
@@ -70,9 +64,32 @@ struct FlowTransactionsView: View {
         .background(BudgieColor.background)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(BudgieColor.background, for: .navigationBar)
+        .toolbar {
+            // Beside the back button, as Flutter lays out its header row; a
+            // centred title would slide aside whenever the month is long.
+            BarItem(placement: .topBarLeading) {
+                Text("Transactions")
+                    .textStyle(.sectionHeader)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .fixedSize()
+                    .accessibilityAddTraits(.isHeader)
+            }
+            if !ledger.availableMonths.isEmpty {
+                let month = model.selectedMonth
+                let applied = filter.isLimited(toMonth: month, calendar: model.calendar)
+                BarItem(placement: .topBarTrailing) {
+                    MonthPill(label: DartDateFormat.MMMM(month), dimmed: !applied) { sheet = .month }
+                        .accessibilityLabel("Month")
+                        .accessibilityValue(DartDateFormat.yMMMM(month) + (applied ? "" : ", not filtering the list"))
+                        .accessibilityIdentifier("flow.all.month")
+                }
+            }
+        }
         .onChange(of: FilterKey(filter: filter, revision: model.ledgerRevision), initial: true) { _, _ in refilter() }
-        .onChange(of: minText) { _, text in filter.minAmount = TransactionFilter.parseAmount(text) }
-        .onChange(of: maxText) { _, text in filter.maxAmount = TransactionFilter.parseAmount(text) }
+        .onChange(of: minText) { _, text in filter.minAmount = AmountInput.parse(text, formatter: model.moneyFormatter) }
+        .onChange(of: maxText) { _, text in filter.maxAmount = AmountInput.parse(text, formatter: model.moneyFormatter) }
         .sheet(item: $sheet) { sheet in sheetContent(sheet) }
         .sheet(item: $editing) { record in
             TransactionFormView(mode: .edit(record))
@@ -114,9 +131,7 @@ struct FlowTransactionsView: View {
     /// Flutter page that never filtered by it (D6), From/To set to the
     /// month's first and last day.
     private func pickMonth(_ month: DartDateTime) {
-        let calendar = model.calendar
-        filter.setFrom(calendar.date(month.year, month.month))
-        filter.setTo(calendar.date(month.year, month.month + 1, 0))
+        filter.limit(toMonth: month, calendar: model.calendar)
         model.selectMonth(month)
     }
 
@@ -141,11 +156,12 @@ struct FlowTransactionsView: View {
             }
         case .month:
             let months = model.ledger.availableMonths
-            let selected = model.selectedMonth
+            let calendar = model.calendar
+            // Ticked only while the list is limited to that month (D6).
             PickerSheet(
                 title: "SELECT MONTH",
                 options: months.map {
-                    PickerOption(title: DartDateFormat.yMMMM($0), selected: $0.year == selected.year && $0.month == selected.month)
+                    PickerOption(title: DartDateFormat.yMMMM($0), selected: filter.isLimited(toMonth: $0, calendar: calendar))
                 },
                 maxListHeight: 320
             ) { index in
@@ -208,12 +224,15 @@ struct FlowTransactionsView: View {
             .padding(.horizontal, Metrics.pageHorizontal)
             .padding(.top, Metrics.spacingM)
         } else {
-            let visible = results.rows.prefix(pagination.visible(of: count))
-            // Keyed by position: a duplicated id in the data still gets its
-            // own row.
-            ForEach(Array(visible.enumerated()), id: \.offset) { index, row in
+            let visible = Array(results.rows.prefix(pagination.visible(of: count)))
+            let lastID = visible.last?.id
+            // Keyed by transaction id, like Home's list and the Spend
+            // drill-in (ids are unique: loading gives duplicates fresh ones),
+            // so a row keeps its own swipe state when the matches change.
+            ForEach(visible) { row in
+                let isFirst = row.id == visible[0].id
                 ResultCell(
-                    row: row, isFirst: index == 0, isLast: index == visible.count - 1, formatter: formatter,
+                    row: row, isFirst: isFirst, isLast: row.id == lastID, formatter: formatter,
                     symbol: symbol(for: row.record)
                 ) {
                     rowTaps += 1
@@ -221,7 +240,7 @@ struct FlowTransactionsView: View {
                 } onDelete: {
                     pendingDelete = row.record
                 }
-                .padding(.top, index == 0 ? Metrics.spacingM : 0)
+                .padding(.top, isFirst ? Metrics.spacingM : 0)
             }
             if pagination.hasMore(count) {
                 VStack(spacing: 8) {
@@ -269,6 +288,24 @@ private struct FilterKey: Equatable {
 private enum FilterSheet: String, Identifiable {
     case category, month, from, to
     var id: String { rawValue }
+}
+
+// MARK: - Navigation bar
+
+/// A navigation bar item without the bar's own glass capsule around it
+/// (iOS 26), for the title and the month pill, which draw their own.
+private struct BarItem<Content: View>: ToolbarContent {
+    let placement: ToolbarItemPlacement
+    @ViewBuilder var content: () -> Content
+
+    var body: some ToolbarContent {
+        if #available(iOS 26.0, *) {
+            ToolbarItem(placement: placement, content: content)
+                .sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: placement, content: content)
+        }
+    }
 }
 
 // MARK: - Filters card
@@ -398,6 +435,7 @@ private struct SearchField: View {
                 .font(.system(size: 17, weight: .medium))
                 .foregroundStyle(BudgieColor.textSecondary)
                 .frame(width: 48)
+                .allowsHitTesting(false)
                 .accessibilityHidden(true)
             TextField(
                 "Search descriptions", text: $text,
@@ -426,10 +464,25 @@ private struct SearchField: View {
             }
         }
         .frame(minHeight: 56)
-        .background(BudgieColor.chipSurface, in: shape)
+        // The rest of the field focuses it; the text field keeps its own
+        // touches (caret, selection menu).
+        .background(FocusArea(shape: shape) { focused = true })
         .overlay(shape.strokeBorder(focused ? BudgieColor.accent : BudgieColor.cardBorder, lineWidth: focused ? 1.5 : 1))
-        .contentShape(shape)
-        .onTapGesture { focused = true }
+    }
+}
+
+/// A field's fill, which focuses the field when tapped outside its text
+/// field (the padding, the icon or the label); placed behind the text field
+/// so the text field's own touches never reach it.
+private struct FocusArea<S: Shape>: View {
+    let shape: S
+    let focus: () -> Void
+
+    var body: some View {
+        shape.fill(BudgieColor.chipSurface)
+            .contentShape(shape)
+            .onTapGesture(perform: focus)
+            .accessibilityHidden(true)
     }
 }
 
@@ -482,10 +535,9 @@ private struct FilterButton: View {
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
-        .accessibilityElement(children: .ignore)
+        // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(label)
         .accessibilityValue(value)
-        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -514,6 +566,7 @@ private struct AmountField: View {
                     .textStyle(Self.floatingLabel)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .lineLimit(1)
+                    .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
             HStack(spacing: 0) {
@@ -521,6 +574,7 @@ private struct AmountField: View {
                     Text(currencySymbol + " ")
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textSecondary)
+                        .allowsHitTesting(false)
                         .accessibilityHidden(true)
                 }
                 TextField(
@@ -540,10 +594,8 @@ private struct AmountField: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
-        .background(BudgieColor.chipSurface, in: shape)
+        .background(FocusArea(shape: shape) { focused = true })
         .overlay(shape.strokeBorder(focused ? BudgieColor.accent : BudgieColor.cardBorder, lineWidth: focused ? 1.5 : 1))
-        .contentShape(shape)
-        .onTapGesture { focused = true }
         .motion(Motion.easeOut(Motion.fast), value: floated)
     }
 }
@@ -552,7 +604,9 @@ private struct AmountField: View {
 
 /// One row of the results list card: its slice of the card (top corners on
 /// the first row, bottom corners on the last, a hairline inset 12 between
-/// rows) around the swipe-to-delete row.
+/// rows) around the swipe-to-delete row, which slides within the row's own
+/// rounded shape so it never leaves the card. The card's padding includes
+/// its 1pt border, as `GlowListCard`'s does.
 private struct ResultCell: View {
     let row: LedgerRow
     let isFirst: Bool
@@ -562,16 +616,19 @@ private struct ResultCell: View {
     let onTap: () -> Void
     let onDelete: () -> Void
 
+    private static let inset = Metrics.listCardPadding + Metrics.borderThin
+
     var body: some View {
         VStack(spacing: 0) {
             if !isFirst { Hairline().padding(.horizontal, Metrics.hairlineInset) }
             SwipeToDeleteRow(onDelete: onDelete) {
                 ResultRow(row: row, formatter: formatter, symbol: symbol, action: onTap)
             }
+            .clipShape(RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous))
         }
-        .padding(.horizontal, Metrics.listCardPadding)
-        .padding(.top, isFirst ? Metrics.listCardPadding : 0)
-        .padding(.bottom, isLast ? Metrics.listCardPadding : 0)
+        .padding(.horizontal, Self.inset)
+        .padding(.top, isFirst ? Self.inset : 0)
+        .padding(.bottom, isLast ? Self.inset : 0)
         .background { CardSlice(isFirst: isFirst, isLast: isLast) }
         .padding(.horizontal, Metrics.pageHorizontal)
     }
@@ -579,7 +636,10 @@ private struct ResultCell: View {
 
 /// The part of a `GlowListCard` (radius 26, card fill, 1pt border) behind
 /// one row: the whole card shape stretched past the row's open edges and
-/// clipped to it, so the slices join into one card.
+/// clipped to it, so the slices join into one card. It takes no touches:
+/// the clip does not limit hit testing, so the stretched shape would
+/// otherwise catch touches meant for the neighbouring rows wherever the
+/// lazy stack drew it above them (dead taps and swipes).
 private struct CardSlice: View {
     let isFirst: Bool
     let isLast: Bool
@@ -593,6 +653,7 @@ private struct CardSlice: View {
             .padding(.top, isFirst ? 0 : -overhang)
             .padding(.bottom, isLast ? 0 : -overhang)
             .clipped()
+            .allowsHitTesting(false)
             .accessibilityHidden(true)
     }
 }
@@ -637,12 +698,11 @@ private struct ResultRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
+        // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(
             "\(record.description.isEmpty ? "Transaction" : record.description), \(record.category), \(DartDateFormat.yMMMMd(record.date)), \(amount)"
         )
         .accessibilityHint("Double tap to edit, swipe left to delete")
-        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("flow.all.row")
     }
 }
@@ -667,7 +727,6 @@ private struct PickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var headerHeight: CGFloat = 0
     @State private var listHeight: CGFloat = 0
-    @State private var bottomInset: CGFloat = 0
 
     /// `rowTitle` at w700 for the selected row.
     private static let selectedText = TextSpec(face: .gabaritoBold, size: 15, height: 1.25, relativeTo: .body)
@@ -699,16 +758,19 @@ private struct PickerSheet: View {
             .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .onBudgetSheetBottomInset { bottomInset = $0 }
         .budgieSheetChrome(radius: Metrics.flowSheetRadius)
         .presentationDetents([detent])
     }
 
+    /// Handle, header, list and 8, at most 9/16 of the screen; the system
+    /// adds the bottom safe area. Until measured, the default-size header
+    /// (12 + eyebrow + 8) and 56pt rows stand in, so the sheet opens at its
+    /// final height.
     private var detent: PresentationDetent {
-        guard headerHeight > 0 else { return .medium }
-        let list = min(listHeight, maxListHeight ?? .infinity)
-        let natural = BudgetSheetLayout.handleHeight + headerHeight + list + 8
-        return .height(min(natural, BudgetSheetLayout.screenHeight * 9 / 16) + bottomInset)
+        let header = headerHeight > 0 ? headerHeight : 12 + 11 * 1.2 + 8
+        let rows = listHeight > 0 ? listHeight : CGFloat(options.count) * 56
+        let natural = BudgetSheetLayout.handleHeight + header + min(rows, maxListHeight ?? .infinity) + 8
+        return .height(min(natural, BudgetSheetLayout.screenHeight * 9 / 16))
     }
 
     /// A Material `ListTile`: min height 56, insets 16 / 24.
@@ -732,9 +794,8 @@ private struct PickerSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
         .accessibilityLabel(option.title)
-        .accessibilityAddTraits(option.selected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAddTraits(option.selected ? .isSelected : [])
         .accessibilityIdentifier("flow.all.option")
     }
 }

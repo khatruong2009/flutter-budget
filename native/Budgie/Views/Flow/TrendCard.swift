@@ -59,21 +59,19 @@ struct TrendCard: View {
 struct TrendLine: View {
     let nets: [Double]
 
-    @Environment(\.colorScheme) private var scheme
-
     var body: some View {
         let values = TrendValues(values: nets)
-        // `HorizontalLine(y: 0, width 1, dash [3, 4])`: white 8% dark, black 12% light.
+        // `HorizontalLine(y: 0, width 1, dash [3, 4])`.
         let zeroLine = TrendZeroLine()
-            .stroke(Color.primary.opacity(scheme == .dark ? 0.08 : 0.12), style: StrokeStyle(lineWidth: 1, dash: [3, 4]))
+            .stroke(BudgieColor.chartZeroLine, style: StrokeStyle(lineWidth: 1, dash: [3, 4]))
         ZStack {
             TrendCurve(values: values)
                 .stroke(BudgieColor.accent.opacity(0.4), style: StrokeStyle(lineWidth: 9, lineCap: .butt, lineJoin: .miter))
             zeroLine
             TrendCurve(values: values)
                 .stroke(BudgieColor.accent, style: StrokeStyle(lineWidth: 3, lineCap: .butt, lineJoin: .miter))
-            // `FlDotCirclePainter(radius: 5, color: 0xFFF2F2FA)` in both modes.
-            TrendEndDot(values: values).fill(Color(hex: 0xF2F2FA))
+            // `FlDotCirclePainter(radius: 5, color: 0xFFF2F2FA, strokeWidth: 0)`.
+            TrendEndDot(values: values).fill(BudgieColor.trendDot)
             zeroLine
         }
         .motion(.linear(duration: 0.15), value: nets)

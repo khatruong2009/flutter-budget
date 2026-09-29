@@ -19,7 +19,6 @@ UPGRADE_TEST_RESULTS.md).
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
-| Flow (history charts, year-over-year) tab | derived | Not available; the Transactions page (Home > SEE ALL) lists transactions. |
 | Hide balances toggle, locale override picker, auto-lock timeout picker | `appSettings` | Honoured when set by the Flutter app; no toggles in the MVP. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
@@ -131,12 +130,18 @@ UPGRADE_TEST_RESULTS.md).
   new one); as in Flutter nothing is carried over and an edit is discarded.
 - Budget limit sheet (D6): the field prefix is the base currency's symbol
   (Flutter hard-codes "$").
-- Budget limit sheet (D6): the limit parses with the number format's
-  separators ("1.500,00" is 1500 under de_DE; Flutter strips `[^0-9.]` and
-  reads 1.5). A lone grouping separator not followed by three digits is
-  read as the decimal key of a keyboard in another locale ("12,5" is 12.5
-  under en_US; Flutter reads 125). Only digits and separators are accepted:
-  Flutter saved "-5" as 5 and "1e3" as 13; Swift rejects both.
+- Budget limit sheet and Flow SEE ALL Min / Max amounts (D6): both parse
+  with the number format's separators (`AmountInput`): "1.500,00" is 1500
+  under de_DE (Flutter's limit strips `[^0-9.]` and reads 1.5; its filter
+  drops ',' and reads 1.5 from "1.500,00" and 1.23456 from "1.234,56"). A
+  lone grouping separator not followed by three digits is read as the
+  decimal key of a keyboard in another locale ("12,5" is 12.5 under en_US;
+  Flutter's limit and filter read 125). Only digits and separators are
+  accepted: Flutter saved "-5" as 5 and "1e3" as 13, and its filter took
+  "-5", "+5", "1e3", "0x10", "NaN" and "Infinity" (NaN marked the filter
+  active but excluded nothing; an infinite minimum hid every row); Swift
+  leaves such a bound unset. A limit must be above 0; a filter bound may be
+  0.
 - Budget limit sheet: an untouched prefill saves the stored limit exactly
   (99.999 stays 99.999, and 0.001 can be saved); Flutter re-parses the
   2-decimal prefill, saving 100.0 and refusing "0.00".
@@ -176,10 +181,6 @@ UPGRADE_TEST_RESULTS.md).
   through the money formatter ("expense $12.50": base currency, masked
   under Hide balances); Flutter's reads "expense of 12 dollars and 50
   cents" whatever the currency. Both read the date as yMMMMd.
-- Flow SEE ALL amount filters: "NaN", "Infinity", "-Infinity" and overflowing
-  input ("1e400") leave the bound unset (`TransactionFilter.parseAmount`);
-  Flutter keeps them (NaN marks the filter active but excludes nothing, an
-  infinite minimum hides every row).
 - Flow SEE ALL category options: names whose lower-case forms are equal
   ("Groceries" / "groceries") keep first-appearance order (Swift stable
   sort); Dart's sort is not stable above 32 options, so their relative order
@@ -190,13 +191,18 @@ UPGRADE_TEST_RESULTS.md).
   closes the alert). Flutter's rows are read-only.
 - Flow SEE ALL month pill (D6): picking a month in 'SELECT MONTH' also sets
   From/To to that month's first and last day, so the list shows that month;
-  Flutter changes only the shared month and the list ignores it.
+  Flutter changes only the shared month and the list ignores it. While
+  From/To are not exactly that month (before any pick, after RESET or after
+  editing a date) the pill's label is dimmed to the secondary colour, no
+  month is ticked in the sheet, and VoiceOver adds "not filtering the list";
+  Flutter's pill always looks applied and ticks the shared month.
 - Flow SEE ALL amount fields (D6): the prefix is the base currency's symbol
-  (Flutter hard-codes "$ "). Parsing is unchanged (commas dropped), so a
-  device whose decimal key is "," reads "12,5" as 125, as Flutter does.
+  (Flutter hard-codes "$ ").
 - Flow SEE ALL chrome: the system navigation bar's back button and swipe
-  replace the 36pt chip back button; the 'Transactions' title and month pill
-  sit in the content header below it.
+  replace the 36pt chip back button, and the 'Transactions' title (in
+  sectionHeader, beside the back button) and the month pill sit in that
+  bar, so the list scrolls under a normal bar; Flutter's header row
+  (pageTitle) scrolls away with the page.
 - Flow SEE ALL tag chips: redesign pills (accent tint with a check when
   selected, outlined otherwise) instead of Material `ChoiceChip`s.
 - Flow SEE ALL sheets: 'SELECT CATEGORY' / 'SELECT MONTH' use the redesign
