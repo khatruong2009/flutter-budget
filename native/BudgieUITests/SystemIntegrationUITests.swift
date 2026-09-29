@@ -86,9 +86,9 @@ final class SystemIntegrationUITests: XCTestCase {
     /// app wrote to the App Group, and follows its Expense link.
     func test4_widget() {
         // Give the widget a value: one expense this month.
+        app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
         app.launch()
         app.buttons["Add transaction"].tap()
-        app.buttons["Add Expense"].tap()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 10))
         amount.tap()

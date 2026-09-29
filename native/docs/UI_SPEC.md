@@ -24,16 +24,22 @@ and VoiceOver labels on every control. No third-party packages.
 
 ## Shell
 
-`TabView` with five tabs (SF Symbols): Spending (`dollarsign.circle`),
-History (`list.bullet.rectangle`), Net Worth (`chart.line.uptrend.xyaxis`),
-Recurring (`arrow.triangle.2.circlepath`), Settings (`gearshape`). An
-`UnsavedChangesBanner` sits above the tabs whenever
-`model.hasUnsavedChanges` (text: "Some changes aren't saved yet." + "Retry"
-calling `model.retrySaves()`); it never hides data. `model.pendingAdd`
-(from quick actions, widget, deep links) opens the add sheet preset to
-income or expense over the current tab, once the data is ready, App Lock is
-passed and onboarding is done (`takePendingAdd()`); until then it stays
-queued.
+Native `TabView` (Liquid Glass on iOS 26+, accent tint) with five tabs, each
+in its own `NavigationStack`: Home (`dollarsign.circle`), Worth
+(`chart.line.uptrend.xyaxis`), Goals (`flag`), Spend (`chart.pie`), Flow
+(`chart.bar`). Tab roots hide the navigation bar and draw a `BudgieHeader`;
+pushed pages keep the system bar and back gesture. Settings is pushed from
+the gear in the Home header; Recurring is a row under Settings > Data; the
+full transaction list (History) is pushed from Home's "SEE ALL". Goals,
+Spend and Flow show a placeholder until their Phase 2 streams land.
+
+An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
+not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
+above the tabs whenever `model.hasUnsavedChanges`; it never hides data.
+`model.pendingAdd` (from quick actions, widget, deep links) opens the add
+sheet preset to income or expense over the current tab, once the data is
+ready, App Lock is passed and onboarding is done (`takePendingAdd()`); until
+then it stays queued. Toasts float above the tab bar (`toastHost`).
 
 ## Spending
 

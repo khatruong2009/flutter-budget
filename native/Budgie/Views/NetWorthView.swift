@@ -10,7 +10,11 @@ struct NetWorthView: View {
     @State private var pickedMonth: DartDateTime?
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            BudgieHeader(title: "Net worth") {
+                if let data = model.data, !data.netWorthEntries.isEmpty { monthMenu(data) }
+            }
+            .padding(.bottom, 8)
             Group {
                 if let data = model.data {
                     if data.netWorthEntries.isEmpty {
@@ -24,13 +28,10 @@ struct NetWorthView: View {
                     ProgressView()
                 }
             }
-            .navigationTitle("Net Worth")
-            .toolbar {
-                if let data = model.data, !data.netWorthEntries.isEmpty {
-                    ToolbarItem(placement: .topBarTrailing) { monthMenu(data) }
-                }
-            }
+            .frame(maxHeight: .infinity)
         }
+        .background(BudgieColor.background)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private func currentMonth(_ data: FinancialData) -> DartDateTime {

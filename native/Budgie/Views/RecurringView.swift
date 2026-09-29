@@ -24,7 +24,7 @@ struct RecurringView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
             Group {
                 if let data = model.data {
                     let templates = data.templates.filter(\.isActive) + data.templates.filter { !$0.isActive }

@@ -13,7 +13,7 @@ struct SettingsView: View {
     @State private var notice: String?
 
     var body: some View {
-        NavigationStack {
+        Group {
             Form {
                 Section("Appearance") {
                     Picker("Theme", selection: Binding(get: { model.themeMode }, set: { model.setThemeMode($0) })) {
@@ -40,6 +40,11 @@ struct SettingsView: View {
                 }
 
                 Section("Data") {
+                    NavigationLink {
+                        RecurringView()
+                    } label: {
+                        Label("Recurring transactions", systemImage: "arrow.triangle.2.circlepath")
+                    }
                     Button {
                         export()
                     } label: {

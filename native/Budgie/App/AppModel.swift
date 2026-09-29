@@ -121,6 +121,12 @@ final class AppModel {
         phase = .starting
 
         // Preferences are only trustworthy once protected data is available.
+        #if DEBUG
+        // UI tests and scripted runs start past the onboarding tour.
+        if ProcessInfo.processInfo.environment["BUDGIE_SKIP_ONBOARDING"] == "1" {
+            preferences.set(.bool(true), forKey: PreferenceKey.onboardingCompleted)
+        }
+        #endif
         themeMode = ThemeMode(rawValue: preferences.string(PreferenceKey.themeMode) ?? "") ?? .system
 
         // Rule 1: copy everything before the first read or write.

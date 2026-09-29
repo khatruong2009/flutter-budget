@@ -1,34 +1,38 @@
 import BudgieCore
 import SwiftUI
 
-/// Tab shell (UI_SPEC "Shell"). Owns the unsaved-changes banner, the add
-/// sheet opened by quick actions / widget / deep links, and the app lock.
+/// The shell (D2): the native tab bar with Home, Worth, Goals, Spend and
+/// Flow, each tab in its own navigation stack (Liquid Glass on iOS 26+).
+/// Settings is pushed from Home's gear. Also hosts the unsaved-changes
+/// banner, the toasts, the add sheet opened by quick actions / widget /
+/// deep links, and the app lock.
 struct MainView: View {
     @Environment(AppModel.self) private var model
-    @State private var tab: Tab = .spending
+    @State private var tab: Tab = .home
     @State private var addRoute: AddRoute?
 
-    enum Tab: Hashable { case spending, history, netWorth, recurring, settings }
+    enum Tab: Hashable { case home, worth, goals, spend, flow }
 
     var body: some View {
         TabView(selection: $tab) {
-            SpendingView()
-                .tabItem { Label("Spending", systemImage: "dollarsign.circle") }
-                .tag(Tab.spending)
-            HistoryView()
-                .tabItem { Label("History", systemImage: "list.bullet.rectangle") }
-                .tag(Tab.history)
-            NetWorthView()
-                .tabItem { Label("Net Worth", systemImage: "chart.line.uptrend.xyaxis") }
-                .tag(Tab.netWorth)
-            RecurringView()
-                .tabItem { Label("Recurring", systemImage: "arrow.triangle.2.circlepath") }
-                .tag(Tab.recurring)
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(Tab.settings)
+            NavigationStack { SpendingView() }
+                .tabItem { Label("Home", systemImage: "dollarsign.circle") }
+                .tag(Tab.home)
+            NavigationStack { NetWorthView() }
+                .tabItem { Label("Worth", systemImage: "chart.line.uptrend.xyaxis") }
+                .tag(Tab.worth)
+            NavigationStack { UpcomingTabView(title: "Goals", symbol: "flag") }
+                .tabItem { Label("Goals", systemImage: "flag") }
+                .tag(Tab.goals)
+            NavigationStack { UpcomingTabView(title: "Spending", symbol: "chart.pie") }
+                .tabItem { Label("Spend", systemImage: "chart.pie") }
+                .tag(Tab.spend)
+            NavigationStack { UpcomingTabView(title: "Cash flow", symbol: "chart.bar") }
+                .tabItem { Label("Flow", systemImage: "chart.bar") }
+                .tag(Tab.flow)
         }
-        .tint(Theme.accent)
+        .tint(BudgieColor.accent)
+        .sensoryFeedback(.selection, trigger: tab)
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.hasUnsavedChanges { UnsavedChangesBanner() }
         }
@@ -53,16 +57,34 @@ extension AddRoute: Identifiable {
     var id: Self { self }
 }
 
-/// Shown while a change is only in memory (UI_SPEC "Shell").
+/// A tab whose redesign lands in a later phase: its header and a notice.
+struct UpcomingTabView: View {
+    let title: String
+    let symbol: String
+
+    var body: some View {
+        VStack(spacing: 0) {
+            BudgieHeader(title: title)
+            EmptyStateView(symbol: symbol, title: title, message: "This tab is being rebuilt and arrives in an upcoming update.")
+                .frame(maxHeight: .infinity)
+        }
+        .background(BudgieColor.background)
+        .toolbar(.hidden, for: .navigationBar)
+    }
+}
+
+/// Shown while a change is only in memory (Flutter `UnsavedChangesBanner`):
+/// a danger strip with white content, pushing the pages down.
 struct UnsavedChangesBanner: View {
     @Environment(AppModel.self) private var model
     @State private var retrying = false
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "exclamationmark.icloud").foregroundStyle(Theme.warning)
-            Text("Some changes aren't saved yet.").font(.subheadline)
-            Spacer()
+            Image(systemName: "icloud.slash").font(.system(size: 17, weight: .semibold)).accessibilityHidden(true)
+            Text("Some changes are not saved to this device yet.")
+                .textStyle(.bodySmall)
+                .frame(maxWidth: .infinity, alignment: .leading)
             Button(retrying ? "Retrying…" : "Retry") {
                 retrying = true
                 Task {
@@ -70,11 +92,13 @@ struct UnsavedChangesBanner: View {
                     retrying = false
                 }
             }
+            .textStyle(.labelSmall)
             .disabled(retrying)
         }
-        .padding(.horizontal)
+        .foregroundStyle(.white)
+        .padding(.horizontal, Metrics.spacingM)
         .padding(.vertical, 10)
-        .background(.bar)
+        .background(BudgieColor.danger.ignoresSafeArea(edges: .top))
         .accessibilityElement(children: .combine)
     }
 }

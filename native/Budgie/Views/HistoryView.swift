@@ -18,7 +18,7 @@ struct HistoryView: View {
 
     var body: some View {
         let formatter = model.moneyFormatter
-        NavigationStack {
+        Group {
             Group {
                 if building && days.isEmpty {
                     ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)

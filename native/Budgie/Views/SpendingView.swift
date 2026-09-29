@@ -10,7 +10,23 @@ struct SpendingView: View {
     init() {}
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            BudgieHeader(showLogo: true, centerTrailing: true) {
+                if let data = model.data { monthMenu(data) }
+            } accessory: {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(BudgieColor.textSecondary)
+                        .frame(width: 36, height: 36)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityLabel("Settings")
+                .accessibilityIdentifier("home.settings")
+            }
+            .padding(.bottom, 8)
             Group {
                 if let data = model.data {
                     content(data)
@@ -18,41 +34,35 @@ struct SpendingView: View {
                     ProgressView()
                 }
             }
-            .background(Theme.background)
-            .navigationTitle("Spending")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button("Add Expense", systemImage: "minus.circle") { sheet = .add(.expense) }
-                        Button("Add Income", systemImage: "plus.circle") { sheet = .add(.income) }
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("Add transaction")
-                }
+            .frame(maxHeight: .infinity)
+        }
+        .background(BudgieColor.background)
+        .toolbar(.hidden, for: .navigationBar)
+        .overlay(alignment: .bottomTrailing) {
+            GlowFab(label: "Add transaction") { sheet = .add(.expense) }
+                .padding(.trailing, Metrics.fabInset)
+                .padding(.bottom, Metrics.fabInset)
+        }
+        .sheet(item: $sheet) { item in
+            switch item {
+            case .add(let type): TransactionFormView(mode: .add(type))
+            case .edit(let record): TransactionFormView(mode: .edit(record))
+            case .breakdown(let breakdown):
+                SpendingSafeToSpendSheet(breakdown: breakdown, formatter: model.moneyFormatter)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
-            .sheet(item: $sheet) { item in
-                switch item {
-                case .add(let type): TransactionFormView(mode: .add(type))
-                case .edit(let record): TransactionFormView(mode: .edit(record))
-                case .breakdown(let breakdown):
-                    SpendingSafeToSpendSheet(breakdown: breakdown, formatter: model.moneyFormatter)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
-                }
+        }
+        .confirmationDialog(
+            "Delete this transaction?", isPresented: deleteDialogBinding, titleVisibility: .visible,
+            presenting: pendingDelete
+        ) { record in
+            Button("Delete", role: .destructive) {
+                Task { await model.deleteTransaction(id: record.id) }
             }
-            .confirmationDialog(
-                "Delete this transaction?", isPresented: deleteDialogBinding, titleVisibility: .visible,
-                presenting: pendingDelete
-            ) { record in
-                Button("Delete", role: .destructive) {
-                    Task { await model.deleteTransaction(id: record.id) }
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: { record in
-                Text(record.description)
-            }
+            Button("Cancel", role: .cancel) {}
+        } message: { record in
+            Text(record.description)
         }
     }
 
@@ -76,9 +86,13 @@ struct SpendingView: View {
 
         List {
             Section {
-                monthSelector(data, current: month)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                HStack(spacing: 12) {
+                    PillButton(title: "Expense", symbol: "minus", color: BudgieColor.danger) { sheet = .add(.expense) }
+                    PillButton(title: "Income", symbol: "plus", color: BudgieColor.income) { sheet = .add(.income) }
+                }
+                .buttonStyle(.borderless)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
             }
             Section {
                 SpendingTotalsCard(income: totals.income, expenses: totals.expenses, formatter: formatter)
@@ -114,7 +128,7 @@ struct SpendingView: View {
                     }
                     .listRowBackground(Theme.card)
                 }
-                Section("Transactions") {
+                Section {
                     ForEach(rows) { record in
                         Button { sheet = .edit(record) } label: {
                             SpendingRow(
@@ -127,50 +141,42 @@ struct SpendingView: View {
                         }
                         .accessibilityHint("Opens the transaction for editing")
                     }
+                } header: {
+                    HStack {
+                        Text("Transactions")
+                        Spacer()
+                        NavigationLink {
+                            HistoryView()
+                        } label: {
+                            Text("SEE ALL").textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
+                        }
+                        .accessibilityLabel("See all transactions")
+                    }
                 }
                 .listRowBackground(Theme.card)
             }
         }
         .scrollContentBackground(.hidden)
+        .contentMargins(.top, 4, for: .scrollContent)
     }
 
     // MARK: - Month selector
 
-    private func monthSelector(_ data: FinancialData, current: DartDateTime) -> some View {
-        let calendar = model.calendar
-        let thisMonth = calendar.month(of: model.now)
+    /// The header's month pill: a menu of the months with transactions plus
+    /// the current and selected months.
+    private func monthMenu(_ data: FinancialData) -> some View {
+        let current = model.selectedMonth
         var months = model.ledger.availableMonths
-        for extra in [thisMonth, current] where !months.contains(extra) { months.append(extra) }
+        for extra in [model.calendar.month(of: model.now), current] where !months.contains(extra) { months.append(extra) }
         months.sort { $0 > $1 }
-        let f = current.fields
-        return HStack {
-            Button {
-                model.selectMonth(calendar.date(f.year, f.month - 1))
-            } label: {
-                Image(systemName: "chevron.left").padding(8)
+        return Menu {
+            Picker("Month", selection: Binding(get: { current }, set: { model.selectMonth($0) })) {
+                ForEach(months, id: \.self) { Text(DartDateFormat.yMMMM($0)).tag($0) }
             }
-            .accessibilityLabel("Previous month")
-            Spacer()
-            Menu {
-                Picker("Month", selection: Binding(get: { current }, set: { model.selectMonth($0) })) {
-                    ForEach(months, id: \.self) { Text(DartDateFormat.yMMMM($0)).tag($0) }
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Text(DartDateFormat.yMMMM(current)).font(.headline)
-                    Image(systemName: "chevron.down").font(.caption.weight(.semibold))
-                }
-            }
-            .accessibilityLabel("Month, \(DartDateFormat.yMMMM(current))")
-            Spacer()
-            Button {
-                model.selectMonth(calendar.date(f.year, f.month + 1))
-            } label: {
-                Image(systemName: "chevron.right").padding(8)
-            }
-            .accessibilityLabel("Next month")
+        } label: {
+            MonthPill(label: DartDateFormat.yMMMM(current))
         }
-        .buttonStyle(.borderless)
+        .accessibilityLabel("Month, \(DartDateFormat.yMMMM(current))")
     }
 }
 
