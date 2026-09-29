@@ -184,6 +184,30 @@ UPGRADE_TEST_RESULTS.md).
   ("Groceries" / "groceries") keep first-appearance order (Swift stable
   sort); Dart's sort is not stable above 32 options, so their relative order
   can differ.
+- Flow SEE ALL rows (D7): a tap opens the edit form and a left swipe asks
+  "Delete Transaction" before deleting; the delete is awaited and toasts
+  "Transaction deleted" or the save-failed message (a row already gone just
+  closes the alert). Flutter's rows are read-only.
+- Flow SEE ALL month pill (D6): picking a month in 'SELECT MONTH' also sets
+  From/To to that month's first and last day, so the list shows that month;
+  Flutter changes only the shared month and the list ignores it.
+- Flow SEE ALL amount fields (D6): the prefix is the base currency's symbol
+  (Flutter hard-codes "$ "). Parsing is unchanged (commas dropped), so a
+  device whose decimal key is "," reads "12,5" as 125, as Flutter does.
+- Flow SEE ALL chrome: the system navigation bar's back button and swipe
+  replace the 36pt chip back button; the 'Transactions' title and month pill
+  sit in the content header below it.
+- Flow SEE ALL tag chips: redesign pills (accent tint with a check when
+  selected, outlined otherwise) instead of Material `ChoiceChip`s.
+- Flow SEE ALL sheets: 'SELECT CATEGORY' / 'SELECT MONTH' use the redesign
+  sheet chrome (44x4 handle) with plain rows (no Material ripple); the From/To
+  date picker is the shared graphical day picker sheet (Cancel / OK) instead
+  of Material's calendar dialog.
+- Flow SEE ALL: dragging the page dismisses the keyboard (the decimal pad has
+  no return key); Flutter keeps it up.
+- Flow SEE ALL accessibility: rows read "description, category, date, signed
+  amount" with an edit hint and a Delete action; filter controls are
+  labelled. Flutter authors no semantics on this page.
 - Safe-to-spend breakdown sheet: redesign sheet chrome (card colour, 44x4
   grab handle, 28 radius) instead of Material's default sheet and 32x4
   handle; the divider uses the border token.
@@ -215,6 +239,29 @@ UPGRADE_TEST_RESULTS.md).
   dark, ink 6% light; Flutter's light value is black 5%).
 - Spend month sheet: a native sheet (system scrim, drag to dismiss)
   sized to its content, instead of Material's bottom sheet.
+- Flow tab: the chart range and a pushed SEE ALL page survive switching
+  tabs (the native `TabView` keeps each tab's state); Flutter's `PageView`
+  disposes the tab, so its range resets to 6 months on every tab switch.
+- Flow tab accessibility: bars, metric chips, year-over-year rows and the
+  trend have VoiceOver labels ("September 2026, net +$3,158", "12-month net
+  trend, From ... to ..."); Flutter has no semantics there and reads only
+  the bare texts.
+- Flow sheets (chart range, month detail): the redesign sheet chrome (44x4
+  handle at 60%, 24 radius, content-sized detent) instead of Material's
+  sheet with a 40x4 handle at 30%; range rows dim on press instead of the
+  Material ripple.
+- Flow bars: the current month's badge capsule grows to fit its text
+  (Flutter clips it to four bar widths), and month labels overflow their
+  column rather than clip at large text sizes.
+- Flow month detail sheet: the net amount scales down to fit one line
+  (Flutter's row overflows); SF Symbols stand in for Material's
+  `bar_chart`, `south_west`, `north_east` and `check`; a negative net shows
+  a down-trend symbol (Flutter shows `trending_up`, D6).
+- Flow trend: a data change interpolates the twelve values (and the bound
+  derived from them) over 150ms; fl_chart interpolates the spots and the
+  axis bounds separately, so mid-animation frames can differ slightly.
+- Flow preview rows find the category icon like the other transaction rows
+  (case-insensitive, archived included; see "Category icons" above).
 
 ## Known MVP limitations
 

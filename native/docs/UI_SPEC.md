@@ -31,7 +31,7 @@ in its own `NavigationStack`: Home (`dollarsign.circle`), Worth
 pushed pages keep the system bar and back gesture. Settings is pushed from
 the gear in the Home header; Recurring is a row under Settings > Data; the
 month's transaction list (Transactions) is pushed from Home's "SEE ALL".
-Goals and Flow show a placeholder until their Phase 2 streams land.
+Goals shows a placeholder until its Phase 2 stream lands.
 
 An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
@@ -131,6 +131,93 @@ ledger's month summaries (no transaction scan).
   `spend.month.<yyyy-MM>`, `spend.donut`, `spend.row.<rank>`,
   `spend.tail`, `spend.showLess`, `spend.empty`, `spend.drillIn.summary`,
   `spend.drillIn.row`.
+## Flow (spec full-app/04; Flutter `history_page.dart` `HistoryPage`)
+
+`Views/Flow/`. Every figure comes from `model.ledger` through
+`CashFlowMath` (no transaction scans); money through `model.moneyFormatter`
+(Hide balances masks amounts and badges, never percentages or shapes).
+
+- Header: `BudgieHeader("Cash flow")` with a `MonthPill` showing the chart
+  range (`CashFlowMath.rangeLabel`, default 6 months; page `@State`, not
+  persisted). Tap: light haptic, range sheet ("CHART RANGE", rows 3 / 6 /
+  12 months, selected accent/bold with a check; a pick gives a selection
+  haptic and closes). The range drives only the bars and the metric strip;
+  the month is `model.selectedMonth` (read-only here).
+- Page order (horizontal padding 20): header, 24, metric strip, 16,
+  `FlowInsightsSlot` (empty until the Insights stream; so 32pt when empty),
+  16, net cash flow, 16, year over year, 16, 12-month trend, 16,
+  "Transactions" / "SEE ALL", 12, preview.
+- Metric strip: equal-height chips (radius 22, padding 16): AVG SAVED / MO
+  (`avgSavedText`) and SAVINGS RATE (`savingsRateText`), income colour when
+  >= 0, danger otherwise; values wrap, no scaling.
+- Net cash flow: custom layout (D16) from `CashFlowMath.barLayout` for the
+  card's inner width: 190pt band, baseline at 116 (primary @12%), columns of
+  `barWidth` spaced like `spaceAround`, bars radius 10; the selected month
+  saturated with a glow (blur 20, .6) and its `badgeText` capsule 30pt above
+  the bar; `MMM` labels in the bottom band. A column (the whole 190pt) tap:
+  light haptic, month detail sheet (`CashFlowMath.MonthDetail`: bar-chart
+  tile, `yMMMM`, Income / Expenses tiles, net row). Empty window: "No cash
+  flow data yet." No bar animation (Flutter has none).
+- Year over year: `CashFlowMath.yearOverYear` rows (Income, Expenses) with
+  delta labels and two 12pt `GlowProgressBar`s each (800ms fill, instant
+  under Reduce Motion), legend "This year" / "Last year".
+- 12-month trend: `TrendLine`, a custom `Path` through
+  `CashFlowMath.trendPoints` with `trendControlPoints` (fl_chart's exact
+  cubic), 9pt accent @40% underlay, 3pt accent line, dashed zero line on top
+  (fl_chart `extraLinesOnTop`), a 5pt #F2F2FA dot on the last point
+  overhanging the plot edge; no fill, grid or axes. A data change animates
+  150ms linear (none under Reduce Motion). Self-contained so it can become
+  Swift Charts.
+- Preview: `ledger.recent(3)` rows (category icon on an income or accent
+  tile, description, "category · MMM d", signed amount); a row or the empty
+  card ("No transactions recorded yet.") pushes `FlowTransactionsView`, as
+  does "SEE ALL".
+- VoiceOver: each bar is a button "September 2026, net +$3,158" (selected
+  trait on the current month); chips read "Average saved per month" /
+  "Savings rate" with the value; YoY rows read the delta; the trend reads
+  "12-month net trend, From <month>, <net>, to <month>, <net>".
+- Accessibility identifiers: `flow.rangePill`, `flow.range.3|6|12`,
+  `flow.metric.avgSaved`, `flow.metric.savingsRate`, `flow.netCashFlow`,
+  `flow.bar.<yyyy-MM>`, `flow.yoy`, `flow.trend`, `flow.preview.row`,
+  `flow.preview.empty`; SEE ALL is the button "See all transactions".
+## Flow: all transactions (Flow "SEE ALL"; Flutter `_TransactionsDetailPage`)
+
+`FlowTransactionsView`, pushed from Flow (system back). Every transaction,
+newest first, filtered by `TransactionFilter` (all conditions ANDed).
+
+- Header: 'Transactions' (pageTitle) and, when any month has data, the
+  month pill (`MMMM` of `model.selectedMonth`) opening 'SELECT MONTH'
+  (`yMMMM` rows of `ledger.availableMonths`, list capped at 320pt). A pick
+  calls `model.selectMonth` and sets From/To to the month's first and last
+  day (D6 fix).
+- Filters card: 'Filters' + 'RESET' (only while `filter.isActive`; clears
+  every filter and the amount text). Search field (description only, D8;
+  hint 'Search descriptions'; a minus button clears it while the trimmed
+  query is non-empty). Type pills 'All' / 'Income' / 'Expense' (compact,
+  left-aligned). Category button ('All categories' or the name) opening
+  'SELECT CATEGORY' ('All categories' + `ledger.categoryNames`). Tag chips
+  ('All tags' + `model.tags` in provider order; tapping the selected tag
+  clears it) when tags exist. From / To buttons ('Any date' or `MMM d`)
+  opening the day picker (2000-01-01 to Dec 31 of now.year + 10; the other
+  bound moves when crossed). Min / Max amount fields (decimal pad, floating
+  label, base-currency prefix while floated; `TransactionFilter.parseAmount`).
+- Results: 'Results' + "{matches} of {all}", pills 'Income ...', 'Expenses
+  ...', 'Net ...' over every match, then one list card of rows (tile,
+  description, "{category} · {MMM d}", signed amount). 50 rows at first;
+  while more match, "Showing N of M matches" and 'Load more transactions'
+  (+50). The count resets to 50 only when the filter signature changes.
+  Empty: 'No transactions match these filters.' / 'No transactions have
+  been recorded yet.'
+- Rows (D7): tap opens the edit form; swipe left (or the VoiceOver Delete
+  action) confirms "Delete Transaction" and awaits `deleteTransaction`.
+- Rows are built lazily (`LazyVStack`); the filtered rows and summary are
+  cached per filter + `ledgerRevision`. Money goes through
+  `model.moneyFormatter` (Hide balances masks rows and pills).
+- UI-test identifiers: `flow.all.month`, `flow.all.search`,
+  `flow.all.type`, `flow.all.category`, `flow.all.from`, `flow.all.to`,
+  `flow.all.min`, `flow.all.max`, `flow.all.reset`, `flow.all.count`,
+  `flow.all.empty`, `flow.all.row`, `flow.all.showing`,
+  `flow.all.loadMore`, `flow.all.option` (sheet rows).
 
 ## Net Worth (read-only in the MVP)
 
