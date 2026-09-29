@@ -103,6 +103,8 @@ struct AppRoot: View {
 
     var body: some View {
         RootView()
+            // Unstyled text uses Gabarito, as Flutter's ThemeData.fontFamily.
+            .font(TextSpec.bodyLarge.font())
             .environment(model)
             .environment(\.scenePhase, sceneState.phase)
             .onChange(of: model.themeMode, initial: true) { _, mode in

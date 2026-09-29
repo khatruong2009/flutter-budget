@@ -49,6 +49,7 @@
 		ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D5F50F2340127241F06169 /* Theme.swift */; };
 		F08842C77D36FF5B33731EB9 /* TransactionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */; };
 		F091B01D59169689CBB3EDB6 /* Gabarito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */; };
+		F174FC9D4CF16A0B6E067ABC /* TextStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C99D0A6C29A6319DA1FBF36 /* TextStyles.swift */; };
 		F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0675028D226C1972E3D145CE /* LicencesView.swift */; };
 		F2C2B9B40D0A8478D6574B4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B45D2D35234B7CCA0BF312F3 /* Assets.xcassets */; };
 		FE5B9B30E0779A3107D02108 /* BudgetWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2361C4CBE554BE461CBC3D /* BudgetWidgets.swift */; };
@@ -97,6 +98,7 @@
 		0675028D226C1972E3D145CE /* LicencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicencesView.swift; sourceTree = "<group>"; };
 		0A12631956871BA18AFA9044 /* Budgie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Budgie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD33E49D26968C2B1B81588 /* BudgieCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BudgieCore; path = BudgieCore; sourceTree = SOURCE_ROOT; };
+		0C99D0A6C29A6319DA1FBF36 /* TextStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyles.swift; sourceTree = "<group>"; };
 		16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonthTests.swift; sourceTree = "<group>"; };
 		16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Bold.ttf"; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				05C1B7F8DAB0F15009E0A853 /* Fonts.swift */,
+				0C99D0A6C29A6319DA1FBF36 /* TextStyles.swift */,
 			);
 			path = Typography;
 			sourceTree = "<group>";
@@ -557,6 +560,7 @@
 				C02683C5A3EEAFEFAA011A50 /* SettingsView.swift in Sources */,
 				7768DCA424CD0AB9B8D060B9 /* SpendingSafeToSpendSheet.swift in Sources */,
 				4A4CECF3184C530EAD660520 /* SpendingView.swift in Sources */,
+				F174FC9D4CF16A0B6E067ABC /* TextStyles.swift in Sources */,
 				ED27F6279C64E595283CCDB5 /* Theme.swift in Sources */,
 				F08842C77D36FF5B33731EB9 /* TransactionFormView.swift in Sources */,
 			);
