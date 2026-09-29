@@ -93,9 +93,8 @@ final class MVPFlowUITests: XCTestCase {
         tab("Worth")
         XCTAssertTrue(app.staticTexts["No net worth accounts yet"].waitForExistence(timeout: 5))
 
-        // Theme.
+        // Theme: the Light | Dark | Auto pills on the Theme row.
         openSettings()
-        app.buttons["Theme, System"].firstMatch.tap()
         app.buttons["Dark"].firstMatch.tap()
 
         // Add an income from the Home pill, then delete it from SEE ALL.

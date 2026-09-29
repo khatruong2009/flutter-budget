@@ -1,0 +1,565 @@
+{
+  "loaded": {
+    "baseCurrencyCode": "USD",
+    "localeOverride": null,
+    "appLockEnabled": false,
+    "autoLockTimeoutSeconds": 60,
+    "hideBalances": false
+  },
+  "steps": [
+    {
+      "op": "currency",
+      "arg": " eur ",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "EUR"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "EUR",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "currency",
+      "arg": "EUR",
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "EUR"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "EUR",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "currency",
+      "arg": "euro",
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "EUR"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "EUR",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "currency",
+      "arg": "",
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "EUR"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "EUR",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "currency",
+      "arg": "\tgbp﻿",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"GBP\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "GBP"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "GBP",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "currency",
+      "arg": "usd",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "locale",
+      "arg": " de_DE ",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"de_DE\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "de_DE"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "de_DE",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "locale",
+      "arg": "de_DE",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"de_DE\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "de_DE"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "de_DE",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "locale",
+      "arg": "   ",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "locale",
+      "arg": null,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":null,\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "locale",
+      "arg": "fr_FR",
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "lock",
+      "arg": true,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":true,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": true
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "lock",
+      "arg": true,
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":true,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": true
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "lock",
+      "arg": false,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "timeout",
+      "arg": -1,
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "timeout",
+      "arg": 60,
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":60,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "timeout",
+      "arg": 0,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 0
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "timeout",
+      "arg": 900,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":900,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 900
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 900,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "timeout",
+      "arg": 0,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 0
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": false
+      }
+    },
+    {
+      "op": "hide",
+      "arg": true,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":true}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 0
+        },
+        "flutter.hide_balances": {
+          "type": "bool",
+          "value": true
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": true
+      }
+    },
+    {
+      "op": "hide",
+      "arg": true,
+      "wrote": false,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":true}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 0
+        },
+        "flutter.hide_balances": {
+          "type": "bool",
+          "value": true
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": true
+      }
+    },
+    {
+      "op": "hide",
+      "arg": false,
+      "wrote": true,
+      "section": "{\"baseCurrencyCode\":\"USD\",\"localeOverride\":\"fr_FR\",\"appLockEnabled\":false,\"autoLockTimeoutSeconds\":0,\"hideBalances\":false}",
+      "prefs": {
+        "flutter.base_currency_code": {
+          "type": "string",
+          "value": "USD"
+        },
+        "flutter.locale_override": {
+          "type": "string",
+          "value": "fr_FR"
+        },
+        "flutter.app_lock_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "flutter.auto_lock_timeout_seconds": {
+          "type": "int",
+          "value": 0
+        },
+        "flutter.hide_balances": {
+          "type": "bool",
+          "value": false
+        }
+      },
+      "memory": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": false
+      }
+    }
+  ]
+}

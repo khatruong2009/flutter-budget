@@ -2,130 +2,326 @@ import BudgieCore
 import SwiftUI
 import UIKit
 
-/// UI_SPEC "Settings".
+/// Settings (Flutter's "More" tab, `settings_page.dart:579-911`), pushed
+/// from the Home gear (D2): the title sits in the navigation bar beside the
+/// back button, then the brand card and the APPEARANCE, PERSONALIZATION,
+/// PRIVACY, DATA and ABOUT cards.
+///
+/// Differences from Flutter (PARITY_GAPS): Categories, Tags & rules, Import
+/// from CSV and the backup rows open an "upcoming update" page until their
+/// phase lands; turning App lock on asks for Face ID / the passcode first
+/// (Flutter locks at once); ABOUT also lists Data diagnostics and Licences.
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
 
-    private static let currencies = ["USD", "CAD", "EUR", "GBP", "AUD", "JPY", "CNY", "INR", "KRW", "MXN", "BRL"]
-
-    @State private var biometry = DeviceAuth.biometryName
+    @State private var destination: Destination?
+    @State private var choice: Choice?
     @State private var exportFile: ExportFile?
+    @State private var enablingLock = false
     @State private var notice: String?
 
     var body: some View {
-        Group {
-            Form {
-                Section("Appearance") {
-                    Picker("Theme", selection: Binding(get: { model.themeMode }, set: { model.setThemeMode($0) })) {
-                        Text("System").tag(ThemeMode.system)
-                        Text("Light").tag(ThemeMode.light)
-                        Text("Dark").tag(ThemeMode.dark)
-                    }
-                }
-
-                Section("Currency") {
-                    Picker("Currency", selection: currencyBinding) {
-                        ForEach(currencyOptions, id: \.self) { code in
-                            Text(currencyLabel(code)).tag(code)
-                        }
-                    }
-                }
-
-                Section {
-                    Toggle("\(biometry) Lock", isOn: lockBinding)
-                } header: {
-                    Text("Security")
-                } footer: {
-                    Text("Require \(biometry == "Passcode" ? "your passcode" : biometry) to open Budgie.")
-                }
-
-                Section("Data") {
-                    NavigationLink {
-                        RecurringView()
-                    } label: {
-                        Label("Recurring transactions", systemImage: "arrow.triangle.2.circlepath")
-                    }
-                    Button {
-                        export()
-                    } label: {
-                        Label("Export transactions", systemImage: "square.and.arrow.up")
-                    }
-                }
-
-                Section("About") {
-                    LabeledContent("Version", value: versionText)
-                    NavigationLink("Data diagnostics") { DiagnosticsView() }
-                    NavigationLink("Licences") { LicencesView() }
-                    #if DEBUG
-                    NavigationLink("Design gallery") { DesignGalleryView() }
-                    #endif
-                }
+        ScrollView {
+            if let data = model.data {
+                content(data)
             }
-            .navigationTitle("Settings")
-            .sheet(item: $exportFile) { file in
-                ActivityView(url: file.url).ignoresSafeArea()
+        }
+        .background(BudgieColor.background)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(BudgieColor.background, for: .navigationBar)
+        .toolbar {
+            SettingsBarTitle {
+                Text("Settings")
+                    .textStyle(.pageTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .fixedSize()
+                    .accessibilityAddTraits(.isHeader)
             }
-            .alert("Settings", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(notice ?? "")
+        }
+        .navigationDestination(item: $destination) { $0.view }
+        .sheet(item: $choice) { choiceSheet($0) }
+        .sheet(item: $exportFile) { file in
+            ActivityView(url: file.url) { completed in
+                if completed { model.showToast(Toast(message: "Transactions exported successfully!")) }
             }
+            .ignoresSafeArea()
+        }
+        .alert("App lock", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(notice ?? "")
         }
     }
 
-    // MARK: Bindings
+    // MARK: - Page
 
-    private var currentCurrency: String { model.data?.appSettings.baseCurrencyCode ?? "USD" }
-
-    /// A stored code outside the standard list still has to be selectable.
-    private var currencyOptions: [String] {
-        Self.currencies.contains(currentCurrency) ? Self.currencies : [currentCurrency] + Self.currencies
+    private func content(_ data: FinancialData) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SettingsBrandCard()
+                .padding(EdgeInsets(top: Metrics.spacingL, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
+            section("Appearance", rows: [AnyView(SettingsThemeRow(selection: themeSelection))])
+            section("Personalization", rows: personalizationRows(data))
+            section("Privacy", rows: privacyRows(data.appSettings))
+            section("Data", rows: dataRows(data))
+            section("About", rows: aboutRows)
+        }
+        .padding(.bottom, Metrics.spacingL)
     }
 
-    private var currencyBinding: Binding<String> {
+    private func personalizationRows(_ data: FinancialData) -> [AnyView] {
+        let settings = data.appSettings
+        let activeCategories = data.categories.filter { !$0.isArchived }.count
+        return [
+            AnyView(SettingsRow(
+                symbol: "square.on.circle", color: BudgieColor.accent, title: "Categories",
+                subtitle: "\(activeCategories) active · custom names, icons, and order",
+                action: { destination = .categories })),
+            AnyView(SettingsRow(
+                symbol: "sparkles", color: BudgieColor.info, title: "Tags & rules",
+                subtitle: "\(data.tags.count) tags · \(data.rules.count) rules",
+                action: { destination = .tagsAndRules })),
+            AnyView(SettingsRow(
+                symbol: "banknote", color: BudgieColor.income, title: "Currency",
+                subtitle: SettingsOptions.currencyLabel(settings.baseCurrencyCode),
+                action: { choice = .currency }
+            ).accessibilityIdentifier("settings.currency")),
+            AnyView(SettingsRow(
+                symbol: "globe", color: BudgieColor.info, title: "Number format",
+                subtitle: SettingsOptions.localeLabel(settings.localeOverride),
+                action: { choice = .locale }
+            ).accessibilityIdentifier("settings.numberFormat")),
+        ]
+    }
+
+    private func privacyRows(_ settings: AppSettings) -> [AnyView] {
+        let delay = SettingsOptions.lockTimeoutLabel(settings.autoLockTimeoutSeconds)
+        var rows: [AnyView] = [
+            AnyView(SettingsToggleRow(
+                symbol: "lock", color: BudgieColor.accent, title: "App lock",
+                subtitle: settings.appLockEnabled ? "Lock after \(delay)" : "Require device authentication",
+                isOn: lockBinding, identifier: "settings.appLock"))
+        ]
+        // Inserted and removed without animation, as in Flutter.
+        if settings.appLockEnabled {
+            rows.append(AnyView(SettingsRow(
+                symbol: "timer", color: BudgieColor.info, title: "Lock delay", subtitle: delay,
+                action: { choice = .lockDelay }
+            ).accessibilityIdentifier("settings.lockDelay")))
+        }
+        rows.append(AnyView(SettingsToggleRow(
+            symbol: "eye.slash", color: BudgieColor.warning, title: "Hide balances",
+            subtitle: "Mask amounts throughout the app", isOn: hideBinding, identifier: "settings.hideBalances")))
+        return rows
+    }
+
+    /// Recurring is never disabled; the other four are while an export runs
+    /// (Flutter's `_dataBusy`).
+    private func dataRows(_ data: FinancialData) -> [AnyView] {
+        let busy = exportFile != nil
+        let transactionCount = model.ledger.newestFirst.count
+        func unlessBusy(_ action: @escaping () -> Void) -> (() -> Void)? { busy ? nil : action }
+        return [
+            AnyView(SettingsRow(
+                symbol: "repeat", color: BudgieColor.accent, title: "Recurring transactions",
+                subtitle: recurringSubtitle(data.templates.filter(\.isActive)),
+                action: { destination = .recurring }
+            ).accessibilityIdentifier("settings.recurring")),
+            AnyView(SettingsRow(
+                symbol: "arrow.down.to.line", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
+                title: "Export as CSV", subtitle: "All \(transactionCount) transactions", busy: busy,
+                action: unlessBusy(export)
+            ).accessibilityIdentifier("settings.exportCSV")),
+            AnyView(SettingsRow(
+                symbol: "arrow.up.to.line", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
+                title: "Import from CSV", subtitle: "Add transactions from a file",
+                action: unlessBusy { destination = .csvImport })),
+            AnyView(SettingsRow(
+                symbol: "icloud.and.arrow.up", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
+                title: "Export backup", subtitle: "Everything, as a JSON file",
+                action: unlessBusy { destination = .backupExport })),
+            AnyView(SettingsRow(
+                symbol: "arrow.counterclockwise.circle", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
+                title: "Import backup", subtitle: "Restore everything (replaces current data)",
+                action: unlessBusy { destination = .backupImport })),
+        ]
+    }
+
+    /// Version (no action), then the Swift-only pages: what was loaded,
+    /// the fonts' licences, and the debug design gallery.
+    private var aboutRows: [AnyView] {
+        var rows: [AnyView] = [
+            AnyView(SettingsRow(
+                symbol: "info.circle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile, title: "Version",
+                subtitle: "Budgie \(Self.version)", action: nil, trailing: { EmptyView() })),
+            AnyView(SettingsRow(
+                symbol: "list.bullet.rectangle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
+                title: "Data diagnostics", subtitle: "What this device loaded",
+                action: { destination = .diagnostics })),
+            AnyView(SettingsRow(
+                symbol: "doc.text", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
+                title: "Licences", subtitle: "Fonts (SIL Open Font License)",
+                action: { destination = .licences })),
+        ]
+        #if DEBUG
+        rows.append(AnyView(SettingsRow(
+            symbol: "paintpalette", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
+            title: "Design gallery", subtitle: "Debug builds only",
+            action: { destination = .designGallery })))
+        #endif
+        return rows
+    }
+
+    /// An eyebrow and its list card (inset 20, 10 below the eyebrow).
+    private func section(_ title: String, rows: [AnyView]) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SettingsEyebrow(title: title)
+            GlowListCard(rows: rows)
+                .padding(EdgeInsets(top: 10, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
+        }
+    }
+
+    /// `_recurringSubtitle` (sp:913-917): the count and the first three
+    /// active descriptions, in list order.
+    private func recurringSubtitle(_ active: [RecurringTemplate]) -> String {
+        if active.isEmpty { return "No active recurring transactions" }
+        return "\(active.count) active · \(active.prefix(3).map(\.description).joined(separator: ", "))"
+    }
+
+    /// The marketing version only (Flutter's `PackageInfo.version`, falling
+    /// back to 2.0.0).
+    private static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.0.0"
+
+    // MARK: - Controls
+
+    /// Light | Dark | Auto, in Flutter's order.
+    private static let themeModes: [ThemeMode] = [.light, .dark, .system]
+
+    private var themeSelection: Binding<Int> {
         Binding(
-            get: { currentCurrency },
-            set: { code in Task { await model.setBaseCurrency(code) } })
+            get: { Self.themeModes.firstIndex(of: model.themeMode) ?? 2 },
+            set: { model.setThemeMode(Self.themeModes[$0]) })
     }
 
-    private func currencyLabel(_ code: String) -> String {
-        if let name = Locale.current.localizedString(forCurrencyCode: code) { return "\(code) – \(name)" }
-        return code
-    }
-
+    /// Turning the lock on authenticates first and keeps this session
+    /// unlocked; turning it off needs nothing.
     private var lockBinding: Binding<Bool> {
         Binding(
             get: { model.data?.appSettings.appLockEnabled == true },
             set: { enable in
-                if enable {
-                    Task {
-                        switch await DeviceAuth.authenticate(reason: "Turn on App Lock") {
-                        case .success: await model.setAppLockEnabled(true)
-                        case .failed: break
-                        case .unavailable: notice = "Set a passcode in the Settings app to use App Lock."
-                        }
-                    }
-                } else {
+                guard enable else {
                     Task { await model.setAppLockEnabled(false) }
+                    return
+                }
+                guard !enablingLock else { return }
+                enablingLock = true
+                Task {
+                    switch await DeviceAuth.authenticate(reason: "Turn on App Lock") {
+                    case .success:
+                        model.markUnlocked()
+                        await model.setAppLockEnabled(true)
+                    case .failed: break
+                    case .unavailable: notice = "Set a passcode in the Settings app to use App Lock."
+                    }
+                    enablingLock = false
                 }
             })
     }
 
-    // MARK: Export and version
+    private var hideBinding: Binding<Bool> {
+        Binding(
+            get: { model.data?.appSettings.hideBalances == true },
+            set: { hidden in Task { await model.setHideBalances(hidden) } })
+    }
 
+    // MARK: - Sheets
+
+    private enum Choice: String, Identifiable {
+        case currency, locale, lockDelay
+        var id: String { rawValue }
+    }
+
+    @ViewBuilder
+    private func choiceSheet(_ choice: Choice) -> some View {
+        let settings = model.data?.appSettings
+        switch choice {
+        case .currency:
+            SettingsChoiceSheet(
+                title: "Base currency", choices: SettingsOptions.currencies, current: settings?.baseCurrencyCode ?? "USD"
+            ) { await model.setBaseCurrency($0) }
+        case .locale:
+            SettingsChoiceSheet(title: "Number format", choices: SettingsOptions.locales, current: settings?.localeOverride) {
+                await model.setLocaleOverride($0)
+            }
+        case .lockDelay:
+            SettingsChoiceSheet(
+                title: "Lock delay", choices: SettingsOptions.lockDelays, current: settings?.autoLockTimeoutSeconds ?? 60
+            ) { await model.setAutoLockTimeoutSeconds($0) }
+        }
+    }
+
+    /// `_exportTransactions`: the share sheet, with the row's spinner while
+    /// it is open and the success message once the file was shared.
     private func export() {
         do {
             exportFile = ExportFile(url: try model.exportCSV())
         } catch {
-            notice = "Couldn't create the export file. \(error.localizedDescription)"
+            model.showToast(Toast(message: "Error exporting transactions: \(error.localizedDescription)", style: .danger))
         }
     }
 
-    private var versionText: String {
-        let info = Bundle.main.infoDictionary
-        let version = info?["CFBundleShortVersionString"] as? String ?? "?"
-        let build = info?["CFBundleVersion"] as? String ?? "?"
-        return "\(version) (\(build))"
+    // MARK: - Destinations
+
+    private enum Destination: Hashable {
+        case categories, tagsAndRules, recurring, csvImport, backupExport, backupImport, diagnostics, licences
+        #if DEBUG
+        case designGallery
+        #endif
+
+        @MainActor @ViewBuilder var view: some View {
+            switch self {
+            case .categories: UpcomingSettingsPage(title: "Categories", symbol: "square.on.circle")
+            case .tagsAndRules: UpcomingSettingsPage(title: "Tags & rules", symbol: "sparkles")
+            case .recurring: RecurringView()
+            case .csvImport: UpcomingSettingsPage(title: "Import from CSV", symbol: "arrow.up.to.line")
+            case .backupExport: UpcomingSettingsPage(title: "Export backup", symbol: "icloud.and.arrow.up")
+            case .backupImport: UpcomingSettingsPage(title: "Import backup", symbol: "arrow.counterclockwise.circle")
+            case .diagnostics: DiagnosticsView()
+            case .licences: LicencesView()
+            #if DEBUG
+            case .designGallery: DesignGalleryView()
+            #endif
+            }
+        }
+    }
+}
+
+/// A Settings row whose feature lands in a later phase.
+private struct UpcomingSettingsPage: View {
+    let title: String
+    let symbol: String
+
+    var body: some View {
+        EmptyStateView(symbol: symbol, title: title, message: "This arrives in an upcoming update.")
+            .frame(maxHeight: .infinity)
+            .background(BudgieColor.background)
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// The page title as a leading navigation bar item, without the bar's own
+/// glass capsule around it (iOS 26).
+private struct SettingsBarTitle<Content: View>: ToolbarContent {
+    @ViewBuilder var content: () -> Content
+
+    var body: some ToolbarContent {
+        if #available(iOS 26.0, *) {
+            ToolbarItem(placement: .topBarLeading, content: content)
+                .sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarLeading, content: content)
+        }
     }
 }
 
@@ -136,9 +332,12 @@ private struct ExportFile: Identifiable {
 
 private struct ActivityView: UIViewControllerRepresentable {
     let url: URL
+    let onComplete: (Bool) -> Void
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        let controller = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        controller.completionWithItemsHandler = { _, completed, _, _ in onComplete(completed) }
+        return controller
     }
 
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}

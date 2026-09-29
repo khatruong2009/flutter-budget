@@ -19,7 +19,6 @@ UPGRADE_TEST_RESULTS.md).
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
-| Hide balances toggle, locale override picker, auto-lock timeout picker | `appSettings` | Honoured when set by the Flutter app; no toggles in the MVP. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
 ## Flutter behaviour reproduced on purpose (approved Q1; fix in both apps later)
@@ -445,6 +444,57 @@ UPGRADE_TEST_RESULTS.md).
   (`calendar`), `edit_rounded` (`pencil`) and `delete_rounded`
   (`trash.fill`, `trash` in the bar). The snapshot chip's fill uses the
   hairline token (white 5.9% / ink 6.3%) for Flutter's white 6% / black 5%.
+
+- Settings is pushed from the Home gear (D2): the system navigation bar
+  (back button and swipe) carries the "Settings" title (26/800) at the
+  leading edge; there is no floating-dock bottom padding.
+- Settings setters (currency, number format, app lock, lock delay, hide
+  balances) change memory, then the preference mirror, then the
+  `appSettings` section, awaited, and return the verified result, with
+  Flutter's guards (Fixtures/settings/setters.json). The page updates as
+  soon as memory changes (Flutter after the write), and every screen
+  re-formats at once (Flutter's other tabs only on their next rebuild). A
+  failed write keeps the change in memory behind the unsaved banner, with
+  no toast (Flutter's setter throws, skips its formatter sync and notify,
+  and the change reverts on relaunch because the stale section beats the
+  newer preference).
+- App lock: turning the switch on asks for Face ID / the passcode first
+  ("Turn on App Lock") and keeps the open session unlocked; a device
+  without a passcode gets "Set a passcode in the Settings app to use App
+  Lock." (Flutter locks the session at once and shows its lock screen).
+  The relock clock starts only when the app goes to the background, not on
+  `inactive`, so the enable prompt and Control Centre do not relock with a
+  0-second delay (Flutter counts any inactive blip).
+- Settings choice sheets (Base currency, Number format, Lock delay) use the
+  redesign sheet chrome (44x4 handle, card border) instead of the plain
+  Material sheet (32x4 handle in a 48pt strip); content-sized up to 75% of
+  the screen as in Flutter. Picking a row awaits the setter, then closes
+  the sheet (Flutter closes first). The current row has the selected trait.
+- Settings switches (App lock, Hide balances) are systemGreen like
+  Flutter's Cupertino switch (the app-wide accent tint is overridden);
+  VoiceOver reads each switch by its title with the subtitle as the hint.
+  Tappable rows read "title, subtitle" once (label and value; Flutter
+  merges its button label with the child texts), and the section eyebrows
+  are headers.
+- Settings rows whose features land in Phase 3 (Categories, Tags & rules,
+  Import from CSV, Export backup, Import backup) keep Flutter's icon and
+  copy but open an "upcoming update" page.
+- Settings > ABOUT also lists Data diagnostics and Licences (the SIL OFL
+  texts the bundled fonts require), and Design gallery in debug builds;
+  Flutter has only Version. The version is read from the bundle at once
+  (Flutter shows "Budgie 2.0.0" for a frame while PackageInfo loads).
+- Export as CSV shows "Transactions exported successfully!" only when the
+  share sheet completed (Flutter shows it after any dismissal, a cancel
+  included); the spinner shows while the share sheet is open, as in
+  Flutter.
+- The Theme pills slide one accent capsule between segments (the shared
+  `SegmentedPills`); Flutter fades each segment's fill in place.
+- Settings SF Symbols stand in for Material Symbols: `square.on.circle`
+  (category), `sparkles`, `banknote` (payments), `globe` (language),
+  `lock`, `timer`, `eye.slash`, `repeat`, `arrow.down.to.line`
+  (file_download), `arrow.up.to.line` (file_upload), `icloud.and.arrow.up`
+  (backup), `arrow.counterclockwise.circle` (settings_backup_restore),
+  `info.circle`, `moon` (dark_mode), `chevron.right`.
 
 ## Known MVP limitations
 

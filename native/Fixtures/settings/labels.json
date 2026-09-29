@@ -1,0 +1,634 @@
+{
+  "cases": [
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": false,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Require device authentication",
+      "lockDelay": null,
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 0,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after Immediately",
+      "lockDelay": "Immediately",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 1,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 seconds",
+      "lockDelay": "1 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 2,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 2 seconds",
+      "lockDelay": "2 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 29,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 29 seconds",
+      "lockDelay": "29 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 30,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 30 seconds",
+      "lockDelay": "30 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 45,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 45 seconds",
+      "lockDelay": "45 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 59,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 59 seconds",
+      "lockDelay": "59 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 61,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minutes",
+      "lockDelay": "1 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 90,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minutes",
+      "lockDelay": "1 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 119,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minutes",
+      "lockDelay": "1 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 120,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 2 minutes",
+      "lockDelay": "2 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 121,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 2 minutes",
+      "lockDelay": "2 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 299,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 4 minutes",
+      "lockDelay": "4 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 300,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 5 minutes",
+      "lockDelay": "5 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 900,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 15 minutes",
+      "lockDelay": "15 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 3599,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 59 minutes",
+      "lockDelay": "59 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 3600,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 60 minutes",
+      "lockDelay": "60 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 86400,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1440 minutes",
+      "lockDelay": "1440 minutes",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": -5,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after -5 seconds",
+      "lockDelay": "-5 seconds",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "CAD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Canadian Dollar (CAD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "EUR",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Euro (EUR)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "GBP",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "British Pound (GBP)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "AUD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Australian Dollar (AUD)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "JPY",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Japanese Yen (JPY)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "CNY",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Chinese Yuan (CNY)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "INR",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Indian Rupee (INR)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "KRW",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "South Korean Won (KRW)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "MXN",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Mexican Peso (MXN)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "BRL",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "Brazilian Real (BRL)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "CHF",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "CHF (CHF)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "usd",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "usd (usd)",
+      "numberFormat": "Match device",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "en_US",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "English (United States)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "en_CA",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "English (Canada)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "en_GB",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "English (United Kingdom)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "en_AU",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "English (Australia)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "de_DE",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "German (Germany)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "fr_FR",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "French (France)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "es_ES",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Spanish (Spain)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "ja_JP",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "Japanese (Japan)",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "pt_BR",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "pt_BR",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "de-DE",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "de-DE",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    },
+    {
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": "",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "currency": "US Dollar (USD)",
+      "numberFormat": "",
+      "appLock": "Lock after 1 minute",
+      "lockDelay": "1 minute",
+      "hideBalances": "Mask amounts throughout the app"
+    }
+  ]
+}

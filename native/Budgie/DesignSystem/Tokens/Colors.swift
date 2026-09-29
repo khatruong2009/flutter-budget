@@ -61,6 +61,20 @@ enum BudgieColor {
     /// The outlined Cancel button: white 6% dark, black 5% light.
     static let dialogOutlinedFill = overlay(dark: 0.06, light: 0.05)
 
+    // Settings (settings_page.dart)
+    /// The brand card's wash (`_BrandCard`): `accent @ 22%` alpha-blended
+    /// over `card`, unrounded, fading to `card` at the bottom right.
+    static let brandCardWash = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 43.2 / 255, green: 45.62 / 255, blue: 78.74 / 255, alpha: 1)
+            : UIColor(red: 220.68 / 255, green: 221.34 / 255, blue: 251.92 / 255, alpha: 1)
+    })
+    /// The Version row's icon: `AppColors.dockInactiveIcon`, #8A8AA8 in both
+    /// modes (unlike the dynamic `dockInactiveIcon` below).
+    static let versionIcon = Color(hex: 0x8A8AA8)
+    /// The Version row's tile: white 6% dark, black 6% light.
+    static let versionTile = overlay(dark: 0.06, light: 0.06)
+
     // Dock (unused by the native tab bar; kept for custom chrome)
     static let dockInactiveIcon = dynamic(light: 0x6B7280, dark: 0x8A8AA8)
 

@@ -1,0 +1,360 @@
+{
+  "cases": [
+    {
+      "name": "listed",
+      "section": {
+        "baseCurrencyCode": "USD",
+        "localeOverride": null,
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 60,
+        "hideBalances": false
+      },
+      "Currency": {
+        "title": "Base currency",
+        "rows": [
+          {
+            "label": "US Dollar",
+            "checked": true
+          },
+          {
+            "label": "Canadian Dollar",
+            "checked": false
+          },
+          {
+            "label": "Euro",
+            "checked": false
+          },
+          {
+            "label": "British Pound",
+            "checked": false
+          },
+          {
+            "label": "Australian Dollar",
+            "checked": false
+          },
+          {
+            "label": "Japanese Yen",
+            "checked": false
+          },
+          {
+            "label": "Chinese Yuan",
+            "checked": false
+          },
+          {
+            "label": "Indian Rupee",
+            "checked": false
+          },
+          {
+            "label": "South Korean Won",
+            "checked": false
+          },
+          {
+            "label": "Mexican Peso",
+            "checked": false
+          },
+          {
+            "label": "Brazilian Real",
+            "checked": false
+          }
+        ]
+      },
+      "Number format": {
+        "title": "Number format",
+        "rows": [
+          {
+            "label": "Match device",
+            "checked": true
+          },
+          {
+            "label": "English (United States)",
+            "checked": false
+          },
+          {
+            "label": "English (Canada)",
+            "checked": false
+          },
+          {
+            "label": "English (United Kingdom)",
+            "checked": false
+          },
+          {
+            "label": "English (Australia)",
+            "checked": false
+          },
+          {
+            "label": "German (Germany)",
+            "checked": false
+          },
+          {
+            "label": "French (France)",
+            "checked": false
+          },
+          {
+            "label": "Spanish (Spain)",
+            "checked": false
+          },
+          {
+            "label": "Japanese (Japan)",
+            "checked": false
+          }
+        ]
+      },
+      "Lock delay": {
+        "title": "Lock delay",
+        "rows": [
+          {
+            "label": "Immediately",
+            "checked": false
+          },
+          {
+            "label": "30 seconds",
+            "checked": false
+          },
+          {
+            "label": "1 minute",
+            "checked": true
+          },
+          {
+            "label": "5 minutes",
+            "checked": false
+          },
+          {
+            "label": "15 minutes",
+            "checked": false
+          }
+        ]
+      },
+      "Currency picks": [
+        {
+          "label": "US Dollar",
+          "stored": "USD"
+        },
+        {
+          "label": "Canadian Dollar",
+          "stored": "CAD"
+        },
+        {
+          "label": "Euro",
+          "stored": "EUR"
+        },
+        {
+          "label": "British Pound",
+          "stored": "GBP"
+        },
+        {
+          "label": "Australian Dollar",
+          "stored": "AUD"
+        },
+        {
+          "label": "Japanese Yen",
+          "stored": "JPY"
+        },
+        {
+          "label": "Chinese Yuan",
+          "stored": "CNY"
+        },
+        {
+          "label": "Indian Rupee",
+          "stored": "INR"
+        },
+        {
+          "label": "South Korean Won",
+          "stored": "KRW"
+        },
+        {
+          "label": "Mexican Peso",
+          "stored": "MXN"
+        },
+        {
+          "label": "Brazilian Real",
+          "stored": "BRL"
+        }
+      ],
+      "Number format picks": [
+        {
+          "label": "Match device",
+          "stored": null
+        },
+        {
+          "label": "English (United States)",
+          "stored": "en_US"
+        },
+        {
+          "label": "English (Canada)",
+          "stored": "en_CA"
+        },
+        {
+          "label": "English (United Kingdom)",
+          "stored": "en_GB"
+        },
+        {
+          "label": "English (Australia)",
+          "stored": "en_AU"
+        },
+        {
+          "label": "German (Germany)",
+          "stored": "de_DE"
+        },
+        {
+          "label": "French (France)",
+          "stored": "fr_FR"
+        },
+        {
+          "label": "Spanish (Spain)",
+          "stored": "es_ES"
+        },
+        {
+          "label": "Japanese (Japan)",
+          "stored": "ja_JP"
+        }
+      ],
+      "Lock delay picks": [
+        {
+          "label": "Immediately",
+          "stored": 0
+        },
+        {
+          "label": "30 seconds",
+          "stored": 30
+        },
+        {
+          "label": "1 minute",
+          "stored": 60
+        },
+        {
+          "label": "5 minutes",
+          "stored": 300
+        },
+        {
+          "label": "15 minutes",
+          "stored": 900
+        }
+      ]
+    },
+    {
+      "name": "unlisted",
+      "section": {
+        "baseCurrencyCode": "CHF",
+        "localeOverride": "pt_BR",
+        "appLockEnabled": true,
+        "autoLockTimeoutSeconds": 45,
+        "hideBalances": false
+      },
+      "Currency": {
+        "title": "Base currency",
+        "rows": [
+          {
+            "label": "US Dollar",
+            "checked": false
+          },
+          {
+            "label": "Canadian Dollar",
+            "checked": false
+          },
+          {
+            "label": "Euro",
+            "checked": false
+          },
+          {
+            "label": "British Pound",
+            "checked": false
+          },
+          {
+            "label": "Australian Dollar",
+            "checked": false
+          },
+          {
+            "label": "Japanese Yen",
+            "checked": false
+          },
+          {
+            "label": "Chinese Yuan",
+            "checked": false
+          },
+          {
+            "label": "Indian Rupee",
+            "checked": false
+          },
+          {
+            "label": "South Korean Won",
+            "checked": false
+          },
+          {
+            "label": "Mexican Peso",
+            "checked": false
+          },
+          {
+            "label": "Brazilian Real",
+            "checked": false
+          }
+        ]
+      },
+      "Number format": {
+        "title": "Number format",
+        "rows": [
+          {
+            "label": "Match device",
+            "checked": false
+          },
+          {
+            "label": "English (United States)",
+            "checked": false
+          },
+          {
+            "label": "English (Canada)",
+            "checked": false
+          },
+          {
+            "label": "English (United Kingdom)",
+            "checked": false
+          },
+          {
+            "label": "English (Australia)",
+            "checked": false
+          },
+          {
+            "label": "German (Germany)",
+            "checked": false
+          },
+          {
+            "label": "French (France)",
+            "checked": false
+          },
+          {
+            "label": "Spanish (Spain)",
+            "checked": false
+          },
+          {
+            "label": "Japanese (Japan)",
+            "checked": false
+          }
+        ]
+      },
+      "Lock delay": {
+        "title": "Lock delay",
+        "rows": [
+          {
+            "label": "Immediately",
+            "checked": false
+          },
+          {
+            "label": "30 seconds",
+            "checked": false
+          },
+          {
+            "label": "1 minute",
+            "checked": false
+          },
+          {
+            "label": "5 minutes",
+            "checked": false
+          },
+          {
+            "label": "15 minutes",
+            "checked": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -18,10 +18,14 @@ enum SwiftOutput {
     /// what Dart's `netWorthEntries` (order, ids, names, types, dates and
     /// snapshot amounts as `toString`) and `selectedNetWorthMonth` must be.
     /// `goals`, when given, is what Dart's `savingsGoals` must be (order,
-    /// ids, names, amounts as `toString`, and dates).
+    /// ids, names, amounts as `toString`, and dates). `appSettings`, when
+    /// given, is what Dart's `AppSettingsProvider` must load, and
+    /// `themeMode` what its `ThemeProvider` must load (`light`, `dark` or
+    /// `system`).
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
-        budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil
+        budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
+        appSettings: AppSettings? = nil, themeMode: String? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -64,6 +68,16 @@ enum SwiftOutput {
                  goal.completedAt.map { $0.toIso8601String() as Any } ?? NSNull()]
             }
         }
+        if let appSettings {
+            swift["appSettings"] = [
+                "baseCurrencyCode": appSettings.baseCurrencyCode,
+                "localeOverride": appSettings.localeOverride as Any? ?? NSNull(),
+                "appLockEnabled": appSettings.appLockEnabled,
+                "autoLockTimeoutSeconds": appSettings.autoLockTimeoutSeconds,
+                "hideBalances": appSettings.hideBalances,
+            ]
+        }
+        if let themeMode { swift["themeMode"] = themeMode }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -207,6 +221,58 @@ struct SwiftOutputForDartTests {
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
                 budgetLimits: data.budgetLimits, netWorth: data, goals: data)
         }
+    }
+
+    @Test("settings: stores and preference mirrors after the Swift settings setters")
+    func settings() async throws {
+        for name in ["typical", "fresh_install", "unknown_data"] {
+            let scenario = try Scenario(Fixtures.url("store/\(name)"))
+            guard var data = try await launch(scenario) else { continue }
+            let store = scenario.makeStore()
+            _ = try await store.read()
+            // AppModel's order: memory, the preference mirror, then the section.
+            func apply(_ update: SettingsUpdate) {
+                if case .write(let key, let value) = update { scenario.preferences.set(value, forKey: key) }
+            }
+            apply(data.appSettings.setBaseCurrencyCode(" jpy "))
+            apply(data.appSettings.setLocaleOverride("de_DE"))
+            apply(data.appSettings.setAppLockEnabled(!data.appSettings.appLockEnabled))
+            apply(data.appSettings.setAutoLockTimeoutSeconds(900))
+            apply(data.appSettings.setHideBalances(!data.appSettings.hideBalances))
+            // AppModel.setThemeMode writes only this preference.
+            scenario.preferences.set(.string("dark"), forKey: PreferenceKey.themeMode)
+            var snapshot = try await store.updateSections([(Section.appSettings, data.appSettingsSection())])
+            try SwiftOutput.emit(
+                "settings-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
+                appSettings: data.appSettings, themeMode: "dark")
+
+            // "Match device" removes the locale mirror and writes null.
+            apply(data.appSettings.setLocaleOverride(nil))
+            snapshot = try await store.updateSections([(Section.appSettings, data.appSettingsSection())])
+            try SwiftOutput.emit(
+                "settings-match-device-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences,
+                snapshot: snapshot, appSettings: data.appSettings)
+        }
+
+        // Without a stored section Dart falls back to the mirrored
+        // preferences: they alone must load as what Swift set.
+        let scenario = try Scenario(Fixtures.url("store/fresh_install"))
+        guard var data = try await launch(scenario) else { return }
+        let store = scenario.makeStore()
+        var snapshot = try await store.read()
+        for update in [
+            data.appSettings.setBaseCurrencyCode("gbp"), data.appSettings.setLocaleOverride(" fr_FR "),
+            data.appSettings.setAppLockEnabled(true), data.appSettings.setAutoLockTimeoutSeconds(0),
+            data.appSettings.setHideBalances(true),
+        ] {
+            if case .write(let key, let value) = update { scenario.preferences.set(value, forKey: key) }
+        }
+        var sections = snapshot.sections
+        sections[Section.appSettings] = nil
+        snapshot = try await store.replace(sections: sections)
+        try SwiftOutput.emit(
+            "settings-prefs-only", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
+            appSettings: data.appSettings)
     }
 
     @Test("store: damaged inputs recovered by Swift, then saved")

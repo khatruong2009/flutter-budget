@@ -8,8 +8,8 @@
 //   prefs.json         typed preferences (optional)
 //   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>",
 //                       optional "categoryBudgetLimits", "netWorthEntries",
-//                       "selectedNetWorthMonth", "savingsGoals": what the Dart
-//                       models must hold}
+//                       "selectedNetWorthMonth", "savingsGoals", "appSettings",
+//                       "themeMode": what the Dart models must hold}
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
@@ -17,6 +17,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:budget_app/storage/atomic_financial_store.dart';
+import 'package:budget_app/theme_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -203,6 +204,35 @@ void main() {
           problems.add('selected net worth month: dart '
               '${iso(app.transactionModel.selectedNetWorthMonth)} '
               'swift $selectedNetWorthMonth');
+        }
+        // Settings the Swift side set: Dart must load exactly these.
+        final appSettings = swift['appSettings'];
+        if (appSettings is Map) {
+          final s = app.appSettings;
+          final dart = jsonEncode({
+            'appLockEnabled': s.appLockEnabled,
+            'autoLockTimeoutSeconds': s.autoLockTimeoutSeconds,
+            'baseCurrencyCode': s.baseCurrencyCode,
+            'hideBalances': s.hideBalances,
+            'localeOverride': s.localeOverride,
+          });
+          final expected = jsonEncode({
+            for (final key in (appSettings.keys.toList()..sort()))
+              key: appSettings[key]
+          });
+          if (dart != expected) {
+            problems.add('app settings: dart $dart swift $expected');
+          }
+        }
+        final themeMode = swift['themeMode'];
+        if (themeMode is String) {
+          final theme = ThemeProvider();
+          // ThemeProvider loads its preference asynchronously.
+          await Future<void>.delayed(Duration.zero);
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+          if (theme.themeMode.name != themeMode) {
+            problems.add('theme mode: dart ${theme.themeMode.name} swift $themeMode');
+          }
         }
         if (app.transactionModel.hasUnsavedChanges ||
             app.recurringModel.hasUnsavedChanges) {
