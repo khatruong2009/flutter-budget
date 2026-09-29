@@ -176,6 +176,14 @@ UPGRADE_TEST_RESULTS.md).
   through the money formatter ("expense $12.50": base currency, masked
   under Hide balances); Flutter's reads "expense of 12 dollars and 50
   cents" whatever the currency. Both read the date as yMMMMd.
+- Flow SEE ALL amount filters: "NaN", "Infinity", "-Infinity" and overflowing
+  input ("1e400") leave the bound unset (`TransactionFilter.parseAmount`);
+  Flutter keeps them (NaN marks the filter active but excludes nothing, an
+  infinite minimum hides every row).
+- Flow SEE ALL category options: names whose lower-case forms are equal
+  ("Groceries" / "groceries") keep first-appearance order (Swift stable
+  sort); Dart's sort is not stable above 32 options, so their relative order
+  can differ.
 - Safe-to-spend breakdown sheet: redesign sheet chrome (card colour, 44x4
   grab handle, 28 radius) instead of Material's default sheet and 32x4
   handle; the divider uses the border token.

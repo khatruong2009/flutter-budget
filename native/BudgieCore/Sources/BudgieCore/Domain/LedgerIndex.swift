@@ -59,13 +59,21 @@ public struct LedgerIndex: Sendable {
     public let newestFirst: [LedgerRow]
     /// Months with transactions, newest first (`getAvailableMonths`).
     public let availableMonths: [DartDateTime]
+    /// The SEE ALL category filter's options (`_getCategoryOptions`,
+    /// history_page.dart:1393-1401): the distinct category names of every
+    /// transaction (both types, exact UTF-16 strings, first appearance in
+    /// stored order), without blank ones (Dart `trim`), sorted by their
+    /// lower-case forms in code-unit order. Ties keep first appearance
+    /// (Swift's sort is stable; Dart's is not above 32 elements).
+    public let categoryNames: [String]
     private let summaries: [Int: MonthSummary]
     /// Each month's rows are one contiguous run of `newestFirst`, because
     /// that order is by calendar day first.
     private let monthRanges: [Int: Range<Int>]
 
     public static func empty(calendar: DartCalendar) -> LedgerIndex {
-        LedgerIndex(calendar: calendar, newestFirst: [], availableMonths: [], summaries: [:], monthRanges: [:])
+        LedgerIndex(
+            calendar: calendar, newestFirst: [], availableMonths: [], categoryNames: [], summaries: [:], monthRanges: [:])
     }
 
     public static func build(_ transactions: [TransactionRecord], calendar: DartCalendar) -> LedgerIndex {
@@ -73,8 +81,14 @@ public struct LedgerIndex: Sendable {
         var categoryIndex: [Int: [[UInt16]: Int]] = [:]
         var keyed: [(row: LedgerRow, created: Int64, id: [UInt16])] = []
         keyed.reserveCapacity(transactions.count)
+        var seenCategories = Set<[UInt16]>()
+        var categories: [(name: String, lower: [UInt16])] = []
 
         for record in transactions {
+            let units = Array(record.category.utf16)
+            if seenCategories.insert(units).inserted && !DartString.trim(record.category).isEmpty {
+                categories.append((record.category, Array(DartString.lowercase(record.category).utf16)))
+            }
             let f = record.date.fields
             let monthKey = f.year * 12 + f.month
             keyed.append((
@@ -124,7 +138,16 @@ public struct LedgerIndex: Sendable {
         }
 
         let months = summaries.keys.sorted(by: >).map { calendar.month(fromLedgerKey: $0) }
-        return LedgerIndex(calendar: calendar, newestFirst: rows, availableMonths: months, summaries: summaries, monthRanges: ranges)
+        // Stable: equal lower-case forms keep first appearance.
+        let categoryNames = categories.enumerated()
+            .sorted { a, b in
+                if a.element.lower != b.element.lower { return a.element.lower.lexicographicallyPrecedes(b.element.lower) }
+                return a.offset < b.offset
+            }
+            .map(\.element.name)
+        return LedgerIndex(
+            calendar: calendar, newestFirst: rows, availableMonths: months, categoryNames: categoryNames,
+            summaries: summaries, monthRanges: ranges)
     }
 
     /// One month's rows, newest first.
