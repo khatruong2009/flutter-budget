@@ -1,7 +1,7 @@
 import Foundation
 
-/// A category definition (`BudgetCategory` in the Flutter app). Read-only in
-/// the MVP: the Swift app never writes the `categories` section.
+/// A category definition (`BudgetCategory`, `category_definition.dart`).
+/// Keeps the row it was read from so edits patch it in place.
 public struct CategoryInfo: Hashable, Sendable, Identifiable {
     public let id: String
     public let type: TransactionType
@@ -10,6 +10,58 @@ public struct CategoryInfo: Hashable, Sendable, Identifiable {
     public let colorToken: String
     public let sortOrder: Int
     public let isArchived: Bool
+    public let isBuiltIn: Bool
+    public let raw: JSONObject
+
+    /// Dart `BudgetCategory.fromJson`. nil where its casts would throw.
+    static func parse(_ value: JSONValue) -> CategoryInfo? {
+        guard case .object(let object) = value,
+            let id = Read.requiredString(object, "id"),
+            let name = Read.requiredString(object, "name"),
+            case .some(let icon) = Read.optionalString(object, "iconIdentifier"),
+            case .some(let color) = Read.optionalString(object, "colorToken")
+        else { return nil }
+        let sortOrder: Int
+        switch object["sortOrder"] {
+        case nil, .null?: sortOrder = 0
+        case .number(let n)?: sortOrder = Int(DartNumbers.toInt(n.doubleValue, lexeme: n))
+        default: return nil
+        }
+        func optionalBool(_ key: String) -> Bool?? {
+            switch object[key] {
+            case nil, .null?: return .some(nil)
+            case .bool(let b)?: return .some(b)
+            default: return nil
+            }
+        }
+        guard case .some(let archived) = optionalBool("isArchived"), case .some(let builtIn) = optionalBool("isBuiltIn") else {
+            return nil
+        }
+        return CategoryInfo(
+            id: id, type: object["type"]?.stringValue == "income" ? .income : .expense, name: name,
+            iconIdentifier: icon ?? "square_grid_2x2", colorToken: color ?? "accent", sortOrder: sortOrder,
+            isArchived: archived ?? false, isBuiltIn: builtIn ?? false, raw: object)
+    }
+
+    /// A new definition as Dart `BudgetCategory(...).toJson()` writes it.
+    public static func make(
+        id: String, type: TransactionType, name: String, iconIdentifier: String, colorToken: String, sortOrder: Int,
+        isArchived: Bool = false, isBuiltIn: Bool
+    ) -> CategoryInfo {
+        let raw = JSONObject(ordered: [
+            ("id", .string(id)),
+            ("type", .string(type.rawValue)),
+            ("name", .string(name)),
+            ("iconIdentifier", .string(iconIdentifier)),
+            ("colorToken", .string(colorToken)),
+            ("sortOrder", .int(sortOrder)),
+            ("isArchived", .bool(isArchived)),
+            ("isBuiltIn", .bool(isBuiltIn)),
+        ])
+        return CategoryInfo(
+            id: id, type: type, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, sortOrder: sortOrder,
+            isArchived: isArchived, isBuiltIn: isBuiltIn, raw: raw)
+    }
 }
 
 public enum CategoryCatalog {
@@ -28,30 +80,30 @@ public enum CategoryCatalog {
         ]
         func slug(_ name: String) -> String { name.lowercased().replacingOccurrences(of: " ", with: "-") }
         return expenses.enumerated().map { i, c in
-            CategoryInfo(id: "expense-\(slug(c.0))", type: .expense, name: c.0, iconIdentifier: c.1, colorToken: c.2, sortOrder: i, isArchived: false)
+            CategoryInfo.make(
+                id: "expense-\(slug(c.0))", type: .expense, name: c.0, iconIdentifier: c.1, colorToken: c.2, sortOrder: i,
+                isBuiltIn: true)
         } + incomes.enumerated().map { i, c in
-            CategoryInfo(id: "income-\(slug(c.0))", type: .income, name: c.0, iconIdentifier: c.1, colorToken: c.2, sortOrder: i, isArchived: false)
+            CategoryInfo.make(
+                id: "income-\(slug(c.0))", type: .income, name: c.0, iconIdentifier: c.1, colorToken: c.2, sortOrder: i,
+                isBuiltIn: true)
         }
     }()
 
-    /// `CategoryProvider.load`: the stored list when it decodes (with Dart's
-    /// defaults for missing keys), else the built-in seeds. Any malformed row
-    /// makes Dart fall back to the seeds for the whole list; so does this.
-    public static func load(_ section: JSONValue?) -> [CategoryInfo] {
-        guard case .array(let rows)? = section, !rows.isEmpty else { return builtIn }
-        var result: [CategoryInfo] = []
-        for row in rows {
-            guard let object = row.objectValue, let id = object["id"]?.stringValue, let name = object["name"]?.stringValue else {
-                return builtIn
-            }
-            let sort = object["sortOrder"]?.numberValue.map { Int(DartNumbers.toInt($0.doubleValue, lexeme: $0)) } ?? 0
-            result.append(CategoryInfo(
-                id: id, type: object["type"]?.stringValue == "income" ? .income : .expense, name: name,
-                iconIdentifier: object["iconIdentifier"]?.stringValue ?? "square_grid_2x2",
-                colorToken: object["colorToken"]?.stringValue ?? "accent", sortOrder: sort,
-                isArchived: object["isArchived"]?.boolValue ?? false))
-        }
-        return result
+    /// The stored rows of the `categories` section: each readable (Dart
+    /// `fromJson` rules) or kept verbatim. Empty when the section is absent
+    /// or not a list. Dart falls back to the seeds for the whole list when
+    /// any row is malformed; Swift keeps the readable rows (PARITY_GAPS).
+    public static func rows(_ section: JSONValue?) -> [StoredRow<CategoryInfo>] {
+        guard case .array(let rows)? = section else { return [] }
+        return rows.map { row in CategoryInfo.parse(row).map { .record($0) } ?? .unreadable(row) }
+    }
+
+    /// The definitions the app uses: the readable rows, or the built-in
+    /// seeds when there are none (Dart `_decodeOrSeed`).
+    public static func effective(_ rows: [StoredRow<CategoryInfo>]) -> [CategoryInfo] {
+        let records = rows.compactMap(\.record)
+        return records.isEmpty ? builtIn : records
     }
 
     /// Picker list for a type: active definitions by sort order (Dart
@@ -66,9 +118,9 @@ public enum CategoryCatalog {
         var result = defined.filter { !$0.isArchived }
         var known = Set(defined.map { $0.name.lowercased() })
         for name in usedNames where known.insert(name.lowercased()).inserted {
-            result.append(CategoryInfo(
+            result.append(CategoryInfo.make(
                 id: "\(type.rawValue)-legacy-\(name)", type: type, name: name, iconIdentifier: "square_grid_2x2",
-                colorToken: "accent", sortOrder: Int.max, isArchived: false))
+                colorToken: "accent", sortOrder: Int.max, isBuiltIn: false))
         }
         return result
     }

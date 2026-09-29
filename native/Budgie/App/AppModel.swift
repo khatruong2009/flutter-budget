@@ -179,15 +179,16 @@ final class AppModel {
 
     // MARK: - Persistence
 
+    /// The current in-memory value of a section. Every section in
+    /// `Section.all` has a typed serializer; any other name is a programming
+    /// error. In release it writes the section as loaded rather than null.
     private func serialize(_ section: String) -> JSONValue {
         guard let data else { return .null }
-        switch section {
-        case Section.transactions: return data.transactionsSection()
-        case Section.recurringTransactions: return data.templatesSection()
-        case Section.netWorthEntries: return data.netWorthSection()
-        case Section.appSettings: return data.appSettingsSection()
-        default: return data.sections[section] ?? .null
+        guard let value = data.serializedSection(section) else {
+            assertionFailure("no serializer for section \(section)")
+            return data.sections[section] ?? .null
         }
+        return value
     }
 
     /// Writes the named sections (plus anything still unsaved) and waits for

@@ -454,7 +454,7 @@ public struct NetWorthEntryRecord: Identifiable, Hashable, Sendable {
     }
 }
 
-// MARK: - Savings goal (read-only in the MVP)
+// MARK: - Savings goal
 
 public struct SavingsGoalRecord: Identifiable, Hashable, Sendable {
     public let id: String
@@ -464,10 +464,13 @@ public struct SavingsGoalRecord: Identifiable, Hashable, Sendable {
     public let targetDate: DartDateTime
     public let createdAt: DartDateTime
     public let completedAt: DartDateTime?
+    public let raw: JSONObject
 
-    /// Dart `SavingsGoal.fromJson` (lenient) and constructor clamping.
+    /// Dart `SavingsGoal.fromJson` (lenient) and constructor clamping. A
+    /// missing id gets a fresh one, written into `raw` so the next save
+    /// keeps it, as Dart's `toJson` would.
     static func parse(_ value: JSONValue, calendar: DartCalendar, now: DartDateTime, newID: () -> String) -> SavingsGoalRecord? {
-        guard case .object(let object) = value else { return nil }
+        guard case .object(var object) = value else { return nil }
         guard case .some(let id) = Read.optionalString(object, "id") else { return nil }
         guard case .some(let rawName) = Read.optionalString(object, "name") else { return nil }
         func readDouble(_ key: String) -> Double {
@@ -481,14 +484,16 @@ public struct SavingsGoalRecord: Identifiable, Hashable, Sendable {
             guard let text = object[key]?.stringValue, !text.isEmpty else { return nil }
             return calendar.tryParse(text)
         }
-        let trimmed = rawName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmed = DartString.trim(rawName ?? "")
         let target = readDouble("targetAmount")
         let current = readDouble("currentAmount")
+        let resolvedID = id ?? newID()
+        if id == nil { object["id"] = .string(resolvedID) }
         return SavingsGoalRecord(
-            id: id ?? newID(), name: trimmed.isEmpty ? "Savings Goal" : trimmed,
+            id: resolvedID, name: trimmed.isEmpty ? "Savings Goal" : trimmed,
             targetAmount: target < 0 ? 0 : target, currentAmount: current < 0 ? 0 : current,
             targetDate: readDate("targetDate") ?? now, createdAt: readDate("createdAt") ?? now,
-            completedAt: readDate("completedAt"))
+            completedAt: readDate("completedAt"), raw: object)
     }
 
     public var remainingAmount: Double {
@@ -558,9 +563,13 @@ enum DartNumbers {
         return Double(trimmed)
     }
 
-    /// `num.toInt()`: truncation toward zero.
+    /// `num.toInt()`: truncation toward zero; out-of-range doubles clamp
+    /// to the int64 bounds, as the Dart VM does.
     static func toInt(_ value: Double, lexeme: JSONNumber) -> Int64 {
         if let int = lexeme.intValue { return int }
-        return Int64(value.rounded(.towardZero))
+        let truncated = value.rounded(.towardZero)
+        if truncated >= 9_223_372_036_854_775_807.0 { return .max }
+        if truncated <= -9_223_372_036_854_775_808.0 { return .min }
+        return Int64(truncated)
     }
 }

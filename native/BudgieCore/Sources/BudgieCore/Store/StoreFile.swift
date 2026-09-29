@@ -36,6 +36,12 @@ public enum Section {
     public static let transactionTags = "transactionTags"
     public static let categorizationRules = "categorizationRules"
     public static let appSettings = "appSettings"
+
+    /// Every section the Flutter app writes, in `FinancialSections` order.
+    public static let all = [
+        transactions, netWorthEntries, selectedNetWorthMonth, categoryBudgetLimits, savingsGoals,
+        recurringTransactions, categories, transactionTags, categorizationRules, appSettings,
+    ]
 }
 
 /// The byte format of `financial_store_v2.json` (MIGRATION_SPEC section 4):

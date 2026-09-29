@@ -59,7 +59,10 @@ UPGRADE_TEST_RESULTS.md).
   set-aside `.corrupt-*` files are kept in both.
 - Unreadable rows (malformed JSON rows in a section) are kept verbatim and
   hidden; Flutter drops them on its next save (transactions) or fails to
-  load (recurring, net worth).
+  load (recurring, net worth, goals). For categories, one malformed row
+  makes Flutter replace the whole list with the built-in seeds, and for
+  tags and rules it makes Flutter load an empty list; Swift keeps using the
+  readable rows (the seeds only when none are readable).
 - A preference with an unexpected type reads as absent; Dart would throw.
 - Numbers typed into Swift are validated finite; Dart would fail to save a
   NaN/Infinity forever.

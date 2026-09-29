@@ -106,11 +106,9 @@ struct SwiftOutputForDartTests {
             data.appSettings.baseCurrencyCode = "EUR"
             data.appSettings.appLockEnabled.toggle()
 
-            let snapshot = try await store.updateSections([
-                (Section.transactions, data.transactionsSection()),
-                (Section.recurringTransactions, data.templatesSection()),
-                (Section.appSettings, data.appSettingsSection()),
-            ])
+            // Every section through its typed serializer, as the app's
+            // save and retry paths write them.
+            let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
             try SwiftOutput.emit("edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
         }
     }

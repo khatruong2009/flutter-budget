@@ -14,28 +14,53 @@ public enum StoredRow<Record: Hashable & Sendable>: Hashable, Sendable {
 /// Everything the app shows, loaded from a `FinancialSnapshot` with the same
 /// rules as the Flutter models (`TransactionModel.getTransactions`,
 /// `RecurringTransactionModel.loadRecurringTransactions`,
-/// `AppSettingsProvider.load`). Sections the MVP does not edit are read only
-/// or not at all; the store keeps them untouched.
+/// `AppSettingsProvider.load`, `CategoryProvider.load`,
+/// `CategorizationProvider.load`).
+///
+/// Every section the app can write has a typed serializer
+/// (`serializedSection`), so a save or a retry always writes the current
+/// in-memory state, never the JSON that was loaded.
 public struct FinancialData: Sendable {
     public let calendar: DartCalendar
     public private(set) var transactionRows: [StoredRow<TransactionRecord>] = []
     public private(set) var templateRows: [StoredRow<RecurringTemplate>] = []
     public private(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
-    public private(set) var savingsGoals: [SavingsGoalRecord] = []
-    /// `categoryBudgetLimits` in stored order, values > 0 only.
-    public private(set) var budgetLimits: [(String, Double)] = []
+    public private(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
+    public private(set) var categoryRows: [StoredRow<CategoryInfo>] = []
+    public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
+    public private(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
+    /// The `categoryBudgetLimits` object as stored (edits patch it in place,
+    /// so untouched entries keep their lexemes). Empty when absent or not an
+    /// object, as Dart reads it.
+    public private(set) var budgetLimitsObject = JSONObject()
     public private(set) var selectedNetWorthMonth: DartDateTime
-    /// Parsed once at load; the MVP never edits categories.
-    public private(set) var categories: [CategoryInfo] = []
     public var appSettings: AppSettings
-    /// Raw sections as loaded, for patch-in-place writes of sections the
-    /// typed layer only partly understands.
+    /// Raw sections as loaded. Only the `appSettings` serializer reads it
+    /// (unknown keys in that object survive a save).
     public private(set) var sections: JSONObject
 
     public var transactions: [TransactionRecord] { transactionRows.compactMap(\.record) }
     public var templates: [RecurringTemplate] { templateRows.compactMap(\.record) }
     public var netWorthEntries: [NetWorthEntryRecord] { netWorthRows.compactMap(\.record) }
+    public var savingsGoals: [SavingsGoalRecord] { goalRows.compactMap(\.record) }
+    public var tags: [TransactionTagRecord] { tagRows.compactMap(\.record) }
+    /// Stored order (Dart's `rules` getter sorts these by priority).
+    public var rules: [CategorizationRuleRecord] { ruleRows.compactMap(\.record) }
+    /// The definitions in use: stored rows, or the seeds when none are readable.
+    public var categories: [CategoryInfo] { CategoryCatalog.effective(categoryRows) }
     public var unreadableTransactionCount: Int { transactionRows.count - transactions.count }
+
+    /// `categoryBudgetLimits` as Dart loads it: numeric values > 0, in
+    /// stored key order. Derived from the stored object on every read, so it
+    /// is never stale after a write.
+    public var budgetLimits: [(String, Double)] {
+        var result: [(String, Double)] = []
+        for key in budgetLimitsObject.keys {
+            guard let value = budgetLimitsObject[key]?.numberValue?.doubleValue, value > 0 else { continue }
+            result.append((key, value))
+        }
+        return result
+    }
 
     /// Section writes the load itself requires (Dart saves these during
     /// load): identity backfill and legacy starting balances.
@@ -116,17 +141,32 @@ public struct FinancialData: Sendable {
             data.selectedNetWorthMonth = calendar.month(of: parsed)
         }
 
-        data.categories = CategoryCatalog.load(sections[Section.categories])
+        data.categoryRows = CategoryCatalog.rows(sections[Section.categories])
+
+        // Tags and rules: Dart reads the legacy preference when the section
+        // is not a list (normally removed by the store migration).
+        func listSection(_ section: String, legacyKey: String) -> [JSONValue] {
+            if case .array(let rows)? = sections[section] { return rows }
+            guard let text = preferences.string(legacyKey), !text.isEmpty, case .array(let rows)? = try? JSONParser.parse(text) else {
+                return []
+            }
+            return rows
+        }
+        data.tagRows = listSection(Section.transactionTags, legacyKey: PreferenceKey.transactionTags).map { row in
+            TransactionTagRecord.parse(row, newID: newID).map { .record($0) } ?? .unreadable(row)
+        }
+        data.ruleRows = listSection(Section.categorizationRules, legacyKey: PreferenceKey.categorizationRules).map { row in
+            CategorizationRuleRecord.parse(row, newID: newID).map { .record($0) } ?? .unreadable(row)
+        }
 
         if case .object(let limits)? = sections[Section.categoryBudgetLimits] {
-            for key in limits.keys {
-                guard let value = limits[key]?.numberValue?.doubleValue, value > 0 else { continue }
-                data.budgetLimits.append((key, value))
-            }
+            data.budgetLimitsObject = limits
         }
 
         if case .array(let goals)? = sections[Section.savingsGoals] {
-            data.savingsGoals = goals.compactMap { SavingsGoalRecord.parse($0, calendar: calendar, now: launch, newID: newID) }
+            data.goalRows = goals.map { row in
+                SavingsGoalRecord.parse(row, calendar: calendar, now: launch, newID: newID).map { .record($0) } ?? .unreadable(row)
+            }
         }
 
         if case .array(let rows)? = sections[Section.recurringTransactions], !rows.isEmpty {
@@ -139,39 +179,48 @@ public struct FinancialData: Sendable {
 
     // MARK: - Section serialization (lossless)
 
-    public func transactionsSection() -> JSONValue {
-        .array(transactionRows.map { row in
+    /// The current value of a store section, for every section the app can
+    /// write (`Section.all`); nil for any other name. Readable rows are
+    /// written from their patched `raw` objects, unreadable rows verbatim.
+    public func serializedSection(_ section: String) -> JSONValue? {
+        switch section {
+        case Section.transactions: transactionsSection()
+        case Section.netWorthEntries: netWorthSection()
+        case Section.selectedNetWorthMonth: selectedNetWorthMonthSection()
+        case Section.categoryBudgetLimits: budgetLimitsSection()
+        case Section.savingsGoals: savingsGoalsSection()
+        case Section.recurringTransactions: templatesSection()
+        case Section.categories: categoriesSection()
+        case Section.transactionTags: tagsSection()
+        case Section.categorizationRules: rulesSection()
+        case Section.appSettings: appSettingsSection()
+        default: nil
+        }
+    }
+
+    private static func rowsSection<Record>(_ rows: [StoredRow<Record>], raw: (Record) -> JSONObject) -> JSONValue {
+        .array(rows.map { row in
             switch row {
-            case .record(let record): return .object(record.raw)
-            case .unreadable(let raw): return raw
+            case .record(let record): .object(raw(record))
+            case .unreadable(let value): value
             }
         })
     }
 
-    public func templatesSection() -> JSONValue {
-        .array(templateRows.map { row in
-            switch row {
-            case .record(let record): return .object(record.raw)
-            case .unreadable(let raw): return raw
-            }
-        })
-    }
+    public func transactionsSection() -> JSONValue { Self.rowsSection(transactionRows, raw: \.raw) }
+    public func templatesSection() -> JSONValue { Self.rowsSection(templateRows, raw: \.raw) }
+    public func netWorthSection() -> JSONValue { Self.rowsSection(netWorthRows, raw: \.raw) }
+    public func savingsGoalsSection() -> JSONValue { Self.rowsSection(goalRows, raw: \.raw) }
+    public func categoriesSection() -> JSONValue { Self.rowsSection(categoryRows, raw: \.raw) }
+    public func tagsSection() -> JSONValue { Self.rowsSection(tagRows, raw: \.raw) }
+    public func rulesSection() -> JSONValue { Self.rowsSection(ruleRows, raw: \.raw) }
+    public func budgetLimitsSection() -> JSONValue { .object(budgetLimitsObject) }
 
-    public func netWorthSection() -> JSONValue {
-        .array(netWorthRows.map { row in
-            switch row {
-            case .record(let record): return .object(record.raw)
-            case .unreadable(let raw): return raw
-            }
-        })
-    }
+    /// Dart `_selectedNetWorthMonth.toIso8601String()`.
+    public func selectedNetWorthMonthSection() -> JSONValue { .string(selectedNetWorthMonth.toIso8601String()) }
 
     public func appSettingsSection() -> JSONValue {
         appSettings.section(over: sections[Section.appSettings])
-    }
-
-    mutating func noteWritten(_ section: String, _ value: JSONValue) {
-        sections[section] = value
     }
 
     // MARK: - Transactions (TransactionModel mutations)
