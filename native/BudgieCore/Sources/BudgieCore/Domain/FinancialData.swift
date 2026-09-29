@@ -24,7 +24,7 @@ public struct FinancialData: Sendable {
     public let calendar: DartCalendar
     public private(set) var transactionRows: [StoredRow<TransactionRecord>] = []
     public private(set) var templateRows: [StoredRow<RecurringTemplate>] = []
-    public private(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
+    public internal(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
     public private(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
     public internal(set) var categoryRows: [StoredRow<CategoryInfo>] = []
     public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
@@ -33,7 +33,7 @@ public struct FinancialData: Sendable {
     /// so untouched entries keep their lexemes; see Budgets.swift). Empty
     /// when absent or not an object, as Dart reads it.
     public internal(set) var budgetLimitsObject = JSONObject()
-    public private(set) var selectedNetWorthMonth: DartDateTime
+    public internal(set) var selectedNetWorthMonth: DartDateTime
     public var appSettings: AppSettings
     /// Raw sections as loaded. Only the `appSettings` serializer reads it
     /// (unknown keys in that object survive a save).

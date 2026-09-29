@@ -369,6 +369,87 @@ final class AppModel {
         data?.budgetOverview(ledger.summary(forMonth: month)) ?? .empty
     }
 
+    // MARK: - Net worth
+
+    /// The month the Worth tab shows (Flutter `selectedNetWorthMonth`):
+    /// persisted, loaded as stored even when stale or in the future.
+    var selectedNetWorthMonth: DartDateTime { data?.selectedNetWorthMonth ?? calendar.month(of: now) }
+
+    /// The Worth month strip (`getNetWorthAvailableMonths`), newest first.
+    var netWorthAvailableMonths: [DartDateTime] { data?.netWorthAvailableMonths(now: now) ?? [] }
+
+    /// Whether any readable account exists (the Worth empty state).
+    var hasNetWorthEntries: Bool { data?.hasNetWorthEntries ?? false }
+
+    /// The account with this id (the history page follows it live).
+    func netWorthEntry(id: String) -> NetWorthEntryRecord? {
+        data?.netWorthEntry(id: id)
+    }
+
+    /// `getNetWorthEntryHistory`: ascending; empty for an unknown id.
+    func netWorthEntryHistory(id: String) -> [NetWorthSnapshotRecord] {
+        data?.netWorthEntryHistory(id: id) ?? []
+    }
+
+    /// Dart `selectNetWorthMonth`: normalised to the month, then written,
+    /// even when it is already selected (as Flutter).
+    @discardableResult
+    func selectNetWorthMonth(_ month: DartDateTime) async -> Bool {
+        guard data != nil else { return false }
+        data!.selectNetWorthMonth(month)
+        return await persist([Section.selectedNetWorthMonth])
+    }
+
+    /// Dart `addNetWorthEntry`: the snapshot lands on `recordedAt`, else
+    /// `now` for the current month or the month's end-of-month sentinel.
+    /// False without a write for an empty name or a non-finite amount.
+    @discardableResult
+    func addNetWorthEntry(
+        name: String, type: NetWorthEntryType, amount: Double, month: DartDateTime? = nil, recordedAt: DartDateTime? = nil
+    ) async -> Bool {
+        guard data != nil, amount.isFinite,
+            data!.addNetWorthEntry(name: name, type: type, amount: amount, month: month, recordedAt: recordedAt, id: newID(), now: now)
+                != nil
+        else { return false }
+        return await persist([Section.netWorthEntries])
+    }
+
+    /// Dart `updateNetWorthEntry` (also "update balance" for a month): name
+    /// and type, plus one added or replaced snapshot.
+    @discardableResult
+    func updateNetWorthEntry(
+        id: String, name: String, type: NetWorthEntryType, amount: Double, month: DartDateTime? = nil,
+        recordedAt: DartDateTime? = nil
+    ) async -> Bool {
+        guard data != nil, amount.isFinite,
+            data!.updateNetWorthEntry(id: id, name: name, type: type, amount: amount, month: month, recordedAt: recordedAt, now: now)
+        else { return false }
+        return await persist([Section.netWorthEntries])
+    }
+
+    /// Dart `deleteNetWorthEntry`: the account and all its snapshots.
+    @discardableResult
+    func deleteNetWorthEntry(id: String) async -> Bool {
+        guard data != nil, data!.deleteNetWorthEntry(id: id) else { return false }
+        return await persist([Section.netWorthEntries])
+    }
+
+    /// Dart `deleteNetWorthSnapshot`: the snapshot recorded at exactly
+    /// `recordedAt`; false without a write when there is none.
+    @discardableResult
+    func deleteNetWorthSnapshot(entryID: String, recordedAt: DartDateTime) async -> Bool {
+        guard data != nil, data!.deleteNetWorthSnapshot(entryID: entryID, recordedAt: recordedAt) else { return false }
+        return await persist([Section.netWorthEntries])
+    }
+
+    /// Dart `carryNetWorthMonthForward` (Flutter has no UI for it): false
+    /// without a write when no account needed a carried value.
+    @discardableResult
+    func carryNetWorthMonthForward(_ month: DartDateTime) async -> Bool {
+        guard data != nil, data!.carryNetWorthMonthForward(month, now: now) else { return false }
+        return await persist([Section.netWorthEntries])
+    }
+
     // MARK: - Settings (store section + mirrored preference, like Dart)
 
     func setBaseCurrency(_ code: String) async {

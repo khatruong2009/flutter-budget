@@ -22,6 +22,7 @@ SWIFT_OUT=/path native/ParityHarness/run.sh verify
 | `legacy_fixtures_test.dart` | `Fixtures/legacy/<scenario>/...`: v1 envelope, v1 backup, bare keys, mixed, settings-only, starting balances |
 | `logic_fixtures_test.dart` | `Fixtures/logic/`: dates, generator, safe-to-spend per time zone (`tz/<zone>/`); CSV bytes, money formatting, number/string encoding, ordering |
 | `format_fixtures_test.dart` | `Fixtures/logic/date_formats.json` (every en_US intl pattern the app uses) and `strings.json` (Dart `trim`, `toLowerCase`, `==`, `contains`, `startsWith`, `compareTo`) |
+| `worth_fixtures_test.dart` | `Fixtures/worth/tz/<zone>/mutations.json`: net worth mutations through a real store (New York, Santiago); `formatting.json`: Worth display strings, amount field, chart scales |
 | `verify_swift_output_test.dart` | `$SWIFT_OUT/dart-verification.json`; fails on any rejected, skipped or reset data |
 
 `expected.json` records, for the untouched input: the Dart store load

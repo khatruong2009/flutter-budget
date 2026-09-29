@@ -389,11 +389,14 @@ public struct NetWorthSnapshotRecord: Hashable, Sendable {
 
 public struct NetWorthEntryRecord: Identifiable, Hashable, Sendable {
     public let id: String
-    public let name: String
-    public let type: NetWorthEntryType
+    // Edited only through NetWorthMutations.swift, which patches `raw` with them.
+    public internal(set) var name: String
+    public internal(set) var type: NetWorthEntryType
     public let createdAt: DartDateTime
-    public let snapshots: [NetWorthSnapshotRecord]
-    public let raw: JSONObject
+    /// Stored order; aligned one-to-one with `raw["snapshots"]` (see
+    /// NetWorthMutations.swift).
+    public internal(set) var snapshots: [NetWorthSnapshotRecord]
+    public internal(set) var raw: JSONObject
 
     /// Dart `NetWorthEntry.fromJson` (strict: id, name, type, createdAt required).
     static func parse(_ value: JSONValue, calendar: DartCalendar, now: () -> DartDateTime) -> NetWorthEntryRecord? {

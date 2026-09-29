@@ -15,16 +15,37 @@ public struct NetWorthHistoryPoint: Hashable, Sendable {
 
 extension FinancialData {
     /// `getNetWorthEntriesForMonth`: entries with a value, by amount desc
-    /// then lowercased name asc.
+    /// (Dart `compareTo`) then lowercased name asc (Dart `toLowerCase`, UTF-16
+    /// order). Stable; Dart's sort is stable only up to 32 entries.
     public func netWorthEntries(forMonth month: DartDateTime, type: NetWorthEntryType? = nil) -> [NetWorthEntryRecord] {
-        netWorthEntries
-            .filter { (type == nil || $0.type == type) && $0.amount(forMonth: month, calendar: calendar) != nil }
-            .sorted { a, b in
-                let x = a.amount(forMonth: month, calendar: calendar) ?? 0
-                let y = b.amount(forMonth: month, calendar: calendar) ?? 0
-                if x != y { return x > y }
-                return a.name.lowercased() < b.name.lowercased()
-            }
+        let keyed = netWorthEntries.compactMap { entry -> (amount: Double, name: [UInt16], entry: NetWorthEntryRecord)? in
+            guard type == nil || entry.type == type, let amount = entry.amount(forMonth: month, calendar: calendar) else { return nil }
+            return (amount, Array(DartString.lowercase(entry.name).utf16), entry)
+        }
+        return keyed.enumerated().sorted { a, b in
+            let byAmount = FinancialData.dartCompare(b.element.amount, a.element.amount)
+            if byAmount != 0 { return byAmount < 0 }
+            if a.element.name != b.element.name { return a.element.name.lexicographicallyPrecedes(b.element.name) }
+            return a.offset < b.offset
+        }.map(\.element.entry)
+    }
+
+    /// `hasNetWorthEntries`: any readable entry (the Worth empty state).
+    public var hasNetWorthEntries: Bool { !netWorthEntries.isEmpty }
+
+    /// `netWorthEntries.firstWhere((e) => e.id == id)`.
+    public func netWorthEntry(id: String) -> NetWorthEntryRecord? {
+        netWorthEntries.first { DartString.equal($0.id, id) }
+    }
+
+    /// `getNetWorthEntryHistory`: the entry's snapshots, ascending by
+    /// instant (stable); empty when the id is unknown.
+    public func netWorthEntryHistory(id: String) -> [NetWorthSnapshotRecord] {
+        guard let entry = netWorthEntry(id: id) else { return [] }
+        return entry.snapshots.enumerated().sorted { a, b in
+            let x = a.element.recordedAt.microsecondsSinceEpoch, y = b.element.recordedAt.microsecondsSinceEpoch
+            return x != y ? x < y : a.offset < b.offset
+        }.map(\.element)
     }
 
     func sum(at date: DartDateTime, _ type: NetWorthEntryType) -> Double {

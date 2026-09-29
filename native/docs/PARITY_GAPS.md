@@ -50,8 +50,31 @@ UPGRADE_TEST_RESULTS.md).
   (Swift stable sort); Dart's sort is not stable above 33 categories in a
   month, so there the order of tied categories (their rows, colours and
   which of them fall into "Other") can differ (Fixtures/spend `forty_ties`).
+- Worth: accounts with the same month value and the same lowercased name
+  keep stored order, and snapshots recorded at the same instant keep stored
+  order (Swift stable sorts); Dart's sort is not stable above 32 items.
 
 ## Deliberate differences (approved)
+
+- Net worth mutations (add, update, delete account, delete snapshot, carry
+  forward, select month) are awaited and return the verified write result.
+  Flutter's add/update/delete/select return nothing and ignore the save
+  result (the retry banner still shows); its carry-forward returns whether
+  anything changed, which Swift's returns only when the write also
+  succeeded.
+- Net worth: updating or deleting an account id that does not exist
+  writes nothing (Flutter rewrites the unchanged list, revision +1).
+  Deleting a snapshot shared by several accounts with the same id writes
+  when any of them changed (Flutter decides by the last one only).
+- Net worth: an edited account is patched in place. Unknown keys, `id` and
+  `createdAt` lexemes, and the stored JSON of kept snapshots survive;
+  legacy-shaped snapshots (`monthKey`/`updatedAt`, or no date) of that
+  account are written as Flutter writes them. Flutter rewrites every
+  account from `toJson`, dropping unknown keys. For data Flutter wrote the
+  bytes are identical (Fixtures/worth).
+- Net worth amounts must be finite: a NaN/Infinity balance (Flutter's
+  editor accepts a 330-digit number as Infinity) is refused before memory
+  changes; Flutter keeps it in memory and fails every later save.
 
 - Transactions page: when the selected month loses its last transaction,
   the page falls back to the newest month with data (Flutter keeps the

@@ -6,7 +6,9 @@
 // Layout of $SWIFT_OUT/<case>/:
 //   financial_store/   files written by BudgieCore
 //   prefs.json         typed preferences (optional)
-//   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>"}
+//   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>",
+//                       optional "categoryBudgetLimits", "netWorthEntries",
+//                       "selectedNetWorthMonth": what the Dart models must hold}
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
@@ -149,6 +151,36 @@ void main() {
           if (dart != expected) {
             problems.add('budget limits: dart $dart swift $expected');
           }
+        }
+        // Net worth the Swift side wrote: Dart must hold exactly these
+        // accounts, in this order, and this selected month.
+        final netWorthEntries = swift['netWorthEntries'];
+        if (netWorthEntries is List) {
+          final dart = jsonEncode([
+            for (final e in app.transactionModel.netWorthEntries)
+              [
+                e.id,
+                e.name,
+                e.type.name,
+                iso(e.createdAt),
+                [
+                  for (final s in e.snapshots)
+                    [iso(s.recordedAt), s.amount.toString()]
+                ],
+              ]
+          ]);
+          final expected = jsonEncode(netWorthEntries);
+          if (dart != expected) {
+            problems.add('net worth entries: dart $dart swift $expected');
+          }
+        }
+        final selectedNetWorthMonth = swift['selectedNetWorthMonth'];
+        if (selectedNetWorthMonth is String &&
+            iso(app.transactionModel.selectedNetWorthMonth) !=
+                selectedNetWorthMonth) {
+          problems.add('selected net worth month: dart '
+              '${iso(app.transactionModel.selectedNetWorthMonth)} '
+              'swift $selectedNetWorthMonth');
         }
         if (app.transactionModel.hasUnsavedChanges ||
             app.recurringModel.hasUnsavedChanges) {
