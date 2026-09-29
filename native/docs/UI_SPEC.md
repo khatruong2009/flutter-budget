@@ -30,8 +30,8 @@ in its own `NavigationStack`: Home (`dollarsign.circle`), Worth
 (`chart.bar`). Tab roots hide the navigation bar and draw a `BudgieHeader`;
 pushed pages keep the system bar and back gesture. Settings is pushed from
 the gear in the Home header; Recurring is a row under Settings > Data; the
-full transaction list (History) is pushed from Home's "SEE ALL". Goals,
-Spend and Flow show a placeholder until their Phase 2 streams land.
+month's transaction list (Transactions) is pushed from Home's "SEE ALL".
+Goals, Spend and Flow show a placeholder until their Phase 2 streams land.
 
 An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
@@ -41,44 +41,48 @@ sheet preset to income or expense over the current tab, once the data is
 ready, App Lock is passed and onboarding is done (`takePendingAdd()`); until
 then it stays queued. Toasts float above the tab bar (`toastHost`).
 
-## Spending
+## Home (spec full-app/02; Flutter `spending_page.dart`)
 
-- Month selector: previous/next chevrons around "September 2026"; menu of
-  `data.availableMonths()` plus the current month. Starts at the current
-  month (not persisted, like Flutter).
-- Totals for the month (`data.totals(forMonth:)`): income, expenses, net
-  (net coloured income/danger; label "Saved this month" / "Short this month"
-  / "Breaking even").
-- Safe-to-spend card: `SafeToSpend.calculate(... month:, asOf: model.now,
-  wallClock: model.now ...)`; title "Safe to spend" or "Projected shortfall";
-  subtitle "$X/day for N days left" | "This month is already closed out" |
-  "Add income or reduce planned spending"; tap opens a breakdown sheet with
-  the six rows of the Flutter sheet.
-- Expenses by category for the month (`totals.categoryExpenses`, sorted by
-  amount desc), with icon.
-- The month's transactions (newest first), tap to edit, swipe to delete
-  (confirm).
-- Toolbar "+" menu: Add Expense / Add Income.
+- Header: logo, month pill (`DartDateFormat.yMMMM(model.selectedMonth)`),
+  Settings gear. The pill opens a panel with a year stepper (D13) and a
+  five-row month drum always bound to `model.selectedMonth`.
+- Hero: "CASH FLOW", `format(abs(income - expenses))` with a forward-rolling
+  odometer (900 ms; none under Reduce Motion; plain "••••" when balances
+  are hidden), "$X in · $Y out", SAVED / SHORT THIS MONTH / BREAKING EVEN.
+- Spend gauge (spent / income), Income and Expenses chips with deltas vs
+  the previous month (`HomeSummary`), the safe-to-spend card and its
+  breakdown sheet (`SafeToSpend.calculate(... month:, asOf: model.now,
+  wallClock: model.now ...)`).
+- Budgets (`model.budgetOverview(forMonth:)`): rows by spent desc with
+  status colours, EDIT and "Add a budget" pickers, and the limit sheet
+  (`setBudgetLimit` / `removeBudgetLimit`, awaited before dismissing).
+- Recent activity: the 3 newest rows across all months (`ledger.recent`),
+  "SEE ALL" pushes Transactions.
+- Expense / Income pills and the FAB open the form; a FAB long-press opens
+  the quick-expense category sheet.
 
-## Transaction form (sheet)
+## Transaction form (sheet, D5)
 
-Fields: type (segmented Expense/Income), amount (decimal keyboard; valid iff
-parsed > 0 and finite; accepts the locale's decimal separator), description
-(optional; empty is saved as "Transaction", as the Flutter form does),
-category (picker from `model.categories(for:)`), date (DatePicker, not after
-today). Date semantics match the Flutter form: a new transaction's date is
-`model.now` (with time) unless the user picks a date, which is stored as that
-day at midnight (`calendar.date(y, m, d)`); editing keeps the stored date
-unless a new one is picked. Save calls `addTransaction` /
-`updateTransaction`. Edit mode shows Delete (confirm). Disable Save while invalid or
-while saving.
+Card-styled sheet. Fields: type toggle (Expense/Income), Amount (validated
+on Add/Update: "Amount is required" / "Please enter a valid number" /
+"Amount must be greater than 0"; Dart `double.tryParse` forms plus the
+locale decimal separator; non-finite rejected), Description (trimmed;
+empty saves "Transaction"), Category wheel, Tags (when any exist), Date
+tile. Date semantics match the Flutter form: a new transaction's date is
+`model.now` (with time) unless the user picks a day, stored as
+`calendar.date(y, m, d)`; editing keeps the stored date unless a new one is
+picked. Categorisation rules apply on every Amount/Description edit
+(`model.suggestion`). Add/Update await the write; a failure shows the
+Retry toast, an add outside the selected month shows "Added to <Month>".
+Edit mode offers Delete (confirm). "Make this recurring" turns the sheet
+into the recurring form.
 
-## History
+## Transactions (SEE ALL; Flutter `transaction_page.dart`)
 
-All transactions newest first (`data.transactionsNewestFirst()`), grouped
-by calendar day with a day header ("Mon, Sep 28, 2026") and a day net;
-search field filtering description/category; tap to edit, swipe to delete.
-Lazy (10k rows must scroll smoothly).
+Month chip strip (months with data, newest first; page-local selection),
+monthly summary card, rows of the selected month grouped under pinned
+`yMMMd` day headers. Tap to edit (D7), swipe left to delete with a
+"Delete Transaction" confirmation. Reads `model.ledger` only.
 
 ## Net Worth (read-only in the MVP)
 

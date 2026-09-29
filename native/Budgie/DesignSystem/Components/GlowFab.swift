@@ -20,17 +20,25 @@ struct GlowFab: View {
     @State private var pressed = false
 
     var body: some View {
+        // The face scales in and presses; the hit target underneath stays
+        // full size, so a tap during the entry animation still lands here
+        // rather than on whatever the FAB covers.
         Color.clear
             .frame(width: size, height: size)
-            .keyframeAnimator(initialValue: 0.0, trigger: bursts) { _, t in
-                FabFace(symbol: symbol, size: size, t: t)
-            } keyframes: { _ in
-                LinearKeyframe(1.0, duration: 0.5)
-                MoveKeyframe(0.0)
+            .overlay {
+                Color.clear
+                    .frame(width: size, height: size)
+                    .keyframeAnimator(initialValue: 0.0, trigger: bursts) { _, t in
+                        FabFace(symbol: symbol, size: size, t: t)
+                    } keyframes: { _ in
+                        LinearKeyframe(1.0, duration: 0.5)
+                        MoveKeyframe(0.0)
+                    }
+                    .scaleEffect(pressed ? 0.95 : 1)
+                    .motion(Motion.press, value: pressed)
+                    .scaleEffect(entered ? 1 : 0.001)
+                    .allowsHitTesting(false)
             }
-            .scaleEffect(pressed ? 0.95 : 1)
-            .motion(Motion.press, value: pressed)
-            .scaleEffect(entered ? 1 : 0.001)
             .onAppear {
                 guard !entered else { return }
                 if reduceMotion { entered = true } else { withAnimation(Motion.easeOutBack(0.3)) { entered = true } }

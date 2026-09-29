@@ -400,7 +400,7 @@ Mirror of Dart `PersistenceStatus`:
 - A mutation updates memory first, then awaits a commit that includes the
   changed sections **plus every section still flagged unsaved**.
 - Success only after 4.6 step 4. Failure flags the sections, records the
-  error, shows the retry banner on the Spending tab.
+  error, shows the retry banner above the tabs.
 - Retry: banner button, and automatically when the app moves to background.
 - A success clears only the sections it carried.
 - The widget's `cashFlow` is updated only after a verified transactions save.
