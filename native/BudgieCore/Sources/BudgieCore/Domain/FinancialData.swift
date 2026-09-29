@@ -26,7 +26,7 @@ public struct FinancialData: Sendable {
     public private(set) var templateRows: [StoredRow<RecurringTemplate>] = []
     public private(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
     public private(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
-    public private(set) var categoryRows: [StoredRow<CategoryInfo>] = []
+    public internal(set) var categoryRows: [StoredRow<CategoryInfo>] = []
     public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
     public private(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
     /// The `categoryBudgetLimits` object as stored (edits patch it in place,
@@ -141,7 +141,13 @@ public struct FinancialData: Sendable {
             data.selectedNetWorthMonth = calendar.month(of: parsed)
         }
 
-        data.categoryRows = CategoryCatalog.rows(sections[Section.categories])
+        // Categories: Dart reads the legacy preference when the section is
+        // not a list. The launch materialisation runs after the templates.
+        if case .array? = sections[Section.categories] {
+            data.categoryRows = CategoryCatalog.rows(sections[Section.categories])
+        } else if let text = preferences.string(PreferenceKey.categories), !text.isEmpty, let legacy = try? JSONParser.parse(text) {
+            data.categoryRows = CategoryCatalog.rows(legacy)
+        }
 
         // Tags and rules: Dart reads the legacy preference when the section
         // is not a list (normally removed by the store migration).
@@ -173,6 +179,10 @@ public struct FinancialData: Sendable {
             data.templateRows = rows.map { row in
                 RecurringTemplate.parse(row, calendar: calendar, newID: newID).map { .record($0) } ?? .unreadable(row)
             }
+        }
+
+        if data.ensureLegacyCategories(stored: sections[Section.categories], newID: newID) {
+            pending.append((Section.categories, data.categoriesSection()))
         }
         return LoadResult(data: data, pendingWrites: pending)
     }

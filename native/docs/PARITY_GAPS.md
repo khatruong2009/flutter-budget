@@ -16,7 +16,7 @@ UPGRADE_TEST_RESULTS.md).
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Not shown; tags on existing transactions are kept when edited. |
-| Category management (add, rename, archive, reorder) | `categories` | Pickers read the stored list; no editing. Renames therefore cannot happen in Swift. |
+| Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter; no editing UI yet. |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
@@ -63,6 +63,11 @@ UPGRADE_TEST_RESULTS.md).
   makes Flutter replace the whole list with the built-in seeds, and for
   tags and rules it makes Flutter load an empty list; Swift keeps using the
   readable rows (the seeds only when none are readable).
+- At launch Flutter rewrites the whole `categories` list in canonical
+  `toJson` form whenever it differs from the stored JSON (a row missing
+  `isBuiltIn`, say). Swift writes the list only when a definition was added
+  or a sort order changed, and patches just those keys, so unknown keys
+  survive.
 - A preference with an unexpected type reads as absent; Dart would throw.
 - Numbers typed into Swift are validated finite; Dart would fail to save a
   NaN/Infinity forever.

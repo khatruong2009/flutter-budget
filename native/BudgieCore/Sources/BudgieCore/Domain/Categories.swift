@@ -43,6 +43,14 @@ public struct CategoryInfo: Hashable, Sendable, Identifiable {
             isArchived: archived ?? false, isBuiltIn: builtIn ?? false, raw: object)
     }
 
+    func with(sortOrder: Int) -> CategoryInfo {
+        var raw = self.raw
+        raw["sortOrder"] = .int(sortOrder)
+        return CategoryInfo(
+            id: id, type: type, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, sortOrder: sortOrder,
+            isArchived: isArchived, isBuiltIn: isBuiltIn, raw: raw)
+    }
+
     /// A new definition as Dart `BudgetCategory(...).toJson()` writes it.
     public static func make(
         id: String, type: TransactionType, name: String, iconIdentifier: String, colorToken: String, sortOrder: Int,
@@ -153,6 +161,88 @@ public enum CategoryCatalog {
 }
 
 extension FinancialData {
+    /// The launch pass of the Flutter app (`main.dart` `_initializeApp`):
+    /// `CategoryProvider.load` (seeds when nothing is readable, sort orders
+    /// normalised), then `ensureLegacyCategories(transactions)` and
+    /// `ensureLegacyCategoryNames(template categories + expense budget
+    /// keys)`: every (type, name) in use without a definition gets one.
+    /// Returns whether the `categories` section now differs from what was
+    /// stored (the caller writes it only then, as Flutter does).
+    mutating func ensureLegacyCategories(stored: JSONValue?, newID: () -> String) -> Bool {
+        if categoryRows.allSatisfy({ $0.record == nil }) {
+            categoryRows += CategoryCatalog.builtIn.map { .record($0) }
+        }
+        normalizeCategorySortOrders()
+
+        var added = false
+        let names = transactions.map { ($0.type, $0.category) }
+            + templates.map { ($0.type, $0.category) }
+            + budgetLimits.map { (TransactionType.expense, $0.0) }
+        for (type, name) in names where !containsCategory(type: type, name: name) {
+            let count = categoryRows.filter { $0.record?.type == type }.count
+            categoryRows.append(.record(CategoryInfo.make(
+                id: uniqueCategoryID(type: type, name: name, newID: newID), type: type, name: name,
+                iconIdentifier: "square_grid_2x2", colorToken: "accent", sortOrder: count, isBuiltIn: false)))
+            added = true
+        }
+        if added { normalizeCategorySortOrders() }
+
+        guard case .array? = stored else { return true }
+        return DartJSON.encode(categoriesSection()) != DartJSON.encode(stored!)
+    }
+
+    /// Dart `_containsName`: same type, names equal after lowercasing (the
+    /// candidate is trimmed, the stored name is not).
+    func containsCategory(type: TransactionType, name: String) -> Bool {
+        let wanted = DartString.lowercase(DartString.trim(name))
+        return categoryRows.contains { row in
+            guard let record = row.record, record.type == type else { return false }
+            return DartString.equal(DartString.lowercase(record.name), wanted)
+        }
+    }
+
+    /// Dart `_uniqueId`: `type-slug`, or `type-uuid` when that id is taken.
+    /// The slug is the trimmed, lowercased name with each run of characters
+    /// outside [a-z0-9] replaced by "-", and leading/trailing "-" removed.
+    func uniqueCategoryID(type: TransactionType, name: String, newID: () -> String) -> String {
+        var slug = ""
+        var inRun = false
+        for unit in DartString.lowercase(DartString.trim(name)).utf16 {
+            if (0x61...0x7A).contains(unit) || (0x30...0x39).contains(unit) {
+                slug.unicodeScalars.append(Unicode.Scalar(UInt8(unit)))
+                inRun = false
+            } else if !inRun {
+                slug.append("-")
+                inRun = true
+            }
+        }
+        while slug.hasPrefix("-") { slug.removeFirst() }
+        while slug.hasSuffix("-") { slug.removeLast() }
+        let candidate = "\(type.rawValue)-\(slug.isEmpty ? "category" : slug)"
+        if categoryRows.contains(where: { $0.record?.id == candidate }) { return "\(type.rawValue)-\(newID())" }
+        return candidate
+    }
+
+    /// Dart `_normalizeSortOrders`: per type, every definition (archived
+    /// included) ordered by sortOrder, stable, renumbered 0..n-1. Only rows
+    /// whose number changes are patched.
+    mutating func normalizeCategorySortOrders() {
+        for type in TransactionType.allCases {
+            let ordered = categoryRows.indices
+                .filter { categoryRows[$0].record?.type == type }
+                .enumerated()
+                .sorted { a, b in
+                    let x = categoryRows[a.element].record!.sortOrder, y = categoryRows[b.element].record!.sortOrder
+                    return x != y ? x < y : a.offset < b.offset
+                }
+                .map(\.element)
+            for (position, index) in ordered.enumerated() {
+                guard let record = categoryRows[index].record, record.sortOrder != position else { continue }
+                categoryRows[index] = .record(record.with(sortOrder: position))
+            }
+        }
+    }
+
     public func categoryPicker(for type: TransactionType) -> [CategoryInfo] {
         var used: [String] = []
         for transaction in transactions where transaction.type == type && !used.contains(transaction.category) {

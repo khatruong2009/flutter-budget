@@ -121,14 +121,16 @@ struct SectionSerializerTests {
         let x = data.categories[0]
         #expect(x.iconIdentifier == "square_grid_2x2" && x.colorToken == "accent" && x.sortOrder == 0 && !x.isArchived && !x.isBuiltIn)
         let y = data.categories[1]
-        #expect(y.type == .income && y.sortOrder == 2 && y.isArchived && y.isBuiltIn)
+        // Load renumbers sort orders per type (Dart `_normalizeSortOrders`).
+        #expect(y.type == .income && y.sortOrder == 0 && y.isArchived && y.isBuiltIn)
         #expect(data.categoryRows.count == 3 && data.categoryRows[1].record == nil)
         #expect(text(data.categoriesSection()).contains(#""extra":true"#))
 
         #expect(loadData(JSONObject()).categories == CategoryCatalog.builtIn)
         let onlyBad = loadData(JSONObject(ordered: [("categories", parse(#"[{"name":"x"}]"#))]))
         #expect(onlyBad.categories == CategoryCatalog.builtIn)
-        #expect(text(onlyBad.categoriesSection()) == #"[{"name":"x"}]"#)
+        // The unreadable row is kept; the seeds are materialised after it.
+        #expect(onlyBad.categoryRows.first?.record == nil && onlyBad.categoryRows.count == 18)
     }
 
     @Test("built-in seeds serialise exactly as Dart's toJson")
