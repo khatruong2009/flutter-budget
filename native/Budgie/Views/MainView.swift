@@ -21,7 +21,7 @@ struct MainView: View {
             NavigationStack { WorthView() }
                 .tabItem { Label("Worth", systemImage: "chart.line.uptrend.xyaxis") }
                 .tag(Tab.worth)
-            NavigationStack { UpcomingTabView(title: "Goals", symbol: "flag") }
+            NavigationStack { GoalsView() }
                 .tabItem { Label("Goals", systemImage: "flag") }
                 .tag(Tab.goals)
             NavigationStack { SpendView() }
@@ -55,22 +55,6 @@ struct MainView: View {
 
 extension AddRoute: Identifiable {
     var id: Self { self }
-}
-
-/// A tab whose redesign lands in a later phase: its header and a notice.
-struct UpcomingTabView: View {
-    let title: String
-    let symbol: String
-
-    var body: some View {
-        VStack(spacing: 0) {
-            BudgieHeader(title: title)
-            EmptyStateView(symbol: symbol, title: title, message: "This tab is being rebuilt and arrives in an upcoming update.")
-                .frame(maxHeight: .infinity)
-        }
-        .background(BudgieColor.background)
-        .toolbar(.hidden, for: .navigationBar)
-    }
 }
 
 /// Shown while a change is only in memory (Flutter `UnsavedChangesBanner`):

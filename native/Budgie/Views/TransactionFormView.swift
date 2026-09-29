@@ -536,8 +536,9 @@ private struct FormButton: View {
     }
 }
 
-/// Wrapping rows of chips (Flutter `Wrap`), leading-aligned.
-private struct FlowLayout: Layout {
+/// Wrapping rows of chips (Flutter `Wrap`), leading-aligned (also the Add
+/// money dialog's quick amounts).
+struct FlowLayout: Layout {
     var spacing: CGFloat
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {

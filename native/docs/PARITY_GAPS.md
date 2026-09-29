@@ -11,7 +11,6 @@ UPGRADE_TEST_RESULTS.md).
 | Flutter feature | Stored in | MVP status |
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
-| Savings goals UI | `savingsGoals` | Core and model API done (add, edit, delete, add money, status, pace, sort, summary; Fixtures/goals); safe-to-spend reserves goal contributions exactly like Flutter; no Goals tab UI yet. |
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
 | Savings goals UI | `savingsGoals` | Read (safe-to-spend reserves goal contributions exactly like Flutter); no UI to view/edit. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
@@ -61,6 +60,10 @@ UPGRADE_TEST_RESULTS.md).
   "Behind" at once. Overdue goals show "bump to ... to catch up".
 - Goals: on hand-edited data with a zero or negative target, any
   allocation stamps `completedAt` although the goal never shows Complete.
+- Goals: only Add money celebrates. Raising "Saved so far" to the target in
+  the edit form completes the goal with no haptic or overlay, and whether
+  Add money celebrates is judged on the goal as shown before the dialog
+  (`amount >= remaining`), not on the model's own completion test.
 
 ## Deliberate differences (approved)
 
@@ -114,6 +117,55 @@ UPGRADE_TEST_RESULTS.md).
   microseconds apart). A stored goal without an id gets a UUID that is
   saved with the next goal write; Flutter generates a new
   `savings_goal_...` id at every launch until a goal save.
+- Goals dialogs (add / edit, Add money, delete) stay open while the write
+  is awaited, with the scrim and buttons inert, then close (Flutter closes
+  the dialog first and saves afterwards).
+- Goals toasts: "Savings goal added / updated / deleted" and "Allocation
+  added" show only when the write is verified; a failed write shows the
+  save-failed toast with Retry instead (Flutter shows the success snackbar
+  either way), and a change the model refuses (the goal is gone, a sum
+  that overflows) closes the dialog without a toast. Toasts replace each
+  other rather than queue (shared toast host).
+- Goals celebration: the medium haptic and overlay play only when the Add
+  money write succeeded (Flutter plays them after a failed save too).
+  VoiceOver hears "Goal complete, {name}" queued after the toast, and the
+  overlay is one labelled element; Flutter announces nothing.
+- Goals amount fields (Target amount, Saved so far, Allocation amount) parse
+  with the money format's separators (`AmountInput`, D6): "1.500,00" is 1500
+  under de_DE and a lone "12,5" is 12.5; signs, exponents, hex, "NaN" and
+  "Infinity" are rejected with the field's error. Flutter strips every ","
+  and "$" and uses `double.tryParse` ("1,5" is 15). The prefix symbol is the
+  base currency's (Flutter always shows `$`).
+- Goals edit form: the amounts prefill locale-grouped ("5,000.00", like the
+  budget limit sheet; Flutter "5000.00"), and a field left as prefilled saves
+  the stored amount exactly (Flutter re-parses the 2-decimal prefill, so an
+  untouched 33.333 becomes 33.33).
+- Goals Add money: while the field reads the "Finish goal" text the exact
+  remainder is saved, so the goal always completes (Flutter fills the
+  remainder rounded to cents and can fall short, e.g. 33.334 -> 33.33).
+- Goals target date: the shared graphical day picker sheet (Cancel / OK)
+  instead of Material's calendar dialog, over Flutter's range (Jan 1 of
+  last year to Jan 1 of year + 20, inclusive) stretched to include the
+  shown date, so an old overdue goal can be edited (Flutter asserts, D6).
+- Goals cards are keyed by goal id, so ring state follows its goal when the
+  order changes (Flutter's cards are unkeyed and keep it by position).
+- Goals tab state survives tab switches (native `TabView`): the rings and
+  the add button do not replay their entry animations on return (Flutter
+  rebuilds the page). A celebration still ends when the tab is left. The
+  status and pace re-read the clock when the app returns to the foreground.
+- Goals icons (D3): `banknote` stands in for Material's piggy bank
+  (`savings_rounded`) on the empty state and the "Saved so far" field; the
+  ellipsis button's ring uses the 8% pill border token (Flutter 10%).
+- Goals actions sheet: a native sheet with a clear background and a
+  content-sized detent holding the floating card (Flutter's Material modal
+  bottom sheet); the Add money dialog shares the 500pt dialog width
+  (Flutter 460, only visible on screens wider than 548pt); a celebration
+  card for a long name keeps a 20pt margin (Flutter's reaches the edges).
+- Goals accessibility: each card reads as one element ("{name}, {status}",
+  valued percent, amounts and pace) with Add money, Edit goal and Delete
+  goal actions, the Add money and ellipsis buttons staying separate; the
+  summary card reads "Saved so far" with its totals. Flutter labels only
+  the add button and the ellipsis.
 
 - Transactions page: when the selected month loses its last transaction,
   the page falls back to the newest month with data (Flutter keeps the

@@ -22,6 +22,13 @@ struct Toast: Identifiable, Equatable {
     /// After a transaction delete.
     static let transactionDeleted = Toast(message: "Transaction deleted", style: .danger)
 
+    /// Goals tab (savings_goals_page.dart `_runMutation`), all success
+    /// green in Flutter, the delete included.
+    static let goalAdded = Toast(message: "Savings goal added")
+    static let goalUpdated = Toast(message: "Savings goal updated")
+    static let allocationAdded = Toast(message: "Allocation added")
+    static let goalDeleted = Toast(message: "Savings goal deleted")
+
     /// After adding a transaction dated outside the month on screen:
     /// "Added to September", or "Added to September 2025" in another year.
     static func addedTo(month: DartDateTime, now: DartDateTime) -> Toast {

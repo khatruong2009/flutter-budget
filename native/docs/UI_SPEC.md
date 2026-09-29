@@ -40,7 +40,7 @@ in its own `NavigationStack`: Home (`dollarsign.circle`), Worth
 pushed pages keep the system bar and back gesture. Settings is pushed from
 the gear in the Home header; Recurring is a row under Settings > Data; the
 month's transaction list (Transactions) is pushed from Home's "SEE ALL".
-Goals shows a placeholder until its Phase 2 stream lands.
+Goals is `GoalsView` (see "Goals" below).
 
 An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
@@ -360,6 +360,56 @@ selected month.
   `worth.history.timeline.row`, `worth.history.timeline.delete`,
   `worth.history.timeline.empty`, `worth.history.edit`,
   `worth.history.deleteAccount`, `worth.history.missing`.
+
+## Goals (spec full-app/03; Flutter `savings_goals_page.dart`)
+
+`Views/Goals/`. Reads `model.savingsGoals` (incomplete first, then target
+date, stable) and `model.savingsGoalsSummary`; copy from `SavingsGoalText`;
+money through `model.moneyFormatter` (Hide balances masks amounts, the pace
+line and the $25 / $100 chips, never percentages, statuses, dates or the
+form's prefilled amounts).
+
+- Header `BudgieHeader("Goals")`; the add button (`GlowFab`, "Add savings
+  goal") floats bottom-trailing and opens the add form.
+- Empty state: GlowCard (padding 28) with a 56pt accent `banknote` tile,
+  "No savings goals yet", the body copy and a filled "Add goal" pill.
+- Summary card: 72/8 accent `ProgressRing` with the overall percent, "SAVED
+  SO FAR", the saved total (0 decimals) and "of {target} · {n} of {count}
+  complete".
+- Goal card: 84/9 ring in the status colour (accent On track, warning
+  Behind, income Complete; percent, or a check when complete), name and
+  status `PillChip`, "{saved} of {target}" or "{saved} saved", the pace line
+  or "Fully funded on {MMMd} — nice work" in green, then a filled "Add money"
+  pill and the 44pt ellipsis ("More goal actions"); a completed card has
+  only the ellipsis, a green gradient and border, and long-presses (medium
+  haptic) to its actions. Cards are keyed by goal id.
+- Actions sheet (ellipsis): floating card with the name, "Edit goal" and
+  "Delete goal"; the chosen dialog opens after the sheet closes.
+- Dialogs (`budgieDialog`): the add / edit form (Goal name, Target amount,
+  Saved so far when editing, Target date tile opening `DayPickerSheet` over
+  Jan 1 of last year to Jan 1 of year + 20, stretched to the shown date;
+  errors "Name is required", "Enter a target greater than 0", "Enter 0 or
+  more" on submit), Add money (autofocused amount, chips that replace the
+  text: $25.00, $100.00, "Finish goal" while something remains; "Enter an
+  amount greater than 0"), and "Delete savings goal?". Amounts parse with
+  `AmountInput`; an edit's untouched prefill, and the untouched "Finish
+  goal" text, keep the exact stored / remaining value.
+- Every mutation is awaited with its dialog open (scrim and buttons inert),
+  then the dialog closes and toasts "Savings goal added / updated /
+  deleted" or "Allocation added", or the save-failed toast when the write
+  failed. An Add money that completes the goal (`willComplete` on the goal
+  as shown) then plays the medium haptic, queues a "Goal complete, {name}"
+  announcement and, unless Reduce Motion is on, the 1600 ms celebration
+  (scrim, 18 dots, scaling card; no touches).
+- UI-test identifiers: `goals.fab`, `goals.empty`, `goals.empty.add`,
+  `goals.summary`, `goals.card` (one per goal; label "{name}, {status}"),
+  `goals.card.addMoney`, `goals.card.more`, `goals.actions.edit`,
+  `goals.actions.delete`, `goals.form.date`, `goals.form.cancel`,
+  `goals.form.submit`, `goals.allocate.chip.25`, `goals.allocate.chip.100`,
+  `goals.allocate.chip.finish`, `goals.allocate.cancel`,
+  `goals.allocate.submit`, `goals.delete.cancel`, `goals.delete.confirm`,
+  `goals.celebration`. Fields by label: "Goal name", "Target amount",
+  "Saved so far", "Allocation amount".
 
 ## Recurring
 
