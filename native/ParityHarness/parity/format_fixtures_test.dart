@@ -105,4 +105,18 @@ void main() {
     }
     writeJson('$fixturesRoot/logic/strings.json', {'single': trims, 'pairs': pairs});
   });
+
+  // Every scalar whose toLowerCase differs from itself: [code point, UTF-16
+  // units of the result]. The VM's case tables are Unicode 5.1, older than
+  // the host's, so this pins which later mappings Dart does not apply.
+  test('String.toLowerCase for every scalar', () {
+    final lower = <List<Object>>[];
+    for (var cp = 0; cp <= 0x10FFFF; cp++) {
+      if (cp >= 0xD800 && cp <= 0xDFFF) continue;
+      final s = String.fromCharCode(cp);
+      final l = s.toLowerCase();
+      if (l != s) lower.add([cp, l.codeUnits]);
+    }
+    writeJson('$fixturesRoot/logic/lower.json', {'lower': lower});
+  });
 }

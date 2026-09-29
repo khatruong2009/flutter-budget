@@ -9,7 +9,9 @@
 //   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>",
 //                       optional "categoryBudgetLimits", "netWorthEntries",
 //                       "selectedNetWorthMonth", "savingsGoals", "appSettings",
-//                       "themeMode": what the Dart models must hold}
+//                       "themeMode", "categories", "categoriesAddedAtLaunch",
+//                       "transactionCategories", "templateCategories",
+//                       "ruleCategories": what the Dart models must hold}
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
@@ -224,6 +226,59 @@ void main() {
             problems.add('app settings: dart $dart swift $expected');
           }
         }
+        // Categories the Swift side edited: Dart's launch pass must end with
+        // exactly these definitions (every field, stored order), plus only
+        // what Swift's own launch pass adds on the same bytes (ids aside:
+        // a re-added padded name gets a fresh uuid). This also proves a
+        // rename left no orphan name behind.
+        final categories = swift['categories'];
+        if (categories is List) {
+          final dart = [
+            for (final c in app.categoryProvider.categories)
+              [
+                c.id,
+                c.type.name,
+                c.name,
+                c.iconIdentifier,
+                c.colorToken,
+                c.sortOrder,
+                c.isArchived,
+                c.isBuiltIn,
+              ]
+          ];
+          final kept = jsonEncode(dart.take(categories.length).toList());
+          if (kept != jsonEncode(categories)) {
+            problems.add('categories: dart $kept swift ${jsonEncode(categories)}');
+          }
+          final added = jsonEncode(
+              [for (final row in dart.skip(categories.length)) row.sublist(1)]);
+          final expectedAdded = jsonEncode(swift['categoriesAddedAtLaunch']);
+          if (added != expectedAdded) {
+            problems.add('categories added at launch: dart $added swift $expectedAdded');
+          }
+        }
+        // The category names the rename cascade wrote into every section.
+        void compareRows(String key, List<List<Object?>> dart) {
+          final expected = swift[key];
+          if (expected is! List) return;
+          if (jsonEncode(dart) != jsonEncode(expected)) {
+            problems.add('$key: dart ${jsonEncode(dart)} swift ${jsonEncode(expected)}');
+          }
+        }
+
+        compareRows('transactionCategories', [
+          for (final t in app.transactionModel.transactions)
+            [t.id, t.type.name, t.category]
+        ]);
+        compareRows('templateCategories', [
+          for (final t in app.recurringModel.recurringTransactions)
+            [t.id, t.type.name, t.category]
+        ]);
+        compareRows('ruleCategories', [
+          for (final r in (app.categorizationProvider.rules.toList()
+            ..sort((a, b) => a.id.compareTo(b.id))))
+            [r.id, r.category]
+        ]);
         final themeMode = swift['themeMode'];
         if (themeMode is String) {
           final theme = ThemeProvider();

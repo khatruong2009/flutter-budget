@@ -100,6 +100,15 @@ public struct CategorizationRuleRecord: Identifiable, Hashable, Sendable {
 }
 
 extension CategorizationRuleRecord {
+    /// The category rename (Dart `CategorizationProvider.renameCategory`
+    /// rebuilds the rule with only `category` changed).
+    func with(category: String) -> CategorizationRuleRecord {
+        var copy = self
+        copy.category = category
+        copy.raw["category"] = .string(category)
+        return copy
+    }
+
     /// Dart `CategorizationRule.matches` (categorization_rule.dart:72-89):
     /// disabled or an empty pattern never matches; the type must agree when
     /// the rule has one; both amount bounds are inclusive; then the trimmed,

@@ -403,6 +403,10 @@ Mirror of Dart `PersistenceStatus`:
   error, shows the retry banner above the tabs.
 - Retry: banner button, and automatically when the app moves to background.
 - A success clears only the sections it carried.
+- A change that spans sections is one commit: a category edit writes the
+  definition and its rename cascade (`categories`, `transactions`,
+  `categoryBudgetLimits`, `recurringTransactions`, `categorizationRules`,
+  only those that changed) together; on failure all of them are flagged.
 - The widget's `cashFlow` is updated only after a verified transactions save.
 
 ---------------------------------------------------------------------------------
@@ -496,6 +500,7 @@ black screen.) The rehearsal records the persisted class after every step.
 | CSV export | header `Date,Type,Category,Description,Amount`; CRLF between rows, no trailing newline, no BOM; quote iff field contains `,` `"` CR LF, `"` doubled; date `yyyy-MM-dd`; `Income`/`Expense`; amount = Dart `toStringAsFixed(2)` (exact binary value, ties away from zero; NOT `%.2f`); rows sorted by full `date` ascending; file `transactions_yyyyMMdd_HHmmss.csv` | Dart-generated CSV fixtures |
 | Money display | intl algorithm (research E 6.4): floor, `(frac*10^d)` rounded half away from zero on the double product, carry; symbol table by currency; pattern by locale; "Match device" = en_US; `-0.0` rules | Dart-generated vectors |
 | Template edit | see 14 Q2 | |
+| Category management | `CategoryProvider` add/update/setArchived/move and the Categories page's rename cascade (`Domain/CategoryEditing.swift`): Flutter's validation order and copy, `_uniqueId` slugs, sortOrder renumbering, exact UTF-16 renames with `updatedAt` = now, budget key moved to the end (`putIfAbsent`); rules restricted by type (D6) | Fixtures/categories (real providers and page, byte-compared) |
 
 ---------------------------------------------------------------------------------
 

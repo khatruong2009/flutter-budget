@@ -662,6 +662,87 @@ final class AppModel {
         preferences.set(.string(mode.rawValue), forKey: PreferenceKey.themeMode)
     }
 
+    // MARK: - Categories (category management)
+
+    /// What a category edit did: written and verified; changed in memory
+    /// but not written (the unsaved banner and Retry take over, the caller
+    /// shows `Toast.saveFailed`); nothing to do (a Flutter no-op: unknown
+    /// id, unchanged state, a move to the same slot); or refused with
+    /// nothing changed, carrying Flutter's copy (`error.message`).
+    enum CategoryOutcome: Equatable {
+        case saved, failed, unchanged
+        case rejected(CategoryEditError)
+    }
+
+    /// Dart `categoriesFor(type, includeArchived:)`: the management list.
+    func categoryDefinitions(type: TransactionType, includeArchived: Bool) -> [CategoryInfo] {
+        data?.categoryDefinitions(type: type, includeArchived: includeArchived) ?? []
+    }
+
+    /// The error saving `name` would give (live editor validation);
+    /// `excluding` is the edited category's id, nil when adding.
+    func validateCategoryName(_ name: String, type: TransactionType, excluding id: String?) -> CategoryEditError? {
+        data?.validateCategoryName(name, type: type, excluding: id)
+    }
+
+    /// The `moveCategory` offset for Move up (`direction` -1) or Move down
+    /// (+1) relative to the rows shown; nil when that move is not offered.
+    func categoryMoveOffset(id: String, direction: Int, includeArchived: Bool) -> Int? {
+        data?.categoryMoveOffset(id: id, direction: direction, includeArchived: includeArchived)
+    }
+
+    /// Dart `addCategory` (the type is the page's selected segment).
+    @discardableResult
+    func addCategory(type: TransactionType, name: String, iconIdentifier: String, colorToken: String) async -> CategoryOutcome {
+        await editCategories { data throws(CategoryEditError) in
+            try data.addCategory(type: type, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, newID: newID)
+        }
+    }
+
+    /// Dart `updateCategory` plus the page's rename cascade (transactions,
+    /// the expense budget key, templates, rules of the same type or none),
+    /// all in one commit.
+    @discardableResult
+    func updateCategory(id: String, name: String, iconIdentifier: String, colorToken: String) async -> CategoryOutcome {
+        let now = self.now
+        return await editCategories { data throws(CategoryEditError) in
+            try data.updateCategory(id: id, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, now: now)
+        }
+    }
+
+    /// Dart `setArchived` (Archive / Restore).
+    @discardableResult
+    func setCategoryArchived(id: String, _ archived: Bool) async -> CategoryOutcome {
+        await editCategories { data throws(CategoryEditError) in try data.setCategoryArchived(id: id, archived) }
+    }
+
+    /// Dart `moveCategory`: `offset` in the type's whole list (use
+    /// `categoryMoveOffset` for Move up / Move down).
+    @discardableResult
+    func moveCategory(id: String, offset: Int) async -> CategoryOutcome {
+        await editCategories { data in data.moveCategory(id: id, offset: offset) }
+    }
+
+    /// Runs one category edit on a copy (a refused edit leaves `data`
+    /// untouched), then memory first and one awaited commit of every
+    /// changed section. A rename that touched transactions rebuilds the
+    /// ledger, which keys totals by category name.
+    private func editCategories(
+        _ edit: (inout FinancialData) throws(CategoryEditError) -> CategoryEditResult
+    ) async -> CategoryOutcome {
+        guard var copy = data else { return .unchanged }
+        let result: CategoryEditResult
+        do {
+            result = try edit(&copy)
+        } catch {
+            return .rejected(error)
+        }
+        guard !result.changedSections.isEmpty else { return .unchanged }
+        data = copy
+        if result.changedSections.contains(Section.transactions) { transactionsChanged() }
+        return await persist(result.changedSections) ? .saved : .failed
+    }
+
     func categories(for type: TransactionType) -> [CategoryInfo] {
         data?.categoryPicker(for: type) ?? CategoryCatalog.pickerList(CategoryCatalog.builtIn, type: type, usedNames: [])
     }

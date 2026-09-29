@@ -13,7 +13,7 @@ UPGRADE_TEST_RESULTS.md).
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
-| Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter; no editing UI yet. |
+| Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter. BudgieCore and AppModel implement add, edit with the rename cascade, archive/restore and move (Fixtures/categories); no management page yet. |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
@@ -50,6 +50,18 @@ UPGRADE_TEST_RESULTS.md).
 - Worth: accounts with the same month value and the same lowercased name
   keep stored order, and snapshots recorded at the same instant keep stored
   order (Swift stable sorts); Dart's sort is not stable above 32 items.
+- Category renames follow exact (UTF-16) names only. A case variant
+  ("gift" when "Gift" is renamed) or the other Unicode normalisation keeps
+  the old name, and gets a definition of its own at the next launch if it
+  has none. When the new
+  name already has a budget limit, that limit stays and the renamed
+  category's limit is dropped (Dart `putIfAbsent`). A case-only rename
+  cascades; an icon or colour edit, or the same name with padding, does
+  not. Transactions renamed get `updatedAt` = now, even when that is
+  earlier than the stored value.
+- A legacy category whose stored name has leading or trailing spaces
+  ("  Padded Cat ") is added again at every launch: Dart's `_containsName`
+  trims only the candidate.
 - Goals: goals with the same completion state and target date keep stored
   order (Swift stable sort); Dart's sort is not stable above 32 goals.
 - Goals: a goal is "Behind" on its target day unless fully funded (the
@@ -203,6 +215,32 @@ UPGRADE_TEST_RESULTS.md).
   `isBuiltIn`, say). Swift writes the list only when a definition was added
   or a sort order changed, and patches just those keys, so unknown keys
   survive.
+- Category edits patch the changed keys of the rows they touch (unknown
+  keys, number lexemes and unreadable rows survive). Flutter rewrites the
+  whole `categories` list, and on a rename the whole `transactions`,
+  `recurringTransactions` and `categorizationRules` sections, in canonical
+  `toJson` form. On data Flutter wrote itself the bytes are identical
+  (Fixtures/categories).
+- Renaming a category (D6) renames the rules whose type is that category's
+  type or that apply to any type. Flutter also renames rules of the other
+  type: renaming the expense "Gift" moved an income-only "Gift" rule to a
+  name the income list does not have, so it stopped suggesting anything.
+- A category edit and its rename cascade are one commit of every section
+  it changed (`categories`, `transactions`, `categoryBudgetLimits`,
+  `recurringTransactions`, `categorizationRules`). Flutter makes up to four
+  commits with no rollback, so a failed write, or leaving the page while it
+  saved, left a half-renamed state (definition renamed, rows not).
+- A category save that fails stays in memory behind the unsaved-changes
+  banner (Retry, or the next save, writes it) and the caller shows the
+  save-failed toast. Flutter's `CategoryProvider` throws: the page shows
+  "Could not update this category", skips the rename cascade, and no banner
+  covers the lost change.
+- Category Move up / Move down with archived rows hidden moves the row past
+  the previous or next shown row. Flutter moves by one in the full list
+  (archived rows included), so a move over a hidden archived row seemed to
+  do nothing. With "Show archived" on the moves are Flutter's. Moving an
+  unknown id does nothing (Flutter throws "No element"; unreachable from
+  the page).
 - A quick action, widget tap or deep link on a locked launch opens its
   form only after App Lock is passed (Flutter pushes it on the root
   navigator, above the lock screen).

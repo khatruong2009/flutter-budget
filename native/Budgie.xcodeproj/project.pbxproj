@@ -57,6 +57,7 @@
 		8F1656985A23437F8FCD8BA5 /* BudgetWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		90F6E489893123A00170EE80 /* Gabarito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */; };
 		92C347F5E42211337D69F8AD /* AllocationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6683EC36749C15D7C77A49B2 /* AllocationDialog.swift */; };
+		97EE1D83505EAB453C10D5E8 /* CategoryModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A804175EF827E605273D950 /* CategoryModelTests.swift */; };
 		9C36A3158406EA3338A36968 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D39DC37012306B07E6140E /* Colors.swift */; };
 		9C6AEF96E6D5E17D4C028A17 /* OFL-Gabarito.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */; };
 		9D1EF823D7C304C67FA2BFC3 /* Chrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = F311E0C1EEAE984A312B2AFD /* Chrome.swift */; };
@@ -212,6 +213,7 @@
 		91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-Gabarito.txt"; sourceTree = "<group>"; };
 		95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BudgetWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-Regular.ttf"; sourceTree = "<group>"; };
+		9A804175EF827E605273D950 /* CategoryModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModelTests.swift; sourceTree = "<group>"; };
 		9BBE2F4BB26B18F1B815C284 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		9C21DAB29DB3416D2D18C2B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Regular.ttf"; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 			children = (
 				EDDA82B10D34CBA6ED21C4CA /* AccountEditorInputTests.swift */,
 				EEECB109BAD3F282232EAC05 /* AmountInputTests.swift */,
+				9A804175EF827E605273D950 /* CategoryModelTests.swift */,
 				5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */,
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
@@ -858,6 +861,7 @@
 			files = (
 				211FEA986BECCBDB82B92FCF /* AccountEditorInputTests.swift in Sources */,
 				7DED1DB6FFB1EEE16F46577F /* AmountInputTests.swift in Sources */,
+				97EE1D83505EAB453C10D5E8 /* CategoryModelTests.swift in Sources */,
 				F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */,
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,

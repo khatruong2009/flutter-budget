@@ -100,6 +100,9 @@ case "$MODE" in
     if wants settings_fixtures_test.dart; then
       TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/settings_fixtures_test.dart "$@"
     fi
+    if wants categories_fixtures_test.dart; then
+      TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/categories_fixtures_test.dart "$@"
+    fi
     if wants flow_fixtures_test.dart; then
       rm -rf "$FIXTURES/flow"
       for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do

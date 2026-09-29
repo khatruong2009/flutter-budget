@@ -176,6 +176,21 @@ public struct TransactionRecord: Identifiable, Hashable, Sendable {
         return next
     }
 
+    /// The category rename cascade (Dart `TransactionModel.renameCategory`,
+    /// transaction_model.dart:783-829): `copyWith(category:, updatedAt:
+    /// DateTime.now())`, so `updatedAt` is plain `now`, not the
+    /// `applying` rule. Only those keys are rewritten (plus `createdAt`
+    /// when it is not a string, which Dart's `toJson` would write).
+    func renamingCategory(to name: String, now: DartDateTime) -> TransactionRecord {
+        var next = self
+        next.category = name
+        next.raw["category"] = .string(name)
+        next.updatedAt = now
+        next.raw["updatedAt"] = .string(now.toIso8601String())
+        if raw["createdAt"]?.stringValue == nil { next.raw["createdAt"] = .string(createdAt.toIso8601String()) }
+        return next
+    }
+
     /// Identity backfill (Dart `getTransactions` needsIdentityMigration):
     /// a fresh id, and createdAt/updatedAt written when they were not strings.
     func withBackfilledIdentity(id newID: String?) -> TransactionRecord {
@@ -293,6 +308,14 @@ public struct RecurringTemplate: Identifiable, Hashable, Sendable {
         var copy = self
         copy.isActive = isActive
         copy.raw["isActive"] = .bool(isActive)
+        return copy
+    }
+
+    /// The category rename cascade (Dart `copyWith(category:)`).
+    func with(category: String) -> RecurringTemplate {
+        var copy = self
+        copy.category = category
+        copy.raw["category"] = .string(category)
         return copy
     }
 

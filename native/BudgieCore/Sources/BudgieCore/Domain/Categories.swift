@@ -51,6 +51,27 @@ public struct CategoryInfo: Hashable, Sendable, Identifiable {
             isArchived: isArchived, isBuiltIn: isBuiltIn, raw: raw)
     }
 
+    /// Dart `copyWith(name:, iconIdentifier:, colorToken:)`. Only keys whose
+    /// value changes (names compared as UTF-16) are rewritten.
+    func with(name: String, iconIdentifier: String, colorToken: String) -> CategoryInfo {
+        var raw = self.raw
+        if !DartString.equal(name, self.name) { raw["name"] = .string(name) }
+        if !DartString.equal(iconIdentifier, self.iconIdentifier) { raw["iconIdentifier"] = .string(iconIdentifier) }
+        if !DartString.equal(colorToken, self.colorToken) { raw["colorToken"] = .string(colorToken) }
+        return CategoryInfo(
+            id: id, type: type, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, sortOrder: sortOrder,
+            isArchived: isArchived, isBuiltIn: isBuiltIn, raw: raw)
+    }
+
+    /// Dart `copyWith(isArchived:)`.
+    func with(isArchived: Bool) -> CategoryInfo {
+        var raw = self.raw
+        raw["isArchived"] = .bool(isArchived)
+        return CategoryInfo(
+            id: id, type: type, name: name, iconIdentifier: iconIdentifier, colorToken: colorToken, sortOrder: sortOrder,
+            isArchived: isArchived, isBuiltIn: isBuiltIn, raw: raw)
+    }
+
     /// A new definition as Dart `BudgetCategory(...).toJson()` writes it.
     public static func make(
         id: String, type: TransactionType, name: String, iconIdentifier: String, colorToken: String, sortOrder: Int,
@@ -136,6 +157,19 @@ public enum CategoryCatalog {
         }
         return result
     }
+
+    /// The keys of Dart's `categoryIconRegistry` in insertion order
+    /// (common.dart:4-23): the editor's icon grid. Any other identifier is
+    /// stored as `square_grid_2x2` by add and update.
+    public static let iconIdentifiers = [
+        "square_grid_2x2", "asterisk_circle", "cart", "house", "car", "airplane", "bag", "gift", "heart", "film", "paw",
+        "people", "money", "chart", "book", "phone", "wrench", "leaf",
+    ]
+
+    /// The editor's colour choices (`_colorTokens`,
+    /// category_settings_page.dart:381-390). Add and update store any token
+    /// verbatim; an unknown one renders as accent.
+    public static let colorTokens = ["accent", "green", "blue", "orange", "red", "purple", "pink", "cyan"]
 
     /// SF Symbol for a Flutter icon identifier (CupertinoIcons registry,
     /// common.dart; the Cupertino glyph's SF counterpart where one exists).

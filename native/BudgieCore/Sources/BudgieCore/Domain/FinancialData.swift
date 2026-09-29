@@ -22,13 +22,13 @@ public enum StoredRow<Record: Hashable & Sendable>: Hashable, Sendable {
 /// in-memory state, never the JSON that was loaded.
 public struct FinancialData: Sendable {
     public let calendar: DartCalendar
-    public private(set) var transactionRows: [StoredRow<TransactionRecord>] = []
-    public private(set) var templateRows: [StoredRow<RecurringTemplate>] = []
+    public internal(set) var transactionRows: [StoredRow<TransactionRecord>] = []
+    public internal(set) var templateRows: [StoredRow<RecurringTemplate>] = []
     public internal(set) var netWorthRows: [StoredRow<NetWorthEntryRecord>] = []
     public internal(set) var goalRows: [StoredRow<SavingsGoalRecord>] = []
     public internal(set) var categoryRows: [StoredRow<CategoryInfo>] = []
     public private(set) var tagRows: [StoredRow<TransactionTagRecord>] = []
-    public private(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
+    public internal(set) var ruleRows: [StoredRow<CategorizationRuleRecord>] = []
     /// The `categoryBudgetLimits` object as stored (edits patch it in place,
     /// so untouched entries keep their lexemes; see Budgets.swift). Empty
     /// when absent or not an object, as Dart reads it.

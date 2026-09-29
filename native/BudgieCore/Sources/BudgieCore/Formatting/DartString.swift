@@ -26,10 +26,14 @@ public enum DartString {
         }
     }
 
-    /// Dart `String.toLowerCase`: the simple (one-to-one) Unicode lowercase
-    /// mapping of each scalar, no locale and no final-sigma rule. The only
-    /// unconditional full mapping that differs is U+0130, which Dart maps to
-    /// plain "i" (Swift's `lowercased()` gives "i" + U+0307).
+    /// Dart `String.toLowerCase` on the VM: the simple (one-to-one) Unicode
+    /// lowercase mapping of each scalar, no locale and no final-sigma rule,
+    /// from the VM's Unicode 5.1 case tables (as `uppercase`): a mapping to
+    /// or from a later character (Cherokee, Georgian Mtavruli, Osage, Adlam,
+    /// U+037F, ...) is not applied. The only unconditional full mapping that
+    /// differs is U+0130, which Dart maps to plain "i" (Swift's
+    /// `lowercased()` gives "i" + U+0307). Verified for every scalar against
+    /// Fixtures/logic/lower.json.
     public static func lowercase(_ text: String) -> String {
         var result = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {
@@ -38,9 +42,19 @@ public enum DartString {
                 continue
             }
             let mapped = scalar.properties.lowercaseMapping.unicodeScalars
-            if mapped.count == 1 { result.append(contentsOf: mapped) } else { result.append(scalar) }
+            if mapped.count == 1, inDartTables(scalar), inDartTables(mapped.first!) {
+                result.append(contentsOf: mapped)
+            } else {
+                result.append(scalar)
+            }
         }
         return String(result)
+    }
+
+    /// Whether the Dart VM's case tables (Unicode 5.1) know `scalar`.
+    private static func inDartTables(_ scalar: Unicode.Scalar) -> Bool {
+        guard let age = scalar.properties.age else { return false }
+        return (age.major, age.minor) <= (5, 1)
     }
 
     /// Dart `String.toUpperCase` on the VM: the simple (one-to-one) Unicode
@@ -52,10 +66,6 @@ public enum DartString {
     /// scalar (the iota-subscript Greek letters) and is otherwise unchanged.
     /// Verified for every scalar against Fixtures/spend/strings.json.
     public static func uppercase(_ text: String) -> String {
-        func inDartTables(_ scalar: Unicode.Scalar) -> Bool {
-            guard let age = scalar.properties.age else { return false }
-            return (age.major, age.minor) <= (5, 1)
-        }
         var result = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {
             var mapped = scalar.properties.uppercaseMapping.unicodeScalars

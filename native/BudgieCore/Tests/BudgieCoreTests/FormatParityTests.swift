@@ -29,6 +29,26 @@ struct FormatParityTests {
         }
     }
 
+    /// The VM's Unicode 5.1 case tables: later mappings (Cherokee, Georgian
+    /// Mtavruli, Osage, Adlam, ...) are not applied.
+    @Test("Dart toLowerCase for every scalar")
+    func lowercaseEveryScalar() throws {
+        let fixture = J(try JSONParser.parse([UInt8](Fixtures.data("logic/lower.json"))))
+        var expected: [UInt32: [UInt16]] = [:]
+        for entry in fixture["lower"].array {
+            expected[UInt32(entry[0].int!)] = entry[1].array.map { UInt16($0.int!) }
+        }
+        #expect(expected.count > 1000)
+        var mismatches: [UInt32] = []
+        for value in UInt32(0)...0x10FFFF {
+            guard let scalar = Unicode.Scalar(value) else { continue }
+            let text = String(Character(scalar))
+            let want = expected[value] ?? Array(text.utf16)
+            if Array(DartString.lowercase(text).utf16) != want { mismatches.append(value) }
+        }
+        #expect(mismatches.isEmpty, "\(mismatches.count): \(mismatches.prefix(20).map { String($0, radix: 16) })")
+    }
+
     @Test("trim, toLowerCase, ==, contains, startsWith, compareTo over an awkward corpus")
     func strings() throws {
         let fixture = J(try JSONParser.parse([UInt8](Fixtures.data("logic/strings.json"))))

@@ -21,11 +21,15 @@ enum SwiftOutput {
     /// ids, names, amounts as `toString`, and dates). `appSettings`, when
     /// given, is what Dart's `AppSettingsProvider` must load, and
     /// `themeMode` what its `ThemeProvider` must load (`light`, `dark` or
-    /// `system`).
+    /// `system`). `categories`, when given, is what Dart's
+    /// `CategoryProvider` must hold after its launch pass (every field, in
+    /// stored order, followed by `categoriesAddedAtLaunch` without ids),
+    /// and the categories its transactions, templates and rules must carry.
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
-        appSettings: AppSettings? = nil, themeMode: String? = nil
+        appSettings: AppSettings? = nil, themeMode: String? = nil, categories: FinancialData? = nil,
+        categoriesAddedAtLaunch: [CategoryInfo] = []
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -78,6 +82,16 @@ enum SwiftOutput {
             ]
         }
         if let themeMode { swift["themeMode"] = themeMode }
+        if let categories {
+            func fields(_ c: CategoryInfo) -> [Any] {
+                [c.type.rawValue, c.name, c.iconIdentifier, c.colorToken, c.sortOrder, c.isArchived, c.isBuiltIn]
+            }
+            swift["categories"] = categories.categories.map { [$0.id] + fields($0) }
+            swift["categoriesAddedAtLaunch"] = categoriesAddedAtLaunch.map(fields)
+            swift["transactionCategories"] = categories.transactions.map { [$0.id, $0.type.rawValue, $0.category] }
+            swift["templateCategories"] = categories.templates.map { [$0.id, $0.type.rawValue, $0.category] }
+            swift["ruleCategories"] = categories.rules.sorted { DartString.precedes($0.id, $1.id) }.map { [$0.id, $0.category] }
+        }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -260,12 +274,55 @@ struct SwiftOutputForDartTests {
                 name: "Swift Delete Me", targetAmount: 5, targetDate: now, id: SavingsGoalRecord.makeID(now: now, counter: 2), now: now)!
             data.deleteSavingsGoal(id: doomedGoal.id)
 
+            // Categories: every edit the Categories page makes. Adds in both
+            // types (a taken slug gets a uuid id; an unknown icon is stored
+            // as the grid), icon and colour edits, renames that carry
+            // through transactions, templates, budget keys and rules (a
+            // case change, a budget-key collision), archive and restore,
+            // Flutter's move by one and the visible-row move over a hidden
+            // archived row.
+            func categoryID(_ name: String, _ type: TransactionType) -> String? { data.categoryInfo(named: name, type: type)?.id }
+            func edit(_ name: String, _ type: TransactionType, to newName: String, icon: String? = nil, color: String? = nil) {
+                guard let info = data.categoryInfo(named: name, type: type) else { return }
+                _ = try? data.updateCategory(
+                    id: info.id, name: newName, iconIdentifier: icon ?? info.iconIdentifier, colorToken: color ?? info.colorToken, now: now)
+            }
+            _ = try? data.addCategory(type: .expense, name: " Swift ☕️ \"Coffee\" ", iconIdentifier: "book", colorToken: "cyan", newID: id)
+            _ = try? data.addCategory(type: .income, name: "Swift ☕️ \"Coffee\"", iconIdentifier: "nope", colorToken: "green", newID: id)
+            _ = try? data.addCategory(type: .expense, name: "Gift!", iconIdentifier: "gift", colorToken: "teal", newID: id)
+            edit("Eating Out", .expense, to: "Eating Out", icon: "film", color: "red")
+            edit("Groceries", .expense, to: "Food & Groceries")
+            edit("Eating Out", .expense, to: "Dining")
+            edit("Salary", .income, to: "Paycheck ✨")
+            edit("Housing", .expense, to: "housing")
+            data.setBudgetLimit(category: "Pets", limit: 12.5)
+            data.setBudgetLimit(category: "Swift Collide", limit: 5)
+            edit("Pets", .expense, to: "Swift Collide")
+            edit("Gift", .expense, to: "Presents")
+            if let clothing = categoryID("Clothing", .expense) { _ = try? data.setCategoryArchived(id: clothing, true) }
+            if let family = categoryID("Family", .expense) {
+                _ = try? data.setCategoryArchived(id: family, true)
+                _ = try? data.setCategoryArchived(id: family, false)
+            }
+            if let travel = categoryID("Travel", .expense) { data.moveCategory(id: travel, offset: -1) }
+            if let health = categoryID("Health", .expense),
+                let offset = data.categoryMoveOffset(id: health, direction: -1, includeArchived: false)
+            {
+                data.moveCategory(id: health, offset: offset)
+            }
+            if let other = categoryID("Other", .income) { data.moveCategory(id: other, offset: -100) }
+
             // Every section through its typed serializer, as the app's
             // save and retry paths write them.
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
+            // What the launch pass adds on reading this back (Flutter's
+            // does the same on the same bytes): a padded legacy name is
+            // re-added at every launch (typical's "  Padded Cat ").
+            let relaunched = FinancialData.load(snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: id).data
             try SwiftOutput.emit(
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
-                budgetLimits: data.budgetLimits, netWorth: data, goals: data)
+                budgetLimits: data.budgetLimits, netWorth: data, goals: data, categories: data,
+                categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)))
         }
     }
 
