@@ -50,6 +50,12 @@ final class AppModel {
     private(set) var themeMode: ThemeMode = .system
     private(set) var hasUnsavedChanges = false
     private(set) var lastSaveError: String?
+    /// Everything derived from the ledger, rebuilt off the main thread once
+    /// per change of the transactions. Views read this, never re-scan rows.
+    private(set) var ledger = LedgerIndex.empty(calendar: DartCalendar(timeZone: .autoupdatingCurrent))
+    /// Bumped whenever `ledger` is replaced; views observe this.
+    private(set) var ledgerRevision = 0
+    private var ledgerTask: Task<Void, Never>?
 
     let calendar = DartCalendar(timeZone: .autoupdatingCurrent)
     private let protectedData: ProtectedDataMonitor
@@ -151,6 +157,12 @@ final class AppModel {
         } else {
             syncWidget()
         }
+        // The first index is awaited so the first frame already has totals.
+        let transactions = loaded.data.transactions
+        ledger = await Task.detached(priority: .userInitiated) { [calendar] in
+            LedgerIndex.build(transactions, calendar: calendar)
+        }.value
+        ledgerRevision &+= 1
         phase = .ready
         #if DEBUG
         await RehearsalSummary.performScriptedEditsIfRequested(self)
@@ -210,6 +222,20 @@ final class AppModel {
         if !hasUnsavedChanges { syncWidget() }
     }
 
+    /// Rebuilds `ledger` off the main thread after the transactions changed
+    /// in memory. A newer change supersedes a build still in flight.
+    private func transactionsChanged() {
+        guard let transactions = data?.transactions else { return }
+        let calendar = self.calendar
+        ledgerTask?.cancel()
+        ledgerTask = Task {
+            let index = await Task.detached(priority: .userInitiated) { LedgerIndex.build(transactions, calendar: calendar) }.value
+            guard !Task.isCancelled else { return }
+            ledger = index
+            ledgerRevision &+= 1
+        }
+    }
+
     // MARK: - Widget
 
     /// `_syncWidgetCashFlow`: current month's cash flow into the App Group.
@@ -228,18 +254,21 @@ final class AppModel {
     func addTransaction(type: TransactionType, description: String, amount: Double, category: String, date: DartDateTime) async -> Bool {
         guard data != nil, amount.isFinite else { return false }
         _ = data!.addTransaction(type: type, description: description, amount: amount, category: category, date: date, id: newID(), now: now)
+        transactionsChanged()
         return await persist([Section.transactions])
     }
 
     @discardableResult
     func updateTransaction(id: String, _ edit: TransactionRecord.Edit) async -> Bool {
         guard data != nil, edit.amount.isFinite, data!.updateTransaction(id: id, edit, now: now) else { return false }
+        transactionsChanged()
         return await persist([Section.transactions])
     }
 
     @discardableResult
     func deleteTransaction(id: String) async -> Bool {
         guard data != nil, data!.deleteTransaction(id: id) else { return false }
+        transactionsChanged()
         return await persist([Section.transactions])
     }
 
@@ -252,7 +281,9 @@ final class AppModel {
         data!.addTemplate(.make(
             id: newID(), type: edit.type, description: edit.description, amount: edit.amount, category: edit.category,
             pattern: edit.pattern, startDate: edit.startDate, dayOfMonth: edit.dayOfMonth, dayOfWeek: edit.dayOfWeek))
-        _ = RecurringGenerator.generateDue(in: &data!, now: now, clock: { [calendar] in calendar.now() }, newID: newID)
+        if RecurringGenerator.generateDue(in: &data!, now: now, clock: { [calendar] in calendar.now() }, newID: newID).changed {
+            transactionsChanged()
+        }
         return await persist([Section.recurringTransactions, Section.transactions])
     }
 

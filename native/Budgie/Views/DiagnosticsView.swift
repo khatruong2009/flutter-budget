@@ -10,7 +10,7 @@ struct DiagnosticsView: View {
             if let data = model.data {
                 let formatter = model.moneyFormatter
                 let month = model.calendar.month(of: model.now)
-                let totals = data.totals(forMonth: month)
+                let totals = model.ledger.summary(forMonth: month)
                 Section("Ledger") {
                     LabeledContent("Transactions", value: "\(data.transactions.count)")
                     LabeledContent("Unreadable rows kept", value: "\(data.unreadableTransactionCount)")

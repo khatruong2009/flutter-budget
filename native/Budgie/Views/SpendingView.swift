@@ -68,10 +68,10 @@ struct SpendingView: View {
     private func content(_ data: FinancialData) -> some View {
         let calendar = model.calendar
         let month = chosenMonth ?? calendar.month(of: model.now)
-        let totals = data.totals(forMonth: month)
-        let rows = data.transactionsNewestFirst(inMonth: month)
+        let totals = model.ledger.summary(forMonth: month)
+        let rows = model.ledger.newestFirst(inMonth: month).map(\.record)
         let formatter = model.moneyFormatter
-        let categories = totals.categoryExpenses.sorted { $0.1 > $1.1 }
+        let categories = totals.categoryExpenses.sorted { $0.amount > $1.amount }
         let breakdown = SafeToSpend.calculate(
             transactions: data.transactions, templates: data.templates, budgetLimits: data.budgetLimits,
             savingsGoals: data.savingsGoals, month: month, asOf: model.now, wallClock: model.now, calendar: calendar)
@@ -99,7 +99,7 @@ struct SpendingView: View {
             } else {
                 if !categories.isEmpty {
                     Section("Expenses by category") {
-                        ForEach(categories, id: \.0) { name, amount in
+                        ForEach(categories, id: \.name) { name, amount in
                             HStack(spacing: 12) {
                                 CategoryIcon(info: model.categoryInfo(named: name, type: .expense))
                                 Text(name).lineLimit(1)
@@ -141,7 +141,7 @@ struct SpendingView: View {
     private func monthSelector(_ data: FinancialData, current: DartDateTime) -> some View {
         let calendar = model.calendar
         let thisMonth = calendar.month(of: model.now)
-        var months = data.availableMonths()
+        var months = model.ledger.availableMonths
         for extra in [thisMonth, current] where !months.contains(extra) { months.append(extra) }
         months.sort { $0 > $1 }
         let f = current.fields

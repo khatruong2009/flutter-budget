@@ -67,7 +67,7 @@ struct HistoryView: View {
         } message: { record in
             Text("\(record.description), \(formatter.format(record.amount))")
         }
-        .onChange(of: model.data?.transactionRows, initial: true) { _, _ in rebuild() }
+        .onChange(of: model.ledgerRevision, initial: true) { _, _ in rebuild() }
         .onChange(of: searchText) { _, _ in refresh() }
     }
 
@@ -81,8 +81,9 @@ struct HistoryView: View {
             return
         }
         building = true
+        let rows = model.ledger.newestFirst
         buildTask = Task {
-            let built = await Task.detached(priority: .userInitiated) { HistoryDay.build(from: data) }.value
+            let built = await Task.detached(priority: .userInitiated) { HistoryDay.build(from: data, rows: rows) }.value
             guard !Task.isCancelled else { return }
             days = built
             building = false
@@ -120,13 +121,14 @@ struct HistoryDay: Identifiable, Sendable {
         let name: String
     }
 
-    /// One sort and one pass over all rows, using the stored date's fields.
-    static func build(from data: FinancialData) -> [HistoryDay] {
+    /// One pass over the ledger index's newest-first rows.
+    static func build(from data: FinancialData, rows: [LedgerRow]) -> [HistoryDay] {
         var icons: [CategoryKey: CategoryInfo?] = [:]
         var result: [HistoryDay] = []
-        for record in data.transactionsNewestFirst() {
+        for row in rows {
+            let record = row.record
             let fields = record.date.fields
-            let key = fields.year * 10_000 + fields.month * 100 + fields.day
+            let key = row.dayKey
             let categoryKey = CategoryKey(type: record.type, name: record.category)
             let icon: CategoryInfo?
             if let cached = icons[categoryKey] {

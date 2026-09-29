@@ -254,6 +254,9 @@ public struct FinancialData: Sendable {
 
     // MARK: - Ledger queries
 
+    // Straightforward O(N) versions, kept as the test oracle for
+    // `LedgerIndex` (which the app reads) and for the rehearsal summary.
+
     public struct MonthTotals: Sendable {
         public var income = 0.0
         public var expenses = 0.0
