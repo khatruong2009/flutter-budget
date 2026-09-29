@@ -1,3 +1,4 @@
+import BudgieCore
 import SwiftUI
 
 /// Clamps a fraction to 0...1; NaN is 0 (Flutter's progress widgets).
@@ -88,10 +89,11 @@ struct SplitGlowBar: View {
                 segment(fraction >= 1 ? green : BudgieColor.danger, gradient: fraction >= 1)
             } else {
                 // Flex weights rounded to thousandths, as Flutter's `flex`.
-                let greenFlex = (fraction * 1000).rounded(), roseFlex = ((1 - fraction) * 1000).rounded()
+                let flex = NetWorthPresentation.splitFlex(fraction)
                 let available = geometry.size.width - 3
                 HStack(spacing: 3) {
-                    segment(green, gradient: true).frame(width: available * greenFlex / (greenFlex + roseFlex))
+                    segment(green, gradient: true)
+                        .frame(width: available * CGFloat(flex.assets) / CGFloat(flex.assets + flex.liabilities))
                     segment(BudgieColor.danger, gradient: false)
                 }
             }

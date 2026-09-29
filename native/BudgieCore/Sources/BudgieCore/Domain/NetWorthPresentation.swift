@@ -74,9 +74,59 @@ public struct NetWorthChartScale: Equatable, Sendable {
         let range = dartMax(high - low, baseline)
         return NetWorthChartScale(min: low - range * 0.20, max: high + range * 0.20)
     }
+
+    /// fl_chart's `getPixelY` on a plot `height` tall (no titles, so the
+    /// plot is the whole box): `min` at the bottom, `max` at the top.
+    public func y(_ value: Double, height: CGFloat) -> CGFloat {
+        let h = Double(height), range = max - min
+        return CGFloat(range == 0 ? h : h - (value - min) / range * h)
+    }
+
+    /// The spots' positions on a plot of `size`: x is the index over
+    /// `maxX = max(1, n - 1)` (points evenly spaced, first on the left
+    /// edge, last on the right), y by `y(_:height:)`. One value is drawn as
+    /// two spots, (0, v) and (1, v): a flat line across the plot.
+    public func points(_ values: [Double], size: CGSize) -> [CGPoint] {
+        let spots = values.count == 1 ? [values[0], values[0]] : values
+        let maxX = Double(Swift.max(1, spots.count - 1))
+        return spots.enumerated().map { index, value in
+            CGPoint(x: CGFloat(Double(index) / maxX * Double(size.width)), y: y(value, height: size.height))
+        }
+    }
+
+    /// The values of both charts' horizontal grid lines: fl_chart 1.2.0
+    /// with `horizontalInterval: (max - min) / 4` and `baselineY` 0 draws
+    /// the multiples of the interval counted from 0 that lie inside
+    /// (min, max), both ends excluded (`AxisChartHelper.iterateThroughAxis`
+    /// with `Utils.getBestInitialIntervalValue`, axis_chart_painter.dart:
+    /// 105-120): four lines, three when `min` is itself a multiple, and one
+    /// at 0 whenever 0 is inside. Not five evenly spaced lines.
+    public var gridLines: [Double] {
+        let interval = (max - min) / 4
+        guard interval > 0, interval.isFinite else { return [] }
+        // Dart `%` is Euclidean: 0 <= mod < interval.
+        var mod = (0 - min).truncatingRemainder(dividingBy: interval)
+        if mod < 0 { mod += interval }
+        let initial = abs(max - min) <= mod || mod == 0 ? min : min + mod
+        var seek = initial
+        if seek == min { seek += interval }
+        let count = ((max - min) / interval).rounded(.towardZero)
+        let end = initial + count * interval == max ? max - interval : max
+        let epsilon = interval / 100000
+        var values: [Double] = []
+        while seek <= end + epsilon {
+            values.append(seek)
+            seek += interval
+        }
+        return values
+    }
 }
 
 public enum NetWorthPresentation {
+    /// `curveSmoothness` of both Worth charts' curved lines (NW:604-625,
+    /// 1990-2010), for `CashFlowMath.trendControlPoints`.
+    public static let curveSmoothness = 0.28
+
     /// `_AssetsLiabilitiesCard`: the green share of the split bar; 1 (all
     /// green) when both totals are 0.
     public static func splitFraction(assets: Double, liabilities: Double) -> Double {
@@ -100,6 +150,21 @@ public enum NetWorthPresentation {
         let useBottom = values[index] >= (low + high) / 2
         let x = values.count <= 1 ? 0.0 : dartClamp(Double(index) / Double(values.count - 1) * 2 - 1, -0.84, 0.84)
         return (x, useBottom ? 0.5 : -0.6, useBottom)
+    }
+
+    /// Both Worth charts' touch hit (fl_chart `getNearestTouchedSpot` with
+    /// the default x-only `distanceCalculator` and `touchSpotThreshold`
+    /// 48, line_chart_painter.dart:1375-1420): the spot nearest to `x`
+    /// horizontally, the earlier one on a tie, or nil when none is within
+    /// the threshold.
+    public static func nearestSpot(toX x: CGFloat, in points: [CGPoint], threshold: CGFloat = 48) -> Int? {
+        var best: (index: Int, distance: CGFloat)?
+        for (index, point) in points.enumerated() {
+            let distance = abs(point.x - x)
+            guard distance <= threshold else { continue }
+            if best == nil || distance < best!.distance { best = (index, distance) }
+        }
+        return best?.index
     }
 
     /// `_AxisLabels`: indices of the first, middle (`n ~/ 2`, only when

@@ -79,8 +79,9 @@ struct TrendLine: View {
 }
 
 /// The trend values as one animatable vector, so a data change interpolates
-/// every spot (and the bound derived from them) like fl_chart's lerp.
-private struct TrendValues: VectorArithmetic {
+/// every spot (and the bound derived from them) like fl_chart's lerp. Also
+/// the Worth growth chart's values.
+struct TrendValues: VectorArithmetic {
     var values: [Double]
 
     static var zero: TrendValues { TrendValues(values: []) }

@@ -307,4 +307,40 @@ struct WorthParityTests {
             #expect(NetWorthText.deleteSnapshotMessage(recordedAt: d, name: "Brokerage") == c["deleteSnapshot"].string)
         }
     }
+
+    /// Expected values printed by Dart running fl_chart 1.2.0's
+    /// `iterateThroughAxis` / `getBestInitialIntervalValue` (copied
+    /// verbatim) over `_netWorthChartScale`.
+    @Test("growth chart grid lines (fl_chart multiples of the interval from 0)")
+    func gridLines() {
+        let cases: [([Double], [Double])] = [
+            ([5000.0], [4950.0, 4995.0, 5040.0, 5085.0]),
+            ([1000.0, 1500.0], [1020.0, 1190.0, 1360.0, 1530.0]),
+            ([-2500.0, 400.0, 1200.0], [-2516.0, -1258.0, 0.0, 1258.0]),
+            ([0.0], [-0.09, 0.0, 0.09]),
+            ([100.0, 100.0], [98.99999999999984, 99.89999999999984, 100.79999999999984, 101.69999999999985]),
+            ([12000.5, 13500.25, 11800.0, 15020.75], [12045.605000000003, 13140.660000000003, 14235.715000000004, 15330.770000000004]),
+            ([-900.0, -400.0], [-850.0, -680.0, -510.0, -340.0]),
+            ([0.0, 1.0], [0.0, 0.33999999999999997, 0.6799999999999999, 1.02]),
+        ]
+        for (values, expected) in cases {
+            #expect(NetWorthChartScale.growth(values)!.gridLines == expected, "\(values)")
+        }
+    }
+
+    @Test("chart spots (index x, one value drawn twice) and the x-only scrub hit")
+    func chartSpots() {
+        let scale = NetWorthChartScale(min: 0, max: 100)
+        let size = CGSize(width: 300, height: 180)
+        #expect(scale.points([50], size: size).map { [$0.x, $0.y] } == [[0, 90], [300, 90]])
+        #expect(scale.points([0, 100, 25], size: size).map { [$0.x, $0.y] } == [[0, 180], [150, 0], [300, 135]])
+        let two = scale.points([10, 20], size: size)
+        #expect(NetWorthPresentation.nearestSpot(toX: 150, in: two) == nil)
+        #expect(NetWorthPresentation.nearestSpot(toX: 48, in: two) == 0)
+        #expect(NetWorthPresentation.nearestSpot(toX: 252, in: two) == 1)
+        // A tie keeps the earlier spot (fl_chart replaces only on a smaller distance).
+        let three = scale.points([1, 2, 3], size: CGSize(width: 80, height: 10))
+        #expect(NetWorthPresentation.nearestSpot(toX: 20, in: three) == 0)
+        #expect(NetWorthPresentation.nearestSpot(toX: 21, in: three) == 1)
+    }
 }

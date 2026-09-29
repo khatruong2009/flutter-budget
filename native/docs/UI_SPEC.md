@@ -233,19 +233,133 @@ newest first, filtered by `TransactionFilter` (all conditions ANDed).
   `flow.all.empty`, `flow.all.row`, `flow.all.showing`,
   `flow.all.loadMore`, `flow.all.option` (sheet rows).
 
-## Net Worth (read-only in the MVP)
+## Worth (spec full-app/05; Flutter `net_worth_page.dart` `NetWorthPage`)
 
-- Month menu from `data.netWorthAvailableMonths(now:)`, default
-  `data.selectedNetWorthMonth` (view state only; not persisted in the MVP).
-- Header: net worth, assets, liabilities for the month; change vs previous
-  month (`netWorthChange(forMonth:)`) when non-nil.
-- Swift Charts `LineMark` over `data.netWorthHistory(limit: 24)` reversed to
-  chronological order, x = point date, y = netWorth; `PointMark` for each.
-- Two sections, Assets and Liabilities: `netWorthEntries(forMonth:type:)`
-  with amount for the month; a "carried from <Month>" note when the entry's
-  latest snapshot is from an earlier month.
-- Empty state: "No accounts yet" with a note that accounts are managed in
-  the previous app version for now.
+`Views/Worth/`. Totals, rows and history come from the Core net worth
+queries on `model.data`; every mutation is an awaited `AppModel` call
+(failure: the save-failed toast). Money through `model.moneyFormatter`
+(Hide balances masks the hero, legend, row amounts, hover card and the
+delta pill's amount; never percentages, share labels, the chart shape or
+the editor's prefill).
+
+- Empty (`!model.hasNetWorthEntries`): `BudgieHeader("Net worth")`, then 56
+  below a card with a 56pt accent trend tile, "No net worth accounts yet",
+  "Create your first asset or liability to start tracking net worth over
+  time." and a filled 48pt "Add account" pill. The FAB shows too.
+- Page order: header, month strip, hero (padding 24, 16, 24, 0), 24, growth
+  card, 16, split card, 24, toggle, 16, accounts (horizontal padding 20),
+  96 bottom clearance for the FAB.
+- Month strip (D13): the shared `MonthStrip` over
+  `model.netWorthAvailableMonths`, bound to `model.selectedNetWorthMonth`; a
+  tap ticks and awaits `model.selectNetWorthMonth` (also for the selected
+  chip, as Flutter).
+- Hero: `NetWorthText.heroEyebrow`, then `RollingAmount` in heroMedium,
+  leading, rolling `formatSigned(netWorth, 0 digits)` (rounded, base
+  currency, D6) with a green (>= 0) / rose text glow at .35; VoiceOver
+  "Net worth -$1,234.56". Delta pill (`NetWorthText.deltaPill`) when
+  `netWorthChange(forMonth:)` is non-nil.
+- Growth: `SegmentedPills` mono 6M / 1Y / ALL (`NetWorthGrowthRange`,
+  default 1Y, page state) over `netWorthHistory(limit: 24)` oldest first;
+  a Canvas plot drawn like fl_chart: `NetWorthChartScale.growth`, index x
+  (`points`), grid at `gridLines`, 9pt glow + area gradient from the
+  topmost spot + 3pt line through `CashFlowMath.trendControlPoints`
+  (smoothness 0.28), end / selected dots; axis labels at
+  `growthAxisLabelIndices`. A 150ms long press scrubs (`nearestSpot`, x
+  only, 48pt) with a selection tick per spot and the hover card at
+  `hoverAlignment`; lifting clears it. Same-length data changes animate
+  150ms linear (none under Reduce Motion). VoiceOver: "Net worth growth",
+  a summary value, swipe up / down steps through the points.
+- Split card: `SplitGlowBar(splitFraction)` (flex via `splitFlex`) over the
+  Assets / Liabilities legend (whole units).
+- Toggle: Flutter's two chips (accent fill + glow when selected), page
+  state, default Assets; the FAB adds on the active side.
+- Accounts: `netWorthEntries(forMonth:type:)` rows in a `GlowListCard`
+  (`NetWorthAccountIcon` symbol on a 44pt tile tinted by type, name,
+  `NetWorthText.rowShare`, whole-unit amount, `rowChange` coloured by
+  `changeIsFavorable`, 6pt share bar), or "No assets tracked for March
+  2026." Tap: light haptic, opens the editor for the selected month.
+  Context menu: Edit Balance (the same editor), View History (pushes
+  `AccountHistoryView(entryID:)`), Delete Account ("Delete account?",
+  `NetWorthText.deleteAccountMessage`, Cancel / Delete, plain role);
+  VoiceOver activates Edit and offers View History and Delete Account as
+  actions. No carry-forward control (Flutter has none;
+  `carryNetWorthMonthForward` stays Core-only).
+- Editor: `budgieDialog(padding: 0)` with the type glow; banner (type
+  tile, "Add account" / "Edit account", `yMMMM` of the balance month,
+  close), Asset / Liability pills, "Balance month" `DateTile` opening an
+  inline month grid (1970 to this month), "Account name" and "Asset
+  balance" / "Liability balance" `BudgieField`s (`NetWorthAmountInput`
+  sanitize and prefill), Cancel and Add / Save. Save: "Name is required",
+  "Enter a valid balance", then `addNetWorthEntry` / `updateNetWorthEntry`
+  with the balance month, awaited before closing; scrim and buttons
+  disabled while saving.
+- Accessibility identifiers: `worth.add` (FAB), `worth.empty.add`,
+  `worth.hero`, `worth.delta`, `worth.growth`, `worth.growth.range`,
+  `worth.growth.chart`, `worth.split`, `worth.toggle.assets`,
+  `worth.toggle.liabilities`, `worth.accounts.empty`,
+  `worth.account.<name>` (rows), `worth.editor`, `worth.editor.asset`,
+  `worth.editor.liability`, `worth.editor.month`, `worth.editor.close`,
+  `worth.editor.cancel`, `worth.editor.save`; the fields are the text
+  fields "Account name" and "Asset balance" / "Liability balance".
+
+## Worth: account history (Flutter `_AccountHistoryPage`)
+
+`AccountHistoryView(entryID:)`, pushed from a Worth row's View History
+(system back, D2). Reads `model.netWorthEntry(id:)` and
+`NetWorthAccountHistory` over `model.netWorthEntryHistory(id:)` on every
+change, so it is live; every value is all-time, independent of the
+selected month.
+
+- Navigation bar: the account name (cardTitle, centred), a `pencil` edit
+  button opening the Worth editor (`AccountEditorDialog`) for the account
+  at `model.selectedNetWorthMonth`, and a danger trash button: "Delete
+  account?" / `NetWorthText.deleteAccountMessage` / Cancel, Delete (plain
+  role). The delete is awaited; a failed write shows `.saveFailed`; the
+  page pops whenever the account is gone afterwards.
+- Scroll content padding (20, 8, 20, 32) inside the safe area (clears the
+  tab bar). Blocks: hero, 16, stat cards, 16, trend card, 24, timeline
+  header, 12, timeline.
+- Hero: GlowCard padding 24, gradient account colour 16% / 6% / card (stops
+  0, .4, 1), border 18%, glow halo (24, .16). 48pt tile (`arrow.up.right`
+  asset, `arrow.down.left` liability), 'Balance history' +
+  `NetWorthText.lastUpdate`, 'Asset' / 'Liability' chip; 'CURRENT BALANCE';
+  `formatSigned(latest)` in heroSmall shrunk to one line; chips
+  (`snapshotCount`, "{+compact} vs prior" by sign, "{+compact} overall" by
+  `totalChangeIsPositive`) wrapped with 8pt gaps.
+- Stat cards: CURRENT / PEAK (account colour), LOW (text colour),
+  `formatCompact`, '—' when there is no history; radius 22, padding 16.
+- Trend card: empty 'No chart data yet for {name}.' (200pt). Otherwise
+  'Trend' + `NetWorthText.trendRange` + latest compact chip, then the
+  chart: 176pt plot + 24pt titles, `NetWorthChartScale.account` with index
+  x (`points`; one snapshot drawn at 0 and 1), grid at `gridLines`, glow
+  line 9pt 35%, area 35% to 0 from the highest spot, main line 3pt, round
+  caps, fl_chart cubic (`CashFlowMath.trendControlPoints`,
+  `curveSmoothness` 0.28) only when more than two snapshots, last dot
+  #F2F2FA with a 3pt 50% ring. Titles: `accountAxisLabelIndices`, `trendAxisLabel`,
+  monoAxis tertiary, centred on the spot 8pt below the plot. Touch: while a
+  finger is down, the `nearestSpot` (x only, 48pt) gets fl_chart's default
+  indicators and one tooltip (yMMMd over `formatSigned`, chip surface,
+  radius 4, 16pt above the spot, clamped inside the plot); lifting clears it.
+- Timeline: 'Timeline' + `NetWorthText.entryCount`; empty 'Add updates to
+  this account to build a balance timeline.'; else one list card, newest
+  first: glowing 12pt dot, yMMMd over jm, `formatSigned` over the compact
+  delta from the next older update (green when good for the type), and a
+  48pt trash button, disabled (tertiary) when only one update is left.
+  Trash (or the row's VoiceOver Delete action) confirms "Delete balance
+  update?" / `NetWorthText.deleteSnapshotMessage` / Cancel, Delete (plain
+  role), then awaits `deleteNetWorthSnapshot`; a failed write shows
+  `.saveFailed`. No haptics (as Flutter).
+- Account gone while open: 'Account deleted' empty state, no edit or delete
+  button.
+- Money through `model.moneyFormatter` (Hide balances masks the hero,
+  chips, stat cards, pill, tooltip, rows and the chart's VoiceOver value).
+- UI-test identifiers: `worth.history` (scroll view), `worth.history.hero`,
+  `worth.history.stat.current`, `worth.history.stat.peak`,
+  `worth.history.stat.low`, `worth.history.chart`,
+  `worth.history.chartEmpty`, `worth.history.timeline.count`,
+  `worth.history.timeline.row`, `worth.history.timeline.delete`,
+  `worth.history.timeline.empty`, `worth.history.edit`,
+  `worth.history.deleteAccount`, `worth.history.missing`.
 
 ## Recurring
 

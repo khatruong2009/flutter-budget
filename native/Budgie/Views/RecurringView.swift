@@ -90,7 +90,7 @@ struct RecurringView: View {
         let formatter = model.moneyFormatter
         let amount = formatter.format(template.amount)
         let pattern = Self.patternText(template)
-        let next = "Next: \(FieldDateText.mediumDate(template.nextOccurrence))"
+        let next = "Next: \(DartDateFormat.yMMMd(template.nextOccurrence))"
         return HStack(spacing: 12) {
             CategoryIcon(info: model.categoryInfo(named: template.category, type: template.type))
             VStack(alignment: .leading, spacing: 2) {

@@ -1,0 +1,364 @@
+import BudgieCore
+import SwiftUI
+
+/// The add / edit account dialog (`_NetWorthEditorDialog`, NW:2140-2513),
+/// hosted by `budgieDialog` with no padding so the header banner runs to
+/// the border. Banner: a gradient of the type colour (green for an asset,
+/// rose for a liability) behind the type's arrow tile, "Add account" /
+/// "Edit account", the balance month and a close button. Body: the Asset /
+/// Liability pills, the balance month (an inline month grid, 1970 to this
+/// month, instead of Material's date picker), the account name and the
+/// balance, then Cancel and Add / Save.
+///
+/// The balance field formats as Flutter's `_CurrencyInputFormatter`
+/// (`NetWorthAmountInput.sanitize`: digits, one ".", two decimals, commas
+/// every three digits), and a comma-decimal keyboard's "," typed at the end
+/// becomes "." (D6). Editing prefills the month's balance (`#,##0.##`);
+/// an untouched field saves the stored value exactly. Save validates like
+/// `_save` ("Name is required", then "Enter a valid balance"; 0 is valid),
+/// awaits the model, then closes; a failed write shows the save-failed
+/// toast (Flutter only shows the banner). While saving, the buttons and the
+/// scrim are disabled.
+struct AccountEditorDialog: View {
+    let request: AccountEditorRequest
+    let dismiss: () -> Void
+
+    @Environment(AppModel.self) private var model
+    @State private var name: String
+    @State private var amountText: String
+    @State private var type: NetWorthEntryType
+    @State private var entryMonth: DartDateTime
+    @State private var nameError: String?
+    @State private var amountError: String?
+    @State private var saving = false
+    @State private var pickingMonth = false
+    /// The prefilled balance text and the stored value it rounds.
+    @State private var prefill: (text: String, amount: Double?)
+    @State private var buttonTaps = 0
+    @State private var typeTaps = 0
+
+    init(request: AccountEditorRequest, dismiss: @escaping () -> Void) {
+        self.request = request
+        self.dismiss = dismiss
+        let entry = request.entry
+        let stored = entry?.amount(forMonth: request.month, calendar: request.calendar)
+        // Flutter prefills `amountForMonth(month) ?? 0.0` when editing.
+        let text = entry == nil ? "" : NetWorthAmountInput.prefill(stored ?? 0)
+        _name = State(initialValue: entry?.name ?? "")
+        _amountText = State(initialValue: text)
+        _type = State(initialValue: entry?.type ?? request.initialType)
+        _entryMonth = State(initialValue: request.calendar.month(of: request.month))
+        _prefill = State(initialValue: (text, stored))
+    }
+
+    private var isEditing: Bool { request.entry != nil }
+    private var accent: Color { type == .asset ? BudgieColor.income : BudgieColor.danger }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            banner
+            VStack(spacing: 16) {
+                TypePills(type: $type) { typeTaps += 1 }
+                monthField
+                BudgieField(
+                    title: "Account name", text: $name, symbol: "wallet.pass", capitalization: .words, error: nameError)
+                BudgieField(
+                    title: type == .asset ? "Asset balance" : "Liability balance", text: $amountText,
+                    symbol: AmountInput.currencySymbolName(model.moneyFormatter), keyboard: .decimalPad, error: amountError)
+                buttons.padding(.top, 8)
+            }
+            .padding(EdgeInsets(top: 24, leading: 24, bottom: 20, trailing: 24))
+        }
+        .onChange(of: amountText) { old, new in
+            let formatted = NetWorthAmountInput.sanitize(old: old, new: Self.decimalKey(old: old, new: new))
+            if formatted != new { amountText = formatted }
+        }
+        .budgieDialogDismissDisabled(saving)
+        .budgieDialogGlow(accent)
+        .sensoryFeedback(.impact(weight: .light), trigger: buttonTaps)
+        .sensoryFeedback(.selection, trigger: typeTaps)
+        .accessibilityIdentifier("worth.editor")
+    }
+
+    // MARK: - Banner
+
+    private var banner: some View {
+        HStack(spacing: 0) {
+            IconTile(symbol: type == .asset ? "arrow.up.right" : "arrow.down.left", color: accent, size: 48, iconSize: 24)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(isEditing ? "Edit account" : "Add account")
+                    .textStyle(.cardTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .accessibilityAddTraits(.isHeader)
+                Text(DartDateFormat.yMMMM(entryMonth))
+                    .textStyle(.rowSubtitle)
+                    .foregroundStyle(BudgieColor.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 16)
+            Button(action: dismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .frame(width: 32, height: 32)
+                    .background(BudgieColor.dialogCloseFill, in: Circle())
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .disabled(saving)
+            .accessibilityLabel("Close")
+            .accessibilityIdentifier("worth.editor.close")
+        }
+        .padding(EdgeInsets(top: 24, leading: 24, bottom: 16, trailing: 24))
+        .background(
+            LinearGradient(
+                colors: [accent.opacity(0.22), accent.opacity(0.10)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        )
+        // Inside the dialog card's 1pt border (radius 26).
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 25, topTrailingRadius: 25, style: .continuous))
+        .motion(Motion.easeInOut(0.26), value: type)
+    }
+
+    // MARK: - Balance month
+
+    private var monthField: some View {
+        VStack(spacing: 8) {
+            DateTile(label: "Balance month", value: DartDateFormat.yMMMM(entryMonth)) {
+                pickingMonth.toggle()
+            }
+            .accessibilityIdentifier("worth.editor.month")
+            if pickingMonth {
+                BalanceMonthGrid(selected: entryMonth, now: model.now, calendar: request.calendar, pick: pickMonth)
+            }
+        }
+    }
+
+    /// `_pickEntryMonth`: editing refills the balance with the new month's
+    /// value (empty when it has none); adding leaves it alone.
+    private func pickMonth(_ month: DartDateTime) {
+        entryMonth = month
+        pickingMonth = false
+        guard let entry = request.entry else { return }
+        let stored = entry.amount(forMonth: month, calendar: request.calendar)
+        let text = stored.map(NetWorthAmountInput.prefill) ?? ""
+        prefill = (text, stored)
+        amountText = text
+    }
+
+    // MARK: - Buttons
+
+    private var buttons: some View {
+        HStack(spacing: 12) {
+            Button {
+                buttonTaps += 1
+                dismiss()
+            } label: {
+                Text("Cancel")
+                    .textStyle(WorthStyle.buttonText)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(BudgieColor.dialogOutlinedFill, in: Capsule())
+                    .overlay(Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
+                    .contentShape(Capsule())
+            }
+            .buttonStyle(PressScaleStyle(scale: 0.96))
+            .disabled(saving)
+            .accessibilityIdentifier("worth.editor.cancel")
+            Button {
+                Task { await save() }
+            } label: {
+                ZStack {
+                    Text(isEditing ? "Save" : "Add").opacity(saving ? 0 : 1)
+                    if saving { ProgressView().tint(BudgieColor.onAccent) }
+                }
+                .textStyle(WorthStyle.buttonText)
+                .foregroundStyle(BudgieColor.onAccent)
+                .frame(maxWidth: .infinity)
+                .frame(height: 48)
+                .background(accent, in: Capsule())
+                .glow(accent, blur: 20, alpha: 0.45)
+                .contentShape(Capsule())
+            }
+            .buttonStyle(PressScaleStyle(scale: 0.96))
+            .disabled(saving)
+            .accessibilityLabel(isEditing ? "Save" : "Add")
+            .accessibilityIdentifier("worth.editor.save")
+        }
+    }
+
+    // MARK: - Save
+
+    private func save() async {
+        guard !saving else { return }
+        buttonTaps += 1
+        nameError = nil
+        amountError = nil
+        let trimmed = DartString.trim(name)
+        if trimmed.isEmpty {
+            nameError = "Name is required"
+            AccessibilityNotification.Announcement("Name is required").post()
+            return
+        }
+        guard var amount = NetWorthAmountInput.parse(amountText) else {
+            amountError = "Enter a valid balance"
+            AccessibilityNotification.Announcement("Enter a valid balance").post()
+            return
+        }
+        // The prefill is rounded to cents; untouched, keep the stored value.
+        if amountText == prefill.text, let stored = prefill.amount { amount = stored }
+        let saved: Bool
+        if let entry = request.entry {
+            // The account went while the dialog was open: nothing to save.
+            guard model.netWorthEntry(id: entry.id) != nil else {
+                dismiss()
+                return
+            }
+            saving = true
+            saved = await model.updateNetWorthEntry(id: entry.id, name: trimmed, type: type, amount: amount, month: entryMonth)
+        } else {
+            saving = true
+            saved = await model.addNetWorthEntry(name: trimmed, type: type, amount: amount, month: entryMonth)
+        }
+        dismiss()
+        if !saved { model.showToast(.saveFailed) }
+    }
+
+    /// A decimal-pad key other than "." (a comma-decimal locale) typed at
+    /// the end reads as "."; Flutter's formatter drops it (D6).
+    private static func decimalKey(old: String, new: String) -> String {
+        guard let separator = Locale.current.decimalSeparator, separator != ".", new == old + separator,
+            !old.contains(".")
+        else { return new }
+        return old + "."
+    }
+}
+
+extension WorthStyle {
+    /// `rowTitle` at 15, w700 (the dialog buttons).
+    static let buttonText = TextSpec(face: .gabaritoBold, size: 15, height: 1.25, relativeTo: .body)
+}
+
+// MARK: - Type pills
+
+/// `_TypeToggle`: two 48pt pills (radius 14), "Asset" (green, north-east
+/// arrow) and "Liability" (rose, south-west arrow). The selected one fills
+/// with its colour and a glow, content on-accent; the other sits on the chip
+/// surface with a card border. Every tap ticks, as Flutter.
+private struct TypePills: View {
+    @Binding var type: NetWorthEntryType
+    let onTap: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            pill(.asset, "Asset", symbol: "arrow.up.right", color: BudgieColor.income)
+            pill(.liability, "Liability", symbol: "arrow.down.left", color: BudgieColor.danger)
+        }
+    }
+
+    private func pill(_ value: NetWorthEntryType, _ title: String, symbol: String, color: Color) -> some View {
+        let selected = type == value
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        return Button {
+            onTap()
+            type = value
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: symbol).font(.system(size: 15, weight: .semibold)).accessibilityHidden(true)
+                Text(title).textStyle(WorthStyle.chipBold)
+            }
+            .foregroundStyle(selected ? BudgieColor.onAccent : BudgieColor.textSecondary)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(selected ? color : BudgieColor.chipSurface, in: shape)
+            .overlay { if !selected { shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin) } }
+            .glow(selected ? color : .clear, blur: 16, alpha: 0.4)
+            .contentShape(shape)
+        }
+        .buttonStyle(.plain)
+        .motion(Motion.easeInOut(0.22), value: selected)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityIdentifier(value == .asset ? "worth.editor.asset" : "worth.editor.liability")
+    }
+}
+
+// MARK: - Month grid
+
+/// The balance month picker: a year stepper (1970 to this year) over the
+/// twelve months; months after this one are disabled, as Flutter's picker
+/// ends on the last day of this month. Built from integers and
+/// `DartCalendar`, never `Date` or `DatePicker`.
+private struct BalanceMonthGrid: View {
+    let selected: DartDateTime
+    let now: DartDateTime
+    let calendar: DartCalendar
+    let pick: (DartDateTime) -> Void
+
+    @State private var year: Int
+
+    init(selected: DartDateTime, now: DartDateTime, calendar: DartCalendar, pick: @escaping (DartDateTime) -> Void) {
+        self.selected = selected
+        self.now = now
+        self.calendar = calendar
+        self.pick = pick
+        _year = State(initialValue: min(max(selected.year, 1970), now.year))
+    }
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        VStack(spacing: 8) {
+            HStack(spacing: 0) {
+                stepButton("chevron.left", label: "Previous year", enabled: year > 1970) { year -= 1 }
+                Text(DartDateFormat.y(calendar.date(year)))
+                    .textStyle(.rowTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .monospacedDigit()
+                    .frame(maxWidth: .infinity)
+                    .accessibilityLabel("Year \(year)")
+                stepButton("chevron.right", label: "Next year", enabled: year < now.year) { year += 1 }
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
+                ForEach(1...12, id: \.self) { month in
+                    monthButton(calendar.date(year, month))
+                }
+            }
+        }
+        .padding(10)
+        .background(BudgieColor.chipSurface, in: shape)
+        .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
+    }
+
+    private func monthButton(_ month: DartDateTime) -> some View {
+        let isSelected = month.year == selected.year && month.month == selected.month
+        let enabled = month.year < now.year || month.month <= now.month
+        let shape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+        return Button {
+            pick(month)
+        } label: {
+            Text(DartDateFormat.MMM(month))
+                .textStyle(isSelected ? WorthStyle.chipBold : WorthStyle.chip)
+                .foregroundStyle(
+                    isSelected ? BudgieColor.onAccent : enabled ? BudgieColor.textPrimary : BudgieColor.textTertiary)
+                .frame(maxWidth: .infinity, minHeight: 36)
+                .background(isSelected ? BudgieColor.accent : Color.clear, in: shape)
+                .contentShape(shape)
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .accessibilityLabel(DartDateFormat.yMMMM(month))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private func stepButton(_ symbol: String, label: String, enabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(enabled ? BudgieColor.textSecondary : BudgieColor.textTertiary)
+                .frame(width: Metrics.touchTarget, height: 32)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .accessibilityLabel(label)
+    }
+}

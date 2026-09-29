@@ -89,9 +89,9 @@ final class MVPFlowUITests: XCTestCase {
         app.buttons["Pause"].tap()
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS 'paused'")).firstMatch.waitForExistence(timeout: 5))
 
-        // Net worth is read-only and empty on a fresh install.
+        // Net worth is empty on a fresh install.
         tab("Worth")
-        XCTAssertTrue(app.staticTexts["No accounts yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["No net worth accounts yet"].waitForExistence(timeout: 5))
 
         // Theme.
         openSettings()

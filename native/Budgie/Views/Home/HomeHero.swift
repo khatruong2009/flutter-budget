@@ -78,42 +78,59 @@ struct HomeHero: View {
 /// clip. Rolls the rounded label (Flutter's widget truncates the fraction,
 /// so its digits can be 0.01 off the halo and semantics). Scales down as a
 /// whole when it is wider than the space. Reduce Motion shows the digits
-/// without rolling.
+/// without rolling. `style`, `glowAlpha` and `alignment` default to Home's
+/// hero; the Worth hero rolls `heroMedium` at alpha .35, leading.
 struct RollingAmount: View {
     let text: String
     let color: Color
     let glow: Color
+    let style: TextSpec
+    let glowAlpha: Double
+    let alignment: Alignment
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var scheme
-    @ScaledMetric(relativeTo: TextSpec.hero.relativeTo) private var fontSize = TextSpec.hero.size
+    @ScaledMetric private var fontSize: CGFloat
     @State private var natural: CGSize = .zero
     @State private var available: CGFloat = 0
     @State private var rowWidth: CGFloat?
 
+    init(
+        text: String, color: Color, glow: Color, style: TextSpec = .hero, glowAlpha: Double = 0.45,
+        alignment: Alignment = .center
+    ) {
+        self.text = text
+        self.color = color
+        self.glow = glow
+        self.style = style
+        self.glowAlpha = glowAlpha
+        self.alignment = alignment
+        _fontSize = ScaledMetric(wrappedValue: style.size, relativeTo: style.relativeTo)
+    }
+
     var body: some View {
-        let rowHeight = TextSpec.hero.lineHeight(scaledSize: fontSize)
+        let rowHeight = style.lineHeight(scaledSize: fontSize)
         let skeleton = Self.skeleton(of: text)
         let animation: Animation? = reduceMotion ? nil : Motion.easeInOut(0.9)
         let measured = natural.width > 0 && available > 0
         let scale = measured ? min(1, available / natural.width) : 1
 
         ZStack {
-            // `textGlow` (blur 48; alpha .45 dark, .18 light) is a shadow,
-            // i.e. a blurred copy of the glyphs in the glow colour; a
-            // shadow of clear text would paint nothing.
+            // `textGlow` (blur 48; alpha x0.4 in light) is a shadow, i.e. a
+            // blurred copy of the glyphs in the glow colour; a shadow of
+            // clear text would paint nothing.
             Text(text)
-                .textStyle(.hero)
-                .foregroundStyle(glow.opacity(scheme == .dark ? 0.45 : 0.45 * 0.4))
+                .textStyle(style)
+                .foregroundStyle(glow.opacity(scheme == .dark ? glowAlpha : glowAlpha * 0.4))
                 .blur(radius: 24)
             HStack(spacing: 0) {
                 ForEach(Self.cells(of: text, skeleton: skeleton), id: \.id) { cell in
                     Group {
                         if let digit = cell.digit {
-                            DigitReel(digit: digit, rowHeight: rowHeight, animation: animation)
+                            DigitReel(digit: digit, style: style, rowHeight: rowHeight, animation: animation)
                         } else {
                             Text(String(cell.character))
-                                .textStyle(.hero)
+                                .textStyle(style)
                                 .fixedSize()
                                 .frame(height: rowHeight)
                         }
@@ -140,7 +157,7 @@ struct RollingAmount: View {
         .onGeometryChangeCompat { natural = $0 }
         .scaleEffect(scale)
         .frame(width: measured ? natural.width * scale : nil, height: measured ? natural.height * scale : nil)
-        .frame(minWidth: 0, maxWidth: .infinity)
+        .frame(minWidth: 0, maxWidth: .infinity, alignment: alignment)
         .onGeometryChangeCompat { available = $0.width }
         // Each reel is an 11-row strip that `clipped()` hides but does not
         // stop from hit-testing: offset by its digit, a strip reaches up over
@@ -174,13 +191,15 @@ struct RollingAmount: View {
 /// wraps seamlessly. Only the strip's transform animates.
 private struct DigitReel: View {
     let digit: Int
+    let style: TextSpec
     let rowHeight: CGFloat
     let animation: Animation?
 
     @State private var position: Double
 
-    init(digit: Int, rowHeight: CGFloat, animation: Animation?) {
+    init(digit: Int, style: TextSpec, rowHeight: CGFloat, animation: Animation?) {
         self.digit = digit
+        self.style = style
         self.rowHeight = rowHeight
         self.animation = animation
         // A new reel starts at 0 and rolls up on appear; without animation
@@ -190,7 +209,7 @@ private struct DigitReel: View {
 
     var body: some View {
         Text(verbatim: "0")
-            .textStyle(.hero)
+            .textStyle(style)
             .fixedSize()
             .hidden()
             .frame(height: rowHeight)
@@ -198,7 +217,7 @@ private struct DigitReel: View {
                 VStack(spacing: 0) {
                     ForEach(0..<11, id: \.self) { row in
                         Text(verbatim: String(row % 10))
-                            .textStyle(.hero)
+                            .textStyle(style)
                             .fixedSize()
                             .frame(height: rowHeight)
                     }

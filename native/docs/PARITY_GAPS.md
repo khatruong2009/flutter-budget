@@ -13,6 +13,7 @@ UPGRADE_TEST_RESULTS.md).
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Savings goals UI | `savingsGoals` | Core and model API done (add, edit, delete, add money, status, pace, sort, summary; Fixtures/goals); safe-to-spend reserves goal contributions exactly like Flutter; no Goals tab UI yet. |
 | Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
+| Savings goals UI | `savingsGoals` | Read (safe-to-spend reserves goal contributions exactly like Flutter); no UI to view/edit. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
 | Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter; no editing UI yet. |
@@ -334,12 +335,69 @@ UPGRADE_TEST_RESULTS.md).
   axis bounds separately, so mid-animation frames can differ slightly.
 - Flow preview rows find the category icon like the other transaction rows
   (case-insensitive, archived included; see "Category icons" above).
+- Worth account rows: the long press is a native context menu with the
+  sheet's actions (Edit Balance, View History, Delete Account) instead of a
+  Material bottom sheet.
+- Worth hero (D6): the odometer rolls the rounded whole-unit amount in the
+  base currency (Flutter truncates the fraction and hard-codes "$"), shows
+  "••••" under Hide balances like Home's hero (Flutter shows the digits),
+  scales down to fit (Flutter overflows), and a sign change rebuilds the
+  reels (Flutter's "-" is a separate text beside them).
+- Worth editor: a failed write closes the dialog and shows the save-failed
+  toast (Flutter only shows the banner); Save, Cancel, close and the scrim
+  are disabled while saving (a Flutter double tap adds the account twice).
+- Worth editor: the balance month is an inline month grid with a year
+  stepper (January 1970 to this month) instead of Material's calendar
+  picker, so a persisted future month cannot hit the picker's assert.
+- Worth editor: an untouched balance saves the stored value exactly
+  (Flutter re-parses its 2-decimal prefill); a comma-decimal keyboard's ","
+  typed at the end reads as "." (Flutter's formatter drops it, D6); the
+  field glyph follows the base currency (Flutter: `attach_money`).
+- Worth editor fields are the shared `BudgieField` and `DateTile` (caption
+  labels, 1.5pt focus stroke, chevron) instead of the editor's own chrome
+  (w600 labels, 2pt accent focus border, accent calendar icon); the close
+  button has a VoiceOver label.
+- Worth: "Delete account?" (from a row or the history page) and "Delete
+  balance update?" are system alerts with Flutter's copy instead of
+  Material dialogs; Delete keeps a plain (not destructive, not red) role,
+  as Flutter's accent TextButton. A failed delete or month selection shows
+  the save-failed toast (Flutter: banner only).
+- Worth tab: the Assets / Liabilities tab, the chart range and a pushed
+  history page survive switching tabs (Flutter's `PageView` resets them).
+- Worth growth chart: a range change that changes the number of points
+  cross-fades over 150ms (fl_chart morphs the spots); VoiceOver reads a
+  summary and steps through the points, and rows, hero, split card and
+  delta pill have labels (Flutter labels only the hero and FAB).
+- Worth account history: the page scrolls inside the safe area, so its last
+  timeline row clears the tab bar; Flutter's page keeps only 32pt of bottom
+  padding under the floating dock, which covers the last rows.
+- Worth account history chart tooltip: drawn once, and kept inside the
+  plot horizontally. fl_chart supplies one touched spot per line (glow and
+  main), so Flutter stacks the date/amount block twice, and its tooltip is
+  not clamped (at the first point it runs off the screen edge).
+- Worth account history chart: a data change (a deleted update) redraws at
+  once; fl_chart tweens the spots and axis bounds over 150ms linear.
+- Worth account history: when the account disappears while the page is
+  open (deleted elsewhere, or a restore without it) the page shows "Account
+  deleted" / "This account is no longer tracked in your net worth." instead
+  of Flutter's stale name over empty cards; the edit and delete buttons
+  hide.
+- Worth account history: the timeline trash buttons and the bar's edit and
+  delete buttons carry VoiceOver labels ("Delete this balance update" /
+  "Keep at least one balance update", "Edit balance", "Delete account"),
+  each row reads as one element with a Delete action, and the hero, stat
+  cards and chart have summaries ("Balance trend, 3 balance updates from
+  ... to ..."). Flutter has only the two tooltips.
+- Worth account history: SF Symbols stand in for Material's `north_east`
+  (`arrow.up.right`), `south_west` (`arrow.down.left`), `calendar_month`
+  (`calendar`), `edit_rounded` (`pencil`) and `delete_rounded`
+  (`trash.fill`, `trash` in the bar). The snapshot chip's fill uses the
+  hairline token (white 5.9% / ink 6.3%) for Flutter's white 6% / black 5%.
 
 ## Known MVP limitations
 
 - A sheet open when the app goes to the background (e.g. the transaction
   form) is not covered by the App Lock privacy cover.
-- Net Worth is read-only; the selected net worth month is not persisted.
 - No iPad layout (the Flutter app is iPhone-only too).
 
 ## Platform

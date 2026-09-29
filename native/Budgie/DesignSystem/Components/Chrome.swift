@@ -42,21 +42,73 @@ extension View {
     /// A centred card dialog over a dimmed scrim (Flutter `showDialog` with
     /// the Goals `_DarkDialog` shell: GlowCard padding 20, max width 500,
     /// inset 24/32). Presented above everything, including the tab bar;
-    /// the keyboard pushes it up. Tapping the scrim dismisses it.
-    func budgieDialog<Dialog: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Dialog) -> some View {
-        modifier(DialogPresenter(isPresented: isPresented, dialog: content))
+    /// the keyboard pushes it up, and content taller than the space left
+    /// scrolls (Flutter's dialogs sit in a `SingleChildScrollView`).
+    /// Tapping the scrim dismisses it unless the content sets
+    /// `budgieDialogDismissDisabled(true)` (e.g. while saving). `padding` 0
+    /// lets the content run to the border (the Worth editor's banner).
+    func budgieDialog<Dialog: View>(
+        isPresented: Binding<Bool>, padding: CGFloat = Metrics.cardPadding, @ViewBuilder content: @escaping () -> Dialog
+    ) -> some View {
+        modifier(DialogPresenter(isPresented: isPresented, padding: padding, dialog: content))
+    }
+
+    /// Keeps a `budgieDialog` open when its scrim is tapped (the dialog's
+    /// counterpart of `interactiveDismissDisabled`).
+    func budgieDialogDismissDisabled(_ disabled: Bool = true) -> some View {
+        preference(key: DialogDismissDisabledKey.self, value: disabled)
+    }
+
+    /// Gives a `budgieDialog`'s card the Worth editor's shadows: a glow of
+    /// `color` (blur 32, alpha .18) and a black drop shadow (blur 24, 12
+    /// down; alpha .5 dark, .15 light), net_worth_page.dart:2283-2291.
+    func budgieDialogGlow(_ color: Color) -> some View {
+        preference(key: DialogGlowKey.self, value: color)
+    }
+}
+
+/// `SwiftUI.` because BudgieCore has its own `PreferenceKey` (stored prefs).
+private struct DialogDismissDisabledKey: SwiftUI.PreferenceKey {
+    static let defaultValue = false
+
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = value || nextValue()
+    }
+}
+
+private struct DialogGlowKey: SwiftUI.PreferenceKey {
+    static let defaultValue: Color? = nil
+
+    static func reduce(value: inout Color?, nextValue: () -> Color?) {
+        value = nextValue() ?? value
+    }
+}
+
+private struct DialogGlow: ViewModifier {
+    @Environment(\.colorScheme) private var scheme
+    let color: Color?
+
+    func body(content: Content) -> some View {
+        if let color {
+            content
+                .glow(color, blur: 32, alpha: 0.18)
+                .shadow(color: .black.opacity(scheme == .dark ? 0.5 : 0.15), radius: 12, y: 12)
+        } else {
+            content
+        }
     }
 }
 
 private struct DialogPresenter<Dialog: View>: ViewModifier {
     @Binding var isPresented: Bool
+    let padding: CGFloat
     let dialog: () -> Dialog
     @State private var coverShown = false
 
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $coverShown) {
-                DialogHost(dismiss: { isPresented = false }, dialog: dialog)
+                DialogHost(padding: padding, dismiss: { isPresented = false }, dialog: dialog)
                     .presentationBackground(.clear)
             }
             .onChange(of: isPresented, initial: true) { _, shown in
@@ -69,25 +121,45 @@ private struct DialogPresenter<Dialog: View>: ViewModifier {
 }
 
 private struct DialogHost<Dialog: View>: View {
+    let padding: CGFloat
     let dismiss: () -> Void
     let dialog: () -> Dialog
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var visible = false
+    @State private var dismissDisabled = false
+    @State private var glow: Color?
+    /// The content's natural height: the scroll view is no taller, so the
+    /// card hugs its content and scrolls only when the space runs out.
+    @State private var contentHeight: CGFloat = 0
 
     var body: some View {
         ZStack {
             Color.black.opacity(visible ? 0.54 : 0)
                 .ignoresSafeArea()
-                .onTapGesture(perform: dismiss)
+                .onTapGesture { if !dismissDisabled { dismiss() } }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("Dismiss")
-            GlowCard(padding: Metrics.cardPadding) { dialog() }
-                .frame(maxWidth: 500)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 32)
-                .scaleEffect(visible || reduceMotion ? 1 : 0.92)
-                .opacity(visible ? 1 : 0)
-                .accessibilityAddTraits(.isModal)
+                .accessibilityHidden(dismissDisabled)
+            GlowCard(padding: padding) {
+                ScrollView {
+                    dialog().onGeometryChangeCompat { contentHeight = $0.height }
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(maxHeight: contentHeight)
+            }
+            .modifier(DialogGlow(color: glow))
+            .frame(maxWidth: 500)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 32)
+            .scaleEffect(visible || reduceMotion ? 1 : 0.92)
+            .opacity(visible ? 1 : 0)
+            .accessibilityAddTraits(.isModal)
+        }
+        .onPreferenceChange(DialogDismissDisabledKey.self) { disabled in
+            MainActor.assumeIsolated { dismissDisabled = disabled }
+        }
+        .onPreferenceChange(DialogGlowKey.self) { color in
+            MainActor.assumeIsolated { glow = color }
         }
         .onAppear {
             if reduceMotion { visible = true } else { withAnimation(Motion.easeOut(0.15)) { visible = true } }

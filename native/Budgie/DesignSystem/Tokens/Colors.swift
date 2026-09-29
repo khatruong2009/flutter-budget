@@ -55,6 +55,12 @@ enum BudgieColor {
     /// `FlDotCirclePainter`), so it is faint on the light card.
     static let trendDot = Color(hex: 0xF2F2FA)
 
+    // Worth editor dialog (net_worth_page.dart)
+    /// The 32pt close circle: white 8% dark, black 6% light.
+    static let dialogCloseFill = overlay(dark: 0.08, light: 0.06)
+    /// The outlined Cancel button: white 6% dark, black 5% light.
+    static let dialogOutlinedFill = overlay(dark: 0.06, light: 0.05)
+
     // Dock (unused by the native tab bar; kept for custom chrome)
     static let dockInactiveIcon = dynamic(light: 0x6B7280, dark: 0x8A8AA8)
 

@@ -57,6 +57,22 @@ enum AmountInput {
         return runs.count == 2 ? (runs[0], runs[1]) : (",", ".")
     }
 
+    /// The SF Symbol for an amount field's prefix glyph in the base
+    /// currency (Flutter always shows `$`): the transaction form and the
+    /// Worth editor.
+    nonisolated static func currencySymbolName(_ formatter: MoneyFormatter) -> String {
+        switch formatter.currencyCode {
+        case "USD", "CAD", "AUD", "MXN": "dollarsign"
+        case "EUR": "eurosign"
+        case "GBP": "sterlingsign"
+        case "JPY", "CNY": "yensign"
+        case "INR": "indianrupeesign"
+        case "KRW": "wonsign"
+        case "BRL": "brazilianrealsign"
+        default: "banknote"
+        }
+    }
+
     /// The base currency's symbol for a field prefix (Flutter hard-codes
     /// "$"): the currency format of 0 without its digits and spaces.
     nonisolated static func currencySymbol(_ formatter: MoneyFormatter) -> String {

@@ -111,18 +111,7 @@ struct TransactionFormView: View {
     private var typeColor: Color { type == .income ? BudgieColor.income : BudgieColor.danger }
 
     /// The prefix glyph for the base currency (Flutter always shows `$`).
-    private var currencySymbol: String {
-        switch model.moneyFormatter.currencyCode {
-        case "USD", "CAD", "AUD", "MXN": "dollarsign"
-        case "EUR": "eurosign"
-        case "GBP": "sterlingsign"
-        case "JPY", "CNY": "yensign"
-        case "INR": "indianrupeesign"
-        case "KRW": "wonsign"
-        case "BRL": "brazilianrealsign"
-        default: "banknote"
-        }
-    }
+    private var currencySymbol: String { AmountInput.currencySymbolName(model.moneyFormatter) }
 
     // MARK: - Form
 

@@ -18,7 +18,7 @@ struct MainView: View {
             NavigationStack { HomeView() }
                 .tabItem { Label("Home", systemImage: "dollarsign.circle") }
                 .tag(Tab.home)
-            NavigationStack { NetWorthView() }
+            NavigationStack { WorthView() }
                 .tabItem { Label("Worth", systemImage: "chart.line.uptrend.xyaxis") }
                 .tag(Tab.worth)
             NavigationStack { UpcomingTabView(title: "Goals", symbol: "flag") }
