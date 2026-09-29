@@ -308,23 +308,31 @@ struct WorthParityTests {
         }
     }
 
-    /// Expected values printed by Dart running fl_chart 1.2.0's
-    /// `iterateThroughAxis` / `getBestInitialIntervalValue` (copied
-    /// verbatim) over `_netWorthChartScale`.
-    @Test("growth chart grid lines (fl_chart multiples of the interval from 0)")
-    func gridLines() {
-        let cases: [([Double], [Double])] = [
-            ([5000.0], [4950.0, 4995.0, 5040.0, 5085.0]),
-            ([1000.0, 1500.0], [1020.0, 1190.0, 1360.0, 1530.0]),
-            ([-2500.0, 400.0, 1200.0], [-2516.0, -1258.0, 0.0, 1258.0]),
-            ([0.0], [-0.09, 0.0, 0.09]),
-            ([100.0, 100.0], [98.99999999999984, 99.89999999999984, 100.79999999999984, 101.69999999999985]),
-            ([12000.5, 13500.25, 11800.0, 15020.75], [12045.605000000003, 13140.660000000003, 14235.715000000004, 15330.770000000004]),
-            ([-900.0, -400.0], [-850.0, -680.0, -510.0, -340.0]),
-            ([0.0, 1.0], [0.0, 0.33999999999999997, 0.6799999999999999, 1.02]),
-        ]
-        for (values, expected) in cases {
-            #expect(NetWorthChartScale.growth(values)!.gridLines == expected, "\(values)")
+    /// fl_chart 1.2.0's own `AxisChartHelper.iterateThroughAxis`, called
+    /// as its grid painter does over both charts' scales (formatting.json
+    /// `gridLines`), bit for bit.
+    @Test("chart grid lines (fl_chart multiples of the interval from 0)")
+    func gridLines() throws {
+        let cases = try fixture("formatting.json")["gridLines"].array
+        #expect(cases.count >= 8)
+        for c in cases {
+            let values = c["values"].array.map { bits($0)! }
+            #expect(NetWorthChartScale.growth(values)!.gridLines.map(hex) == c["growth"].array.map { $0.string! }, "growth \(values)")
+            #expect(NetWorthChartScale.account(values)!.gridLines.map(hex) == c["account"].array.map { $0.string! }, "account \(values)")
+        }
+    }
+
+    /// Which points get an axis label: `_AxisLabels` and the account
+    /// chart's titles through fl_chart's side-title iteration
+    /// (formatting.json `axisLabels`, 1 to 30 points).
+    @Test("axis label indices")
+    func axisLabels() throws {
+        let cases = try fixture("formatting.json")["axisLabels"].array
+        #expect(cases.count == 30)
+        for c in cases {
+            let n = c["count"].int!
+            #expect(NetWorthPresentation.growthAxisLabelIndices(count: n) == c["growth"].array.map { $0.int! }, "growth \(n)")
+            #expect(NetWorthPresentation.accountAxisLabelIndices(count: n) == c["account"].array.map { $0.int! }, "account \(n)")
         }
     }
 

@@ -1,40 +1,33 @@
 import BudgieCore
 import SwiftUI
 
-/// The ellipsis sheet (`_showGoalActions`, savings_goals_page.dart:371-428):
-/// a floating card with the goal's name, "Edit goal" and "Delete goal".
-/// A tile fires a light haptic and closes the sheet; its action opens once
-/// the sheet is gone.
+/// The ellipsis sheet's content (`_showGoalActions`,
+/// savings_goals_page.dart:371-428): the goal's name, "Edit goal" and
+/// "Delete goal", shown by the page's `budgieDialog` at the bottom
+/// placement (one floating GlowCard with vertical padding 8, 20pt from the
+/// edges, over the scrim, as Flutter's transparent modal sheet). A tile
+/// fires a light haptic; the page then swaps the sheet for that dialog.
 struct GoalActionsSheet: View {
     let goal: SavingsGoalRecord
     let onEdit: () -> Void
     let onDelete: () -> Void
 
-    @State private var height: CGFloat = 200
-
     var body: some View {
-        GlowCard(padding: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(goal.name)
-                    .textStyle(.goalTitle)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
-                    .accessibilityAddTraits(.isHeader)
-                    .padding(EdgeInsets(top: 12, leading: 12, bottom: 8, trailing: 12))
-                GoalActionTile(title: "Edit goal", symbol: "pencil", color: BudgieColor.textPrimary, action: onEdit)
-                    .accessibilityIdentifier("goals.actions.edit")
-                GoalActionTile(title: "Delete goal", symbol: "trash", color: BudgieColor.danger, action: onDelete)
-                    .accessibilityIdentifier("goals.actions.delete")
-            }
-            .padding(.vertical, 8)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(goal.name)
+                .textStyle(.goalTitle)
+                .foregroundStyle(BudgieColor.textPrimary)
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+                .padding(EdgeInsets(top: 12, leading: 12, bottom: 8, trailing: 12))
+            GoalActionTile(title: "Edit goal", symbol: "pencil", color: BudgieColor.textPrimary, action: onEdit)
+                .accessibilityIdentifier("goals.actions.edit")
+            GoalActionTile(title: "Delete goal", symbol: "trash", color: BudgieColor.danger, action: onDelete)
+                .accessibilityIdentifier("goals.actions.delete")
         }
-        .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: Metrics.pageHorizontal, trailing: Metrics.pageHorizontal))
-        .fixedSize(horizontal: false, vertical: true)
-        .onGeometryChangeCompat { height = $0.height }
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        .presentationDetents([.height(height)])
-        .presentationBackground(.clear)
-        .presentationDragIndicator(.hidden)
+        .padding(.vertical, 8)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("goals.actions")
     }
 }
 
@@ -83,13 +76,15 @@ struct DeleteGoalDialog: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .accessibilityAddTraits(.isHeader)
-            Text("This removes \"\(goal.name)\" and its saved progress from your goals.")
-                .textStyle(GoalText.body)
-                .foregroundStyle(BudgieColor.textSecondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 12)
+            DialogScroll {
+                Text("This removes \"\(goal.name)\" and its saved progress from your goals.")
+                    .textStyle(GoalText.body)
+                    .foregroundStyle(BudgieColor.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.top, 12)
             HStack(spacing: 12) {
                 PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onCancel)
                     .accessibilityIdentifier("goals.delete.cancel")

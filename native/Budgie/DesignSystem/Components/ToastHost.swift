@@ -25,7 +25,9 @@ private struct ToastHost: ViewModifier {
                         .id(toast.id)
                         .task(id: toast.id) {
                             AccessibilityNotification.Announcement(toast.message).post()
-                            try? await Task.sleep(for: .seconds(toast.duration))
+                            // A cancelled wait (the view went away) must not
+                            // cut the toast short.
+                            guard (try? await Task.sleep(for: .seconds(toast.duration))) != nil else { return }
                             model.dismissToast(toast.id)
                         }
                 }
@@ -34,6 +36,9 @@ private struct ToastHost: ViewModifier {
     }
 }
 
+/// Flutter's SnackBar text is M3 `onInverseSurface` (a dark neutral in dark
+/// mode, near-white in light), not white: `onAccent` (#0A0A12 / #FFFFFF)
+/// keeps it legible on the bright dark-mode green and rose.
 private struct ToastView: View {
     @Environment(AppModel.self) private var model
     let toast: Toast
@@ -42,7 +47,7 @@ private struct ToastView: View {
         HStack(spacing: 12) {
             Text(toast.message)
                 .textStyle(.bodySmall)
-                .foregroundStyle(.white)
+                .foregroundStyle(BudgieColor.onAccent)
                 .frame(maxWidth: .infinity, alignment: .leading)
             if toast.action == .retrySaves {
                 Button("Retry") {
@@ -50,7 +55,7 @@ private struct ToastView: View {
                     Task { await model.retrySaves() }
                 }
                 .textStyle(.labelSmall)
-                .foregroundStyle(.white)
+                .foregroundStyle(BudgieColor.onAccent)
             }
         }
         .padding(.horizontal, 16)

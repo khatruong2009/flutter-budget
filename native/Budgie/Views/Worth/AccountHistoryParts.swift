@@ -224,14 +224,17 @@ struct AccountTrendChart: View {
 /// Touch (fl_chart's built-in handling, threshold 48): while a finger is
 /// down, the spot nearest in x (within 48pt) shows fl_chart's default
 /// indicators (a 4pt line up from the bottom and a dot, per line) and the
-/// tooltip above it; lifting clears it. The tooltip is drawn once (fl_chart
-/// stacks one copy per line) and kept inside the plot horizontally.
+/// tooltip above it; lifting clears it. A mostly vertical drag scrolls the
+/// page instead and clears it, as Flutter's scroll view wins the gesture
+/// arena and cancels the chart's touch (`ChartTouch`). The tooltip is drawn
+/// once (fl_chart stacks one copy per line) and kept inside the plot
+/// horizontally.
 struct AccountTrendPlot: View {
     let history: [NetWorthSnapshotRecord]
     let color: Color
     let formatter: MoneyFormatter
 
-    @GestureState private var touchX: CGFloat?
+    @State private var touchX: CGFloat?
     @ScaledMetric(relativeTo: .caption2) private var axisLabelHeight: CGFloat = 12
     /// `maxContentWidth` 120, scaled with the text.
     @ScaledMetric(relativeTo: .body) private var tooltipContentWidth: CGFloat = 120
@@ -254,8 +257,7 @@ struct AccountTrendPlot: View {
                 layers(points: points, scale: scale, plot: plot, touched: touched)
                     .frame(width: plot.width, height: plot.height)
                     .contentShape(Rectangle())
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 0).updating($touchX) { value, state, _ in state = value.location.x })
+                    .modifier(ChartTouch(touchX: $touchX))
                     .overlay {
                         if let touched {
                             // Single-snapshot charts duplicate the point at
@@ -387,6 +389,92 @@ struct AccountTrendPlot: View {
             path.addCurve(to: points[index + 1], control1: control.0, control2: control.1)
         }
         return path
+    }
+}
+
+/// The trend chart's touch: the finger's x while it is down on the plot,
+/// nil once lifted or once the page scrolls.
+///
+/// iOS 18+: a UIKit press that begins at touch-down (the tooltip shows at
+/// once, as fl_chart's down event) and lets the scroll view's pan begin
+/// alongside it only for a mostly vertical movement; when the page starts
+/// scrolling the press cancels itself. A mostly horizontal movement keeps
+/// the scroll view from starting, so scrubbing does not scroll. iOS 17
+/// keeps a simultaneous SwiftUI drag, which coexists with scrolling there,
+/// and drops the touch once the drag turns out vertical.
+private struct ChartTouch: ViewModifier {
+    @Binding var touchX: CGFloat?
+    @State private var scrolled = false
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.gesture(ScrubPress { touchX = $0 })
+        } else {
+            content.simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let t = value.translation
+                        if !scrolled, abs(t.height) > 10, abs(t.height) >= abs(t.width) { scrolled = true }
+                        touchX = scrolled ? nil : value.location.x
+                    }
+                    .onEnded { _ in
+                        scrolled = false
+                        touchX = nil
+                    })
+        }
+    }
+}
+
+@available(iOS 18.0, *)
+private struct ScrubPress: UIGestureRecognizerRepresentable {
+    let onChange: (CGFloat?) -> Void
+
+    func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator { Coordinator() }
+
+    func makeUIGestureRecognizer(context: Context) -> UILongPressGestureRecognizer {
+        let press = UILongPressGestureRecognizer()
+        press.minimumPressDuration = 0
+        press.allowableMovement = .greatestFiniteMagnitude
+        press.cancelsTouchesInView = false
+        press.delegate = context.coordinator
+        return press
+    }
+
+    func handleUIGestureRecognizerAction(_ recognizer: UILongPressGestureRecognizer, context: Context) {
+        switch recognizer.state {
+        case .began:
+            context.coordinator.start = recognizer.location(in: recognizer.view)
+            context.coordinator.scrollPan = nil
+            onChange(context.converter.localLocation.x)
+        case .changed:
+            if let pan = context.coordinator.scrollPan, pan.state == .began || pan.state == .changed {
+                // The page is scrolling: end the touch (cancels the press).
+                recognizer.isEnabled = false
+                recognizer.isEnabled = true
+                onChange(nil)
+            } else {
+                onChange(context.converter.localLocation.x)
+            }
+        default:
+            onChange(nil)
+        }
+    }
+
+    @MainActor final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var start: CGPoint = .zero
+        weak var scrollPan: UIGestureRecognizer?
+
+        /// Asked when the scroll view's pan wants to begin while the press
+        /// is down: only a mostly vertical movement may scroll.
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
+        ) -> Bool {
+            guard other.view is UIScrollView, other is UIPanGestureRecognizer else { return false }
+            let point = gestureRecognizer.location(in: gestureRecognizer.view)
+            guard abs(point.y - start.y) >= abs(point.x - start.x) else { return false }
+            scrollPan = other
+            return true
+        }
     }
 }
 

@@ -214,6 +214,19 @@ extension SavingsGoalRecord {
         !isCompleted && amount >= remainingAmount
     }
 
+    /// What "Finish goal" allocates: the smallest amount at or above
+    /// `remainingAmount` whose sum with `currentAmount` reaches the target,
+    /// as the model adds it. `target - current` alone can land one ulp short
+    /// (14133.23 + (60422.9 - 14133.23) is 60422.899999999994), which would
+    /// celebrate (`willComplete`) without the model completing the goal.
+    /// 0 when nothing remains.
+    public var finishAmount: Double {
+        var amount = remainingAmount
+        guard amount > 0 else { return 0 }
+        while currentAmount + amount < targetAmount, amount.isFinite { amount = amount.nextUp }
+        return amount
+    }
+
     /// `_sortedGoals`: incomplete before complete, then `targetDate`
     /// ascending by instant. Stable (Dart's sort is stable up to 32 goals).
     public static func sorted(_ goals: [SavingsGoalRecord]) -> [SavingsGoalRecord] {

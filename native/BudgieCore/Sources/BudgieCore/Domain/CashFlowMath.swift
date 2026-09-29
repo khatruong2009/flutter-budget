@@ -302,13 +302,4 @@ public enum CashFlowMath {
         }
         return result
     }
-
-    /// dart:math `max` for the non-NaN values these folds see: the larger
-    /// value, and for 0.0 vs -0.0 their sum (0.0).
-    static func dartMax(_ a: Double, _ b: Double) -> Double {
-        if a > b { return a }
-        if a < b { return b }
-        if a == 0 { return a + b }
-        return a
-    }
 }

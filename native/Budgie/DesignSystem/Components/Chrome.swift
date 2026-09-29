@@ -38,19 +38,51 @@ private struct SheetChrome: ViewModifier {
 
 // MARK: - Centred dialog
 
+/// Where a `budgieDialog` card sits.
+enum DialogPlacement: Hashable {
+    /// Centred (Flutter `showDialog` with the `_DarkDialog` shell).
+    case center
+    /// Floating at the bottom, 20pt from the edges above the home indicator
+    /// (a Flutter modal bottom sheet with a transparent background holding a
+    /// GlowCard, e.g. the Goals actions sheet); drag it down to dismiss.
+    case bottom
+}
+
 extension View {
-    /// A centred card dialog over a dimmed scrim (Flutter `showDialog` with
-    /// the Goals `_DarkDialog` shell: GlowCard padding 20, max width 500,
-    /// inset 24/32). Presented above everything, including the tab bar;
-    /// the keyboard pushes it up, and content taller than the space left
-    /// scrolls (Flutter's dialogs sit in a `SingleChildScrollView`).
-    /// Tapping the scrim dismisses it unless the content sets
-    /// `budgieDialogDismissDisabled(true)` (e.g. while saving). `padding` 0
-    /// lets the content run to the border (the Worth editor's banner).
+    /// A card dialog over a dimmed scrim (Flutter `showDialog` with the
+    /// Goals `_DarkDialog` shell: GlowCard padding 20, max width 500, inset
+    /// 24/32; or, `.bottom`, a transparent modal bottom sheet). Presented
+    /// above everything, including the tab bar. The card hugs its content
+    /// and never grows past the space left by the safe area and the
+    /// keyboard: a dialog puts the part that may scroll in a `DialogScroll`
+    /// (Flutter's `Flexible(SingleChildScrollView)`) so its title and
+    /// buttons stay in view. Tapping the scrim dismisses it unless the
+    /// content sets `budgieDialogDismissDisabled(true)` (e.g. while saving).
+    /// `padding` 0 lets the content run to the border (the Worth editor's
+    /// banner).
     func budgieDialog<Dialog: View>(
-        isPresented: Binding<Bool>, padding: CGFloat = Metrics.cardPadding, @ViewBuilder content: @escaping () -> Dialog
+        isPresented: Binding<Bool>, padding: CGFloat = Metrics.cardPadding, placement: DialogPlacement = .center,
+        @ViewBuilder content: @escaping () -> Dialog
     ) -> some View {
-        modifier(DialogPresenter(isPresented: isPresented, padding: padding, dialog: content))
+        modifier(DialogPresenter(isPresented: isPresented, padding: padding, placement: placement, dialog: content))
+    }
+
+    /// `budgieDialog` for a value: shown while `item` is non-nil, with the
+    /// content built from that value (and rebuilt, with fresh state, for a
+    /// new id). Setting `item` to nil, or tapping the scrim, closes it.
+    ///
+    /// Prefer this whenever the content depends on state set just before
+    /// presenting: the item is read here, in the modifier's body, so the
+    /// cover always gets the current value. A content closure that reads
+    /// the presenting view's `@State` instead is evaluated outside that
+    /// view's body and, unless something else re-rendered the view first,
+    /// reads the value from before the tap: the Worth editor opened empty
+    /// (a scrim over a zero-height card) that way.
+    func budgieDialog<Item: Identifiable, Dialog: View>(
+        item: Binding<Item?>, padding: CGFloat = Metrics.cardPadding, placement: DialogPlacement = .center,
+        @ViewBuilder content: @escaping (Item) -> Dialog
+    ) -> some View {
+        modifier(ItemDialogPresenter(item: item, padding: padding, placement: placement, dialog: content))
     }
 
     /// Keeps a `budgieDialog` open when its scrim is tapped (the dialog's
@@ -84,31 +116,57 @@ private struct DialogGlowKey: SwiftUI.PreferenceKey {
     }
 }
 
-private struct DialogGlow: ViewModifier {
+/// The dialog card's shadows, drawn by a card-shaped fill behind it. A
+/// shadow applied to the card itself would shadow every field, label and
+/// button inside it separately (SwiftUI shadows each layer of a view that
+/// is not a compositing group), which haloed the whole form in light mode.
+private struct DialogShadow: View {
     @Environment(\.colorScheme) private var scheme
-    let color: Color?
+    let color: Color
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+            .fill(BudgieColor.card)
+            .glow(color, blur: 32, alpha: 0.18)
+            .shadow(color: .black.opacity(scheme == .dark ? 0.5 : 0.15), radius: 12, y: 12)
+            .accessibilityHidden(true)
+    }
+}
+
+private struct ItemDialogPresenter<Item: Identifiable, Dialog: View>: ViewModifier {
+    @Binding var item: Item?
+    let padding: CGFloat
+    let placement: DialogPlacement
+    let dialog: (Item) -> Dialog
 
     func body(content: Content) -> some View {
-        if let color {
-            content
-                .glow(color, blur: 32, alpha: 0.18)
-                .shadow(color: .black.opacity(scheme == .dark ? 0.5 : 0.15), radius: 12, y: 12)
-        } else {
-            content
-        }
+        // Read in this body, so a new item re-renders it and the cover gets
+        // a closure holding the current value.
+        let current = item
+        content.modifier(
+            DialogPresenter(
+                isPresented: Binding(get: { current != nil }, set: { if !$0 { item = nil } }), padding: padding,
+                placement: placement
+            ) {
+                current.map { dialog($0).id($0.id) }
+            })
     }
 }
 
 private struct DialogPresenter<Dialog: View>: ViewModifier {
     @Binding var isPresented: Bool
     let padding: CGFloat
+    let placement: DialogPlacement
     let dialog: () -> Dialog
     @State private var coverShown = false
 
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $coverShown) {
-                DialogHost(padding: padding, dismiss: { isPresented = false }, dialog: dialog)
+                DialogHost(padding: padding, placement: placement, dismiss: { isPresented = false }, dialog: dialog)
+                    // A change of placement (the Goals actions sheet handing
+                    // over to a dialog) plays the entrance again.
+                    .id(placement)
                     .presentationBackground(.clear)
             }
             .onChange(of: isPresented, initial: true) { _, shown in
@@ -122,38 +180,35 @@ private struct DialogPresenter<Dialog: View>: ViewModifier {
 
 private struct DialogHost<Dialog: View>: View {
     let padding: CGFloat
+    let placement: DialogPlacement
     let dismiss: () -> Void
     let dialog: () -> Dialog
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var visible = false
     @State private var dismissDisabled = false
     @State private var glow: Color?
-    /// The content's natural height: the scroll view is no taller, so the
-    /// card hugs its content and scrolls only when the space runs out.
-    @State private var contentHeight: CGFloat = 0
+    /// How far the bottom card has been dragged down.
+    @State private var drag: CGFloat = 0
+    @State private var cardHeight: CGFloat = 0
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: placement == .bottom ? .bottom : .center) {
             Color.black.opacity(visible ? 0.54 : 0)
                 .ignoresSafeArea()
                 .onTapGesture { if !dismissDisabled { dismiss() } }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("Dismiss")
                 .accessibilityHidden(dismissDisabled)
-            GlowCard(padding: padding) {
-                ScrollView {
-                    dialog().onGeometryChangeCompat { contentHeight = $0.height }
-                }
-                .scrollBounceBehavior(.basedOnSize)
-                .frame(maxHeight: contentHeight)
-            }
-            .modifier(DialogGlow(color: glow))
-            .frame(maxWidth: 500)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 32)
-            .scaleEffect(visible || reduceMotion ? 1 : 0.92)
-            .opacity(visible ? 1 : 0)
-            .accessibilityAddTraits(.isModal)
+            // No scroll view and no measured height here: the card is laid
+            // out at its content's size within the space offered, so it can
+            // never be stuck at a stale (zero) height.
+            GlowCard(padding: padding) { dialog() }
+                .background { if let glow { DialogShadow(color: glow) } }
+                .frame(maxWidth: 500)
+                .modifier(Placed(placement: placement, visible: visible, reduceMotion: reduceMotion, drag: drag))
+                .onGeometryChangeCompat { cardHeight = $0.height }
+                .gesture(placement == .bottom && !dismissDisabled ? dragToDismiss : nil)
+                .accessibilityAddTraits(.isModal)
         }
         .onPreferenceChange(DialogDismissDisabledKey.self) { disabled in
             MainActor.assumeIsolated { dismissDisabled = disabled }
@@ -162,8 +217,84 @@ private struct DialogHost<Dialog: View>: View {
             MainActor.assumeIsolated { glow = color }
         }
         .onAppear {
-            if reduceMotion { visible = true } else { withAnimation(Motion.easeOut(0.15)) { visible = true } }
+            let animation = placement == .bottom ? Motion.fastOutSlowIn(0.25) : Motion.easeOut(0.15)
+            if reduceMotion { visible = true } else { withAnimation(animation) { visible = true } }
         }
+    }
+
+    /// Flutter's modal bottom sheet: follows the finger down and closes past
+    /// half its height or on a downward fling (700pt/s).
+    private var dragToDismiss: some Gesture {
+        DragGesture()
+            .onChanged { drag = max(0, $0.translation.height) }
+            .onEnded { value in
+                let flung = value.velocity.height > 700
+                if flung || value.translation.height > cardHeight / 2 {
+                    dismiss()
+                } else {
+                    withAnimation(reduceMotion ? nil : Motion.easeOut(0.2)) { drag = 0 }
+                }
+            }
+    }
+}
+
+/// The card's insets and entrance: centred ones scale up from 0.92 and fade
+/// in; the bottom card slides up from below the screen (a fade under
+/// Reduce Motion).
+private struct Placed: ViewModifier {
+    let placement: DialogPlacement
+    let visible: Bool
+    let reduceMotion: Bool
+    let drag: CGFloat
+
+    func body(content: Content) -> some View {
+        switch placement {
+        case .center:
+            content
+                .padding(.horizontal, 24)
+                .padding(.vertical, 32)
+                .scaleEffect(visible || reduceMotion ? 1 : 0.92)
+                .opacity(visible ? 1 : 0)
+        case .bottom:
+            content
+                .padding(EdgeInsets(top: 32, leading: Metrics.pageHorizontal, bottom: Metrics.pageHorizontal, trailing: Metrics.pageHorizontal))
+                .offset(y: drag)
+                .visualEffect { effect, proxy in
+                    effect.offset(y: visible || reduceMotion ? 0 : proxy.size.height + 40)
+                }
+                .opacity(visible || !reduceMotion ? 1 : 0)
+        }
+    }
+}
+
+/// A dialog's scrolling section (Flutter's `Flexible(SingleChildScrollView)`):
+/// as tall as its content while that fits, and only as tall as the room the
+/// title, buttons and keyboard leave otherwise, scrolling. Sized by layout
+/// (the scroll view's ideal height is its content's), never by a measured
+/// height held in state.
+struct DialogScroll<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        FitToContent {
+            ScrollView { content() }
+                .scrollBounceBehavior(.basedOnSize)
+                .scrollDismissesKeyboard(.interactively)
+        }
+    }
+}
+
+/// Offers its one subview the proposed width and takes the subview's ideal
+/// height, capped at the proposed height.
+private struct FitToContent: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let child = subviews.first else { return .zero }
+        let ideal = child.sizeThatFits(ProposedViewSize(width: proposal.width, height: nil))
+        return CGSize(width: proposal.width ?? ideal.width, height: min(ideal.height, proposal.height ?? .infinity))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        subviews.first?.place(at: bounds.origin, proposal: ProposedViewSize(bounds.size))
     }
 }
 

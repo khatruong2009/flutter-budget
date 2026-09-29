@@ -57,27 +57,52 @@ struct AccountEditorDialog: View {
     var body: some View {
         VStack(spacing: 0) {
             banner
-            VStack(spacing: 16) {
-                TypePills(type: $type) { typeTaps += 1 }
-                monthField
-                BudgieField(
-                    title: "Account name", text: $name, symbol: "wallet.pass", capitalization: .words, error: nameError)
-                BudgieField(
-                    title: type == .asset ? "Asset balance" : "Liability balance", text: $amountText,
-                    symbol: AmountInput.currencySymbolName(model.moneyFormatter), keyboard: .decimalPad, error: amountError)
-                buttons.padding(.top, 8)
+            // The banner and the buttons stay put; the fields scroll when the
+            // keyboard or a large text size leaves too little room. The
+            // insets are inside the scroll view so the pills' glow is not
+            // clipped by it.
+            DialogScroll {
+                VStack(spacing: 16) {
+                    TypePills(type: $type) { typeTaps += 1 }
+                    monthField
+                    BudgieField(
+                        title: "Account name", text: $name, symbol: Self.walletSymbol, capitalization: .words,
+                        error: nameError)
+                    BudgieField(
+                        title: type == .asset ? "Asset balance" : "Liability balance", text: $amountText,
+                        symbol: AmountInput.currencySymbolName(model.moneyFormatter), keyboard: .decimalPad,
+                        error: amountError)
+                }
+                .padding(EdgeInsets(top: 24, leading: 24, bottom: 0, trailing: 24))
             }
-            .padding(EdgeInsets(top: 24, leading: 24, bottom: 20, trailing: 24))
+            buttons
+                .padding(EdgeInsets(top: 24, leading: 24, bottom: 20, trailing: 24))
         }
         .onChange(of: amountText) { old, new in
-            let formatted = NetWorthAmountInput.sanitize(old: old, new: Self.decimalKey(old: old, new: new))
-            if formatted != new { amountText = formatted }
+            if let replacement = Self.sanitizedAmount(old: old, new: new, prefill: prefill.text) { amountText = replacement }
         }
         .budgieDialogDismissDisabled(saving)
         .budgieDialogGlow(accent)
         .sensoryFeedback(.impact(weight: .light), trigger: buttonTaps)
         .sensoryFeedback(.selection, trigger: typeTaps)
+        // A container, so the identifier does not replace the fields' own.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("worth.editor")
+    }
+
+    /// Material `account_balance_wallet_rounded`: SF's bifold wallet where
+    /// the system has it (iOS 18), else the credit card.
+    static let walletSymbol = UIImage(systemName: "wallet.bifold") != nil ? "wallet.bifold" : "creditcard"
+
+    /// The balance text after an edit from `old` to `new`, or nil to keep
+    /// `new`. Typing goes through Flutter's `_CurrencyInputFormatter`
+    /// (`NetWorthAmountInput.sanitize`); the prefill a month pick assigns
+    /// (a stored balance, possibly negative, which the formatter would
+    /// reject) is kept as set, so Save sees the new month's balance.
+    static func sanitizedAmount(old: String, new: String, prefill: String) -> String? {
+        if new == prefill { return nil }
+        let formatted = NetWorthAmountInput.sanitize(old: old, new: decimalKey(old: old, new: new))
+        return formatted == new ? nil : formatted
     }
 
     // MARK: - Banner
@@ -123,7 +148,7 @@ struct AccountEditorDialog: View {
 
     private var monthField: some View {
         VStack(spacing: 8) {
-            DateTile(label: "Balance month", value: DartDateFormat.yMMMM(entryMonth)) {
+            DateTile(label: "Balance month", value: DartDateFormat.yMMMM(entryMonth), trailingSymbol: "chevron.down") {
                 pickingMonth.toggle()
             }
             .accessibilityIdentifier("worth.editor.month")
@@ -226,7 +251,7 @@ struct AccountEditorDialog: View {
 
     /// A decimal-pad key other than "." (a comma-decimal locale) typed at
     /// the end reads as "."; Flutter's formatter drops it (D6).
-    private static func decimalKey(old: String, new: String) -> String {
+    static func decimalKey(old: String, new: String) -> String {
         guard let separator = Locale.current.decimalSeparator, separator != ".", new == old + separator,
             !old.contains(".")
         else { return new }

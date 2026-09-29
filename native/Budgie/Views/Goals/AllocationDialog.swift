@@ -8,8 +8,9 @@ import SwiftUI
 /// there is no upper limit (over-funding is allowed).
 ///
 /// "Finish goal" fills the remainder rounded to cents, as Flutter, but while
-/// the field still reads that text the exact remainder is saved, so the goal
-/// always completes (Flutter can fall a fraction of a cent short).
+/// the field still reads that text `finishAmount` is saved (the remainder,
+/// nudged up where `current + remainder` rounds below the target), so the
+/// goal always completes (Flutter can fall a fraction of a cent short).
 struct AllocationDialog: View {
     let goal: SavingsGoalRecord
     let formatter: MoneyFormatter
@@ -47,7 +48,7 @@ struct AllocationDialog: View {
                         chip(formatter.format(25), fill: 25, identifier: "goals.allocate.chip.25")
                         chip(formatter.format(100), fill: 100, identifier: "goals.allocate.chip.100")
                         if goal.remainingAmount > 0 {
-                            chip("Finish goal", fill: goal.remainingAmount, identifier: "goals.allocate.chip.finish")
+                            chip("Finish goal", fill: goal.finishAmount, identifier: "goals.allocate.chip.finish")
                         }
                     }
                 }
@@ -85,11 +86,11 @@ struct AllocationDialog: View {
         .accessibilityIdentifier(identifier)
     }
 
-    /// The exact remainder while the field reads the Finish goal text, else
-    /// the parsed amount; nil unless above 0.
+    /// `finishAmount` while the field reads the Finish goal text, else the
+    /// parsed amount; nil unless above 0.
     private var amount: Double? {
-        let remaining = goal.remainingAmount
-        if remaining > 0, text == formatter.formatNumber(remaining, decimalDigits: 2) { return remaining }
+        let finish = goal.finishAmount
+        if finish > 0, text == formatter.formatNumber(finish, decimalDigits: 2) { return finish }
         return AmountInput.parse(text, formatter: formatter).flatMap { $0 > 0 ? $0 : nil }
     }
 

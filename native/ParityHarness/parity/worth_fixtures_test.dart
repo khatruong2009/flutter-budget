@@ -11,7 +11,9 @@
 //
 // formatting.json (America/New_York run only): compact currency, the delta
 // pill, row labels, the editor's amount field, chart scales, the hover card
-// alignment, the split bar and the row icon.
+// alignment, the split bar, the row icon, both charts' grid lines (fl_chart
+// 1.2.0's `AxisChartHelper.iterateThroughAxis`, as its grid painter calls it)
+// and which points get an axis label.
 //
 // Formulas private to widget State classes in net_worth_page.dart are copied
 // verbatim below, each citing its source lines; they call the real model.
@@ -25,6 +27,10 @@ import 'package:budget_app/money_formatter.dart';
 import 'package:budget_app/net_worth_entry.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/transaction_model.dart';
+// fl_chart's own axis iteration (not exported), as its grid painter and
+// side titles call it.
+// ignore: implementation_imports
+import 'package:fl_chart/src/chart/base/axis_chart/axis_chart_helper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,6 +84,45 @@ List<double> accountScale(List<double> values) {
   final baselineRange = max(1.0, max(maxValue.abs(), minValue.abs()) * 0.08);
   final range = max(rawRange, baselineRange);
   return [minValue - (range * 0.20), maxValue + (range * 0.20)];
+}
+
+/// Horizontal grid lines of a chart with this padded [min, max] scale:
+/// fl_chart's `drawGrid` (axis_chart_painter.dart:108-120) with
+/// `horizontalInterval: (max - min) / 4` (NW:698, 2048) and the default
+/// `baselineY` 0, both ends excluded.
+List<double> gridLines(List<double> scale) => AxisChartHelper()
+    .iterateThroughAxis(
+      min: scale[0],
+      minIncluded: false,
+      max: scale[1],
+      maxIncluded: false,
+      baseLine: 0,
+      interval: (scale[1] - scale[0]) / 4,
+    )
+    .toList();
+
+/// `_AxisLabels` (NW:571-583): the first, the middle (`n ~/ 2`, only when
+/// there are more than two points) and the last point.
+List<int> growthAxisLabelIndices(int n) =>
+    [0, if (n > 2) n ~/ 2, n - 1];
+
+/// The account chart's bottom titles (NW:2059-2080): fl_chart asks for the
+/// values `iterateThroughAxis` yields over 0...maxX (both ends included,
+/// `SideTitles` defaults) at `interval`; the widget hides the rest.
+List<int> accountAxisLabelIndices(int n) {
+  final out = <int>[];
+  for (final value in AxisChartHelper().iterateThroughAxis(
+    min: 0,
+    max: max(1, n - 1).toDouble(),
+    baseLine: 0,
+    interval: max(1, (n / 3).floor()).toDouble(),
+  )) {
+    final i = value.round();
+    if (i < 0 || i >= n) continue;
+    if (n > 3 && i != 0 && i != n - 1 && i != (n / 2).round()) continue;
+    out.add(i);
+  }
+  return out;
 }
 
 /// NW:535-553 `_overlayAlignment` over the values: [x, y, useBottom].
@@ -830,6 +875,12 @@ void main() {
       'Student loan', 'Auto', 'Personal', 'Credit card', 'Visa Card',
       'Mortgage', 'Mirage', 'İRA', 'CHECKİNG', 'Savings & Checking', '',
     ];
+    final gridValueLists = <List<double>>[
+      [5000.0], [1000.0, 1500.0], [-2500.0, 400.0, 1200.0], [0.0],
+      [100.0, 100.0], [12000.5, 13500.25, 11800.0, 15020.75],
+      [-900.0, -400.0], [0.0, 1.0], [-250000, -249000, -248500],
+      [1e9, 1e9 + 1],
+    ];
     final textDates = <List<int>>[
       [2026, 3, 5, 9, 0], [2026, 3, 5, 15, 7], [2026, 12, 31, 0, 0],
       [2026, 1, 1, 12, 0], [2000, 2, 29, 23, 59], [1999, 11, 30, 12, 30],
@@ -871,6 +922,22 @@ void main() {
                   return [bitsHex(a[0] as double), bitsHex(a[1] as double), a[2]];
                 }()
             ],
+          }
+      ],
+      'gridLines': [
+        for (final values in gridValueLists)
+          {
+            'values': values.map(bitsHex).toList(),
+            'growth': gridLines(growthScale(values)).map(bitsHex).toList(),
+            'account': gridLines(accountScale(values)).map(bitsHex).toList(),
+          }
+      ],
+      'axisLabels': [
+        for (var n = 1; n <= 30; n++)
+          {
+            'count': n,
+            'growth': growthAxisLabelIndices(n),
+            'account': accountAxisLabelIndices(n),
           }
       ],
       'splits': [

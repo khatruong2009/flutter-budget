@@ -171,6 +171,7 @@ final class AppModel {
         var loaded = FinancialData.load(
             snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)
         data = loaded.data
+        netWorthRevision &+= 1
         if !loaded.pendingWrites.isEmpty {
             await persist(loaded.pendingWrites.map(\.0))
         }
@@ -376,8 +377,55 @@ final class AppModel {
     /// persisted, loaded as stored even when stale or in the future.
     var selectedNetWorthMonth: DartDateTime { data?.selectedNetWorthMonth ?? calendar.month(of: now) }
 
+    /// Bumped by every change to the accounts or the selected Worth month
+    /// (and by the load); keys `worthCache`.
+    private(set) var netWorthRevision = 0
+    /// The Worth tab's derived values, computed once per revision instead
+    /// of on every render (the history walks every snapshot).
+    @ObservationIgnored private var worthCache = WorthCache()
+
+    private struct WorthCache {
+        var revision = -1
+        var history: [NetWorthHistoryPoint]?
+        var months: (current: DartDateTime, value: [DartDateTime])?
+        var changes: [DartDateTime: Double?] = [:]
+    }
+
+    /// The cache for the current revision (emptied when it moved on).
+    /// Reading `netWorthRevision` here makes views observe it.
+    private func currentWorthCache() -> WorthCache {
+        if worthCache.revision != netWorthRevision { worthCache = WorthCache(revision: netWorthRevision) }
+        return worthCache
+    }
+
     /// The Worth month strip (`getNetWorthAvailableMonths`), newest first.
-    var netWorthAvailableMonths: [DartDateTime] { data?.netWorthAvailableMonths(now: now) ?? [] }
+    var netWorthAvailableMonths: [DartDateTime] {
+        guard let data else { return [] }
+        let current = calendar.month(of: now)
+        if let months = currentWorthCache().months, months.current == current { return months.value }
+        let value = data.netWorthAvailableMonths(now: now)
+        worthCache.months = (current, value)
+        return value
+    }
+
+    /// The growth chart's points (`getNetWorthHistory(limit: 24)`), newest
+    /// first.
+    var netWorthHistory: [NetWorthHistoryPoint] {
+        guard let data else { return [] }
+        if let history = currentWorthCache().history { return history }
+        let history = data.netWorthHistory(limit: 24)
+        worthCache.history = history
+        return history
+    }
+
+    /// `getNetWorthChange(month)`: nil without a change to show.
+    func netWorthChange(forMonth month: DartDateTime) -> Double? {
+        guard let data else { return nil }
+        if let change = currentWorthCache().changes[month] { return change }
+        let change = data.netWorthChange(forMonth: month)
+        worthCache.changes[month] = .some(change)
+        return change
+    }
 
     /// Whether any readable account exists (the Worth empty state).
     var hasNetWorthEntries: Bool { data?.hasNetWorthEntries ?? false }
@@ -398,6 +446,7 @@ final class AppModel {
     func selectNetWorthMonth(_ month: DartDateTime) async -> Bool {
         guard data != nil else { return false }
         data!.selectNetWorthMonth(month)
+        netWorthRevision &+= 1
         return await persist([Section.selectedNetWorthMonth])
     }
 
@@ -412,6 +461,7 @@ final class AppModel {
             data!.addNetWorthEntry(name: name, type: type, amount: amount, month: month, recordedAt: recordedAt, id: newID(), now: now)
                 != nil
         else { return false }
+        netWorthRevision &+= 1
         return await persist([Section.netWorthEntries])
     }
 
@@ -425,6 +475,7 @@ final class AppModel {
         guard data != nil, amount.isFinite,
             data!.updateNetWorthEntry(id: id, name: name, type: type, amount: amount, month: month, recordedAt: recordedAt, now: now)
         else { return false }
+        netWorthRevision &+= 1
         return await persist([Section.netWorthEntries])
     }
 
@@ -432,6 +483,7 @@ final class AppModel {
     @discardableResult
     func deleteNetWorthEntry(id: String) async -> Bool {
         guard data != nil, data!.deleteNetWorthEntry(id: id) else { return false }
+        netWorthRevision &+= 1
         return await persist([Section.netWorthEntries])
     }
 
@@ -440,6 +492,7 @@ final class AppModel {
     @discardableResult
     func deleteNetWorthSnapshot(entryID: String, recordedAt: DartDateTime) async -> Bool {
         guard data != nil, data!.deleteNetWorthSnapshot(entryID: entryID, recordedAt: recordedAt) else { return false }
+        netWorthRevision &+= 1
         return await persist([Section.netWorthEntries])
     }
 
@@ -448,6 +501,7 @@ final class AppModel {
     @discardableResult
     func carryNetWorthMonthForward(_ month: DartDateTime) async -> Bool {
         guard data != nil, data!.carryNetWorthMonthForward(month, now: now) else { return false }
+        netWorthRevision &+= 1
         return await persist([Section.netWorthEntries])
     }
 
@@ -464,50 +518,58 @@ final class AppModel {
     /// The summary card's totals and ring.
     var savingsGoalsSummary: SavingsGoalsSummary { SavingsGoalsSummary(goals: data?.savingsGoals ?? []) }
 
-    /// The goal with this id (dialogs follow it live).
-    func savingsGoal(id: String) -> SavingsGoalRecord? {
-        data?.savingsGoal(id: id)
+    /// What a goal mutation did: written and verified, changed in memory
+    /// but not written (the unsaved banner and Retry take over), or refused
+    /// with nothing changed or written (so no save-failed toast).
+    enum SaveOutcome: Equatable {
+        case saved, failed, rejected
+    }
+
+    private func persistGoals() async -> SaveOutcome {
+        await persist([Section.savingsGoals]) ? .saved : .failed
     }
 
     /// Dart `addSavingsGoal`: the trimmed name, the target date's local
-    /// midnight, a Flutter-format id. False without a write for a blank name
+    /// midnight, a Flutter-format id. Rejected (no write) for a blank name
     /// or a target that is not a positive finite number.
     @discardableResult
-    func addSavingsGoal(name: String, targetAmount: Double, targetDate: DartDateTime) async -> Bool {
+    func addSavingsGoal(name: String, targetAmount: Double, targetDate: DartDateTime) async -> SaveOutcome {
         let now = self.now
         guard data != nil, targetAmount.isFinite,
             data!.addSavingsGoal(
                 name: name, targetAmount: targetAmount, targetDate: targetDate,
                 id: SavingsGoalRecord.makeID(now: now, counter: savingsGoalIDCounter), now: now) != nil
-        else { return false }
+        else { return .rejected }
         savingsGoalIDCounter += 1
-        return await persist([Section.savingsGoals])
+        return await persistGoals()
     }
 
     /// Dart `updateSavingsGoal` (the edit form): name, target, saved amount
     /// and target date (not normalised); `completedAt` follows the amount.
     @discardableResult
-    func updateSavingsGoal(id: String, _ edit: SavingsGoalRecord.Edit) async -> Bool {
+    func updateSavingsGoal(id: String, _ edit: SavingsGoalRecord.Edit) async -> SaveOutcome {
         guard data != nil, edit.targetAmount.isFinite, edit.currentAmount.isFinite,
             data!.updateSavingsGoal(id: id, edit, now: now)
-        else { return false }
-        return await persist([Section.savingsGoals])
+        else { return .rejected }
+        return await persistGoals()
     }
 
     /// Dart `deleteSavingsGoal`: every goal with this id.
     @discardableResult
-    func deleteSavingsGoal(id: String) async -> Bool {
-        guard data != nil, data!.deleteSavingsGoal(id: id) else { return false }
-        return await persist([Section.savingsGoals])
+    func deleteSavingsGoal(id: String) async -> SaveOutcome {
+        guard data != nil, data!.deleteSavingsGoal(id: id) else { return .rejected }
+        return await persistGoals()
     }
 
     /// Dart `allocateToSavingsGoal` (Add money): no transaction is created.
     /// Whether it completes the goal is `willComplete(allocating:)` on the
     /// goal as shown before the dialog, as in Flutter.
     @discardableResult
-    func allocateToSavingsGoal(id: String, amount: Double) async -> Bool {
-        guard data != nil, amount.isFinite, data!.allocateToSavingsGoal(id: id, amount: amount, now: now) else { return false }
-        return await persist([Section.savingsGoals])
+    func allocateToSavingsGoal(id: String, amount: Double) async -> SaveOutcome {
+        guard data != nil, amount.isFinite, data!.allocateToSavingsGoal(id: id, amount: amount, now: now) else {
+            return .rejected
+        }
+        return await persistGoals()
     }
 
     // MARK: - Settings (store section + mirrored preference, like Dart)

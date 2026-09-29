@@ -75,8 +75,11 @@ struct GoalCard: View {
         return HStack(spacing: 18) {
             ProgressRing(value: complete ? 1 : goal.progress, size: 84, thickness: 9, color: color, glowAlpha: complete ? 0.45 : 0.4) {
                 if complete {
+                    // Material `check_rounded` 28 / w500 draws an 18.5pt
+                    // wide tick; SF `checkmark` medium at 20 is 18.75.
                     Image(systemName: "checkmark")
-                        .font(.system(size: 24, weight: .bold))
+                        .font(.system(size: 20, weight: .medium))
+                        .frame(width: 28, height: 28)
                         .foregroundStyle(BudgieColor.income)
                 } else {
                     Text(SavingsGoalText.percent(goal))
@@ -141,8 +144,11 @@ struct GoalMoreButton: View {
             taps += 1
             action()
         } label: {
+            // Material `more_horiz_rounded` 18 / w500: 11.5pt wide, 3pt
+            // dots; SF `ellipsis` medium at 12 is 12 x 3.
             Image(systemName: "ellipsis")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 12, weight: .medium))
+                .frame(width: 18, height: 18)
                 .foregroundStyle(BudgieColor.textSecondary)
                 .frame(width: 44, height: 44)
                 .overlay(Circle().strokeBorder(BudgieColor.pillBorder, lineWidth: 1))

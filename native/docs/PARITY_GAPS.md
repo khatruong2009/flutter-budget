@@ -11,8 +11,6 @@ UPGRADE_TEST_RESULTS.md).
 | Flutter feature | Stored in | MVP status |
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
-| Net worth editing (add account, update balance, carry forward, delete snapshot) | `netWorthEntries`, `selectedNetWorthMonth` | Read-only list, totals and chart. |
-| Savings goals UI | `savingsGoals` | Read (safe-to-spend reserves goal contributions exactly like Flutter); no UI to view/edit. |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags; no rule or tag management UI yet. |
 | Category management (add, rename, archive, reorder) | `categories` | Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter; no editing UI yet. |
@@ -139,11 +137,17 @@ UPGRADE_TEST_RESULTS.md).
   budget limit sheet; Flutter "5000.00"), and a field left as prefilled saves
   the stored amount exactly (Flutter re-parses the 2-decimal prefill, so an
   untouched 33.333 becomes 33.33).
-- Goals Add money: while the field reads the "Finish goal" text the exact
-  remainder is saved, so the goal always completes (Flutter fills the
-  remainder rounded to cents and can fall short, e.g. 33.334 -> 33.33).
-- Goals target date: the shared graphical day picker sheet (Cancel / OK)
-  instead of Material's calendar dialog, over Flutter's range (Jan 1 of
+- Goals Add money: while the field reads the "Finish goal" text the
+  remainder is saved, nudged up by the ulp or two `current + remainder`
+  can lose (14133.23 + (60422.9 - 14133.23) is 60422.899999999994), so the
+  goal always completes (Flutter fills the remainder rounded to cents and
+  can fall short, e.g. 33.334 -> 33.33).
+- Goals target date: the shared graphical day picker sheet (the app's
+  outlined Cancel and accent-filled OK pills) instead of Material's
+  calendar dialog; on iOS 26 the system picker draws the selected day in
+  the label colour (its tint reaches only the month header; `.tint`,
+  `.accentColor` and `UIDatePicker.appearance().tintColor` were tried),
+  where Material fills it with the accent, over Flutter's range (Jan 1 of
   last year to Jan 1 of year + 20, inclusive) stretched to include the
   shown date, so an old overdue goal can be edited (Flutter asserts, D6).
 - Goals cards are keyed by goal id, so ring state follows its goal when the
@@ -155,9 +159,12 @@ UPGRADE_TEST_RESULTS.md).
 - Goals icons (D3): `banknote` stands in for Material's piggy bank
   (`savings_rounded`) on the empty state and the "Saved so far" field; the
   ellipsis button's ring uses the 8% pill border token (Flutter 10%).
-- Goals actions sheet: a native sheet with a clear background and a
-  content-sized detent holding the floating card (Flutter's Material modal
-  bottom sheet); the Add money dialog shares the 500pt dialog width
+- Goals actions sheet: the floating card over the dialog scrim at the
+  bottom, 20pt from the edges (Flutter's transparent modal bottom sheet),
+  sliding up (a fade under Reduce Motion) and dragged down or scrim-tapped
+  to close; Edit goal / Delete goal swap it for that dialog in the same
+  presentation (Flutter pops the sheet, then opens the dialog). The Add
+  money dialog shares the 500pt dialog width
   (Flutter 460, only visible on screens wider than 548pt); a celebration
   card for a long name keeps a 20pt margin (Flutter's reaches the edges).
 - Goals accessibility: each card reads as one element ("{name}, {status}",
@@ -386,6 +393,18 @@ UPGRADE_TEST_RESULTS.md).
   axis bounds separately, so mid-animation frames can differ slightly.
 - Flow preview rows find the category icon like the other transaction rows
   (case-insensitive, archived included; see "Category icons" above).
+- Goals glyphs are sized by the rendered tick / dots, not the point size:
+  SF `checkmark` medium at 20 (ring) and 25 (celebration) and `ellipsis`
+  medium at 12 match Material's `check_rounded` 28 / 34 and
+  `more_horiz_rounded` 18 at w500 (18.5 / 22.5 / 11.5pt wide), in boxes of
+  Flutter's icon sizes.
+- Toasts: the text and Retry use `onAccent` (#0A0A12 dark, white light)
+  for Flutter's M3 `onInverseSurface` snackbar text (a dark neutral in
+  dark mode), not white. A toast shown again while it is up restarts its
+  4s (Flutter queues it).
+- Month chip strip (Worth, Home's SEE ALL): the selected chip is centred
+  when the strip appears, as Flutter's `MonthSelector` does after its first
+  frame.
 - Worth account rows: the long press is a native context menu with the
   sheet's actions (Edit Balance, View History, Delete Account) instead of a
   Material bottom sheet.
@@ -404,6 +423,13 @@ UPGRADE_TEST_RESULTS.md).
   (Flutter re-parses its 2-decimal prefill); a comma-decimal keyboard's ","
   typed at the end reads as "." (Flutter's formatter drops it, D6); the
   field glyph follows the base currency (Flutter: `attach_money`).
+- Worth editor: the banner and Cancel / Save stay in place and only the
+  fields scroll when the keyboard or a large text size leaves too little
+  room (Flutter scrolls the whole dialog, buttons included). The account
+  name glyph is SF `wallet.bifold` (iOS 18+; `creditcard` on iOS 17) for
+  Material's `account_balance_wallet_rounded`.
+- Worth growth chart hover card: its text stops growing at the xxxLarge
+  Dynamic Type size so the card fits the 180pt chart (Flutter's overflows).
 - Worth editor fields are the shared `BudgieField` and `DateTile` (caption
   labels, 1.5pt focus stroke, chevron) instead of the editor's own chrome
   (w600 labels, 2pt accent focus border, accent calendar icon); the close

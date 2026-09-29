@@ -17,6 +17,19 @@ final class ToastTests: XCTestCase {
         XCTAssertNil(model.toast)
     }
 
+    /// A preset shown twice is two toasts: the second gets its own timer
+    /// instead of inheriting the first one's (it used to vanish early).
+    func testPresetsAreFreshToastsEveryTime() {
+        XCTAssertNotEqual(Toast.goalAdded.id, Toast.goalAdded.id)
+        XCTAssertNotEqual(Toast.saveFailed.id, Toast.saveFailed.id)
+        let model = AppModel()
+        let first = Toast.allocationAdded
+        model.showToast(first)
+        model.showToast(.allocationAdded)
+        model.dismissToast(first.id)
+        XCTAssertNotNil(model.toast, "the first showing's timer must not dismiss the second")
+    }
+
     func testAddedToCopyNamesTheYearOnlyWhenItDiffers() {
         let calendar = DartCalendar(timeZone: .current)
         let now = calendar.date(2026, 9, 28)

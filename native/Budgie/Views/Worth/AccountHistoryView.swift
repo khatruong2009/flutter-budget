@@ -22,7 +22,6 @@ struct AccountHistoryView: View {
     @State private var pendingSnapshot: PendingSnapshot?
     @State private var confirmingAccountDelete = false
     @State private var editor: AccountEditorRequest?
-    @State private var showsEditor = false
     /// Set once this page's own account delete removed the entry, so the
     /// pop does not flash the closed state.
     @State private var closing = false
@@ -69,7 +68,6 @@ struct AccountHistoryView: View {
                         editor = AccountEditorRequest(
                             month: model.selectedNetWorthMonth, entry: entry, initialType: entry.type,
                             calendar: model.calendar)
-                        showsEditor = true
                     } label: {
                         Image(systemName: "pencil").foregroundStyle(BudgieColor.textPrimary)
                     }
@@ -88,11 +86,8 @@ struct AccountHistoryView: View {
             }
         }
         // `_showNetWorthEditor` from the bar's Edit (NW:1424-1436).
-        .budgieDialog(isPresented: $showsEditor, padding: 0) {
-            if let editor {
-                AccountEditorDialog(request: editor) { showsEditor = false }
-                    .id(editor.id)
-            }
+        .budgieDialog(item: $editor, padding: 0) { request in
+            AccountEditorDialog(request: request) { editor = nil }
         }
         // `_confirmDeleteNetWorthSnapshot` (NW:2905-2938): Material
         // AlertDialog, both actions plain accent TextButtons (Delete is not
@@ -202,13 +197,18 @@ struct AccountHistoryView: View {
 
     /// Flutter pops whenever the entry is gone after the delete, even when
     /// the write failed (the change stays in memory).
+    /// `closing` is set before the delete: the entry leaves memory at once,
+    /// while the write is awaited, and the page must not show "Account
+    /// deleted" meanwhile.
     private func deleteAccount() async {
         guard model.netWorthEntry(id: entryID) != nil else { return }
+        closing = true
         let saved = await model.deleteNetWorthEntry(id: entryID)
         if !saved { model.showToast(.saveFailed) }
         if model.netWorthEntry(id: entryID) == nil {
-            closing = true
             dismiss()
+        } else {
+            closing = false
         }
     }
 }

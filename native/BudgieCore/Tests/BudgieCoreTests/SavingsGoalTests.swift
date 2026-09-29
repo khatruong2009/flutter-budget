@@ -54,6 +54,33 @@ struct SavingsGoalTests {
         #expect(restored.savingsGoals.first!.isCompleted)
     }
 
+    // MARK: - Finish goal
+
+    /// `target - current` can fall one ulp short once added back:
+    /// 14133.23 + (60422.9 - 14133.23) is 60422.899999999994. "Finish goal"
+    /// submits `finishAmount`, which completes the goal in the model too.
+    @Test("Finish goal's amount completes the goal even where target - current rounds short")
+    func finishAmount() {
+        var data = load(#"[{"id":"g","name":"Car","targetAmount":60422.9,"currentAmount":14133.23,"targetDate":"2027-01-01T00:00:00.000","createdAt":"2026-01-01T00:00:00.000","completedAt":null}]"#)
+        let goal = data.savingsGoals[0]
+        #expect(goal.currentAmount + goal.remainingAmount < goal.targetAmount, "the rounding case itself")
+        let finish = goal.finishAmount
+        #expect(finish >= goal.remainingAmount)
+        #expect(finish == goal.remainingAmount.nextUp)
+        #expect(goal.willComplete(allocating: finish))
+        let allocated = data.allocateToSavingsGoal(id: "g", amount: finish, now: now)
+        #expect(allocated)
+        #expect(data.savingsGoals[0].isCompleted)
+        #expect(data.savingsGoals[0].completedAt == now)
+
+        // Where the remainder adds back exactly it is the remainder itself.
+        let exact = load(#"[{"id":"e","name":"Trip","targetAmount":1000.0,"currentAmount":250.0,"targetDate":"2027-01-01T00:00:00.000","createdAt":"2026-01-01T00:00:00.000","completedAt":null}]"#)
+        #expect(exact.savingsGoals[0].finishAmount == 750)
+        // Nothing remains: 0 (the chip is hidden).
+        let done = load(#"[{"id":"d","name":"Done","targetAmount":100.0,"currentAmount":120.0,"targetDate":"2027-01-01T00:00:00.000","createdAt":"2026-01-01T00:00:00.000","completedAt":null}]"#)
+        #expect(done.savingsGoals[0].finishAmount == 0)
+    }
+
     // MARK: - New rows
 
     @Test("a new goal: Dart toJson key order, double lexemes, midnight target, Flutter id format")

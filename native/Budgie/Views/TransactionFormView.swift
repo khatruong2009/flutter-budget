@@ -644,12 +644,17 @@ struct DayPickerSheet: View {
                 .tint(BudgieColor.accent)
                 .environment(\.calendar, Self.gregorian(calendar))
                 .environment(\.timeZone, calendar.timeZone)
-            HStack(spacing: Metrics.spacingM) {
-                FormButton(title: "Cancel", fill: nil) { dismiss() }
-                FormButton(title: "OK", fill: BudgieColor.primaryGradient) {
+            // The app's dialog buttons (Goals, Worth): an outlined Cancel and
+            // an accent-filled OK, as Material's date picker actions are both
+            // in the accent colour.
+            HStack(spacing: 12) {
+                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44) { dismiss() }
+                    .accessibilityIdentifier("datePicker.cancel")
+                PillButton(title: "OK", filled: true, height: 44) {
                     if let picked = Self.storedDay(from: day, in: Self.gregorian(calendar), calendar: calendar) { onPick(picked) }
                     dismiss()
                 }
+                .accessibilityIdentifier("datePicker.ok")
             }
         }
         .padding(.horizontal, Metrics.spacingM)

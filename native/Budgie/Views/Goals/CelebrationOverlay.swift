@@ -59,8 +59,10 @@ struct CelebrationOverlay: View {
     private var cardBody: some View {
         GlowCard(padding: 24) {
             VStack(spacing: 0) {
+                // Material `check_rounded` 34 / w500 draws a 22.5pt wide
+                // tick; SF `checkmark` medium at 25 is 22.
                 Image(systemName: "checkmark")
-                    .font(.system(size: 30, weight: .bold))
+                    .font(.system(size: 25, weight: .medium))
                     .foregroundStyle(BudgieColor.onAccent)
                     .frame(width: 72, height: 72)
                     .background(BudgieColor.income, in: Circle())

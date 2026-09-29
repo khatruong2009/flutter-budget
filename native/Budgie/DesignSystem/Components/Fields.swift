@@ -69,11 +69,13 @@ struct BudgieField: View {
 }
 
 /// Date row (`_DatePickerTile`): chip surface, radius 14, 1pt card border,
-/// padding 16; calendar symbol, label over value, chevron. Light haptic.
+/// padding 16; calendar symbol, label over value, chevron (right, or down
+/// for the Worth editor's `expand_more`). Light haptic.
 struct DateTile: View {
     let label: String
     let value: String
     var symbol = "calendar"
+    var trailingSymbol = "chevron.right"
     let action: () -> Void
 
     @State private var taps = 0
@@ -93,7 +95,7 @@ struct DateTile: View {
                     Text(value).textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary)
                 }
                 Spacer(minLength: 8)
-                Image(systemName: "chevron.right")
+                Image(systemName: trailingSymbol)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(BudgieColor.textSecondary)
             }

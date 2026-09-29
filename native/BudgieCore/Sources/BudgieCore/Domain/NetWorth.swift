@@ -48,12 +48,14 @@ extension FinancialData {
         }.map(\.element)
     }
 
-    func sum(at date: DartDateTime, _ type: NetWorthEntryType) -> Double {
-        netWorthEntries.filter { $0.type == type }.map { $0.amount(at: date) ?? 0 }.reduce(0, +)
+    /// `entries` defaults to the readable accounts; a caller summing many
+    /// dates passes them in once (`netWorthEntries` decodes every row).
+    func sum(at date: DartDateTime, _ type: NetWorthEntryType, in entries: [NetWorthEntryRecord]? = nil) -> Double {
+        (entries ?? netWorthEntries).filter { $0.type == type }.map { $0.amount(at: date) ?? 0 }.reduce(0, +)
     }
 
-    func count(at date: DartDateTime, _ type: NetWorthEntryType) -> Int {
-        netWorthEntries.filter { $0.type == type && $0.amount(at: date) != nil }.count
+    func count(at date: DartDateTime, _ type: NetWorthEntryType, in entries: [NetWorthEntryRecord]? = nil) -> Int {
+        (entries ?? netWorthEntries).filter { $0.type == type && $0.amount(at: date) != nil }.count
     }
 
     public func totalAssets(forMonth month: DartDateTime) -> Double {
@@ -106,10 +108,13 @@ extension FinancialData {
         return keys.compactMap { calendar.netWorthMonthFromKey($0) }.sorted { $0 > $1 }
     }
 
-    /// `getNetWorthHistory` / `_buildNetWorthHistoryPoints`.
+    /// `getNetWorthHistory` / `_buildNetWorthHistoryPoints`. Points are
+    /// built newest first and Dart returns the first `limit`, so building
+    /// stops there (each point sums every account's snapshots).
     public func netWorthHistory(limit: Int = 24) -> [NetWorthHistoryPoint] {
+        let entries = netWorthEntries
         var dayKeys = Set<String>()
-        for entry in netWorthEntries {
+        for entry in entries {
             for snapshot in entry.snapshots { dayKeys.insert(calendar.netWorthDayKey(snapshot.recordedAt)) }
         }
         if dayKeys.isEmpty || limit <= 0 { return [] }
@@ -131,18 +136,20 @@ extension FinancialData {
             pointCount -= reducible
         }
         var points: [NetWorthHistoryPoint] = []
-        for monthKey in bucketOrder {
+        months: for monthKey in bucketOrder {
             if compressed.contains(monthKey) {
                 let end = calendar.endOfNetWorthMonth(calendar.netWorthMonthFromKey(monthKey)!)
-                points.append(point(display: end, effective: end, granularity: .month))
-                continue
+                points.append(point(display: end, effective: end, granularity: .month, entries: entries))
+            } else {
+                for dayKey in buckets[monthKey]! {
+                    if points.count == limit { break months }
+                    let day = dayFromKey(dayKey)
+                    points.append(point(display: day, effective: calendar.endOfNetWorthDay(day), granularity: .day, entries: entries))
+                }
             }
-            for dayKey in buckets[monthKey]! {
-                let day = dayFromKey(dayKey)
-                points.append(point(display: day, effective: calendar.endOfNetWorthDay(day), granularity: .day))
-            }
+            if points.count == limit { break }
         }
-        return Array(points.prefix(limit))
+        return points
     }
 
     private func dayFromKey(_ key: String) -> DartDateTime {
@@ -150,9 +157,13 @@ extension FinancialData {
         return calendar.date(parts[0], parts[1], parts[2])
     }
 
-    private func point(display: DartDateTime, effective: DartDateTime, granularity: NetWorthHistoryPoint.Granularity) -> NetWorthHistoryPoint {
+    private func point(
+        display: DartDateTime, effective: DartDateTime, granularity: NetWorthHistoryPoint.Granularity,
+        entries: [NetWorthEntryRecord]
+    ) -> NetWorthHistoryPoint {
         NetWorthHistoryPoint(
-            date: display, assets: sum(at: effective, .asset), liabilities: sum(at: effective, .liability),
-            assetCount: count(at: effective, .asset), liabilityCount: count(at: effective, .liability), granularity: granularity)
+            date: display, assets: sum(at: effective, .asset, in: entries),
+            liabilities: sum(at: effective, .liability, in: entries), assetCount: count(at: effective, .asset, in: entries),
+            liabilityCount: count(at: effective, .liability, in: entries), granularity: granularity)
     }
 }

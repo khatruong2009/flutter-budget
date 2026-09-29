@@ -17,7 +17,6 @@ struct WorthView: View {
     @State private var isAssetsTab = true
     @State private var range: NetWorthGrowthRange = .oneYear
     @State private var editor: AccountEditorRequest?
-    @State private var showsEditor = false
     @State private var pendingDelete: NetWorthEntryRecord?
     @State private var historyEntryID: String?
     @State private var monthTaps = 0
@@ -35,6 +34,14 @@ struct WorthView: View {
             }
         }
         .background(BudgieColor.background)
+        // Flutter's page sits in a `SafeArea`: scrolled content ends below
+        // the status bar, which keeps the page background.
+        .overlay(alignment: .top) {
+            Color.clear
+                .frame(height: 0)
+                .background(BudgieColor.background.ignoresSafeArea(edges: .top))
+                .accessibilityHidden(true)
+        }
         .toolbar(.hidden, for: .navigationBar)
         .overlay(alignment: .bottomTrailing) {
             if model.data != nil {
@@ -49,11 +56,8 @@ struct WorthView: View {
             }
         }
         .navigationDestination(item: $historyEntryID) { id in AccountHistoryView(entryID: id) }
-        .budgieDialog(isPresented: $showsEditor, padding: 0) {
-            if let editor {
-                AccountEditorDialog(request: editor) { showsEditor = false }
-                    .id(editor.id)
-            }
+        .budgieDialog(item: $editor, padding: 0) { request in
+            AccountEditorDialog(request: request) { editor = nil }
         }
         .alert("Delete account?", isPresented: deleteAlertBinding, presenting: pendingDelete) { entry in
             Button("Cancel", role: .cancel) {}
@@ -120,10 +124,10 @@ struct WorthView: View {
                     monthTaps += 1
                     Task { await select(picked) }
                 }
-                WorthHero(month: month, netWorth: assets - liabilities, change: data.netWorthChange(forMonth: month), formatter: formatter)
+                WorthHero(month: month, netWorth: assets - liabilities, change: model.netWorthChange(forMonth: month), formatter: formatter)
                     .padding(EdgeInsets(top: 16, leading: 24, bottom: 0, trailing: 24))
                 WorthGrowthCard(
-                    history: Array(data.netWorthHistory(limit: 24).reversed()), range: $range, calendar: calendar, formatter: formatter)
+                    history: Array(model.netWorthHistory.reversed()), range: $range, calendar: calendar, formatter: formatter)
                     .padding(.horizontal, Metrics.pageHorizontal)
                     .padding(.top, 24)
                 WorthSplitCard(assets: assets, liabilities: liabilities, formatter: formatter)
@@ -151,7 +155,6 @@ struct WorthView: View {
     private func openEditor(entry: NetWorthEntryRecord?, type: NetWorthEntryType) {
         editor = AccountEditorRequest(
             month: model.selectedNetWorthMonth, entry: entry, initialType: type, calendar: model.calendar)
-        showsEditor = true
     }
 
     /// `selectNetWorthMonth` persists even a re-tapped month (as Flutter);

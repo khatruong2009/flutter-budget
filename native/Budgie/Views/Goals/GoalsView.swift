@@ -17,12 +17,9 @@ struct GoalsView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
 
+    /// The actions sheet or dialog showing; the actions sheet hands over
+    /// to its Edit / Delete dialog in the same presentation.
     @State private var dialog: PresentedDialog?
-    @State private var dialogShown = false
-    /// The goal whose actions sheet is open.
-    @State private var actionsGoal: SavingsGoalRecord?
-    /// What the actions sheet asked for; opened once the sheet is gone.
-    @State private var pendingDialog: GoalDialog?
     /// A mutation is in flight (Flutter `_isBusy`).
     @State private var busy = false
     @State private var celebration: Celebration?
@@ -64,17 +61,13 @@ struct GoalsView: View {
                 .accessibilityIdentifier("goals.fab")
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: completions)
-        .sheet(item: $actionsGoal, onDismiss: openPendingDialog) { goal in
-            GoalActionsSheet(goal: goal) {
-                pendingDialog = .edit(goal)
-                actionsGoal = nil
-            } onDelete: {
-                pendingDialog = .delete(goal)
-                actionsGoal = nil
-            }
-        }
-        .budgieDialog(isPresented: dialogBinding) {
-            if let dialog { dialogContent(dialog.kind).id(dialog.id) }
+        // `busy` is read here, in the body: the dialog is built outside it
+        // and would otherwise see the value from before the save started.
+        .budgieDialog(item: $dialog, padding: isActions ? 0 : Metrics.cardPadding, placement: isActions ? .bottom : .center) {
+            [busy] presented in
+            dialogContent(presented, busy: busy)
+                // The scrim (and its VoiceOver Dismiss) is inert while saving.
+                .budgieDialogDismissDisabled(busy)
         }
     }
 
@@ -122,7 +115,7 @@ struct GoalsView: View {
                 GoalCard(
                     goal: goal, now: now, calendar: model.calendar, formatter: formatter,
                     onAddMoney: { present(.allocate(goal)) },
-                    onMore: { actionsGoal = goal },
+                    onMore: { present(.actions(goal)) },
                     onEdit: { present(.edit(goal)) },
                     onDelete: { present(.delete(goal)) }
                 )
@@ -144,13 +137,19 @@ struct GoalsView: View {
     // MARK: - Dialogs
 
     @ViewBuilder
-    private func dialogContent(_ kind: GoalDialog) -> some View {
+    private func dialogContent(_ dialog: PresentedDialog, busy: Bool) -> some View {
         let formatter = model.moneyFormatter
-        switch kind {
+        switch dialog.kind {
+        case .actions(let goal):
+            GoalActionsSheet(goal: goal) { present(.edit(goal)) } onDelete: { present(.delete(goal)) }
         case .add:
-            GoalFormDialog(goal: nil, formatter: formatter, busy: busy, onCancel: closeDialog) { submitForm($0, editing: nil) }
+            GoalFormDialog(goal: nil, formatter: formatter, busy: busy, openedAt: dialog.openedAt, onCancel: closeDialog) {
+                submitForm($0, editing: nil)
+            }
         case .edit(let goal):
-            GoalFormDialog(goal: goal, formatter: formatter, busy: busy, onCancel: closeDialog) { submitForm($0, editing: goal) }
+            GoalFormDialog(goal: goal, formatter: formatter, busy: busy, openedAt: dialog.openedAt, onCancel: closeDialog) {
+                submitForm($0, editing: goal)
+            }
         case .allocate(let goal):
             AllocationDialog(goal: goal, formatter: formatter, busy: busy, onCancel: closeDialog) { allocate($0, to: goal) }
         case .delete(let goal):
@@ -158,26 +157,19 @@ struct GoalsView: View {
         }
     }
 
-    /// The scrim closes the dialog, except while its mutation is saving.
-    private var dialogBinding: Binding<Bool> {
-        Binding(get: { dialogShown }, set: { shown in if !shown { closeDialog() } })
+    private var isActions: Bool {
+        if case .actions? = dialog?.kind { return true }
+        return false
     }
 
     private func present(_ kind: GoalDialog) {
         guard !busy else { return }
-        dialog = PresentedDialog(kind: kind)
-        dialogShown = true
+        dialog = PresentedDialog(kind: kind, openedAt: model.now)
     }
 
     private func closeDialog() {
         guard !busy else { return }
-        dialogShown = false
-    }
-
-    private func openPendingDialog() {
-        guard let kind = pendingDialog else { return }
-        pendingDialog = nil
-        present(kind)
+        dialog = nil
     }
 
     // MARK: - Mutations
@@ -217,28 +209,32 @@ struct GoalsView: View {
     }
 
     /// Runs one mutation with the dialog held open, then closes it and
-    /// toasts: `success` when saved, the save-failed toast when the change
-    /// is only in memory, nothing when the model refused it (nothing
-    /// changed, e.g. the goal is gone).
-    private func run(success: Toast, _ mutation: @escaping () async -> Bool, then: @escaping (Bool) -> Void = { _ in }) {
+    /// toasts: `success` when saved, the save-failed toast when this write
+    /// failed (the change is only in memory), nothing when the model refused
+    /// the change without writing (e.g. the goal is gone), whatever else is
+    /// still unsaved.
+    private func run(
+        success: Toast, _ mutation: @escaping () async -> AppModel.SaveOutcome, then: @escaping (Bool) -> Void = { _ in }
+    ) {
         guard !busy else { return }
         busy = true
         Task {
-            let saved = await mutation()
+            let outcome = await mutation()
             busy = false
-            dialogShown = false
-            if saved {
-                model.showToast(success)
-            } else if model.hasUnsavedChanges {
-                model.showToast(.saveFailed)
+            dialog = nil
+            switch outcome {
+            case .saved: model.showToast(success)
+            case .failed: model.showToast(.saveFailed)
+            case .rejected: break
             }
-            then(saved)
+            then(outcome == .saved)
         }
     }
 }
 
-/// A centred dialog of the Goals tab.
+/// The actions sheet or a centred dialog of the Goals tab.
 enum GoalDialog: Hashable {
+    case actions(SavingsGoalRecord)
     case add
     case edit(SavingsGoalRecord)
     case allocate(SavingsGoalRecord)
@@ -249,6 +245,8 @@ enum GoalDialog: Hashable {
 private struct PresentedDialog: Identifiable {
     let id = UUID()
     let kind: GoalDialog
+    /// The clock when it opened (the add form's default date).
+    let openedAt: DartDateTime
 }
 
 private struct Celebration: Identifiable {

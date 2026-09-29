@@ -372,15 +372,4 @@ struct NetWorthMutationTests {
         #expect(data.netWorthEntries(forMonth: march).map(\.id) == ["big", "a", "b", "B", "\u{130}", "\u{1F600}x", "\u{FF41}"])
     }
 
-    @Test("axis label indices")
-    func axisLabels() {
-        #expect(NetWorthPresentation.growthAxisLabelIndices(count: 1) == [0, 0])
-        #expect(NetWorthPresentation.growthAxisLabelIndices(count: 2) == [0, 1])
-        #expect(NetWorthPresentation.growthAxisLabelIndices(count: 5) == [0, 2, 4])
-        #expect(NetWorthPresentation.accountAxisLabelIndices(count: 1) == [0])
-        #expect(NetWorthPresentation.accountAxisLabelIndices(count: 3) == [0, 1, 2])
-        #expect(NetWorthPresentation.accountAxisLabelIndices(count: 4) == [0, 2, 3])
-        #expect(NetWorthPresentation.accountAxisLabelIndices(count: 7) == [0, 4, 6])
-        #expect(NetWorthPresentation.accountAxisLabelIndices(count: 10) == [0, 9])
-    }
 }

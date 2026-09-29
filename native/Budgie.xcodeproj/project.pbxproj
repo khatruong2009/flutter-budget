@@ -17,8 +17,11 @@
 		122195B6962D7B71268770FA /* TrendCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9EBB466D4272F48F68DC73 /* TrendCard.swift */; };
 		19FB5D980F78CF1BB363E8AC /* HomeHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D98BE7CAA32047DC8ED7BB /* HomeHero.swift */; };
 		1B9213F25E5905AD4B770CC3 /* HomeMonthPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ADA0B74BB5F802C9C663C8 /* HomeMonthPanel.swift */; };
+		1CA4701DA16820AFD9D048D2 /* GoalsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8AD1A2FD9AF25D2A624BFB /* GoalsUITests.swift */; };
 		1CD6C6774725EE4E84DCFF23 /* NetCashFlowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E844E933EE38F40FCF2098F /* NetCashFlowCard.swift */; };
+		1CFC24C829D8C188212843D9 /* WorthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF992CF11791368E3AEC7EC /* WorthUITests.swift */; };
 		2028BD40319E041FE4307F31 /* MonthStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3C39A24DE28EC428B953C06 /* MonthStrip.swift */; };
+		211FEA986BECCBDB82B92FCF /* AccountEditorInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDA82B10D34CBA6ED21C4CA /* AccountEditorInputTests.swift */; };
 		25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE53DE5AD70779A34E32BD53 /* AppModel.swift */; };
 		2817870E0A8560BF37CACB38 /* WorthGrowthChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A226D2ABA030175D1E550B /* WorthGrowthChart.swift */; };
 		281973279A82457BDE68EAD0 /* BudgieCore in Frameworks */ = {isa = PBXBuildFile; productRef = B54562B75CAA02C6A251ACA7 /* BudgieCore */; };
@@ -210,6 +213,7 @@
 		9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Regular.ttf"; sourceTree = "<group>"; };
 		9E758855687C3C7914C62089 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		9F3C216CCEAB63E8F1DC75E1 /* SpringBoardProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringBoardProbe.swift; sourceTree = "<group>"; };
+		9F8AD1A2FD9AF25D2A624BFB /* GoalsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsUITests.swift; sourceTree = "<group>"; };
 		A181F647811D2BC5C22C6D1C /* SettingsChoiceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsChoiceSheet.swift; sourceTree = "<group>"; };
 		A3B27A4D4782E48269084A57 /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		A47E1740CF8EF748E64F594A /* BudgieUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BudgieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -240,6 +244,7 @@
 		E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-Medium.ttf"; sourceTree = "<group>"; };
 		E732E2D9D8661DE2A3D35729 /* AmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInput.swift; sourceTree = "<group>"; };
 		EB6AFCF97303B1CC30CF62C5 /* SpringBoardProbe.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SpringBoardProbe.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDDA82B10D34CBA6ED21C4CA /* AccountEditorInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountEditorInputTests.swift; sourceTree = "<group>"; };
 		EEECB109BAD3F282232EAC05 /* AmountInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputTests.swift; sourceTree = "<group>"; };
 		F03EDCD39307BAAD3D94A78F /* Fields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fields.swift; sourceTree = "<group>"; };
 		F311E0C1EEAE984A312B2AFD /* Chrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chrome.swift; sourceTree = "<group>"; };
@@ -247,6 +252,7 @@
 		F6490075274592AC5E0C6D3B /* BudgieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgieApp.swift; sourceTree = "<group>"; };
 		F75251F37466F9FEAEBF3294 /* BudgetsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetsSection.swift; sourceTree = "<group>"; };
 		FBE125D1B288D8EDAC940049 /* SpendMonthSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendMonthSheet.swift; sourceTree = "<group>"; };
+		FBF992CF11791368E3AEC7EC /* WorthUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorthUITests.swift; sourceTree = "<group>"; };
 		FDF2F936CC7D305389BBED49 /* FontTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -265,6 +271,7 @@
 		0E73655C9F5727E62CC36F88 /* BudgieAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				EDDA82B10D34CBA6ED21C4CA /* AccountEditorInputTests.swift */,
 				EEECB109BAD3F282232EAC05 /* AmountInputTests.swift */,
 				5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */,
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
@@ -332,9 +339,11 @@
 		3D025C807F45FB00FB783484 /* BudgieUITests */ = {
 			isa = PBXGroup;
 			children = (
+				9F8AD1A2FD9AF25D2A624BFB /* GoalsUITests.swift */,
 				8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */,
 				3580137DBE6288651C5807B3 /* SystemIntegrationUITests.swift */,
 				0DB6C149EE701AF5EB0C1858 /* TabsUITests.swift */,
+				FBF992CF11791368E3AEC7EC /* WorthUITests.swift */,
 			);
 			path = BudgieUITests;
 			sourceTree = "<group>";
@@ -737,9 +746,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA4701DA16820AFD9D048D2 /* GoalsUITests.swift in Sources */,
 				BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */,
 				028D66A8DEDBB39EA3F4B3D4 /* SystemIntegrationUITests.swift in Sources */,
 				67253D481CF6D6074C69FF7C /* TabsUITests.swift in Sources */,
+				1CFC24C829D8C188212843D9 /* WorthUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +848,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				211FEA986BECCBDB82B92FCF /* AccountEditorInputTests.swift in Sources */,
 				7DED1DB6FFB1EEE16F46577F /* AmountInputTests.swift in Sources */,
 				F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */,
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,

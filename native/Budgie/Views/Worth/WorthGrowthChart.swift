@@ -305,6 +305,9 @@ private struct HoverCard: View {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
+        // Its tallest form (a month point) must fit the 180pt chart box:
+        // at xxxLarge it is about 150pt; larger sizes stop scaling here.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         // Flutter adds the 1pt border to the padding.
         .padding(.horizontal, 14 + Metrics.borderThin)
         .padding(.vertical, 10 + Metrics.borderThin)
@@ -327,26 +330,33 @@ private struct HoverCard: View {
 // MARK: - Scrub gesture
 
 /// fl_chart's `longPressDuration: 150ms` scrub: `onChanged` with the touch's
-/// x in the chart from the moment the press is recognised, `onEnded` when
-/// it lifts or is cancelled. On iOS 18+ a UIKit long press (which any
-/// scroll made before the 150ms wins over); iOS 17 keeps a SwiftUI long
-/// press sequenced before a drag.
+/// x in the chart from the moment the press is recognised (Flutter selects
+/// at long-press start, before any movement), `onEnded` when it lifts or is
+/// cancelled. On iOS 18+ a UIKit long press (which any scroll made before
+/// the 150ms wins over); iOS 17 keeps a SwiftUI long press sequenced before
+/// a drag, and takes the location at recognition from a zero-distance drag
+/// running alongside (the sequenced drag has none until the finger moves).
 private struct ScrubGesture: ViewModifier {
     let onChanged: (CGFloat) -> Void
     let onEnded: () -> Void
 
     @GestureState private var scrubX: CGFloat?
+    @State private var touchX: CGFloat?
 
     func body(content: Content) -> some View {
         if #available(iOS 18.0, *) {
             content.gesture(ChartLongPress(onChanged: onChanged, onEnded: onEnded))
         } else {
             content
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { touchX = $0.location.x }
+                        .onEnded { _ in touchX = nil })
                 .gesture(
                     LongPressGesture(minimumDuration: 0.15)
                         .sequenced(before: DragGesture(minimumDistance: 0))
-                        .updating($scrubX) { value, state, _ in
-                            if case .second(true, let drag?) = value { state = drag.location.x }
+                        .updating($scrubX) { [touchX] value, state, _ in
+                            if case .second(true, let drag) = value, let x = drag?.location.x ?? touchX { state = x }
                         }
                 )
                 .onChange(of: scrubX) { _, x in

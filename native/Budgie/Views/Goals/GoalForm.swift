@@ -10,7 +10,8 @@ import SwiftUI
 /// An edit prefills both amounts rounded to cents (locale-grouped, like the
 /// budget limit sheet), and a field left as prefilled keeps the stored
 /// value exactly. The date keeps the stored value (edit) or six months from
-/// today (add, with Dart's overflow) until a day is picked, which is stored
+/// the day the form opened (add, with Dart's overflow; a form left open
+/// across midnight keeps its date) until a day is picked, which is stored
 /// as that day's midnight.
 struct GoalFormDialog: View {
     struct Submission {
@@ -24,6 +25,8 @@ struct GoalFormDialog: View {
     let goal: SavingsGoalRecord?
     let formatter: MoneyFormatter
     let busy: Bool
+    /// The clock when the form opened (Flutter builds the form's state once).
+    let openedAt: DartDateTime
     let onCancel: () -> Void
     let onSubmit: (Submission) -> Void
 
@@ -43,12 +46,13 @@ struct GoalFormDialog: View {
     private let savedPrefill: String
 
     init(
-        goal: SavingsGoalRecord?, formatter: MoneyFormatter, busy: Bool, onCancel: @escaping () -> Void,
-        onSubmit: @escaping (Submission) -> Void
+        goal: SavingsGoalRecord?, formatter: MoneyFormatter, busy: Bool, openedAt: DartDateTime,
+        onCancel: @escaping () -> Void, onSubmit: @escaping (Submission) -> Void
     ) {
         self.goal = goal
         self.formatter = formatter
         self.busy = busy
+        self.openedAt = openedAt
         self.onCancel = onCancel
         self.onSubmit = onSubmit
         // `formatNumber` is not masked by Hide balances; Flutter shows the
@@ -117,7 +121,7 @@ struct GoalFormDialog: View {
     private var resolvedDate: DartDateTime {
         if let pickedDate { return pickedDate }
         if let goal { return goal.targetDate }
-        let n = model.now.fields
+        let n = openedAt.fields
         return model.calendar.date(n.year, n.month + 6, n.day)
     }
 
@@ -126,7 +130,7 @@ struct GoalFormDialog: View {
     /// outside (Flutter asserts on an old goal, D6).
     private var range: (earliest: DartDateTime, latest: DartDateTime) {
         let calendar = model.calendar
-        let year = model.now.year
+        let year = openedAt.year
         let shown = resolvedDate.fields
         let day = calendar.date(shown.year, shown.month, shown.day)
         return (min(calendar.date(year - 1, 1, 1), day), max(calendar.date(year + 20, 1, 1), day))
@@ -157,23 +161,5 @@ struct GoalFormDialog: View {
     private func amount(_ text: String, prefill: String, stored: Double?) -> Double? {
         if let stored, text == prefill { return stored }
         return AmountInput.parse(text, formatter: formatter)
-    }
-}
-
-/// A dialog's middle section (Flutter's `Flexible(SingleChildScrollView)`):
-/// as tall as its content, scrolling once the keyboard or a large text size
-/// leaves less room, so the title and buttons stay in view.
-struct DialogScroll<Content: View>: View {
-    @ViewBuilder var content: () -> Content
-
-    @State private var height: CGFloat = 0
-
-    var body: some View {
-        ScrollView {
-            content().onGeometryChangeCompat { height = $0.height }
-        }
-        .frame(maxHeight: height)
-        .scrollBounceBehavior(.basedOnSize)
-        .scrollDismissesKeyboard(.interactively)
     }
 }

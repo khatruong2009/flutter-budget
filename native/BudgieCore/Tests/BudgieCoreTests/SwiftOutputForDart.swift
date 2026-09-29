@@ -107,10 +107,40 @@ struct SwiftOutputForDartTests {
         }
     }
 
+    /// Goal rows another writer produced (Fixtures/goals `foreign`: int and
+    /// string amounts, unknown keys, date-only and UTC lexemes, a blank
+    /// name, dates that fall back to the launch clock, a duplicated id), plus
+    /// a row without an id, and a plain last row for the edit pass to
+    /// delete. Not the unreadable rows: Dart's load casts every
+    /// row to a map and throws on one, whoever wrote the file.
+    static func foreignGoalRows() throws -> [JSONValue] {
+        let fixture = J(try JSONParser.parse([UInt8](Fixtures.data("goals/tz/America_New_York/mutations.json"))))
+        let foreign = fixture["scenarios"].array.first { $0["name"].string == "foreign" }!
+        let initial = try JSONParser.parse(foreign["initial"].string!)
+        var rows = initial.objectValue![Section.savingsGoals]!.arrayValue!
+        rows.insert(
+            try JSONParser.parse(
+                #"{"name":"No id","targetAmount":50,"currentAmount":"12.5","targetDate":"2026-11-30","createdAt":"2026-01-02T03:04:05.000Z","completedAt":null,"tag":[1]}"#),
+            at: 2)
+        // The edit pass deletes the last goal: keep the foreign rows.
+        rows.append(try JSONParser.parse(
+            #"{"id":"g-tail","name":"Tail","targetAmount":10.0,"currentAmount":0.0,"targetDate":"2026-12-01T00:00:00.000","createdAt":"2026-01-01T00:00:00.000","completedAt":null}"#))
+        return rows
+    }
+
     @Test("domain: stores after Swift edits (every mutation the app can make)")
     func edited() async throws {
-        for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k"] {
-            let scenario = try Scenario(Fixtures.url("store/\(name)"))
+        // "typical+foreign_goals": typical's store with the foreign-shaped
+        // goal rows appended before the launch.
+        for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k", "typical+foreign_goals"] {
+            let base = name.components(separatedBy: "+")[0]
+            let scenario = try Scenario(Fixtures.url("store/\(base)"))
+            if base != name {
+                let seeding = scenario.makeStore()
+                let stored = try await seeding.read()
+                let typicalGoals = stored.sections[Section.savingsGoals]?.arrayValue ?? []
+                _ = try await seeding.updateSections([(Section.savingsGoals, .array(typicalGoals + Self.foreignGoalRows()))])
+            }
             guard var data = try await launch(scenario) else { continue }
             let calendar = data.calendar
             let now = scenario.launchNow
@@ -187,9 +217,25 @@ struct SwiftOutputForDartTests {
             data.selectNetWorthMonth(calendar.date(2026, 7, 19, 8))
 
             // Savings goals: every mutation the Goals tab makes, on new goals
-            // and on goals from the input (typical has some, written by the
-            // Flutter model; unknown_data has foreign-shaped ones).
+            // and on goals from the input (typical's, written by the Flutter
+            // model, and, in "typical+foreign_goals", rows another writer
+            // produced; see `foreignGoalRows`).
             let storedGoals = data.savingsGoals
+            if name.hasSuffix("+foreign_goals") {
+                // A string amount, an int amount with unknown keys, a
+                // reordered row with a blank name, the id-less row (its
+                // generated id is saved) and one copy of a duplicated id;
+                // the negative/garbage row stays untouched.
+                data.allocateToSavingsGoal(id: "g-str", amount: 100, now: now)
+                data.allocateToSavingsGoal(id: "g-int", amount: 0.5, now: now)
+                data.updateSavingsGoal(
+                    id: "g-reordered", .init(name: "Reordered", targetAmount: 800, currentAmount: 900, targetDate: calendar.date(2026, 5, 31)),
+                    now: now)
+                if let noID = storedGoals.first(where: { $0.name == "No id" }) {
+                    data.allocateToSavingsGoal(id: noID.id, amount: 1, now: now)
+                }
+                data.allocateToSavingsGoal(id: "g-dup", amount: 5, now: now)
+            }
             let trip = data.addSavingsGoal(
                 name: " Swift Trip ☕️ ", targetAmount: 1234.5, targetDate: calendar.date(2026, 12, 24, 18),
                 id: SavingsGoalRecord.makeID(now: now, counter: 0), now: now)!
