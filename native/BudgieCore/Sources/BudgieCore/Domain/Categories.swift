@@ -259,7 +259,11 @@ extension FinancialData {
         CategoryCatalog.pickerList(categories, type: type, usedNames: [])
     }
 
+    /// A case-insensitive match compared as UTF-16, as Dart's
+    /// `name.toLowerCase() == other.toLowerCase()` (category_provider.dart
+    /// `_containsName`), so NFC and NFD spellings are different categories.
     public func categoryInfo(named name: String, type: TransactionType) -> CategoryInfo? {
-        categories.first { $0.type == type && $0.name.lowercased() == name.lowercased() }
+        let wanted = DartString.lowercase(name)
+        return categories.first { $0.type == type && DartString.equal(DartString.lowercase($0.name), wanted) }
     }
 }

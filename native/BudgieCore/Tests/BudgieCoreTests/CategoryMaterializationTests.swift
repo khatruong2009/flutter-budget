@@ -96,4 +96,16 @@ struct CategoryMaterializationTests {
         #expect(DartJSON.encodeString(result.data.categoriesSection())
             == #"[{"id":"a","type":"expense","name":"A","sortOrder":2,"extra":1},{"id":"b","type":"expense","name":"B","sortOrder":0,"isArchived":true},{"id":"c","type":"income","name":"C","sortOrder":0},{"id":"d","type":"expense","name":"D","sortOrder":1}]"#)
     }
+    @Test("categoryInfo matches case-insensitively as UTF-16: NFC and NFD spellings stay apart")
+    func infoLookup() {
+        let data = load(#"""
+        {"categories":[
+          {"id":"n","type":"expense","name":"Caf\u00e9","iconIdentifier":"cart","colorToken":"accent","sortOrder":0},
+          {"id":"d","type":"expense","name":"Cafe\u0301","iconIdentifier":"gift","colorToken":"accent","sortOrder":1}]}
+        """#).data
+        #expect(data.categoryInfo(named: "CAF\u{E9}", type: .expense)?.id == "n")
+        #expect(data.categoryInfo(named: "cafe\u{301}", type: .expense)?.id == "d")
+        #expect(data.categoryInfo(named: "Caf\u{E9}", type: .income) == nil)
+        #expect(data.categoryPicker(for: .expense).map(\.id).prefix(2) == ["n", "d"])
+    }
 }

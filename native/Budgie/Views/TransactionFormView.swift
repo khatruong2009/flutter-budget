@@ -39,8 +39,12 @@ struct TransactionFormView: View {
     /// The picked day at midnight; nil keeps now (add) or the stored date.
     @State private var pickedDate: DartDateTime?
     @State private var amountError: String?
-    @State private var options: [TransactionType: [String]] = [:]
-    @State private var infos: [TransactionType: [String: CategoryInfo]] = [:]
+    /// The picker lists. Rows are identified by index and names compared as
+    /// UTF-16 (Dart), so canonically-equivalent spellings (NFC and NFD
+    /// "Café") stay two rows with their own icons.
+    @State private var options: [TransactionType: [CategoryInfo]] = [:]
+    /// The edited record's own category info when the list lacks its name.
+    @State private var recordInfo: CategoryInfo?
     @State private var loaded = false
     @State private var saving = false
     @State private var confirmingDelete = false
@@ -89,14 +93,18 @@ struct TransactionFormView: View {
 
     // MARK: - Derived values
 
-    /// The category names for the current type; in edit mode the record's own
+    /// The category rows for the current type; in edit mode the record's own
     /// category is kept even if the catalog no longer lists it.
-    private var categoryNames: [String] {
-        var names = options[type] ?? []
-        if let record = editing, record.type == type, !names.contains(where: { DartString.equal($0, record.category) }) {
-            names.append(record.category)
+    private var categoryRows: [(name: String, info: CategoryInfo?)] {
+        var rows: [(name: String, info: CategoryInfo?)] = (options[type] ?? []).map { ($0.name, $0) }
+        if let record = editing, record.type == type, !rows.contains(where: { DartString.equal($0.name, record.category) }) {
+            rows.append((record.category, recordInfo))
         }
-        return names
+        return rows
+    }
+
+    private func hasCategory(_ name: String) -> Bool {
+        categoryRows.contains { DartString.equal($0.name, name) }
     }
 
     /// The stored date for this save (see the type comment).
@@ -210,9 +218,10 @@ struct TransactionFormView: View {
         let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
         return Group {
             if loaded {
+                let rows = categoryRows
                 Picker("Category", selection: wheelSelection) {
-                    ForEach(categoryNames, id: \.self) { name in
-                        CategoryWheelRow(name: name, info: infos[type]?[name], color: typeColor).tag(name)
+                    ForEach(rows.indices, id: \.self) { index in
+                        CategoryWheelRow(name: rows[index].name, info: rows[index].info, color: typeColor).tag(index)
                     }
                 }
                 .pickerStyle(.wheel)
@@ -232,12 +241,13 @@ struct TransactionFormView: View {
     }
 
     /// The wheel's own changes (a rule's change moves it without a tick).
-    private var wheelSelection: Binding<String> {
+    private var wheelSelection: Binding<Int> {
         Binding(
-            get: { category },
+            get: { categoryRows.firstIndex { DartString.equal($0.name, category) } ?? 0 },
             set: {
-                guard $0 != category else { return }
-                category = $0
+                let rows = categoryRows
+                guard rows.indices.contains($0), !DartString.equal(rows[$0].name, category) else { return }
+                category = rows[$0].name
                 wheelTicks += 1
             })
     }
@@ -309,17 +319,15 @@ struct TransactionFormView: View {
     private func loadCategories() {
         guard !loaded else { return }
         for kind in TransactionType.allCases {
-            let list = model.categories(for: kind)
-            options[kind] = list.map(\.name)
-            infos[kind] = Dictionary(list.map { ($0.name, $0) }, uniquingKeysWith: { first, _ in first })
+            options[kind] = model.categories(for: kind)
         }
-        if let record = editing, infos[record.type]?[record.category] == nil,
-            let info = model.categoryInfo(named: record.category, type: record.type)
-        {
-            infos[record.type]?[record.category] = info
+        if let record = editing {
+            recordInfo = model.categoryInfo(named: record.category, type: record.type)
         }
-        if editing == nil, let initialCategory, categoryNames.contains(initialCategory) { category = initialCategory }
-        if !categoryNames.contains(category) { category = categoryNames.first ?? "" }
+        if editing == nil, let initialCategory, let row = categoryRows.first(where: { DartString.equal($0.name, initialCategory) }) {
+            category = row.name
+        }
+        if !hasCategory(category) { category = categoryRows.first?.name ?? "" }
         loaded = true
     }
 
@@ -331,8 +339,8 @@ struct TransactionFormView: View {
     private func typeChanged() {
         if let record = editing, record.type == type {
             category = record.category
-        } else if !categoryNames.contains(category) {
-            category = categoryNames.first ?? ""
+        } else if !hasCategory(category) {
+            category = categoryRows.first?.name ?? ""
         }
         let stored = editing?.tagIds ?? []
         selectedTagIds.removeAll { ruleTagIds.contains($0) && !stored.contains($0) }
@@ -348,7 +356,7 @@ struct TransactionFormView: View {
             let rule = model.suggestion(
                 type: type, description: descriptionText,
                 amountText: Self.normalizedAmount(amountText, locale: .current)),
-            let name = (options[type] ?? []).first(where: { DartString.equal($0, rule.category) })
+            let name = (options[type] ?? []).first(where: { DartString.equal($0.name, rule.category) })?.name
         else { return }
         category = name
         var tags: [String] = []
