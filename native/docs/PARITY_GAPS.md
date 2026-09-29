@@ -20,7 +20,7 @@ UPGRADE_TEST_RESULTS.md).
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
 | CSV import | ledger | Not available. |
-| Spend (category donut), Flow (history charts, year-over-year) tabs | derived | Not available; History tab lists transactions. |
+| Spend (category donut), Flow (history charts, year-over-year) tabs | derived | Not available; the Transactions page (Home > SEE ALL) lists transactions. |
 | Hide balances toggle, locale override picker, auto-lock timeout picker | `appSettings` | Honoured when set by the Flutter app; no toggles in the MVP. |
 | Month picker limited to the selected year | UI state | MVP month selector moves across years. |
 
@@ -51,6 +51,13 @@ UPGRADE_TEST_RESULTS.md).
 
 ## Deliberate differences (approved)
 
+- Transactions page: when the selected month loses its last transaction,
+  the page falls back to the newest month with data (Flutter keeps the
+  stale month selected, with no chip highlighted and a "No Transactions"
+  list).
+- Transactions page: a delete is awaited and shows "Transaction deleted"
+  only when the write succeeded, otherwise the save-failed toast (Flutter
+  fires and forgets the write and always shows the deleted snackbar).
 - Editing a recurring template keeps its next occurrence and paused state
   (Flutter resets both and re-creates up to 90 days of duplicates). A
   schedule change restarts the cursor from the new start date but never on

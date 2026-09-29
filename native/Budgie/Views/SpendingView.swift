@@ -146,7 +146,7 @@ struct SpendingView: View {
                         Text("Transactions")
                         Spacer()
                         NavigationLink {
-                            HistoryView()
+                            TransactionsView()
                         } label: {
                             Text("SEE ALL").textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
                         }
