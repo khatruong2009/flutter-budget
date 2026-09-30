@@ -80,24 +80,34 @@ struct GlowCard<Content: View>: View {
 }
 
 /// A GlowCard with 8pt padding and 1pt hairlines inset 12 between rows
-/// (`GlowListCard`).
+/// (`GlowListCard`). `lazy` builds only the rows on screen (inside a scroll
+/// view): for a list that can have hundreds of rows, like an account's
+/// balance timeline (docs/PERFORMANCE.md).
 struct GlowListCard<Row: View>: View {
     var radius: CGFloat = Metrics.cardRadius
     let rows: [Row]
+    var lazy = false
 
-    init(radius: CGFloat = Metrics.cardRadius, rows: [Row]) {
+    init(radius: CGFloat = Metrics.cardRadius, lazy: Bool = false, rows: [Row]) {
         self.radius = radius
+        self.lazy = lazy
         self.rows = rows
     }
 
     var body: some View {
         GlowCard(padding: Metrics.listCardPadding, radius: radius) {
-            VStack(spacing: 0) {
-                ForEach(rows.indices, id: \.self) { index in
-                    if index > 0 { Hairline().padding(.horizontal, Metrics.hairlineInset) }
-                    rows[index]
-                }
+            if lazy {
+                LazyVStack(spacing: 0) { content }
+            } else {
+                VStack(spacing: 0) { content }
             }
+        }
+    }
+
+    @ViewBuilder private var content: some View {
+        ForEach(rows.indices, id: \.self) { index in
+            if index > 0 { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+            rows[index]
         }
     }
 }

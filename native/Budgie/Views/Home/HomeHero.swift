@@ -122,7 +122,7 @@ struct RollingAmount: View {
             Text(text)
                 .textStyle(style)
                 .foregroundStyle(glow.opacity(scheme == .dark ? glowAlpha : glowAlpha * 0.4))
-                .blur(radius: 24)
+                .perfBlur(radius: 24)
             HStack(spacing: 0) {
                 ForEach(Self.cells(of: text, skeleton: skeleton), id: \.id) { cell in
                     Group {

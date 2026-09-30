@@ -222,7 +222,7 @@ Status (2026-09-30): implemented as option C1, including the Onboarding page 1 s
 ### Phase 5: Verification and release
 
 1. **Parity harness:** extend `ParityHarness` with the fixtures listed in each spec. These cover budgets, goals, net worth mutations, cash flow, breakdown, filters, insights, categories, CSV, backup and voice. Run under multiple time zones, including a midnight-DST zone.
-2. **Performance:** a pass on a 10k-row store. Signposts, scroll and filter timing, and glow-shadow cost on device.
+2. **Performance:** a pass on a 10k-row store. Signposts, scroll and filter timing, and glow-shadow cost on device. Done on the simulator, with the device procedure: [PERFORMANCE.md](PERFORMANCE.md).
 3. **Visual QA:** Flutter versus Swift side by side on simulators, every tab, light and dark, Dynamic Type, Reduce Motion.
 4. **Tests:** UI tests for each tab's main flow; accessibility audit.
 5. **Existing beads:**

@@ -1,4 +1,5 @@
 import BudgieCore
+import os
 import SwiftUI
 
 /// The shell (D2): the native tab bar with Home, Worth, Goals, Spend and
@@ -10,6 +11,10 @@ import SwiftUI
 struct MainView: View {
     @Environment(AppModel.self) private var model
     @State private var tab: Tab = .home
+    /// The interval of the tab switch in flight (docs/PERFORMANCE.md).
+    @State private var tabSwitch: OSSignpostIntervalState?
+    /// One `firstFrame` event per process.
+    @MainActor private static var firstFrameEmitted = false
 
     enum Tab: Hashable { case home, worth, goals, spend, flow }
 
@@ -25,6 +30,11 @@ struct MainView: View {
                 tabs
             }
         }
+        .onAppear {
+            guard !Self.firstFrameEmitted else { return }
+            Self.firstFrameEmitted = true
+            Signpost.launch.emitEvent("firstFrame")
+        }
         // Opens over the current tab and anything presented on it
         // (Flutter), once unlocked and past the tour (D14, 1A.8).
         .onChange(of: model.pendingAdd, initial: true) { _, _ in AddFormPresenter.openPendingAdd(model) }
@@ -34,8 +44,21 @@ struct MainView: View {
         .appLock()
     }
 
+    /// `$tab`, beginning the `tabSwitch` interval at the tap.
+    private var tabSelection: Binding<Tab> {
+        Binding(
+            get: { tab },
+            set: { newValue in
+                if newValue != tab {
+                    if let state = tabSwitch { Signpost.ui.endInterval("tabSwitch", state, "superseded") }
+                    tabSwitch = Signpost.ui.beginInterval("tabSwitch", "to=\(String(describing: newValue), privacy: .public)")
+                }
+                tab = newValue
+            })
+    }
+
     private var tabs: some View {
-        TabView(selection: $tab) {
+        TabView(selection: tabSelection) {
             NavigationStack { HomeView() }
                 .tabItem { Label("Home", systemImage: "dollarsign.circle") }
                 .tag(Tab.home)
@@ -54,6 +77,15 @@ struct MainView: View {
         }
         .tint(BudgieColor.accent)
         .sensoryFeedback(.selection, trigger: tab)
+        .onChange(of: tab) { _, _ in
+            // The main thread's work for the switch: the interval ends once
+            // the update transaction that changed the tab has finished.
+            DispatchQueue.main.async {
+                guard let state = tabSwitch else { return }
+                Signpost.ui.endInterval("tabSwitch", state)
+                tabSwitch = nil
+            }
+        }
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.hasUnsavedChanges { UnsavedChangesBanner() }
         }

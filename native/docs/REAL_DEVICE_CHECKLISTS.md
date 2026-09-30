@@ -65,8 +65,13 @@ Store files are `completeUntilFirstUserAuthentication`, so only launches
 before the first unlock after a reboot are at risk. iOS decides when to
 prewarm from usage; it can't be forced. The launch log tells you whether a
 prewarm happened: each launch logs `launch prewarm=<0|1>
-protectedData=<available|unavailable>` (category `launch`), and bootstrap
-logs when protected data became available and when the store was read.
+protectedData=<available|unavailable>` (subsystem `com.khatruong.budgetbuddy`,
+category `launch`, level notice, so it persists), and bootstrap logs
+`protected data available after <seconds>s` (only when it had to wait),
+`pre-native snapshot <created|exists|failed>` and `store loaded revision=<n>`
+(or `store load failed <kind>`). Read them with
+`log show --predicate 'subsystem == "com.khatruong.budgetbuddy" AND category == "launch"'`
+(or Console.app with the phone selected).
 
 Steps:
 1. [ ] Install the Flutter TestFlight build. Complete the tour, import the
@@ -85,7 +90,7 @@ Steps:
      tries it took, or that it never happened.
 5. [ ] When a prewarm happened before the unlock, check in the log and in a new
    pull (`8-after-unlock/`, still without opening Budgie):
-   - [ ] no `store loaded` line and no snapshot line timed before the unlock;
+   - [ ] no `store loaded` line and no `pre-native snapshot` line timed before the unlock;
    - [ ] the store files' times and bytes equal `8-before/`
      (`cmp` each file), or they changed only after the unlock time;
    - [ ] any `pre-native-migration/<stamp>/` folder is stamped after the unlock time.

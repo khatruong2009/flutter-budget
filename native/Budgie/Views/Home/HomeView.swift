@@ -105,9 +105,11 @@ struct HomeView: View {
         let previous = HomeSummary.previousMonth(of: month, calendar: calendar)
         let previousTotals = model.ledger.summary(forMonth: previous)
         let previousName = DartDateFormat.MMMM(previous)
-        let breakdown = SafeToSpend.calculate(
-            transactions: data.transactions, templates: data.templates, budgetLimits: data.budgetLimits,
-            savingsGoals: data.savingsGoals, month: month, asOf: model.now, wallClock: model.now, calendar: calendar)
+        let breakdown = Signpost.ui.withIntervalSignpost("home.safeToSpend") {
+            SafeToSpend.calculate(
+                transactions: data.transactions, templates: data.templates, budgetLimits: data.budgetLimits,
+                savingsGoals: data.savingsGoals, month: month, asOf: model.now, wallClock: model.now, calendar: calendar)
+        }
 
         HomeHero(income: totals.income, expenses: totals.expenses, formatter: formatter)
 

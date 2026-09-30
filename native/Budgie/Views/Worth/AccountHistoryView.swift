@@ -170,7 +170,7 @@ struct AccountHistoryView: View {
         } else {
             // The model allows deleting the last snapshot; the page does not.
             let canDelete = history.chart.count > 1
-            GlowListCard(rows: history.timeline.map { item in
+            GlowListCard(lazy: true, rows: history.timeline.map { item in
                 AccountTimelineRow(
                     snapshot: item.snapshot, delta: item.delta, deltaIsFavorable: item.deltaIsFavorable, color: color,
                     canDelete: canDelete, formatter: formatter

@@ -140,14 +140,22 @@ final class AppModel {
     func start() async {
         guard !isStarting, phase != .ready else { return }
         isStarting = true
-        defer { isStarting = false }
+        let interval = Signpost.launch.beginInterval("bootstrap")
+        defer {
+            isStarting = false
+            Signpost.launch.endInterval("bootstrap", interval)
+        }
         await bootstrap()
     }
 
     private func bootstrap() async {
         if !protectedData.isProtectedDataAvailable {
             phase = .waitingForUnlock
+            let waitStart = ContinuousClock.now
+            let wait = Signpost.launch.beginInterval("protectedDataWait")
             await protectedData.waitUntilAvailable()
+            Signpost.launch.endInterval("protectedDataWait", wait)
+            LaunchLog.protectedDataAvailable(after: Self.seconds(since: waitStart))
         }
         phase = .starting
         // Exports a kill left behind while their share sheet was open.
@@ -183,33 +191,52 @@ final class AppModel {
                         return try PropertyListSerialization.data(fromPropertyList: domain, format: .binary, options: 0)
                     }),
                 appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?")
-            backupOutcome = try backup.ensure(lastCommittedChecksum: preferences.string(PreferenceKey.lastCommittedChecksum))
+            let outcome = try backup.ensure(lastCommittedChecksum: preferences.string(PreferenceKey.lastCommittedChecksum))
+            backupOutcome = outcome
+            switch outcome {
+            case .created: LaunchLog.preNativeSnapshot("created")
+            case .alreadyCurrent: LaunchLog.preNativeSnapshot("exists")
+            }
         } catch {
+            LaunchLog.preNativeSnapshot("failed")
             phase = .blocked(.backupFailed(String(describing: error)))
             return
         }
 
         let snapshot: FinancialSnapshot
+        let read = Signpost.launch.beginInterval("store.read")
         do {
             snapshot = try await store.read()
+            Signpost.launch.endInterval("store.read", read)
+            LaunchLog.storeLoaded(revision: Int(snapshot.revision))
         } catch .dataUnreadable(let files) {
+            Signpost.launch.endInterval("store.read", read)
+            LaunchLog.storeLoadFailed("dataUnreadable")
             phase = .blocked(.dataUnreadable(files))
             return
         } catch .protectedDataUnavailable {
+            Signpost.launch.endInterval("store.read", read)
+            LaunchLog.storeLoadFailed("protectedDataUnavailable")
             // The device locked between the check and the read: wait again.
             phase = .waitingForUnlock
+            let waitStart = ContinuousClock.now
             await protectedData.waitUntilAvailable()
+            LaunchLog.protectedDataAvailable(after: Self.seconds(since: waitStart))
             phase = .starting
             await bootstrap()
             return
         } catch {
+            Signpost.launch.endInterval("store.read", read)
+            LaunchLog.storeLoadFailed("readFailed")
             phase = .blocked(.readFailed(String(describing: error)))
             return
         }
         loadReport = await store.lastLoadReport
 
-        var loaded = FinancialData.load(
-            snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)
+        var loaded = Signpost.launch.withIntervalSignpost("FinancialData.load") {
+            FinancialData.load(
+                snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)
+        }
         #if DEBUG
         // BackupUITests and CSVImportUITests replace the data (restores
         // over it, and their safety copies push older ones out). With
@@ -244,6 +271,7 @@ final class AppModel {
         // Launch-time generation (Dart `_initializeApp`), rows and cursors in
         // one commit (approved Q2).
         let launchTime = now
+        let generation = Signpost.launch.beginInterval("recurringGeneration")
         let result = RecurringGenerator.generateDue(in: &loaded.data, now: launchTime, clock: { [calendar] in calendar.now() }, newID: newID)
         if result.changed {
             data = loaded.data
@@ -251,14 +279,19 @@ final class AppModel {
         } else {
             syncWidget()
         }
+        Signpost.launch.endInterval("recurringGeneration", generation)
         // The first index is awaited so the first frame already has totals.
         let transactions = loaded.data.transactions
+        let firstIndex = Signpost.launch.beginInterval("ledgerIndex.first")
         ledger = await Task.detached(priority: .userInitiated) { [calendar] in
-            LedgerIndex.build(transactions, calendar: calendar)
+            Signpost.ledger.withIntervalSignpost("LedgerIndex.build") { LedgerIndex.build(transactions, calendar: calendar) }
         }.value
         ledgerRevision &+= 1
+        Signpost.launch.endInterval("ledgerIndex.first", firstIndex)
         // Like the index, the first cards are ready for the first frame.
+        let firstInsights = Signpost.launch.beginInterval("insights.first")
         await updateInsights(generation: insightsGeneration)
+        Signpost.launch.endInterval("insights.first", firstInsights)
         #if DEBUG
         // In memory only (nothing is written): UI tests turn App Lock on.
         if let seconds = AppLockTestHooks.timeoutSeconds {
@@ -267,10 +300,16 @@ final class AppModel {
         }
         #endif
         phase = .ready
+        Signpost.launch.emitEvent("ready")
         #if DEBUG
         await RehearsalSummary.performScriptedEditsIfRequested(self)
         RehearsalSummary.writeIfRequested(self)
         #endif
+    }
+
+    private static func seconds(since start: ContinuousClock.Instant) -> Double {
+        let elapsed = start.duration(to: .now)
+        return Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
     }
 
     /// Retry after a blocked start (backup or read failure).
@@ -364,11 +403,18 @@ final class AppModel {
         guard let transactions = data?.transactions else { return }
         let calendar = self.calendar
         ledgerTask?.cancel()
+        let rebuild = Signpost.ledger.beginInterval("ledgerRebuild")
         ledgerTask = Task {
-            let index = await Task.detached(priority: .userInitiated) { LedgerIndex.build(transactions, calendar: calendar) }.value
-            guard !Task.isCancelled else { return }
+            let index = await Task.detached(priority: .userInitiated) {
+                Signpost.ledger.withIntervalSignpost("LedgerIndex.build") { LedgerIndex.build(transactions, calendar: calendar) }
+            }.value
+            guard !Task.isCancelled else {
+                Signpost.ledger.endInterval("ledgerRebuild", rebuild, "superseded")
+                return
+            }
             ledger = index
             ledgerRevision &+= 1
+            Signpost.ledger.endInterval("ledgerRebuild", rebuild)
         }
     }
 
@@ -890,9 +936,11 @@ final class AppModel {
         insightInputs = inputs
         let selectedMonth = inputs.selectedMonth, excluded = inputs.excludedIDs, calendar = self.calendar
         let result = await Task.detached(priority: .userInitiated) {
-            InsightEngine.generate(
-                transactions: data.transactions, budgetLimits: data.budgetLimits, savingsGoals: data.savingsGoals,
-                selectedMonth: selectedMonth, now: now, excludedIDs: excluded, calendar: calendar)
+            Signpost.ledger.withIntervalSignpost("insights.generate") {
+                InsightEngine.generate(
+                    transactions: data.transactions, budgetLimits: data.budgetLimits, savingsGoals: data.savingsGoals,
+                    selectedMonth: selectedMonth, now: now, excludedIDs: excluded, calendar: calendar)
+            }
         }.value
         guard generation == insightsGeneration, result != insights else { return }
         insights = result

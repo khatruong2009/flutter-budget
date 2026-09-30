@@ -302,7 +302,7 @@ private struct TransactionRow: View {
             .padding(Metrics.spacingM)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(BudgieColor.card, in: card)
-            .shadow(color: .black.opacity(0.10), radius: 3, y: 1)
+            .perfShadow(color: .black.opacity(0.10), radius: 3, y: 1)
             .contentShape(card)
         }
         .buttonStyle(.plain)

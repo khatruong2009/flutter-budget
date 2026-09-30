@@ -543,7 +543,7 @@ Extend `native/ParityHarness/parity/` with a `cashflow_fixtures_test.dart` (gene
 10. Flow tab and month detail sheet. (L)
 11. Transactions detail page (filters, results, pagination). (L)
 12. Month-scoped list (Flutter `TransactionPage`) and shared row. (M)
-13. Perf pass on a 10k store: signposts, `measure` tests for rebuild, filter, scroll. (M)
+13. Perf pass on a 10k store: signposts, `measure` tests for rebuild, filter, scroll. (M) Results and method: [PERFORMANCE.md](../PERFORMANCE.md).
 14. UI/accessibility tests (VoiceOver labels for bars and slices, Dynamic Type, reduce motion). (S-M)
 
 ---
@@ -561,7 +561,7 @@ Decisions needed:
 8. **Tags.** Filtering by tag needs the `transactionTags` section read (`transaction_tag.dart`: id, name, colorToken). Tag management is out of scope; only the filter chips are needed here.
 
 Risks:
-- **Perf.**
+- **Perf** (measured at 10k rows in [PERFORMANCE.md](../PERFORMANCE.md)).
   - Rebuilding the ledger per mutation on the main thread is ~tens of ms at 10k; do it off-main and swap atomically, keeping deletes/edits addressed by id.
   - Avoid `Equatable` diffs of 10k records in views (`ledgerRevision` instead).
   - `DartDateTime.fields` recomputes the offset on every access, so never call it inside a hot loop more than once per row.

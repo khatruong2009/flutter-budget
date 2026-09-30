@@ -1,4 +1,5 @@
 import BudgieCore
+import os
 import SwiftUI
 
 /// Every transaction, filterable: the page Flow's "SEE ALL" pushes (Flutter
@@ -119,8 +120,10 @@ struct FlowTransactionsView: View {
     /// count's reset when the filter signature changed (`hp:1285-1298`).
     private func refilter() {
         pagination.sync(filter)
+        let state = Signpost.ui.beginInterval("flow.refilter")
         let rows = filter.apply(model.ledger)
         results = FilterResults(rows: rows, summary: TransactionFilter.summary(rows))
+        Signpost.ui.endInterval("flow.refilter", state, "matches=\(rows.count, privacy: .public)")
     }
 
     private var deleteAlertBinding: Binding<Bool> {
