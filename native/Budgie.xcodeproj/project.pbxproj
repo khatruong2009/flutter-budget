@@ -32,6 +32,7 @@
 		2817870E0A8560BF37CACB38 /* WorthGrowthChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A226D2ABA030175D1E550B /* WorthGrowthChart.swift */; };
 		281973279A82457BDE68EAD0 /* BudgieCore in Frameworks */ = {isa = PBXBuildFile; productRef = B54562B75CAA02C6A251ACA7 /* BudgieCore */; };
 		291034520F1F8FCA0E5EEE5C /* Gabarito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */; };
+		2D8A251AE10486FABBF5754D /* VoiceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6C5556331443DB51937149 /* VoiceUITests.swift */; };
 		2F9E364C956E96BD3268C417 /* VoiceEntryModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61FCF1D192D298B8708D268F /* VoiceEntryModelTests.swift */; };
 		300EDAE2DDB4850700D173A7 /* InsightsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82B39926BC8858254C52100 /* InsightsUITests.swift */; };
 		310FFC1574711FF99182A14F /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC281C7ED6BA5AFCAAEF93D5 /* Motion.swift */; };
@@ -226,6 +227,7 @@
 		46A622BC18E15CB82AA11A76 /* DataImportDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImportDialog.swift; sourceTree = "<group>"; };
 		48B0B5D6C0E064C559ED1CF2 /* CategoryTransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTransactionsView.swift; sourceTree = "<group>"; };
 		4A98DC9BE2B7642524497EC0 /* Glow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Glow.swift; sourceTree = "<group>"; };
+		4B6C5556331443DB51937149 /* VoiceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceUITests.swift; sourceTree = "<group>"; };
 		4E914AC86A596DC97136FF9E /* AddFormPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFormPresenter.swift; sourceTree = "<group>"; };
 		5177241A386AE7A9E235D4AD /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
 		51ADA0B74BB5F802C9C663C8 /* HomeMonthPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMonthPanel.swift; sourceTree = "<group>"; };
@@ -429,6 +431,7 @@
 				0DB6C149EE701AF5EB0C1858 /* TabsUITests.swift */,
 				23D9B19C20CF2374DFDE0E03 /* TagsRulesUITests.swift */,
 				DD1BD3FF7630DD52CEE62937 /* UITestSupport.swift */,
+				4B6C5556331443DB51937149 /* VoiceUITests.swift */,
 				FBF992CF11791368E3AEC7EC /* WorthUITests.swift */,
 			);
 			path = BudgieUITests;
@@ -913,6 +916,7 @@
 				67253D481CF6D6074C69FF7C /* TabsUITests.swift in Sources */,
 				E5B3E3B4F48F551F91B714E9 /* TagsRulesUITests.swift in Sources */,
 				96FAED38DB9FE11510141039 /* UITestSupport.swift in Sources */,
+				2D8A251AE10486FABBF5754D /* VoiceUITests.swift in Sources */,
 				1CFC24C829D8C188212843D9 /* WorthUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

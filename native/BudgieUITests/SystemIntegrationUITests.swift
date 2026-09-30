@@ -3,7 +3,11 @@ import XCTest
 /// Home screen integration driven through SpringBoard
 /// (native/scripts/system_flow.sh prepares the simulator: the Flutter build
 /// installed and launched once, so its dynamic quick actions exist, then this
-/// target installs the Swift build over it). Tests run in name order.
+/// target installs the Swift build over it and revokes its microphone, so
+/// voice entry deterministically shows its "Microphone access is off" error
+/// instead of a system prompt or a real recording: these launches come from
+/// SpringBoard, so no launch environment hook applies). Tests run in name
+/// order.
 @MainActor
 final class SystemIntegrationUITests: XCTestCase {
     let app = XCUIApplication()
@@ -49,36 +53,53 @@ final class SystemIntegrationUITests: XCTestCase {
         app.buttons["Cancel"].tap()
     }
 
+    /// Waits for the voice sheet, which with the microphone revoked
+    /// (system_flow.sh) shows the denied message, then cancels it.
+    private func expectVoiceSheet(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "app did not open", file: file, line: line)
+        let message = app.staticTexts["voice.message"]
+        XCTAssertTrue(message.waitForExistence(timeout: 20), "voice sheet not shown", file: file, line: line)
+        XCTAssertEqual(message.label, "Microphone access is off. Enable it in Settings > Budgie.", file: file, line: line)
+        snapshot("voice sheet")
+        app.buttons["voice.cancel"].tap()
+        XCTAssertTrue(message.waitForNonExistence(timeout: 5), "voice sheet did not close", file: file, line: line)
+    }
+
     /// The Flutter build registered three dynamic items, including voice.
     /// Before the Swift app's first launch they are still offered; tapping
-    /// "Add by Voice" must open the expense form (voice is not in the MVP).
+    /// "Add by Voice" opens the voice sheet.
     func test1_leftoverFlutterVoiceQuickAction() {
         let titles = quickActionTitles()
         XCTAssertEqual(titles, ["Add Expense", "Add Income", "Add by Voice"], "expected the Flutter build's items")
         springboard.buttons["Add by Voice"].tap()
-        expectForm("Add Expense")
+        expectVoiceSheet()
     }
 
-    /// After a launch the Swift app has replaced them with its own two.
+    /// After a launch the Swift app has registered its own three.
     func test2_swiftQuickActions() {
         XCUIDevice.shared.press(.home)
         let titles = quickActionTitles()
-        XCTAssertEqual(titles, ["Add Expense", "Add Income"])
+        XCTAssertEqual(titles, ["Add Expense", "Add Income", "Add by Voice"])
         springboard.buttons["Add Income"].tap()
         expectForm("Add Income")
+        XCUIDevice.shared.press(.home)
+        _ = quickActionTitles()
+        springboard.buttons["Add by Voice"].tap()
+        expectVoiceSheet()
     }
 
     /// `budgetapp://` links through the system's "Open in Budgie?" prompt.
     func test3_deepLinks() {
         for (link, title) in [
             ("budgetapp://add-income", "Add Income"), ("budgetapp://add-expense", "Add Expense"),
-            ("budgetapp://voice-add", "Add Expense"), ("budgetapp://add_income", "Add Income"),
-        ] {
+            ("budgetapp://voice-add", nil), ("budgetapp://add_income", "Add Income"),
+            ("budgetapp://voice_add", nil),
+        ] as [(String, String?)] {
             XCUIDevice.shared.press(.home)
             XCUIDevice.shared.system.open(URL(string: link)!)
             let open = springboard.buttons["Open"]
             if open.waitForExistence(timeout: 5) { open.tap() }
-            expectForm(title)
+            if let title { expectForm(title) } else { expectVoiceSheet() }
         }
     }
 

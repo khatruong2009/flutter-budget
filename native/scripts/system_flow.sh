@@ -4,9 +4,13 @@
 #   1. the Flutter build is installed and launched once (it registers its
 #      three dynamic quick actions, including "Add by Voice"), then the
 #      onboarding flag is preset so no tour holds the routes back;
-#   2. SystemIntegrationUITests installs the Swift build over it and drives
-#      SpringBoard: leftover Flutter quick action, Swift quick actions,
-#      budgetapp:// links through the system prompt, and the Quick Add widget.
+#   2. SystemIntegrationUITests installs the Swift build over it, revokes its
+#      microphone (SpringBoard launches cannot take launch environment, so
+#      the voice sheet must reach its "Microphone access is off" error on its
+#      own, with no system prompt and no recording) and drives SpringBoard:
+#      leftover Flutter quick action, Swift quick actions, budgetapp:// links
+#      through the system prompt (voice links open the voice sheet), and the
+#      Quick Add widget.
 # Usage: system_flow.sh <path/to/flutter/Runner.app>
 set -euo pipefail
 FLUTTER_APP="${1:?path to the Flutter Runner.app}"
@@ -53,6 +57,9 @@ xcodebuild build-for-testing -project Budgie.xcodeproj -scheme Budgie -destinati
 # sees exactly "Swift installed, not yet launched" (xcodebuild's own install
 # of the app under test can land after the first test has started).
 xcrun simctl install "$UDID" "$WORK/derived/Build/Products/Debug-iphonesimulator/Budgie.app"
+# Every voice quick action and link opens the voice sheet; with the microphone
+# denied it shows the same error each time, with no system prompt.
+xcrun simctl privacy "$UDID" revoke microphone com.khatruong.budgetbuddy
 set +e
 xcodebuild test-without-building -project Budgie.xcodeproj -scheme Budgie -destination "id=$UDID" \
   -only-testing:BudgieUITests/SystemIntegrationUITests -resultBundlePath "$WORK/result.xcresult" \
