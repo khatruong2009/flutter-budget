@@ -194,7 +194,15 @@ struct InsightEngineDetailTests {
         #expect(run([id.uppercased().replacingOccurrences(of: "K", with: "\u{212A}")]) == 1)
     }
 
-    @Test("10k rows: every rule in well under a frame")
+    /// The research budget is about 20ms for 10k rows in a release build
+    /// (measured about 10ms). `swift test` builds debug, where the same call
+    /// takes about 60ms alone and up to about 110ms while the other suites
+    /// run in parallel. So the check is the calling thread's CPU time (a busy
+    /// machine does not count), best of three, against 150ms in debug and
+    /// 20ms in release, plus the growth from 2,500 to 10,000 rows: about 4x
+    /// for the linear passes, 16x for an accidental O(n^2) rule, so more
+    /// than 8x fails even when the absolute bound is noisy.
+    @Test("10k rows: every rule within budget, growing linearly")
     func large() {
         let calendar = DartCalendar(timeZone: TimeZone(identifier: "America/New_York")!)
         let now = calendar.date(2026, 9, 28, 9, 15)
@@ -202,15 +210,26 @@ struct InsightEngineDetailTests {
             TransactionRecord.parse($0, calendar: calendar, newID: { "unused" })!
         }
         let limits: [(String, Double)] = [("Groceries", 500), ("Travel", 800), ("Housing", 3000), ("Caf\u{E9}", 100)]
-        let clock = ContinuousClock()
         var result: [LocalInsight] = []
-        let elapsed = clock.measure {
-            result = InsightEngine.generate(
-                transactions: rows, budgetLimits: limits, savingsGoals: [], selectedMonth: calendar.month(of: now),
-                now: now, limit: 1000, calendar: calendar)
+        func cpuMilliseconds(_ rows: [TransactionRecord]) -> Double {
+            (0..<3).map { _ in
+                let start = clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID)
+                result = InsightEngine.generate(
+                    transactions: rows, budgetLimits: limits, savingsGoals: [], selectedMonth: calendar.month(of: now),
+                    now: now, limit: 1000, calendar: calendar)
+                return Double(clock_gettime_nsec_np(CLOCK_THREAD_CPUTIME_ID) - start) / 1e6
+            }.min()!
         }
+        let quarter = cpuMilliseconds(Array(rows.prefix(2_500)))
+        let full = cpuMilliseconds(rows)
         #expect(!result.isEmpty)
-        #expect(elapsed < .milliseconds(250), "took \(elapsed)")
+        #if DEBUG
+        let budget = 150.0
+        #else
+        let budget = 20.0
+        #endif
+        #expect(full < budget, "took \(full)ms")
+        #expect(full < quarter * 8, "2,500 rows \(quarter)ms, 10,000 rows \(full)ms")
     }
 }
 

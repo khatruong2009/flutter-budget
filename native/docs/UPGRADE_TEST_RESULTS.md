@@ -92,6 +92,15 @@ archives the added category). 2026-09-29: all PASS, and the Dart
 verification loaded the store (the archived "UI Brew" category, the
 restored built-in income categories) with no problems.
 
+It now also runs `InsightsUITests` (after Categories, before the MVP flow
+leaves its rows): six rows give three duplicate cards, one is snoozed and
+one dismissed, both stay hidden after a relaunch, and the rows are deleted.
+Its descriptions carry a per-run suffix, so a second run on the same
+simulator the same day passes (the first run's snooze and dismissal stay in
+preferences; the app has no way to undo them). 2026-09-30, on an erased
+simulator: all PASS, Insights passed again on a second run without an
+erase, and the Dart verification loaded the pulled store with no problems.
+
 ## Home screen integration (`native/scripts/system_flow.sh`, SpringBoard via XCUITest)
 
 Run on a fresh `Budgie-System` simulator: the Flutter build installed and

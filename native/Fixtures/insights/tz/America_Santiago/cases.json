@@ -1,6 +1,6 @@
 {
   "tz": "America/Santiago",
-  "commit": "147c8b896a1699222f3e0f940afb773dc586492d",
+  "commit": "cf4a8f1de3490669c63b0ff3c1466e8f3bdc5254",
   "cases": [
     {
       "label": "dart_1_pace",
@@ -7612,6 +7612,1399 @@
             [
               "amount",
               "4024000000000000"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "duplicate_one_key_many",
+      "now": "2026-07-10T00:00:00.000",
+      "selectedMonth": "2026-07-01T00:00:00.000",
+      "rows": "[{\"id\":\"r410\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T00:00:00.000\"},{\"id\":\"r411\",\"type\":\"expense\",\"description\":\"Coffee!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T01:00:00.000\"},{\"id\":\"r412\",\"type\":\"expense\",\"description\":\"Coffee!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T02:00:00.000\"},{\"id\":\"r413\",\"type\":\"expense\",\"description\":\"Coffee!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T03:00:00.000\"},{\"id\":\"r414\",\"type\":\"expense\",\"description\":\"Coffee!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T04:00:00.000\"},{\"id\":\"r415\",\"type\":\"expense\",\"description\":\"Coffee!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T05:00:00.000\"},{\"id\":\"r416\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T06:00:00.000\"},{\"id\":\"r417\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T07:00:00.000\"},{\"id\":\"r418\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T08:00:00.000\"},{\"id\":\"r419\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T09:00:00.000\"},{\"id\":\"r420\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T10:00:00.000\"},{\"id\":\"r421\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T11:00:00.000\"},{\"id\":\"r422\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T12:00:00.000\"},{\"id\":\"r423\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T13:00:00.000\"},{\"id\":\"r424\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T14:00:00.000\"},{\"id\":\"r425\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T15:00:00.000\"},{\"id\":\"r426\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T16:00:00.000\"},{\"id\":\"r427\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T17:00:00.000\"},{\"id\":\"r428\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T18:00:00.000\"},{\"id\":\"r429\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T19:00:00.000\"},{\"id\":\"r430\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T20:00:00.000\"},{\"id\":\"r431\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T21:00:00.000\"},{\"id\":\"r432\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T22:00:00.000\"},{\"id\":\"r433\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T23:00:00.000\"},{\"id\":\"r434\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T00:00:00.000\"},{\"id\":\"r435\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T01:00:00.000\"},{\"id\":\"r436\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T02:00:00.000\"},{\"id\":\"r437\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T03:00:00.000\"},{\"id\":\"r438\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T04:00:00.000\"},{\"id\":\"r439\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T05:00:00.000\"},{\"id\":\"r440\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T06:00:00.000\"},{\"id\":\"r441\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T07:00:00.000\"},{\"id\":\"r442\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T08:00:00.000\"},{\"id\":\"r443\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T09:00:00.000\"},{\"id\":\"r444\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T10:00:00.000\"},{\"id\":\"r445\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T11:00:00.000\"},{\"id\":\"r446\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T12:00:00.000\"},{\"id\":\"r447\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T13:00:00.000\"},{\"id\":\"r448\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T14:00:00.000\"},{\"id\":\"r449\",\"type\":\"expense\",\"description\":\"Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\",\"amount\":4.5,\"category\":\"Eating Out\",\"date\":\"2026-07-06T15:00:00.000\"}]",
+      "goals": "[]",
+      "limits": [],
+      "excluded": [],
+      "limit": 3,
+      "full": [
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        }
+      ],
+      "result": [
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!!!!!!!!!!!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:coffee:4.50:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "Coffee!!! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4012000000000000"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "duplicate_17_triples",
+      "now": "2026-07-10T00:00:00.000",
+      "selectedMonth": "2026-07-01T00:00:00.000",
+      "rows": "[{\"id\":\"r450\",\"type\":\"expense\",\"description\":\"Shop 0\",\"amount\":10,\"category\":\"General\",\"date\":\"2026-07-01T00:00:00.000\"},{\"id\":\"r451\",\"type\":\"expense\",\"description\":\"shop 0\",\"amount\":10,\"category\":\"General\",\"date\":\"2026-07-01T12:00:00.000\"},{\"id\":\"r452\",\"type\":\"expense\",\"description\":\"SHOP 0!\",\"amount\":10,\"category\":\"General\",\"date\":\"2026-07-01T18:00:00.000\"},{\"id\":\"r453\",\"type\":\"expense\",\"description\":\"Shop 1\",\"amount\":11,\"category\":\"General\",\"date\":\"2026-07-02T00:00:00.000\"},{\"id\":\"r454\",\"type\":\"expense\",\"description\":\"shop 1\",\"amount\":11,\"category\":\"General\",\"date\":\"2026-07-02T12:00:00.000\"},{\"id\":\"r455\",\"type\":\"expense\",\"description\":\"SHOP 1!\",\"amount\":11,\"category\":\"General\",\"date\":\"2026-07-02T18:00:00.000\"},{\"id\":\"r456\",\"type\":\"expense\",\"description\":\"Shop 2\",\"amount\":12,\"category\":\"General\",\"date\":\"2026-07-03T00:00:00.000\"},{\"id\":\"r457\",\"type\":\"expense\",\"description\":\"shop 2\",\"amount\":12,\"category\":\"General\",\"date\":\"2026-07-03T12:00:00.000\"},{\"id\":\"r458\",\"type\":\"expense\",\"description\":\"SHOP 2!\",\"amount\":12,\"category\":\"General\",\"date\":\"2026-07-03T18:00:00.000\"},{\"id\":\"r459\",\"type\":\"expense\",\"description\":\"Shop 3\",\"amount\":13,\"category\":\"General\",\"date\":\"2026-07-04T00:00:00.000\"},{\"id\":\"r460\",\"type\":\"expense\",\"description\":\"shop 3\",\"amount\":13,\"category\":\"General\",\"date\":\"2026-07-04T12:00:00.000\"},{\"id\":\"r461\",\"type\":\"expense\",\"description\":\"SHOP 3!\",\"amount\":13,\"category\":\"General\",\"date\":\"2026-07-04T18:00:00.000\"},{\"id\":\"r462\",\"type\":\"expense\",\"description\":\"Shop 4\",\"amount\":14,\"category\":\"General\",\"date\":\"2026-07-05T00:00:00.000\"},{\"id\":\"r463\",\"type\":\"expense\",\"description\":\"shop 4\",\"amount\":14,\"category\":\"General\",\"date\":\"2026-07-05T12:00:00.000\"},{\"id\":\"r464\",\"type\":\"expense\",\"description\":\"SHOP 4!\",\"amount\":14,\"category\":\"General\",\"date\":\"2026-07-05T18:00:00.000\"},{\"id\":\"r465\",\"type\":\"expense\",\"description\":\"Shop 5\",\"amount\":15,\"category\":\"General\",\"date\":\"2026-07-06T00:00:00.000\"},{\"id\":\"r466\",\"type\":\"expense\",\"description\":\"shop 5\",\"amount\":15,\"category\":\"General\",\"date\":\"2026-07-06T12:00:00.000\"},{\"id\":\"r467\",\"type\":\"expense\",\"description\":\"SHOP 5!\",\"amount\":15,\"category\":\"General\",\"date\":\"2026-07-06T18:00:00.000\"},{\"id\":\"r468\",\"type\":\"expense\",\"description\":\"Shop 6\",\"amount\":16,\"category\":\"General\",\"date\":\"2026-07-07T00:00:00.000\"},{\"id\":\"r469\",\"type\":\"expense\",\"description\":\"shop 6\",\"amount\":16,\"category\":\"General\",\"date\":\"2026-07-07T12:00:00.000\"},{\"id\":\"r470\",\"type\":\"expense\",\"description\":\"SHOP 6!\",\"amount\":16,\"category\":\"General\",\"date\":\"2026-07-07T18:00:00.000\"},{\"id\":\"r471\",\"type\":\"expense\",\"description\":\"Shop 7\",\"amount\":17,\"category\":\"General\",\"date\":\"2026-07-08T00:00:00.000\"},{\"id\":\"r472\",\"type\":\"expense\",\"description\":\"shop 7\",\"amount\":17,\"category\":\"General\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r473\",\"type\":\"expense\",\"description\":\"SHOP 7!\",\"amount\":17,\"category\":\"General\",\"date\":\"2026-07-08T18:00:00.000\"},{\"id\":\"r474\",\"type\":\"expense\",\"description\":\"Shop 8\",\"amount\":18,\"category\":\"General\",\"date\":\"2026-07-09T00:00:00.000\"},{\"id\":\"r475\",\"type\":\"expense\",\"description\":\"shop 8\",\"amount\":18,\"category\":\"General\",\"date\":\"2026-07-09T12:00:00.000\"},{\"id\":\"r476\",\"type\":\"expense\",\"description\":\"SHOP 8!\",\"amount\":18,\"category\":\"General\",\"date\":\"2026-07-09T18:00:00.000\"},{\"id\":\"r477\",\"type\":\"expense\",\"description\":\"Shop 9\",\"amount\":19,\"category\":\"General\",\"date\":\"2026-07-10T00:00:00.000\"},{\"id\":\"r478\",\"type\":\"expense\",\"description\":\"shop 9\",\"amount\":19,\"category\":\"General\",\"date\":\"2026-07-10T12:00:00.000\"},{\"id\":\"r479\",\"type\":\"expense\",\"description\":\"SHOP 9!\",\"amount\":19,\"category\":\"General\",\"date\":\"2026-07-10T18:00:00.000\"},{\"id\":\"r480\",\"type\":\"expense\",\"description\":\"Shop 10\",\"amount\":20,\"category\":\"General\",\"date\":\"2026-07-11T00:00:00.000\"},{\"id\":\"r481\",\"type\":\"expense\",\"description\":\"shop 10\",\"amount\":20,\"category\":\"General\",\"date\":\"2026-07-11T12:00:00.000\"},{\"id\":\"r482\",\"type\":\"expense\",\"description\":\"SHOP 10!\",\"amount\":20,\"category\":\"General\",\"date\":\"2026-07-11T18:00:00.000\"},{\"id\":\"r483\",\"type\":\"expense\",\"description\":\"Shop 11\",\"amount\":21,\"category\":\"General\",\"date\":\"2026-07-12T00:00:00.000\"},{\"id\":\"r484\",\"type\":\"expense\",\"description\":\"shop 11\",\"amount\":21,\"category\":\"General\",\"date\":\"2026-07-12T12:00:00.000\"},{\"id\":\"r485\",\"type\":\"expense\",\"description\":\"SHOP 11!\",\"amount\":21,\"category\":\"General\",\"date\":\"2026-07-12T18:00:00.000\"},{\"id\":\"r486\",\"type\":\"expense\",\"description\":\"Shop 12\",\"amount\":22,\"category\":\"General\",\"date\":\"2026-07-13T00:00:00.000\"},{\"id\":\"r487\",\"type\":\"expense\",\"description\":\"shop 12\",\"amount\":22,\"category\":\"General\",\"date\":\"2026-07-13T12:00:00.000\"},{\"id\":\"r488\",\"type\":\"expense\",\"description\":\"SHOP 12!\",\"amount\":22,\"category\":\"General\",\"date\":\"2026-07-13T18:00:00.000\"},{\"id\":\"r489\",\"type\":\"expense\",\"description\":\"Shop 13\",\"amount\":23,\"category\":\"General\",\"date\":\"2026-07-14T00:00:00.000\"},{\"id\":\"r490\",\"type\":\"expense\",\"description\":\"shop 13\",\"amount\":23,\"category\":\"General\",\"date\":\"2026-07-14T12:00:00.000\"},{\"id\":\"r491\",\"type\":\"expense\",\"description\":\"SHOP 13!\",\"amount\":23,\"category\":\"General\",\"date\":\"2026-07-14T18:00:00.000\"},{\"id\":\"r492\",\"type\":\"expense\",\"description\":\"Shop 14\",\"amount\":24,\"category\":\"General\",\"date\":\"2026-07-15T00:00:00.000\"},{\"id\":\"r493\",\"type\":\"expense\",\"description\":\"shop 14\",\"amount\":24,\"category\":\"General\",\"date\":\"2026-07-15T12:00:00.000\"},{\"id\":\"r494\",\"type\":\"expense\",\"description\":\"SHOP 14!\",\"amount\":24,\"category\":\"General\",\"date\":\"2026-07-15T18:00:00.000\"},{\"id\":\"r495\",\"type\":\"expense\",\"description\":\"Shop 15\",\"amount\":25,\"category\":\"General\",\"date\":\"2026-07-16T00:00:00.000\"},{\"id\":\"r496\",\"type\":\"expense\",\"description\":\"shop 15\",\"amount\":25,\"category\":\"General\",\"date\":\"2026-07-16T12:00:00.000\"},{\"id\":\"r497\",\"type\":\"expense\",\"description\":\"SHOP 15!\",\"amount\":25,\"category\":\"General\",\"date\":\"2026-07-16T18:00:00.000\"},{\"id\":\"r498\",\"type\":\"expense\",\"description\":\"Shop 16\",\"amount\":26,\"category\":\"General\",\"date\":\"2026-07-17T00:00:00.000\"},{\"id\":\"r499\",\"type\":\"expense\",\"description\":\"shop 16\",\"amount\":26,\"category\":\"General\",\"date\":\"2026-07-17T12:00:00.000\"},{\"id\":\"r500\",\"type\":\"expense\",\"description\":\"SHOP 16!\",\"amount\":26,\"category\":\"General\",\"date\":\"2026-07-17T18:00:00.000\"}]",
+      "goals": "[]",
+      "limits": [],
+      "excluded": [],
+      "limit": 3,
+      "full": [
+        {
+          "id": "duplicate:expense:shop-0:10.00:2026-07-01T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 0! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4024000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-0:10.00:2026-07-01T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 0 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4024000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-10:20.00:2026-07-11T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 10! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4034000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-10:20.00:2026-07-11T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 10 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4034000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-11:21.00:2026-07-12T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 11 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4035000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-11:21.00:2026-07-12T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 11! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4035000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-12:22.00:2026-07-13T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 12 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4036000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-12:22.00:2026-07-13T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 12! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4036000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-13:23.00:2026-07-14T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 13! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4037000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-13:23.00:2026-07-14T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 13 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4037000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-14:24.00:2026-07-15T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 14 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4038000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-14:24.00:2026-07-15T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 14! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4038000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-15:25.00:2026-07-16T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 15! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4039000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-15:25.00:2026-07-16T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 15 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4039000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-16:26.00:2026-07-17T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 16 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "403a000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-16:26.00:2026-07-17T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 16! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "403a000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-1:11.00:2026-07-02T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 1! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4026000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-1:11.00:2026-07-02T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 1 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4026000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-2:12.00:2026-07-03T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 2! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4028000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-2:12.00:2026-07-03T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 2 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4028000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-3:13.00:2026-07-04T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 3 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402a000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-3:13.00:2026-07-04T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 3! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402a000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-4:14.00:2026-07-05T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 4 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402c000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-4:14.00:2026-07-05T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 4! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402c000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-5:15.00:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 5 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402e000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-5:15.00:2026-07-06T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 5! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "402e000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-6:16.00:2026-07-07T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 6! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4030000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-6:16.00:2026-07-07T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 6 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4030000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-7:17.00:2026-07-08T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 7! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4031000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-7:17.00:2026-07-08T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 7 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4031000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-8:18.00:2026-07-09T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 8! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4032000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-8:18.00:2026-07-09T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 8 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4032000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-9:19.00:2026-07-10T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 9 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4033000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-9:19.00:2026-07-10T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 9! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4033000000000000"
+            ]
+          ]
+        }
+      ],
+      "result": [
+        {
+          "id": "duplicate:expense:shop-0:10.00:2026-07-01T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 0! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4024000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-0:10.00:2026-07-01T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "shop 0 appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4024000000000000"
+            ]
+          ]
+        },
+        {
+          "id": "duplicate:expense:shop-10:20.00:2026-07-11T00:00:00.000",
+          "type": "possibleDuplicate",
+          "severity": "warning",
+          "headline": "Possible duplicate transaction",
+          "explanation": "SHOP 10! appears more than once with the same amount and date.",
+          "action": "Review matching transactions",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4034000000000000"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "unusual_same_instant_one_qualifies",
+      "now": "2026-07-10T00:00:00.000",
+      "selectedMonth": "2026-07-01T00:00:00.000",
+      "rows": "[{\"id\":\"r501\",\"type\":\"expense\",\"description\":\"Trip 0\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-01T10:00:00.000\"},{\"id\":\"r502\",\"type\":\"expense\",\"description\":\"Trip 1\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-02T10:00:00.000\"},{\"id\":\"r503\",\"type\":\"expense\",\"description\":\"Trip 2\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-03T10:00:00.000\"},{\"id\":\"r504\",\"type\":\"expense\",\"description\":\"Trip 3\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-04T10:00:00.000\"},{\"id\":\"r505\",\"type\":\"expense\",\"description\":\"Row 0\",\"amount\":5,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r506\",\"type\":\"expense\",\"description\":\"Row 1\",\"amount\":6,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r507\",\"type\":\"expense\",\"description\":\"Row 2\",\"amount\":7,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r508\",\"type\":\"expense\",\"description\":\"Row 3\",\"amount\":8,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r509\",\"type\":\"expense\",\"description\":\"Row 4\",\"amount\":9,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r510\",\"type\":\"expense\",\"description\":\"Row 5\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r511\",\"type\":\"expense\",\"description\":\"Row 6\",\"amount\":11,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r512\",\"type\":\"expense\",\"description\":\"Row 7\",\"amount\":12,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r513\",\"type\":\"expense\",\"description\":\"Row 8\",\"amount\":13,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r514\",\"type\":\"expense\",\"description\":\"Row 9\",\"amount\":14,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r515\",\"type\":\"expense\",\"description\":\"Row 10\",\"amount\":15,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r516\",\"type\":\"expense\",\"description\":\"Row 11\",\"amount\":16,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r517\",\"type\":\"expense\",\"description\":\"Row 12\",\"amount\":17,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r518\",\"type\":\"expense\",\"description\":\"Row 13\",\"amount\":18,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r519\",\"type\":\"expense\",\"description\":\"Row 14\",\"amount\":19,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r520\",\"type\":\"expense\",\"description\":\"Row 15\",\"amount\":20,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r521\",\"type\":\"expense\",\"description\":\"Row 16\",\"amount\":21,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r522\",\"type\":\"expense\",\"description\":\"Row 17\",\"amount\":22,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r523\",\"type\":\"expense\",\"description\":\"Row 18\",\"amount\":23,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r524\",\"type\":\"expense\",\"description\":\"Row 19\",\"amount\":24,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r525\",\"type\":\"expense\",\"description\":\"Row 20\",\"amount\":25,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r526\",\"type\":\"expense\",\"description\":\"Row 21\",\"amount\":26,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r527\",\"type\":\"expense\",\"description\":\"Row 22\",\"amount\":27,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r528\",\"type\":\"expense\",\"description\":\"Big\",\"amount\":900,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r529\",\"type\":\"expense\",\"description\":\"Row 23\",\"amount\":28,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r530\",\"type\":\"expense\",\"description\":\"Row 24\",\"amount\":29,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r531\",\"type\":\"expense\",\"description\":\"Row 25\",\"amount\":30,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r532\",\"type\":\"expense\",\"description\":\"Row 26\",\"amount\":31,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r533\",\"type\":\"expense\",\"description\":\"Row 27\",\"amount\":32,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r534\",\"type\":\"expense\",\"description\":\"Row 28\",\"amount\":33,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r535\",\"type\":\"expense\",\"description\":\"Row 29\",\"amount\":34,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r536\",\"type\":\"expense\",\"description\":\"Row 30\",\"amount\":35,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r537\",\"type\":\"expense\",\"description\":\"Row 31\",\"amount\":36,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r538\",\"type\":\"expense\",\"description\":\"Row 32\",\"amount\":37,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r539\",\"type\":\"expense\",\"description\":\"Row 33\",\"amount\":38,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r540\",\"type\":\"expense\",\"description\":\"Row 34\",\"amount\":39,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r541\",\"type\":\"expense\",\"description\":\"Row 35\",\"amount\":40,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r542\",\"type\":\"expense\",\"description\":\"Row 36\",\"amount\":41,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r543\",\"type\":\"expense\",\"description\":\"Row 37\",\"amount\":42,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r544\",\"type\":\"expense\",\"description\":\"Row 38\",\"amount\":43,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r545\",\"type\":\"expense\",\"description\":\"Row 39\",\"amount\":44,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"}]",
+      "goals": "[]",
+      "limits": [],
+      "excluded": [],
+      "limit": 3,
+      "full": [
+        {
+          "id": "unusual:travel:2026-07-08:900.00",
+          "type": "unusualTransaction",
+          "severity": "warning",
+          "headline": "Unusual travel expense",
+          "explanation": "Big was 90.0× your typical expense in this category.",
+          "action": "Check this transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "408c200000000000"
+            ],
+            [
+              "categoryMedian",
+              "4024000000000000"
+            ],
+            [
+              "multiple",
+              "4056800000000000"
+            ]
+          ]
+        }
+      ],
+      "result": [
+        {
+          "id": "unusual:travel:2026-07-08:900.00",
+          "type": "unusualTransaction",
+          "severity": "warning",
+          "headline": "Unusual travel expense",
+          "explanation": "Big was 90.0× your typical expense in this category.",
+          "action": "Check this transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "408c200000000000"
+            ],
+            [
+              "categoryMedian",
+              "4024000000000000"
+            ],
+            [
+              "multiple",
+              "4056800000000000"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "unusual_same_instant_all_qualify",
+      "now": "2026-07-10T00:00:00.000",
+      "selectedMonth": "2026-07-01T00:00:00.000",
+      "rows": "[{\"id\":\"r546\",\"type\":\"expense\",\"description\":\"Trip 0\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-01T10:00:00.000\"},{\"id\":\"r547\",\"type\":\"expense\",\"description\":\"Trip 1\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-02T10:00:00.000\"},{\"id\":\"r548\",\"type\":\"expense\",\"description\":\"Trip 2\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-03T10:00:00.000\"},{\"id\":\"r549\",\"type\":\"expense\",\"description\":\"Trip 3\",\"amount\":10,\"category\":\"Travel\",\"date\":\"2026-05-04T10:00:00.000\"},{\"id\":\"r550\",\"type\":\"expense\",\"description\":\"Row 0\",\"amount\":60,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r551\",\"type\":\"expense\",\"description\":\"Row 1\",\"amount\":61,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r552\",\"type\":\"expense\",\"description\":\"Row 2\",\"amount\":62,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r553\",\"type\":\"expense\",\"description\":\"Row 3\",\"amount\":63,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r554\",\"type\":\"expense\",\"description\":\"Row 4\",\"amount\":64,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r555\",\"type\":\"expense\",\"description\":\"Row 5\",\"amount\":65,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r556\",\"type\":\"expense\",\"description\":\"Row 6\",\"amount\":66,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r557\",\"type\":\"expense\",\"description\":\"Row 7\",\"amount\":67,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r558\",\"type\":\"expense\",\"description\":\"Row 8\",\"amount\":68,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r559\",\"type\":\"expense\",\"description\":\"Row 9\",\"amount\":69,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r560\",\"type\":\"expense\",\"description\":\"Row 10\",\"amount\":70,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r561\",\"type\":\"expense\",\"description\":\"Row 11\",\"amount\":71,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r562\",\"type\":\"expense\",\"description\":\"Row 12\",\"amount\":72,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r563\",\"type\":\"expense\",\"description\":\"Row 13\",\"amount\":73,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r564\",\"type\":\"expense\",\"description\":\"Row 14\",\"amount\":74,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r565\",\"type\":\"expense\",\"description\":\"Row 15\",\"amount\":75,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r566\",\"type\":\"expense\",\"description\":\"Row 16\",\"amount\":76,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r567\",\"type\":\"expense\",\"description\":\"Row 17\",\"amount\":77,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r568\",\"type\":\"expense\",\"description\":\"Row 18\",\"amount\":78,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r569\",\"type\":\"expense\",\"description\":\"Row 19\",\"amount\":79,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r570\",\"type\":\"expense\",\"description\":\"Row 20\",\"amount\":80,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r571\",\"type\":\"expense\",\"description\":\"Row 21\",\"amount\":81,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r572\",\"type\":\"expense\",\"description\":\"Row 22\",\"amount\":82,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r573\",\"type\":\"expense\",\"description\":\"Row 23\",\"amount\":83,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r574\",\"type\":\"expense\",\"description\":\"Row 24\",\"amount\":84,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r575\",\"type\":\"expense\",\"description\":\"Row 25\",\"amount\":85,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r576\",\"type\":\"expense\",\"description\":\"Row 26\",\"amount\":86,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r577\",\"type\":\"expense\",\"description\":\"Row 27\",\"amount\":87,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r578\",\"type\":\"expense\",\"description\":\"Row 28\",\"amount\":88,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r579\",\"type\":\"expense\",\"description\":\"Row 29\",\"amount\":89,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r580\",\"type\":\"expense\",\"description\":\"Row 30\",\"amount\":90,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r581\",\"type\":\"expense\",\"description\":\"Row 31\",\"amount\":91,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r582\",\"type\":\"expense\",\"description\":\"Row 32\",\"amount\":92,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r583\",\"type\":\"expense\",\"description\":\"Row 33\",\"amount\":93,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r584\",\"type\":\"expense\",\"description\":\"Row 34\",\"amount\":94,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r585\",\"type\":\"expense\",\"description\":\"Row 35\",\"amount\":95,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r586\",\"type\":\"expense\",\"description\":\"Row 36\",\"amount\":96,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r587\",\"type\":\"expense\",\"description\":\"Row 37\",\"amount\":97,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r588\",\"type\":\"expense\",\"description\":\"Row 38\",\"amount\":98,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"},{\"id\":\"r589\",\"type\":\"expense\",\"description\":\"Row 39\",\"amount\":99,\"category\":\"Travel\",\"date\":\"2026-07-08T12:00:00.000\"}]",
+      "goals": "[]",
+      "limits": [],
+      "excluded": [],
+      "limit": 3,
+      "full": [
+        {
+          "id": "unusual:travel:2026-07-08:73.00",
+          "type": "unusualTransaction",
+          "severity": "warning",
+          "headline": "Unusual travel expense",
+          "explanation": "Row 13 was 7.3× your typical expense in this category.",
+          "action": "Check this transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4052400000000000"
+            ],
+            [
+              "categoryMedian",
+              "4024000000000000"
+            ],
+            [
+              "multiple",
+              "401d333333333333"
+            ]
+          ]
+        }
+      ],
+      "result": [
+        {
+          "id": "unusual:travel:2026-07-08:73.00",
+          "type": "unusualTransaction",
+          "severity": "warning",
+          "headline": "Unusual travel expense",
+          "explanation": "Row 13 was 7.3× your typical expense in this category.",
+          "action": "Check this transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "amount",
+              "4052400000000000"
+            ],
+            [
+              "categoryMedian",
+              "4024000000000000"
+            ],
+            [
+              "multiple",
+              "401d333333333333"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "label": "recurring_same_instant_many",
+      "now": "2026-07-10T00:00:00.000",
+      "selectedMonth": "2026-07-01T00:00:00.000",
+      "rows": "[{\"id\":\"r590\",\"type\":\"expense\",\"description\":\"Older\",\"amount\":50,\"category\":\"General\",\"date\":\"2026-06-02T00:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r591\",\"type\":\"expense\",\"description\":\"Bulk 0\",\"amount\":100,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r592\",\"type\":\"expense\",\"description\":\"Bulk 1\",\"amount\":107,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r593\",\"type\":\"expense\",\"description\":\"Bulk 2\",\"amount\":114,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r594\",\"type\":\"expense\",\"description\":\"Bulk 3\",\"amount\":121,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r595\",\"type\":\"expense\",\"description\":\"Bulk 4\",\"amount\":128,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r596\",\"type\":\"expense\",\"description\":\"Bulk 5\",\"amount\":135,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r597\",\"type\":\"expense\",\"description\":\"Bulk 6\",\"amount\":142,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r598\",\"type\":\"expense\",\"description\":\"Bulk 7\",\"amount\":149,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r599\",\"type\":\"expense\",\"description\":\"Bulk 8\",\"amount\":156,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r600\",\"type\":\"expense\",\"description\":\"Bulk 9\",\"amount\":163,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r601\",\"type\":\"expense\",\"description\":\"Bulk 10\",\"amount\":170,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r602\",\"type\":\"expense\",\"description\":\"Bulk 11\",\"amount\":177,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r603\",\"type\":\"expense\",\"description\":\"Bulk 12\",\"amount\":184,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r604\",\"type\":\"expense\",\"description\":\"Bulk 13\",\"amount\":191,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r605\",\"type\":\"expense\",\"description\":\"Bulk 14\",\"amount\":198,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r606\",\"type\":\"expense\",\"description\":\"Bulk 15\",\"amount\":205,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r607\",\"type\":\"expense\",\"description\":\"Bulk 16\",\"amount\":212,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r608\",\"type\":\"expense\",\"description\":\"Bulk 17\",\"amount\":219,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r609\",\"type\":\"expense\",\"description\":\"Bulk 18\",\"amount\":226,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r610\",\"type\":\"expense\",\"description\":\"Bulk 19\",\"amount\":233,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r611\",\"type\":\"expense\",\"description\":\"Bulk 20\",\"amount\":240,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r612\",\"type\":\"expense\",\"description\":\"Bulk 21\",\"amount\":247,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r613\",\"type\":\"expense\",\"description\":\"Bulk 22\",\"amount\":254,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r614\",\"type\":\"expense\",\"description\":\"Bulk 23\",\"amount\":261,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r615\",\"type\":\"expense\",\"description\":\"Bulk 24\",\"amount\":268,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r616\",\"type\":\"expense\",\"description\":\"Bulk 25\",\"amount\":275,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r617\",\"type\":\"expense\",\"description\":\"Bulk 26\",\"amount\":282,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r618\",\"type\":\"expense\",\"description\":\"Bulk 27\",\"amount\":289,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r619\",\"type\":\"expense\",\"description\":\"Bulk 28\",\"amount\":296,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r620\",\"type\":\"expense\",\"description\":\"Bulk 29\",\"amount\":303,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r621\",\"type\":\"expense\",\"description\":\"Bulk 30\",\"amount\":310,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r622\",\"type\":\"expense\",\"description\":\"Bulk 31\",\"amount\":317,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r623\",\"type\":\"expense\",\"description\":\"Bulk 32\",\"amount\":324,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r624\",\"type\":\"expense\",\"description\":\"Bulk 33\",\"amount\":331,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r625\",\"type\":\"expense\",\"description\":\"Bulk 34\",\"amount\":338,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r626\",\"type\":\"expense\",\"description\":\"Bulk 35\",\"amount\":345,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r627\",\"type\":\"expense\",\"description\":\"Bulk 36\",\"amount\":352,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r628\",\"type\":\"expense\",\"description\":\"Bulk 37\",\"amount\":359,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r629\",\"type\":\"expense\",\"description\":\"Bulk 38\",\"amount\":366,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"},{\"id\":\"r630\",\"type\":\"expense\",\"description\":\"Bulk 39\",\"amount\":373,\"category\":\"General\",\"date\":\"2026-07-02T09:00:00.000\",\"recurringTemplateId\":\"bulk\"}]",
+      "goals": "[]",
+      "limits": [],
+      "excluded": [],
+      "limit": 3,
+      "full": [
+        {
+          "id": "recurring-change:bulk:2026-7",
+          "type": "recurringAmountChange",
+          "severity": "warning",
+          "headline": "Bulk 13 changed by 91%",
+          "explanation": "The latest recurring amount is higher than the previous occurrence.",
+          "action": "Review the recurring transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "latestAmount",
+              "4067e00000000000"
+            ],
+            [
+              "previousAmount",
+              "4059000000000000"
+            ],
+            [
+              "change",
+              "3fed1eb851eb851f"
+            ]
+          ]
+        }
+      ],
+      "result": [
+        {
+          "id": "recurring-change:bulk:2026-7",
+          "type": "recurringAmountChange",
+          "severity": "warning",
+          "headline": "Bulk 13 changed by 91%",
+          "explanation": "The latest recurring amount is higher than the previous occurrence.",
+          "action": "Review the recurring transaction",
+          "generatedDate": "2026-07-10T00:00:00.000",
+          "values": [
+            [
+              "latestAmount",
+              "4067e00000000000"
+            ],
+            [
+              "previousAmount",
+              "4059000000000000"
+            ],
+            [
+              "change",
+              "3fed1eb851eb851f"
             ]
           ]
         }

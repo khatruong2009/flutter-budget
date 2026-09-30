@@ -204,15 +204,11 @@ Map<String, Object?> caseJson(InsightCase k) {
       throw StateError('${k.label}: repeated limit key ${p[0]}');
     }
   }
+  // Dart's List.sort is stable only up to 32 elements; beyond that equal
+  // (severity, id) pairs, and equal dates in the unusual and recurring
+  // sorts, come out in its quicksort's order. Swift reproduces that order
+  // (DartSort), so such cases are recorded like any other.
   final full = generateJson(k, const {}, 1000);
-  // Swift sorts stably; Dart's sort is stable only up to 32 elements, so
-  // equal (severity, id) pairs beyond that are not comparable.
-  if (full is List && full.length > 32) {
-    final ids = full.map((i) => (i as Map)['id']).toList();
-    if (ids.toSet().length != ids.length) {
-      throw StateError('${k.label}: >32 candidates with repeated ids');
-    }
-  }
   return {
     'label': k.label,
     'now': iso(k.now),
@@ -859,6 +855,45 @@ List<InsightCase> namedCases() {
         ex(10, local(1, 7, 1), description: 'Year one'),
         ex(10, local(1, 7, 1, 1), description: 'Year one'),
       ]));
+  // Ties beyond Dart's 32-element insertion sort (DartSort in Swift).
+  // Repeated duplicate ids beyond 32 candidates: equal (severity, id)
+  // pairs whose explanations differ, in Dart's quicksort tie order.
+  add(kase('duplicate_one_key_many', rows: [
+    for (var i = 0; i < 40; i++)
+      ex(4.5, local(2026, 7, 6, i % 24),
+          description: 'Coffee${'!' * i}', category: 'Eating Out'),
+  ]));
+  add(kase('duplicate_17_triples', rows: [
+    for (var k = 0; k < 17; k++) ...[
+      ex(10 + k, local(2026, 7, 1 + k), description: 'Shop $k'),
+      ex(10 + k, local(2026, 7, 1 + k, 12), description: 'shop $k'),
+      ex(10 + k, local(2026, 7, 1 + k, 18), description: 'SHOP $k!'),
+    ],
+  ]));
+  // 34+ expenses on one instant: the date sort's tie order (Dart's
+  // quicksort beyond 32 elements) decides which candidate is tried first.
+  add(kase('unusual_same_instant_one_qualifies', rows: [
+    ...history([10, 10, 10, 10]),
+    for (var i = 0; i < 40; i++) ...[
+      if (i == 23)
+        ex(900, local(2026, 7, 8, 12), category: 'Travel', description: 'Big'),
+      ex(5 + i, local(2026, 7, 8, 12), category: 'Travel', description: 'Row $i'),
+    ],
+  ]));
+  add(kase('unusual_same_instant_all_qualify', rows: [
+    ...history([10, 10, 10, 10]),
+    for (var i = 0; i < 40; i++)
+      ex(60 + i, local(2026, 7, 8, 12),
+          category: 'Travel', description: 'Row $i'),
+  ]));
+  // 40 occurrences on one instant: which two are "latest" and "previous"
+  // is Dart's quicksort tie order.
+  add(kase('recurring_same_instant_many', rows: [
+    ex(50, local(2026, 6, 2), description: 'Older', template: 'bulk'),
+    for (var i = 0; i < 40; i++)
+      ex(100 + i * 7, local(2026, 7, 2, 9),
+          description: 'Bulk $i', template: 'bulk'),
+  ]));
   return cases;
 }
 
@@ -972,7 +1007,6 @@ List<InsightCase> randomCases(int count) {
     final full = generateJson(base, const {}, 1000);
     if (full is! List) continue;
     final ids = [for (final i in full) (i as Map)['id'] as String];
-    if (ids.length > 32 && ids.toSet().length != ids.length) continue;
     final excluded = <String>[
       if (ids.isNotEmpty && random.nextInt(3) == 0) ids[random.nextInt(ids.length)],
       if (ids.length > 1 && random.nextInt(4) == 0) ids[random.nextInt(ids.length)],

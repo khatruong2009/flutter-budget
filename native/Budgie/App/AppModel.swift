@@ -44,8 +44,10 @@ final class AppModel {
     }
 
     private(set) var phase: Phase = .starting
-    /// Every change (transactions, budget limits, goals, a restore...)
-    /// recomputes the insight cards once the app is ready.
+    /// Once the app is ready, every change asks for the insight cards;
+    /// only one that touches the engine's inputs (transactions, budget
+    /// limits, goals) recomputes them. A path that replaces much of the data
+    /// (a restore, a CSV import) should assign `data` once, not per row.
     private(set) var data: FinancialData? {
         didSet { if phase == .ready { refreshInsights() } }
     }
@@ -760,15 +762,53 @@ final class AppModel {
     /// repeat (both cards show and go together), so views key by offset.
     private(set) var insights: [LocalInsight] = []
     @ObservationIgnored private var insightsTask: Task<Void, Never>?
-    /// Bumped by every refresh; a result computed for an older one is dropped.
+    /// Bumped by every recompute; a result computed for an older one is
+    /// dropped.
     @ObservationIgnored private var insightsGeneration = 0
+    /// What the latest recompute reads. A refresh whose inputs are the same
+    /// computes nothing: its result is already shown or on its way.
+    @ObservationIgnored private var insightInputs: InsightInputs?
 
-    /// Recomputes `insights` off the main thread from the stored data, the
-    /// selected month, the preferences and the clock. Runs on every data
-    /// change, month change, dismiss and snooze; Flow also calls it when it
-    /// appears and when the scene becomes active (the clock ends snoozes and
-    /// moves budget pace). Several calls in one turn compute once.
+    /// Everything `InsightEngine.generate` depends on. The engine reads
+    /// `now` only through its calendar day, and the preferences through the
+    /// ids they exclude at `now`. The stored rows are compared, not the
+    /// derived lists: an array whose storage an edit did not touch (net
+    /// worth, settings, tags, rules) compares in O(1), and one that grew or
+    /// shrank by its count.
+    private struct InsightInputs: Equatable {
+        let transactions: [StoredRow<TransactionRecord>]
+        let budgetLimits: JSONObject
+        let goals: [StoredRow<SavingsGoalRecord>]
+        let selectedMonth: DartDateTime
+        let day: DartDateTime.Fields
+        let excludedIDs: [String]
+
+        static func == (lhs: InsightInputs, rhs: InsightInputs) -> Bool {
+            lhs.transactions == rhs.transactions && lhs.budgetLimits == rhs.budgetLimits && lhs.goals == rhs.goals
+                && lhs.selectedMonth == rhs.selectedMonth
+                && (lhs.day.year, lhs.day.month, lhs.day.day) == (rhs.day.year, rhs.day.month, rhs.day.day)
+                && lhs.excludedIDs.count == rhs.excludedIDs.count
+                && zip(lhs.excludedIDs, rhs.excludedIDs).allSatisfy { $0.utf16.elementsEqual($1.utf16) }
+        }
+    }
+
+    private func currentInsightInputs(_ data: FinancialData, now: DartDateTime) -> InsightInputs {
+        InsightInputs(
+            transactions: data.transactionRows, budgetLimits: data.budgetLimitsObject, goals: data.goalRows,
+            selectedMonth: selectedMonth, day: now.fields, excludedIDs: insightPreferences.excludedIDs(now: now))
+    }
+
+    /// Recomputes `insights` off the main thread when an input changed: the
+    /// transactions, budget limits or goals, the selected month, the
+    /// preferences, or the clock (a snooze ending, a new day moving budget
+    /// pace). Called on every data change, month change, dismiss and snooze;
+    /// Flow also calls it when it appears and when the scene becomes active.
+    /// Several calls in one turn compute once.
     func refreshInsights() {
+        guard let data else { return }
+        let inputs = currentInsightInputs(data, now: now)
+        guard inputs != insightInputs else { return }
+        insightInputs = inputs
         insightsGeneration &+= 1
         let generation = insightsGeneration
         insightsTask?.cancel()
@@ -778,14 +818,17 @@ final class AppModel {
         }
     }
 
+    /// The engine's lists are derived from `data` inside the detached task,
+    /// not on the main thread.
     private func updateInsights(generation: Int) async {
         guard let data else { return }
         let now = self.now
-        let transactions = data.transactions, budgetLimits = data.budgetLimits, savingsGoals = data.savingsGoals
-        let selectedMonth = self.selectedMonth, excluded = insightPreferences.excludedIDs(now: now), calendar = self.calendar
+        let inputs = currentInsightInputs(data, now: now)
+        insightInputs = inputs
+        let selectedMonth = inputs.selectedMonth, excluded = inputs.excludedIDs, calendar = self.calendar
         let result = await Task.detached(priority: .userInitiated) {
             InsightEngine.generate(
-                transactions: transactions, budgetLimits: budgetLimits, savingsGoals: savingsGoals,
+                transactions: data.transactions, budgetLimits: data.budgetLimits, savingsGoals: data.savingsGoals,
                 selectedMonth: selectedMonth, now: now, excludedIDs: excluded, calendar: calendar)
         }.value
         guard generation == insightsGeneration, result != insights else { return }

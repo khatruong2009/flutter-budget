@@ -918,8 +918,12 @@ UPGRADE_TEST_RESULTS.md).
   frame or two; Flutter swaps it in the same frame). The preferences are
   read once at launch, so the section is not rebuilt (and does not pop in
   a frame late) on each visit to Flow as Flutter's is; Flow still
-  recomputes when it appears and when the app becomes active, so a snooze
-  that ended while away shows again.
+  refreshes when it appears and when the app becomes active, so a snooze
+  that ended while away shows again (a refresh whose inputs, the calendar
+  day included, are unchanged computes nothing: the engine reads the clock
+  only through the day and the snoozes). At accessibility text sizes the
+  card stacks its tile above the text (Flutter keeps the row and its text
+  column narrows).
 
 ### CSV import
 

@@ -223,9 +223,14 @@ cards from `model.insights` (BudgieCore `InsightEngine`, limit 3).
   (urgent danger, warning warning, positive income, info accent), 12, a
   column of headline (rowTitle, primary), 4, explanation (rowSubtitle,
   secondary), 8, suggested action (caption, severity colour), all wrapping
-  without limits; trailing `Menu` with a bold 24pt `ellipsis` in a 48pt box
-  (Flutter's 48pt IconButton, top-aligned), items "Snooze for 30 days" and
-  "Dismiss" (fixed order, no icons, no destructive role). Icons (D3):
+  without limits; trailing `Menu` with a bold 17pt `ellipsis` (SF Symbols
+  draw about 18% larger, so it matches the 24pt `more_horiz`, as the
+  Categories rows) in a 48pt box (Flutter's 48pt IconButton, top-aligned),
+  items "Snooze for 30 days" and "Dismiss" (fixed order, no icons, no
+  destructive role). At accessibility text sizes the tile sits above the
+  text, which takes the card's full width, and the menu stays top trailing
+  level with the tile (as RecurringCard stacks; beside the fixed tile and
+  menu the text column breaks words). Icons (D3):
   pace `speedometer`, monthly change `chart.line.uptrend.xyaxis`, unusual
   `bell.badge.fill` (Material `notification_important`, a bell), savings
   rate `banknote`, recurring `repeat`, under budget `hand.thumbsup.fill`,
@@ -236,10 +241,17 @@ cards from `model.insights` (BudgieCore `InsightEngine`, limit 3).
   card with that id goes (ids can repeat; cards are keyed by position) and
   the next candidate fills in when the recomputation lands.
 - Data: `AppModel` recomputes `insights` off the main thread (a generation
-  counter drops stale results) on every `data` change, month change,
-  dismiss and snooze, and when Flow appears or the scene becomes active
-  (the clock ends snoozes and moves budget pace). The first cards are
-  computed in the bootstrap before `.ready`. The dismissed/snoozed ids are
+  counter drops stale results) when an engine input changed: the stored
+  transaction, budget-limit or goal rows, the selected month, the ids the
+  preferences exclude now, or the calendar day. It checks on every `data`
+  change, month change, dismiss and snooze, and when Flow appears or the
+  scene becomes active (the clock ends snoozes and moves budget pace); a
+  net worth, settings, tag or rule edit, or the first Flow visit after
+  launch, computes nothing. Untouched row arrays compare in O(1); the
+  engine's lists are derived inside the detached task. The first cards are
+  computed in the bootstrap before `.ready`. The slot's refreshes sit on
+  one container, so switching between no cards and cards does not rerun
+  them. The dismissed/snoozed ids are
   the two `flutter.local_insights_*` preferences, loaded after the
   protected-data wait and written synchronously like the theme mode (never
   the store, the retry banner or the backup). Money formatting, Hide

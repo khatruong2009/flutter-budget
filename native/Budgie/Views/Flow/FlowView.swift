@@ -121,9 +121,12 @@ struct FlowInsightsSlot: View {
 
     var body: some View {
         let insights = model.insights
-        Group {
+        // One container for both states, so the refreshes below are attached
+        // once: a Group would hand them to each child and run them again
+        // whenever the slot switches between empty and cards.
+        VStack(spacing: 0) {
             if insights.isEmpty {
-                // Zero height, but present so the refreshes below still run.
+                // Zero height; the page's spacing around it stays.
                 Color.clear.frame(height: 0)
             } else {
                 VStack(alignment: .leading, spacing: 0) {
@@ -147,7 +150,9 @@ struct FlowInsightsSlot: View {
             }
         }
         // Flutter derives the cards at every build with `DateTime.now()`:
-        // a snooze can end, or the day (budget pace) move, while away.
+        // a snooze can end, or the day (budget pace) move, while away. A
+        // refresh with unchanged inputs (the first visit after launch)
+        // computes nothing.
         .onAppear { model.refreshInsights() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { model.refreshInsights() }
