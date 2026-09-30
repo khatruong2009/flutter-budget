@@ -46,7 +46,7 @@ struct BudgetsSection: View {
             }
         }
         if showsAddRow {
-            let subtitle = overview.progress.isEmpty ? "No monthly limits yet" : "Set a limit for another category"
+            let subtitle = HomeSummary.addBudgetSubtitle(hasBudgets: !overview.progress.isEmpty)
             rows.append(BudgetCardRow(kind: .add(subtitle: subtitle), formatter: formatter) { sheet = .add })
         }
         return rows
@@ -66,12 +66,6 @@ struct BudgetsSection: View {
         guard let next = nextSheet else { return }
         nextSheet = nil
         sheet = next
-    }
-
-    /// `_BudgetRow._formatCurrency`: whole units from 100 up, else
-    /// cents, decided on the unrounded value (99.999 is "$100.00").
-    nonisolated static func amount(_ value: Double, _ formatter: MoneyFormatter) -> String {
-        formatter.format(value, decimalDigits: abs(value) >= 100 ? 0 : 2)
     }
 }
 
@@ -124,10 +118,7 @@ private struct BudgetRow: View {
 
     var body: some View {
         let color = statusColor
-        let subtitle = "\(BudgetsSection.amount(item.spent, formatter)) of \(BudgetsSection.amount(item.limit, formatter))"
-        let chip =
-            item.isOver
-            ? "\(BudgetsSection.amount(abs(item.remaining), formatter)) over" : "\(BudgetsSection.amount(item.remaining, formatter)) left"
+        let (subtitle, chip) = HomeSummary.budgetRow(item, formatter: formatter)
         Button {
             taps += 1
             action()

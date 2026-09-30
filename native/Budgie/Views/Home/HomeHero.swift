@@ -16,12 +16,11 @@ struct HomeHero: View {
     private static let status = TextSpec(face: .gabaritoBold, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
 
     var body: some View {
-        let cashFlow = income - expenses
-        let isNegative = cashFlow < 0
+        let hero = HomeSummary.hero(income: income, expenses: expenses, formatter: formatter)
+        let isNegative = hero.isNegative
         let glowColor = isNegative ? BudgieColor.danger : BudgieColor.accent
         let amountColor = isNegative ? BudgieColor.danger : BudgieColor.textPrimary
-        let amountLabel = formatter.format(abs(cashFlow))
-        let statusLabel = cashFlow > 0 ? "SAVED THIS MONTH" : cashFlow < 0 ? "SHORT THIS MONTH" : "BREAKING EVEN"
+        let amountLabel = hero.amount
 
         VStack(spacing: 0) {
             Text("CASH FLOW")
@@ -44,19 +43,18 @@ struct HomeHero: View {
                     }
                 }
                 .padding(.top, 10)
-                Text("\(formatter.format(income, decimalDigits: 0)) in   \u{00B7}   \(formatter.format(expenses, decimalDigits: 0)) out")
+                Text(hero.subline)
                     .textStyle(Self.subline)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.top, 12)
-                Text(statusLabel)
+                Text(hero.status)
                     .textStyle(Self.status)
                     .foregroundStyle(isNegative ? BudgieColor.danger : BudgieColor.accent)
                     .padding(.top, 4)
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(
-                isNegative ? "Cash flow, \(amountLabel) short this month." : "Cash flow, \(amountLabel) this month.")
+            .accessibilityLabel(hero.accessibilityLabel)
         }
         .frame(maxWidth: .infinity)
         .padding(EdgeInsets(top: 36, leading: 24, bottom: 0, trailing: 24))

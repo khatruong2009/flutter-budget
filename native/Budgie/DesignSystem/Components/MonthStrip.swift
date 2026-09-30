@@ -51,12 +51,13 @@ private struct MonthChip: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+        let chip = MonthListCopy.chip(month)
         Button(action: action) {
             VStack(spacing: 2) {
-                Text(DartDateFormat.MMM(month).uppercased())
+                Text(chip.month)
                     .textStyle(Self.monthText)
                     .foregroundStyle(isSelected ? Color.white : BudgieColor.textPrimary)
-                Text(DartDateFormat.y(month))
+                Text(chip.year)
                     .textStyle(Self.yearText)
                     .foregroundStyle(isSelected ? Color.white.opacity(0.9) : BudgieColor.textSecondary)
             }

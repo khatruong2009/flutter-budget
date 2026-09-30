@@ -23,23 +23,21 @@ struct CategoryTransactionsView: View {
         let category = drillIn.category
         // `where(category == name && type == expense)` on the month's rows,
         // already `compareNewestFirst` in the ledger.
-        let rows = model.ledger.newestFirst(inMonth: drillIn.month).filter {
-            $0.record.type == .expense && DartString.equal($0.record.category, category)
-        }
-        // Folded in that order (:46-49).
-        let total = rows.reduce(0.0) { $0 + $1.record.amount }
+        let rows = MonthListCopy.drillInRows(monthRows: model.ledger.newestFirst(inMonth: drillIn.month), category: category)
         let (color, symbol) = currentStyle()
         let formatter = model.moneyFormatter
+        // Folded in row order (:46-49).
+        let total = MonthListCopy.drillInTotal(rows, formatter: formatter)
 
         VStack(alignment: .leading, spacing: 0) {
             SummaryCard(
-                total: formatter.format(total), month: drillIn.month, count: rows.count, color: color, symbol: symbol)
+                total: total, month: drillIn.month, count: rows.count, color: color, symbol: symbol)
                 .padding(.horizontal, Metrics.pageHorizontal)
                 .padding(.top, 12)
             if rows.isEmpty {
                 EmptyStateView(
-                    kind: .noData, symbol: "list.bullet.rectangle", title: "No Transactions",
-                    message: "No transactions found in this category for \(DartDateFormat.MMMM(drillIn.month))")
+                    kind: .noData, symbol: "list.bullet.rectangle", title: MonthListCopy.emptyMonthTitle,
+                    message: MonthListCopy.drillInEmptyMessage(month: drillIn.month))
                     .frame(maxHeight: .infinity)
             } else {
                 Text("TRANSACTIONS")
@@ -131,8 +129,7 @@ private struct SummaryCard: View {
     let symbol: String
 
     var body: some View {
-        let countText = "\(count) transaction\(count == 1 ? "" : "s")"
-        let monthText = DartDateFormat.MMMMyyyy(month)
+        let (monthText, countText) = MonthListCopy.drillInPills(month: month, count: count)
         GlowCard(
             fill: AnyShapeStyle(LinearGradient(
                 colors: [color.opacity(0.22), color.opacity(0)], startPoint: .topLeading, endPoint: .bottomTrailing)),

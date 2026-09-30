@@ -44,8 +44,8 @@ struct TransactionsView: View {
                 }
             } else {
                 EmptyStateView(
-                    kind: .noData, symbol: "dollarsign.circle", title: "No Transactions Yet",
-                    message: "Start tracking your finances by adding your first transaction",
+                    kind: .noData, symbol: "dollarsign.circle", title: MonthListCopy.noTransactionsTitle,
+                    message: MonthListCopy.noTransactionsMessage,
                     actionTitle: "Add Transaction"
                 ) { showingAdd = true }
                     .frame(maxHeight: .infinity)
@@ -115,12 +115,12 @@ struct TransactionsView: View {
     @ViewBuilder
     private func monthContent(rows: ArraySlice<LedgerRow>, formatter: MoneyFormatter) -> some View {
         if rows.isEmpty {
-            EmptyStateView(kind: .noData, symbol: "tray", title: "No Transactions", message: "No transactions for this month")
+            EmptyStateView(kind: .noData, symbol: "tray", title: MonthListCopy.emptyMonthTitle, message: MonthListCopy.emptyMonthMessage)
                 .frame(maxHeight: .infinity)
         } else {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
-                    ForEach(DayGroup.build(from: rows)) { group in
+                    ForEach(MonthListCopy.dayGroups(from: rows)) { group in
                         Section {
                             ForEach(group.rows) { row in
                                 SwipeToDeleteRow {
@@ -147,28 +147,6 @@ struct TransactionsView: View {
     }
 }
 
-// MARK: - Grouping
-
-/// One calendar day of a month's rows (`DateFormat.yMMMd` group key).
-private struct DayGroup: Identifiable {
-    let id: Int
-    let title: String
-    var rows: [LedgerRow]
-
-    /// The rows arrive newest first, so a day's rows are contiguous.
-    static func build(from rows: ArraySlice<LedgerRow>) -> [DayGroup] {
-        var groups: [DayGroup] = []
-        for row in rows {
-            if groups.last?.id == row.dayKey {
-                groups[groups.count - 1].rows.append(row)
-            } else {
-                groups.append(DayGroup(id: row.dayKey, title: DartDateFormat.yMMMd(row.record.date), rows: [row]))
-            }
-        }
-        return groups
-    }
-}
-
 // MARK: - Summary card
 
 private struct SummaryCard: View {
@@ -184,9 +162,7 @@ private struct SummaryCard: View {
 
     var body: some View {
         let net = summary.net
-        let income = formatter.format(summary.income)
-        let expenses = formatter.format(summary.expenses)
-        let netText = formatter.formatSigned(net)
+        let (income, expenses, netText) = MonthListCopy.summary(summary, formatter: formatter)
         GlowCard(padding: Metrics.spacingM) {
             VStack(spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
@@ -266,7 +242,7 @@ private struct TransactionRow: View {
         let isIncome = record.type == .income
         let color = isIncome ? BudgieColor.income : BudgieColor.danger
         let info = model.categoryInfo(named: record.category, type: record.type)
-        let amount = formatter.format(record.amount)
+        let amount = MonthListCopy.rowAmount(record, formatter: formatter)
         let card = RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous)
 
         Button(action: onTap) {
@@ -284,7 +260,7 @@ private struct TransactionRow: View {
                             .multilineTextAlignment(.leading)
                         if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
                     }
-                    Text("\(record.category) \u{2022} \(DartDateFormat.MMMd(record.date))")
+                    Text(MonthListCopy.rowSubtitle(record))
                         .textStyle(.caption)
                         .foregroundStyle(BudgieColor.textTertiary)
                         .lineLimit(1)

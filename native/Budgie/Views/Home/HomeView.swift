@@ -195,22 +195,21 @@ private struct SpendGauge: View {
     let formatter: MoneyFormatter
 
     var body: some View {
-        let spentLabel = formatter.format(spent, decimalDigits: 0)
-        let incomeLabel = formatter.format(income, decimalDigits: 0)
+        let labels = HomeSummary.gaugeLabels(spent: spent, income: income, formatter: formatter)
         VStack(spacing: 10) {
             GlowProgressBar(
-                value: income <= 0 ? 0 : spent / income, height: 14, color: BudgieColor.accent,
+                value: HomeSummary.gaugeFraction(spent: spent, income: income), height: 14, color: BudgieColor.accent,
                 track: BudgieColor.chipSurface,
                 gradient: LinearGradient(colors: [BudgieColor.gaugeFillStart, BudgieColor.accent], startPoint: .leading, endPoint: .trailing),
                 showThumb: true, trackBorder: BudgieColor.hairline, fillInset: 2)
             HStack {
-                label("SPENT  ", spentLabel)
+                label("SPENT  ", labels.spent)
                 Spacer(minLength: 8)
-                label("INCOME  ", incomeLabel)
+                label("INCOME  ", labels.income)
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Spent \(spentLabel) of \(incomeLabel) income")
+        .accessibilityLabel("Spent \(labels.spent) of \(labels.income) income")
     }
 
     private func label(_ prefix: String, _ value: String) -> some View {
@@ -249,7 +248,7 @@ private struct FlowChip: View {
                         .foregroundStyle(BudgieColor.textSecondary)
                         .lineLimit(1)
                 }
-                Text(formatter.format(amount, decimalDigits: 0))
+                Text(HomeSummary.chipAmount(amount, formatter: formatter))
                     .textStyle(.chipAmount)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .lineLimit(1)
@@ -280,29 +279,27 @@ private struct SafeToSpendCard: View {
     private static let details = TextSpec(face: .gabaritoBold, size: 11, height: 1.3, relativeTo: .caption2)
 
     var body: some View {
-        let isOver = breakdown.isOverCommitted
+        let card = HomeSummary.safeToSpendCard(breakdown, formatter: formatter)
+        let isOver = card.isOver
         let tint = isOver ? BudgieColor.danger : BudgieColor.accent
-        let title = isOver ? "Projected shortfall" : "Safe to spend"
-        let amount = formatter.format(isOver ? breakdown.overCommitment : breakdown.safeToSpend, decimalDigits: 0)
-        let subtitle = subtitle(isOver: isOver)
 
         GlowCard(padding: 16, radius: Metrics.statCardRadius, onTap: onTap) {
             HStack(spacing: 0) {
                 IconTile(symbol: isOver ? "exclamationmark.triangle" : "shield", color: tint)
                     .padding(.trailing, 12)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
+                    Text(card.title)
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .lineLimit(1)
-                    Text(subtitle)
+                    Text(card.subtitle)
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(amount)
+                    Text(card.amount)
                         .textStyle(.chipAmount)
                         .foregroundStyle(tint)
                         .lineLimit(1)
@@ -319,16 +316,8 @@ private struct SafeToSpendCard: View {
             }
             .accessibilityElement(children: .ignore)
         }
-        .accessibilityLabel("\(title) \(amount). \(subtitle). Double tap for breakdown.")
+        .accessibilityLabel(card.accessibilityLabel)
         .accessibilityIdentifier("home.safeToSpend")
-    }
-
-    private func subtitle(isOver: Bool) -> String {
-        let days = breakdown.daysRemaining
-        if days <= 0 { return "This month is already closed out" }
-        if isOver { return "Add income or reduce planned spending" }
-        let daily = formatter.format(breakdown.dailyAllowance, decimalDigits: 0)
-        return "\(daily)/day for \(days == 1 ? "1 day left" : "\(days) days left")"
     }
 }
 
@@ -367,6 +356,7 @@ private struct RecentRow: View {
     var body: some View {
         let isIncome = record.type == .income
         let day = DartDateFormat.MMMd(record.date)
+        let copy = HomeSummary.recentRow(record, formatter: formatter)
         HStack(spacing: 12) {
             if isIncome {
                 IconTile(symbol: "arrow.down.left", color: BudgieColor.income)
@@ -378,19 +368,19 @@ private struct RecentRow: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text(record.description.isEmpty ? "Transaction" : record.description)
+                    Text(copy.title)
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .lineLimit(1)
                     if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
                 }
-                Text("\(record.category) \u{00B7} \(day)")
+                Text(copy.subtitle)
                     .textStyle(.rowSubtitle)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Text(formatter.formatSigned(isIncome ? record.amount : -record.amount, plusForPositive: true))
+            Text(copy.amount)
                 .textStyle(.amountSmall)
                 .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
                 .lineLimit(1)
@@ -401,7 +391,7 @@ private struct RecentRow: View {
         // VoiceOver reads the label then the value, so this sounds the
         // same while the description stays findable on its own.
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(record.description.isEmpty ? "Transaction" : record.description)
+        .accessibilityLabel(copy.title)
         .accessibilityValue(
             "\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))"
                 + (record.isRecurring ? ", recurring" : ""))

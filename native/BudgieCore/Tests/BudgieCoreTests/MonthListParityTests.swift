@@ -21,65 +21,12 @@ private func same(_ actual: String, _ expected: String, _ label: String) {
     #expect(Array(actual.utf16) == Array(expected.utf16), "\(label): \(actual) | \(expected)")
 }
 
-// MARK: - The views' expressions, verbatim
-
-/// TransactionsView.swift:153-170 (`DayGroup`), as it is today.
-private struct ViewDayGroup {
-    let id: Int
-    let title: String
-    var rows: [LedgerRow]
-
-    static func build(from rows: ArraySlice<LedgerRow>) -> [ViewDayGroup] {
-        var groups: [ViewDayGroup] = []
-        for row in rows {
-            if groups.last?.id == row.dayKey {
-                groups[groups.count - 1].rows.append(row)
-            } else {
-                groups.append(ViewDayGroup(id: row.dayKey, title: DartDateFormat.yMMMd(row.record.date), rows: [row]))
-            }
-        }
-        return groups
-    }
-}
+// MARK: - The one view expression the helpers do not cover
 
 private enum ViewExpr {
-    /// MonthStrip.swift:51-54.
-    static func chip(_ month: DartDateTime) -> [String] { [DartDateFormat.MMM(month).uppercased(), DartDateFormat.y(month)] }
-
-    /// TransactionsView.swift:186-189 and the labels of 193-194, 199, 203.
-    static func summary(_ summary: MonthSummary, _ formatter: MoneyFormatter) -> [String] {
-        let net = summary.net
-        let income = formatter.format(summary.income)
-        let expenses = formatter.format(summary.expenses)
-        let netText = formatter.formatSigned(net)
-        return ["Income", income, "Expenses", expenses, "Net Cash Flow", netText]
-    }
-
-    /// TransactionsView.swift:281, 287, 269.
-    static func row(_ record: TransactionRecord, _ formatter: MoneyFormatter) -> [String] {
-        [record.description, "\(record.category) \u{2022} \(DartDateFormat.MMMd(record.date))", formatter.format(record.amount)]
-    }
-
-    /// CategoryTransactionsView.swift:26-30 (rows and total).
-    static func drillIn(_ ledger: LedgerIndex, month: DartDateTime, category: String) -> (rows: [LedgerRow], total: Double) {
-        let rows = ledger.newestFirst(inMonth: month).filter {
-            $0.record.type == .expense && DartString.equal($0.record.category, category)
-        }
-        let total = rows.reduce(0.0) { $0 + $1.record.amount }
-        return (rows, total)
-    }
-
-    /// CategoryTransactionsView.swift:134-135 (SummaryCard), 188-200 (ExpenseRow), 41-42 (empty message).
-    static func pills(month: DartDateTime, count: Int) -> [String] {
-        ["\(DartDateFormat.MMMMyyyy(month))", "\(count) transaction\(count == 1 ? "" : "s")"]
-    }
-
+    /// CategoryTransactionsView.swift `ExpenseRow` (description, date, amount).
     static func drillRow(_ record: TransactionRecord, _ formatter: MoneyFormatter) -> [String] {
         [record.description, DartDateFormat.MMMd(record.date), formatter.format(record.amount)]
-    }
-
-    static func emptyMessage(_ month: DartDateTime) -> String {
-        "No transactions found in this category for \(DartDateFormat.MMMM(month))"
     }
 }
 
@@ -99,7 +46,7 @@ struct MonthListParityTests {
     /// The real `TransactionPage` for each dataset: the month chips, and for
     /// every month the summary card and the list (pinned date headers with
     /// their rows, in order), against `LedgerIndex`, the shared helpers
-    /// (`MonthListCopy`) and a verbatim copy of what the views compute.
+    /// (`MonthListCopy`) that the views render.
     @Test("SEE ALL page", arguments: monthListZones)
     func page(zone: String) throws {
         let f = try fixture(zone, "page.json")
@@ -128,7 +75,6 @@ struct MonthListParityTests {
             for (month, chip) in zip(ledger.availableMonths, chips) {
                 let copy = MonthListCopy.chip(month)
                 same(strings(chip), [copy.month, copy.year], "\(label) chip")
-                same(strings(chip), ViewExpr.chip(month), "\(label) view chip")
             }
 
             for m in c["months"].array {
@@ -139,14 +85,10 @@ struct MonthListParityTests {
                 let summary = ledger.summary(forMonth: month)
                 let copy = MonthListCopy.summary(summary, formatter: formatter)
                 same(strings(m["summary"]), ["Income", copy.income, "Expenses", copy.expenses, "Net Cash Flow", copy.net], "\(at) summary")
-                same(strings(m["summary"]), ViewExpr.summary(summary, formatter), "\(at) view summary")
 
                 // The list: headers and rows.
                 let rows = ledger.newestFirst(inMonth: month)
                 let groups = MonthListCopy.dayGroups(from: rows)
-                let viewGroups = ViewDayGroup.build(from: rows)
-                #expect(groups.map(\.id) == viewGroups.map(\.id) && groups.map(\.title) == viewGroups.map(\.title), "\(at) view groups")
-                #expect(groups.map { $0.rows.map(\.id) } == viewGroups.map { $0.rows.map(\.id) }, "\(at) view group rows")
                 var expected: [(header: String?, row: String?, texts: [String])] = []
                 for g in groups {
                     expected.append((g.title, nil, []))
@@ -155,7 +97,6 @@ struct MonthListParityTests {
                             row.record.description, MonthListCopy.rowSubtitle(row.record),
                             MonthListCopy.rowAmount(row.record, formatter: formatter),
                         ]))
-                        same(expected.last!.texts, ViewExpr.row(row.record, formatter), "\(at) view row \(row.record.id)")
                     }
                     groupsSeen += 1
                     if g.rows.count > 1 { multiRowDays += 1 }
@@ -195,14 +136,10 @@ struct MonthListParityTests {
             let (_, formatter, ledger) = try load(c, calendar)
             let month = try calendar.parse(c["month"].string!)
             let rows = MonthListCopy.drillInRows(monthRows: ledger.newestFirst(inMonth: month), category: category)
-            let view = ViewExpr.drillIn(ledger, month: month, category: category)
-            #expect(rows.map(\.id) == view.rows.map(\.id), "\(label) view rows")
             #expect(rows.map(\.id) == c["rows"].array.map { $0["id"].string! }, "\(label) rows")
 
             let pills = MonthListCopy.drillInPills(month: month, count: rows.count)
-            same([pills.month, pills.count], ViewExpr.pills(month: month, count: view.rows.count), "\(label) view pills")
             var expected = [category, "TOTAL SPENT", MonthListCopy.drillInTotal(rows, formatter: formatter), pills.month, pills.count]
-            same(MonthListCopy.drillInTotal(rows, formatter: formatter), formatter.format(view.total), "\(label) view total")
             if rows.isEmpty {
                 empty += 1
                 let texts = strings(c["texts"])
@@ -211,7 +148,6 @@ struct MonthListParityTests {
                 let rest = Array(texts.dropFirst(5))
                 #expect(rest.contains(MonthListCopy.emptyMonthTitle), "\(label) empty title \(rest)")
                 #expect(rest.contains(MonthListCopy.drillInEmptyMessage(month: month)), "\(label) empty message \(rest)")
-                same(MonthListCopy.drillInEmptyMessage(month: month), ViewExpr.emptyMessage(month), "\(label) view empty message")
             } else {
                 withRows += 1
                 if rows.count == 1 { singular += 1 } else { multiRow += 1 }

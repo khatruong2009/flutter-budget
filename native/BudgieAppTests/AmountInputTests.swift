@@ -118,12 +118,12 @@ final class BudgetAmountFormatTests: XCTestCase {
     private let english = MoneyFormatter(currencyCode: "USD")
 
     func testWholeUnitsFromOneHundredElseCents() {
-        XCTAssertEqual(BudgetsSection.amount(99.999, english), "$100.00")
-        XCTAssertEqual(BudgetsSection.amount(99.99, english), "$99.99")
-        XCTAssertEqual(BudgetsSection.amount(100, english), "$100")
-        XCTAssertEqual(BudgetsSection.amount(150, english), "$150")
-        XCTAssertEqual(BudgetsSection.amount(1500, english), "$1,500")
-        XCTAssertEqual(BudgetsSection.amount(42.5, english), "$42.50")
-        XCTAssertEqual(BudgetsSection.amount(0, english), "$0.00")
+        XCTAssertEqual(HomeSummary.budgetAmount(99.999, formatter: english), "$100.00")
+        XCTAssertEqual(HomeSummary.budgetAmount(99.99, formatter: english), "$99.99")
+        XCTAssertEqual(HomeSummary.budgetAmount(100, formatter: english), "$100")
+        XCTAssertEqual(HomeSummary.budgetAmount(150, formatter: english), "$150")
+        XCTAssertEqual(HomeSummary.budgetAmount(1500, formatter: english), "$1,500")
+        XCTAssertEqual(HomeSummary.budgetAmount(42.5, formatter: english), "$42.50")
+        XCTAssertEqual(HomeSummary.budgetAmount(0, formatter: english), "$0.00")
     }
 }

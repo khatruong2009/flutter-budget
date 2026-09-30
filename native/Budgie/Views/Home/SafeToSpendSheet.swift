@@ -20,39 +20,32 @@ struct SafeToSpendSheet: View {
 
     var body: some View {
         let isOver = breakdown.isOverCommitted
-        let title = isOver ? "Projected shortfall" : "Safe to spend"
+        let sheet = HomeSummary.breakdownSheet(breakdown, formatter: formatter)
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text(title)
+                Text(sheet.title)
                     .textStyle(.headingLarge)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .accessibilityAddTraits(.isHeader)
-                Text(
-                    isOver
-                        ? "What you have spent and reserved for the rest of this month is more than the income you expect."
-                        : "A forward-looking estimate for the rest of this month."
-                )
-                .textStyle(.bodyMedium)
-                .foregroundStyle(BudgieColor.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 6)
+                Text(sheet.blurb)
+                    .textStyle(.bodyMedium)
+                    .foregroundStyle(BudgieColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
                 VStack(spacing: 0) {
-                    row("Income recorded", breakdown.actualIncome, positive: true)
-                    row("Income still expected", breakdown.expectedIncome, positive: true)
-                    row("Expenses recorded", breakdown.actualExpenses)
-                    row("Upcoming recurring bills", breakdown.upcomingRecurringExpenses)
-                    row("Flexible budget reserve", breakdown.flexibleBudgetReserve)
-                    row("Suggested goal contributions", breakdown.plannedGoalContributions)
+                    ForEach(sheet.rows.indices, id: \.self) { index in
+                        row(sheet.rows[index].label, sheet.rows[index].value)
+                    }
                     BudgieColor.border
                         .frame(height: 1)
                         .padding(.vertical, 13.5)
                         .accessibilityHidden(true)
                     row(
-                        title, isOver ? breakdown.overCommitment : breakdown.safeToSpend, positive: true, emphasized: true,
+                        sheet.totalLabel, sheet.totalValue, emphasized: true,
                         color: isOver ? BudgieColor.danger : BudgieColor.accent)
                 }
                 .padding(.top, 20)
-                Text(footer)
+                Text(sheet.footer)
                     .textStyle(.caption)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -81,24 +74,9 @@ struct SafeToSpendSheet: View {
         return 8 + 34 + 6 + blurbLines * 23 + 20 + 6 * (12 + 23) + 28 + (12 + 26) + 8 + footerLines * 18 + 24
     }
 
-    /// `_breakdownFooter` (spending_page.dart:350-360).
-    private var footer: String {
-        let days = breakdown.daysRemaining
-        if days <= 0 { return "This month is already closed out." }
-        let daysLabel = days == 1 ? "1 day remaining" : "\(days) days remaining"
-        if breakdown.isOverCommitted {
-            return "Add income or reduce planned spending to close the shortfall \u{00B7} \(daysLabel)"
-        }
-        return "\(formatter.format(breakdown.dailyAllowance)) per day \u{00B7} \(daysLabel)"
-    }
-
-    /// `_BreakdownRow`: the value is shown negated unless `positive`, with a
-    /// "+" only on positive non-total rows.
-    private func row(
-        _ label: String, _ value: Double, positive: Bool = false, emphasized: Bool = false, color: Color? = nil
-    ) -> some View {
-        let text = formatter.formatSigned(positive ? value : -value, plusForPositive: positive && !emphasized)
-        return HStack(alignment: .firstTextBaseline, spacing: 12) {
+    /// `_BreakdownRow`; the signed value text comes from `HomeSummary.breakdownSheet`.
+    private func row(_ label: String, _ text: String, emphasized: Bool = false, color: Color? = nil) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
             Text(label)
                 .textStyle(emphasized ? Self.totalLabel : Self.label)
                 .foregroundStyle(BudgieColor.textPrimary)
