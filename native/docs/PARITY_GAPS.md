@@ -350,7 +350,9 @@ UPGRADE_TEST_RESULTS.md).
   amount bound is not finite, or that names a tag id no tag has. Flutter's
   provider accepts all three: its dialog never sends the first (Add does
   nothing), the second cannot be saved, and the third makes its backup
-  import refuse the file.
+  import refuse the file. The New merchant rule dialog would show such a
+  refusal in danger caption above its buttons, but its fields cannot
+  produce one.
 - Tags & rules page (D1 port of the Material page): padded 16 like
   Flutter's ListView; the title is cardTitle in the navigation bar
   (Flutter: M3 titleLarge AppBar); rows use the redesign's 40pt icon tiles
@@ -361,7 +363,10 @@ UPGRADE_TEST_RESULTS.md).
   subtitle's raw tokens ("contains · Groceries · 1 tags") are Flutter's.
 - Deleting a tag asks first ("Delete tag?", Cancel / Delete), because it
   also removes the tag from every merchant rule; Flutter deletes at once.
-  Deleting a rule is instant, as in Flutter.
+  Deleting a rule is instant (no confirmation), as in Flutter, but memory
+  changes first, so the row goes before the write; Flutter's row stays
+  until its write is done. A failed write leaves the rule deleted in memory
+  behind the unsaved banner, with the save-failed toast.
 - New tag dialog: the redesign's centred card with a "Tag name" caption
   above the field (Flutter: an AlertDialog with a hint only) and Cancel /
   Add pills. A duplicate name shows "A tag with this name already exists"
@@ -369,16 +374,30 @@ UPGRADE_TEST_RESULTS.md).
   closes it and shows the message in a SnackBar); after the first Add the
   message follows the text. A blank name closes silently, as in Flutter.
 - New merchant rule dialog: the redesign's centred card; Type, Match and
-  Category are field-style dropdowns with system menus, and Type and Match
-  read "Income" / "Expense" and "Contains" / "Starts with" / "Exact match"
-  (Flutter's dropdowns show the raw enum names); the tag chips are the
-  transaction form's pills, 8 apart, under a "Tags" caption (Flutter:
-  Material FilterChips 4 apart with no caption). Add is shown disabled
-  while the merchant text is blank (Flutter's Add is enabled and does
-  nothing). A type change resets the category to the new type's first
-  unless it has the same name, as in Flutter.
+  Category are field-style boxes that open a popover list anchored to the
+  box, a check on the current option (Flutter: Material dropdown menus
+  over the field), and Type and Match read "Income" / "Expense" and
+  "Contains" / "Starts with" / "Exact match" (Flutter's dropdowns show the
+  raw enum names). As in Flutter, a dropdown tapped with the keyboard up
+  dismisses the keyboard first; the list opens once it has gone. The tag
+  chips are the transaction form's pills, 8 apart, under a "Tags" caption
+  (Flutter: Material FilterChips 4 apart with no caption). Add is shown
+  disabled while the merchant text is blank (Flutter's Add is enabled and
+  does nothing). The merchant field is not capitalised and its Done key
+  closes the keyboard, as in Flutter. With the keyboard up the fields
+  scroll under the title (as Flutter's SingleChildScrollView); Swift adds
+  cues that more is below: the scroll indicator flashes once the keyboard
+  is shown, and the bottom edge fades while more is below (iOS 18+).
+  A type change keeps the category shown (the picked one, or the first
+  expense category when untouched) when the new type has that name, else
+  takes its first, as in Flutter.
+- Tag pills (the rule dialog and the transaction form) are one line; a
+  name wider than the card gets a row of its own and ends in an ellipsis
+  (Flutter's chip label is one line too and fades at the edge).
 - The tag and rule dialogs, and the tag delete, stay open and inert while
   the change is written (Flutter closes first and writes afterwards).
+  Memory changes first, so the new or deleted row is already shown or
+  removed on the page behind the dialog.
 - VoiceOver reads each rule's delete button as "Delete rule {pattern}"
   (Flutter's tooltip is "Delete rule" on every row) and offers Delete as
   an action on each tag and rule row.

@@ -83,12 +83,16 @@ struct PillButton: View {
     }
 }
 
+/// The filled pill's glow, cast by the pill as one layer: a SwiftUI shadow
+/// on a group shadows each layer, so the label also cast a soft halo onto
+/// the fill (a faint ellipse behind the title). Flutter's `BoxShadow`
+/// belongs to the decoration only.
 private struct OptionalGlow: ViewModifier {
     let color: Color
     let enabled: Bool
 
     func body(content: Content) -> some View {
-        if enabled { content.glow(color, blur: 20, alpha: 0.45) } else { content }
+        if enabled { content.compositingGroup().glow(color, blur: 20, alpha: 0.45) } else { content }
     }
 }
 

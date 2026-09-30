@@ -17,8 +17,6 @@ struct TagsRulesView: View {
     @Environment(AppModel.self) private var model
 
     @State private var dialog: TagsRulesDialog?
-    /// Rules whose delete is being written (their button is inert).
-    @State private var deletingRules: Set<String> = []
 
     /// M3 `TextButton` label (`labelLarge`: 14 / w500, tracking 0.1, 1.43).
     static let addText = TextSpec(face: .gabaritoMedium, size: 14, tracking: 0.1, height: 1.43, relativeTo: .subheadline)
@@ -50,9 +48,7 @@ struct TagsRulesView: View {
                             .accessibilityIdentifier("rules.empty")
                     } else {
                         GlowListCard(rows: Self.keyed(rules, id: \.id).map { item in
-                            RuleRow(rule: item.value, key: item.key, busy: deletingRules.contains(item.value.id)) {
-                                deleteRule(item.value)
-                            }
+                            RuleRow(rule: item.value, key: item.key) { deleteRule(item.value) }
                         })
                     }
                 }
@@ -87,16 +83,14 @@ struct TagsRulesView: View {
         }
     }
 
-    /// Flutter deletes a rule at once (no confirmation); the row's button
-    /// is inert until the write is done. Silent when saved, the save-failed
-    /// toast when only memory changed.
+    /// Flutter deletes a rule at once (no confirmation). Memory changes
+    /// first, so the row goes before the write (Flutter's stays until its
+    /// write is done); a second tap finds no rule and writes nothing.
+    /// Silent when saved, the save-failed toast (and the unsaved banner)
+    /// when only memory changed.
     private func deleteRule(_ rule: CategorizationRuleRecord) {
-        guard !deletingRules.contains(rule.id) else { return }
-        deletingRules.insert(rule.id)
         Task {
-            let outcome = await model.deleteRule(id: rule.id)
-            deletingRules.remove(rule.id)
-            if outcome == .failed { model.showToast(.saveFailed) }
+            if await model.deleteRule(id: rule.id) == .failed { model.showToast(.saveFailed) }
         }
     }
 
@@ -237,7 +231,6 @@ private struct TagRow: View {
 private struct RuleRow: View {
     let rule: CategorizationRuleRecord
     let key: String
-    let busy: Bool
     let onDelete: () -> Void
 
     var body: some View {
@@ -256,10 +249,9 @@ private struct RuleRow: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(rule.merchantPattern)
             .accessibilityValue(subtitle)
-            .accessibilityAction(named: "Delete") { if !busy { onDelete() } }
+            .accessibilityAction(named: "Delete") { onDelete() }
             .accessibilityIdentifier("rules.row.\(key)")
             DeleteButton(label: "Delete rule \(rule.merchantPattern)", identifier: "rules.row.delete.\(key)", action: onDelete)
-                .disabled(busy)
         }
         .padding(.leading, Metrics.spacingM)
         .padding(.trailing, Metrics.spacingL)

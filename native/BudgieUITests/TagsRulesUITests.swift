@@ -1,18 +1,41 @@
 import XCTest
 
 /// Settings > Tags & rules end to end: add a tag (and a refused duplicate),
-/// add a merchant rule using it, see the rule pick the category and tag in
-/// the transaction form, find the saved expense through Flow SEE ALL's tag
-/// filter, delete the rule (instant: no more suggestion), then delete the
-/// tag through its confirmation (gone from the form and the filter). Names
-/// carry a per-run suffix so a rerun without an erase starts clean.
+/// add a merchant rule using it (Done and opening a dropdown dismiss the
+/// keyboard), see the rule pick the category and tag in the transaction
+/// form, find the saved expense through Flow SEE ALL's tag filter, delete
+/// the tag through its confirmation while the rule still uses it (the rule
+/// keeps its category and loses the tag; the tag is gone from the form),
+/// then delete the rule (instant: no more suggestion). Names carry a
+/// per-run suffix so a rerun without an erase starts clean.
+///
+/// The test leaves the store as it found it, failed or not: `tearDown`
+/// relaunches the app and runs `cleanUp` (delete the added expense, then
+/// the rule and the tag if they are still there).
 @MainActor
 final class TagsRulesUITests: XCTestCase {
     let app = XCUIApplication()
+    private var cleanUp: (() -> Void)?
 
     override func setUp() async throws {
         continueAfterFailure = false
         app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
+        launch()
+    }
+
+    override func tearDown() async throws {
+        if let cleanUp {
+            self.cleanUp = nil
+            // From a known state: the failure may have left a dialog, a
+            // menu or the form open.
+            app.terminate()
+            launch()
+            cleanUp()
+        }
+        try await super.tearDown()
+    }
+
+    private func launch() {
         app.launch()
         XCTAssertTrue(app.tabBars.buttons["Home"].waitForExistence(timeout: 20))
     }
@@ -111,6 +134,22 @@ final class TagsRulesUITests: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
     }
 
+    /// Deletes every SEE ALL row whose label contains `text` (swipe, then
+    /// the Delete Transaction alert).
+    private func deleteTransactions(containing text: String) {
+        homeRoot()
+        tapStable(app.buttons["See all transactions"].firstMatch)
+        let row = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
+        var deleted = 0
+        while row.waitForExistence(timeout: 3) && deleted < 5 {
+            row.swipeLeft()
+            tapStable(app.alerts["Delete Transaction"].buttons["Delete"])
+            XCTAssertTrue(app.alerts["Delete Transaction"].waitForNonExistence(timeout: 10))
+            deleted += 1
+        }
+        XCTAssertFalse(row.exists, "transactions with \(text) deleted")
+    }
+
     // MARK: - Test
 
     func testTagsAndRules() throws {
@@ -118,6 +157,23 @@ final class TagsRulesUITests: XCTestCase {
         let tag = "UI Work \(suffix)"
         let merchant = "UIMart \(suffix)"
         let description = "uimart \(suffix) market"
+        cleanUp = {
+            self.deleteTransactions(containing: description)
+            self.openTagsAndRules()
+            let deleteRule = self.app.buttons["Delete rule \(merchant)"]
+            if deleteRule.exists {
+                self.reveal(deleteRule)
+                self.tapStable(deleteRule)
+                XCTAssertTrue(deleteRule.waitForNonExistence(timeout: 5), "rule deleted")
+            }
+            let deleteTag = self.app.buttons["Delete \(tag)"]
+            if deleteTag.exists {
+                self.reveal(deleteTag)
+                self.tapStable(deleteTag)
+                self.tapStable(self.app.buttons["tags.delete.confirm"])
+                XCTAssertTrue(deleteTag.waitForNonExistence(timeout: 10), "tag deleted")
+            }
+        }
 
         openTagsAndRules()
         let startedEmpty = element("tags.empty").exists && element("rules.empty").exists
@@ -149,10 +205,18 @@ final class TagsRulesUITests: XCTestCase {
         XCTAssertTrue(pattern.waitForExistence(timeout: 5))
         let add = app.buttons["rules.editor.submit"]
         XCTAssertFalse(add.isEnabled, "Add is disabled while the text is empty")
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "autofocused")
         pattern.typeText(merchant)
+        // Done dismisses the keyboard.
+        pattern.typeText("\n")
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "Done dismissed the keyboard")
         XCTAssertEqual(element("rules.editor.type").value as? String, "Expense")
         XCTAssertEqual(element("rules.editor.match").value as? String, "Contains")
+        // Opening a dropdown with the keyboard up dismisses it first.
+        tapStable(pattern)
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
         tapStable(element("rules.editor.category"))
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "the dropdown dismissed the keyboard")
         tapStable(app.buttons["Groceries"].firstMatch)
         XCTAssertTrue(waitUntil { self.element("rules.editor.category").value as? String == "Groceries" })
         let chip = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'rules.editor.tag.' AND label == %@", tag)).firstMatch
@@ -183,21 +247,8 @@ final class TagsRulesUITests: XCTestCase {
         XCTAssertTrue(rows.firstMatch.label.contains(description))
         leaveSeeAll()
 
-        // Delete the rule: instant, and the form no longer suggests.
-        openTagsAndRules()
-        let deleteRule = app.buttons["Delete rule \(merchant)"]
-        reveal(deleteRule)
-        tapStable(deleteRule)
-        XCTAssertTrue(rule.waitForNonExistence(timeout: 5), "rule deleted without a confirmation")
-        openExpenseForm(description: description + " again")
-        Thread.sleep(forTimeInterval: 0.5)
-        XCTAssertFalse(wheelValue.contains("Groceries"), "no suggestion, wheel shows \(wheelValue)")
-        XCTAssertTrue(formChip(tag).exists)
-        XCTAssertFalse(formChip(tag).isSelected, "no tag applied")
-        tapStable(app.buttons["Cancel"])
-        XCTAssertTrue(app.textFields["Amount"].waitForNonExistence(timeout: 10))
-
-        // Delete the tag: Cancel keeps it; Delete removes it.
+        // Delete the tag while the rule uses it: Cancel keeps it; Delete
+        // removes it, and the rule keeps its category without the tag.
         openTagsAndRules()
         let deleteTag = app.buttons["Delete \(tag)"]
         reveal(deleteTag)
@@ -209,16 +260,33 @@ final class TagsRulesUITests: XCTestCase {
         tapStable(deleteTag)
         tapStable(app.buttons["tags.delete.confirm"])
         XCTAssertTrue(labelled(tag).waitForNonExistence(timeout: 10), "tag deleted")
+        reveal(rule)
+        XCTAssertEqual(rule.value as? String, "contains \u{00B7} Groceries", "the rule lost the tag")
+
+        // The rule still picks Groceries; the tag chip is gone from the form.
+        openExpenseForm(description: description + " again")
+        XCTAssertTrue(waitUntil { self.wheelValue.contains("Groceries") }, "rule still sets the category, wheel shows \(wheelValue)")
+        XCTAssertFalse(formChip(tag).waitForExistence(timeout: 2), "tag chip gone from the form")
+        tapStable(app.buttons["Cancel"])
+        XCTAssertTrue(app.textFields["Amount"].waitForNonExistence(timeout: 10))
+
+        // Delete the rule: instant, and the form no longer suggests.
+        openTagsAndRules()
+        let deleteRule = app.buttons["Delete rule \(merchant)"]
+        reveal(deleteRule)
+        tapStable(deleteRule)
+        XCTAssertTrue(rule.waitForNonExistence(timeout: 5), "rule deleted without a confirmation")
         if startedEmpty {
             XCTAssertTrue(element("tags.empty").waitForExistence(timeout: 5))
             XCTAssertTrue(element("rules.empty").exists)
         }
-
-        // Gone from the form's chips and from SEE ALL's filter.
-        openExpenseForm(description: "")
-        XCTAssertFalse(formChip(tag).waitForExistence(timeout: 2), "tag chip gone from the form")
+        openExpenseForm(description: description + " again")
+        Thread.sleep(forTimeInterval: 0.5)
+        XCTAssertFalse(wheelValue.contains("Groceries"), "no suggestion, wheel shows \(wheelValue)")
         tapStable(app.buttons["Cancel"])
         XCTAssertTrue(app.textFields["Amount"].waitForNonExistence(timeout: 10))
+
+        // Gone from SEE ALL's filter.
         openSeeAll()
         XCTAssertFalse(app.buttons[tag].waitForExistence(timeout: 2), "tag chip gone from SEE ALL")
         leaveSeeAll()

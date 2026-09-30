@@ -553,7 +553,9 @@ delete rule (no rule edit, toggle, bounds or reorder).
   subtitle (rowSubtitle, secondary): `"{matchType raw} · {category}"` plus
   `" · {n} tags"` when it has tags ("contains · Groceries · 1 tags"), 72
   tall.
-- Delete rule: instant (Flutter), the button inert while it saves. Delete
+- Delete rule: instant (Flutter); memory changes first, so the row goes
+  at once and the write follows (failure: `Toast.saveFailed` and the
+  unsaved banner). Delete
   tag: the "Delete tag?" centred card ("This removes "{name}" from your
   tags and from any merchant rule that uses it.", Cancel / Delete in
   danger), awaited with the dialog inert, closing afterwards.
@@ -565,23 +567,29 @@ delete rule (no rule edit, toggle, bounds or reorder).
   closes silently (Flutter); `validateTagName`'s "A tag with this name
   already exists" shows inline and then follows the text.
 - "New merchant rule" (`NewRuleDialog`): "Merchant text" (prompt "Whole
-  Foods", autofocus), then dropdowns in the field style (caption above,
-  chip-surface box radius 14, 52 tall, value in rowTitle, up-down
-  chevron, system menu with a check): "Type" (Income, Expense; default
-  Expense), "Match" (Contains, Starts with, Exact match; default
-  Contains), "Category" (`model.categories(for:)` names; default the
-  first; a type change keeps a name the new type has, else its first);
-  then, when tags exist, a "Tags" caption over the form's tag pills
-  (FlowLayout 8), selected in tap order. Add is disabled (38%) while the
-  trimmed text is empty. The draft sets only Flutter's fields. A refusal
-  shows in danger caption above the buttons.
+  Foods", autofocus, no capitalisation, Done closes the keyboard), then
+  dropdowns in the field style (caption above, chip-surface box radius 14,
+  52 tall, value in rowTitle, footnote up-down chevron): a tap opens a
+  popover list anchored to the box (rowTitle rows at least 48 tall, accent
+  check on the current one, scrolled to it, about nine rows high), and
+  with the keyboard up it first dismisses the keyboard and opens once
+  it has gone. "Type" (Income, Expense; default Expense), "Match"
+  (Contains, Starts with, Exact match; default Contains), "Category"
+  (`model.categories(for:)` names; default the first; a type change keeps
+  the shown name when the new type has it, else its first); then, when
+  tags exist, a "Tags" caption over the form's tag pills (FlowLayout 8,
+  one line, truncated at the card's width), selected in tap order. The
+  fields are a `DialogScroll`: its indicator flashes when the keyboard has
+  shown, and its bottom 48pt fades while more is below (iOS 18+). Add is
+  disabled (38%) while the trimmed text is empty. The draft sets only
+  Flutter's fields. A refusal shows in danger caption above the buttons.
 - Outcomes: `.saved` / `.unchanged` close silently; `.failed` closes with
   `Toast.saveFailed`; `.rejected` shows `error.message` inline.
 - VoiceOver: a tag row's name and a rule row's text (label pattern, value
   subtitle) are one element each with a "Delete" action, followed by the
   "Delete {name}" / "Delete rule {pattern}" button; section titles and
   dialog titles are headers; dropdowns read "Type, Expense"; tag pills
-  carry the selected trait.
+  and the dropdown list's current row carry the selected trait.
 - UI-test identifiers: `tagsRules.list`, `tags.add`, `rules.add`,
   `tags.empty`, `rules.empty`, `tags.row.<id>`, `tags.row.delete.<id>`,
   `rules.row.<id>`, `rules.row.delete.<id>`, `tags.editor.name`,

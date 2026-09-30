@@ -10,13 +10,21 @@ import SwiftUI
 /// chips when there are any, selected in tap order. Cancel and Add.
 ///
 /// The rule gets only Flutter's fields: no amount bounds, priority 0,
-/// enabled. Changing the type keeps the category when the new type has
-/// that name (UTF-16), else takes its first; the tag selection stays.
+/// enabled. Changing the type keeps the shown category (the picked one, or
+/// the old type's first when none was picked, as Flutter's variable starts
+/// at the first expense category) when the new type has that name
+/// (UTF-16), else takes its first; the tag selection stays.
 /// Add is disabled while the trimmed merchant text is empty (Flutter's Add
 /// does nothing then). The add is awaited with the dialog inert; it closes
 /// once written, and also when the write failed (the rule is in memory
 /// behind the unsaved banner), with the save-failed toast. A refusal shows
 /// its message above the buttons.
+///
+/// The keyboard (Flutter's: no capitalisation, a Done key) goes away on
+/// Done and when a dropdown opens, so the menu is not cut by it. With the
+/// keyboard up the fields scroll; the scroll indicator flashes once the
+/// keyboard is shown and the bottom edge fades while more is below, cues
+/// that Category and Tags are there.
 struct NewRuleDialog: View {
     let onClose: () -> Void
 
@@ -28,6 +36,8 @@ struct NewRuleDialog: View {
     @State private var tagIds: [String] = []
     @State private var error: String?
     @State private var busy = false
+    /// Flashes the fields' scroll indicator.
+    @State private var scrollFlash = 0
 
     /// Flutter's `TransactionTyp.values` order.
     private static let types: [TransactionType] = [.income, .expense]
@@ -39,6 +49,8 @@ struct NewRuleDialog: View {
         VStack(spacing: 0) {
             TagsRulesDialogTitle(text: "New merchant rule")
             DialogScroll { fields(categories: categories, selectedCategory: selectedCategory) }
+                .scrollIndicatorsFlash(trigger: scrollFlash)
+                .modifier(MoreBelowFade())
                 .padding(.top, 20)
             if let error {
                 Text(error)
@@ -61,14 +73,21 @@ struct NewRuleDialog: View {
         .disabled(busy)
         .budgieDialogDismissDisabled(busy)
         .onChange(of: pattern) { error = nil }
-        .onChange(of: type) {
-            category = Self.resolvedCategory(category, in: model.categories(for: type).map(\.name))
+        .onChange(of: type) { old, new in
+            category = Self.categoryAfterTypeChange(
+                category, from: model.categories(for: old).map(\.name), to: model.categories(for: new).map(\.name))
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+            scrollFlash += 1
         }
     }
 
     private func fields(categories: [String], selectedCategory: String) -> some View {
         VStack(alignment: .leading, spacing: Metrics.spacingM) {
-            BudgieField(title: "Merchant text", text: $pattern, prompt: "Whole Foods", autofocus: true)
+            BudgieField(
+                title: "Merchant text", text: $pattern, prompt: "Whole Foods", capitalization: .never, autofocus: true)
+                .submitLabel(.done)
+                .onSubmit(Self.dismissKeyboard)
                 .accessibilityIdentifier("rules.editor.pattern")
             MenuField(
                 title: "Type", options: Self.types.map(Self.typeLabel),
@@ -105,7 +124,8 @@ struct NewRuleDialog: View {
                 .padding(.leading, 4)
                 .accessibilityAddTraits(.isHeader)
             FlowLayout(spacing: Metrics.spacingS) {
-                ForEach(model.tags) { tag in
+                // By position: foreign data can repeat a tag id.
+                ForEach(Array(model.tags.enumerated()), id: \.offset) { _, tag in
                     let selected = tagIds.contains { DartString.equal($0, tag.id) }
                     Button {
                         if selected { tagIds.removeAll { DartString.equal($0, tag.id) } } else { tagIds.append(tag.id) }
@@ -114,6 +134,7 @@ struct NewRuleDialog: View {
                             label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary,
                             outlined: !selected, symbol: selected ? "checkmark" : nil, style: .labelSmall,
                             horizontalPadding: 12, verticalPadding: 8)
+                        .lineLimit(1)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(tag.name)
@@ -153,6 +174,19 @@ struct NewRuleDialog: View {
         return names.first ?? ""
     }
 
+    /// The category after a type change: the one shown under the old type
+    /// (the picked one, or its first when none was picked: Flutter's
+    /// variable starts at the first expense category), kept when the new
+    /// type has it, else the new type's first.
+    static func categoryAfterTypeChange(_ picked: String?, from old: [String], to new: [String]) -> String {
+        resolvedCategory(resolvedCategory(picked, in: old), in: new)
+    }
+
+    /// Ends editing wherever the keyboard is (the field's focus is its own).
+    static func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
     static func typeLabel(_ type: TransactionType) -> String {
         type == .income ? "Income" : "Expense"
     }
@@ -166,18 +200,56 @@ struct NewRuleDialog: View {
     }
 }
 
+/// Fades the bottom edge of the dialog's scroll area while more fields are
+/// below it (the keyboard is up), so the cut reads as scrollable. iOS 18
+/// and later; iOS 17 keeps the indicator flash only.
+private struct MoreBelowFade: ViewModifier {
+    @State private var moreBelow = false
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content
+                .onScrollGeometryChange(for: Bool.self) { geometry in
+                    geometry.contentSize.height - geometry.contentOffset.y - geometry.containerSize.height > 1
+                } action: { _, more in
+                    moreBelow = more
+                }
+                .mask {
+                    VStack(spacing: 0) {
+                        Rectangle()
+                        LinearGradient(colors: [.black, .black.opacity(moreBelow ? 0 : 1)], startPoint: .top, endPoint: .bottom)
+                            .frame(height: 48)
+                    }
+                }
+        } else {
+            content
+        }
+    }
+}
+
 /// A dropdown in the redesign's field style (Material
 /// `DropdownButtonFormField`): the caption above, the chip-surface box
 /// (radius 14, 1pt card border, 52 tall) with the value in rowTitle and an
-/// up-down chevron; the system menu lists the options with a check on the
-/// current one. Options are picked by index (names are compared as UTF-16
-/// elsewhere, and equal-looking names stay separate rows). VoiceOver reads
-/// the title with the value.
+/// up-down chevron (footnote-sized, so it scales with Dynamic Type). A tap
+/// opens a popover list anchored to the box, a check on the current
+/// option. With the keyboard up the tap first dismisses it and opens the
+/// list once it is gone and the dialog has settled (Flutter's dropdown
+/// closes the keyboard first; a system `Menu` cannot wait, so it opened
+/// cut by the keyboard or detached from its moved field). Options are
+/// picked by index (names are compared as UTF-16 elsewhere, and
+/// equal-looking names stay separate rows). VoiceOver reads the title
+/// with the value.
 private struct MenuField: View {
     let title: String
     let options: [String]
     @Binding var selection: Int
     let identifier: String
+
+    @State private var open = false
+    @State private var keyboardUp = false
+    /// Tapped with the keyboard up: opens when it has gone.
+    @State private var opening = false
+    @ScaledMetric(relativeTo: .body) private var rowHeight: CGFloat = 48
 
     var body: some View {
         let value = options.indices.contains(selection) ? options[selection] : ""
@@ -188,20 +260,14 @@ private struct MenuField: View {
                 .foregroundStyle(BudgieColor.textSecondary)
                 .padding(.leading, 4)
                 .accessibilityHidden(true)
-            Menu {
-                Picker(title, selection: $selection) {
-                    ForEach(options.indices, id: \.self) { index in
-                        Text(options[index]).tag(index)
-                    }
-                }
-            } label: {
+            Button(action: tap) {
                 HStack(spacing: 10) {
                     Text(value)
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemName: "chevron.up.chevron.down")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(.footnote, weight: .semibold))
                         .foregroundStyle(BudgieColor.textSecondary)
                         .accessibilityHidden(true)
                 }
@@ -211,10 +277,73 @@ private struct MenuField: View {
                 .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
                 .contentShape(shape)
             }
-            .menuOrder(.fixed)
+            .buttonStyle(.plain)
+            .popover(isPresented: $open, attachmentAnchor: .rect(.bounds)) {
+                optionList
+                    .presentationCompactAdaptation(.popover)
+            }
             .accessibilityLabel(title)
             .accessibilityValue(value)
             .accessibilityIdentifier(identifier)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            keyboardUp = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidHideNotification)) { _ in
+            keyboardUp = false
+            if opening {
+                opening = false
+                open = true
+            }
+        }
+    }
+
+    private func tap() {
+        if keyboardUp {
+            opening = true
+            NewRuleDialog.dismissKeyboard()
+        } else {
+            open = true
+        }
+    }
+
+    /// The options, scrolled to the current one, as tall as they need up to
+    /// about nine rows.
+    private var optionList: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(options.indices, id: \.self) { index in
+                        let current = index == selection
+                        Button {
+                            selection = index
+                            open = false
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: "checkmark")
+                                    .font(.system(.subheadline, weight: .semibold))
+                                    .foregroundStyle(BudgieColor.accent)
+                                    .opacity(current ? 1 : 0)
+                                    .accessibilityHidden(true)
+                                Text(options[index])
+                                    .textStyle(.rowTitle)
+                                    .foregroundStyle(BudgieColor.textPrimary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(.horizontal, 16)
+                            .frame(minHeight: rowHeight)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(current ? .isSelected : [])
+                        .id(index)
+                    }
+                }
+                .padding(.vertical, 6)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .frame(idealWidth: 260, idealHeight: min(CGFloat(options.count), 9.5) * rowHeight + 12)
+            .onAppear { proxy.scrollTo(selection, anchor: .center) }
         }
     }
 }

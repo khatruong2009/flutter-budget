@@ -256,15 +256,19 @@ struct TransactionFormView: View {
 
     private var tagChips: some View {
         FlowLayout(spacing: Metrics.spacingS) {
-            ForEach(model.tags) { tag in
+            // By position: foreign data can repeat a tag id.
+            ForEach(Array(model.tags.enumerated()), id: \.offset) { _, tag in
                 let selected = selectedTagIds.contains(tag.id)
                 Button {
                     if selected { selectedTagIds.removeAll { $0 == tag.id } } else { selectedTagIds.append(tag.id) }
                     ruleTagIds.remove(tag.id)
                 } label: {
+                    // One line, truncated when wider than the row (Flutter's
+                    // chip label: maxLines 1).
                     PillChip(
                         label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
                         symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
+                    .lineLimit(1)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selected ? .isSelected : [])
@@ -545,7 +549,9 @@ struct FormButton: View {
 }
 
 /// Wrapping rows of chips (Flutter `Wrap`), leading-aligned (also the Add
-/// money dialog's quick amounts).
+/// money dialog's quick amounts). A chip wider than the row gets the row's
+/// width, so a long tag pill truncates inside the card (Flutter's `Wrap`
+/// constrains a chip to its width) instead of running past it.
 struct FlowLayout: Layout {
     var spacing: CGFloat
 
@@ -556,27 +562,38 @@ struct FlowLayout: Layout {
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let rows = arrange(width: bounds.width, subviews: subviews)
-        for (index, origin) in rows.origins.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y), proposal: .unspecified)
+        for (index, item) in rows.items.enumerated() {
+            subviews[index].place(
+                at: CGPoint(x: bounds.minX + item.origin.x, y: bounds.minY + item.origin.y), proposal: item.proposal)
         }
     }
 
-    private func arrange(width: CGFloat, subviews: Subviews) -> (origins: [CGPoint], width: CGFloat, height: CGFloat) {
-        var origins: [CGPoint] = []
+    /// Each subview at its ideal size, except one wider than the row: that
+    /// one is measured (and later placed) at the row's width, on a row of
+    /// its own.
+    private func arrange(
+        width: CGFloat, subviews: Subviews
+    ) -> (items: [(origin: CGPoint, proposal: ProposedViewSize)], width: CGFloat, height: CGFloat) {
+        var items: [(origin: CGPoint, proposal: ProposedViewSize)] = []
         var x: CGFloat = 0, y: CGFloat = 0, rowHeight: CGFloat = 0, widest: CGFloat = 0
         for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
+            var proposal = ProposedViewSize.unspecified
+            var size = subview.sizeThatFits(proposal)
+            if size.width > width {
+                proposal = ProposedViewSize(width: width, height: nil)
+                size = subview.sizeThatFits(proposal)
+            }
             if x > 0 && x + size.width > width {
                 x = 0
                 y += rowHeight + spacing
                 rowHeight = 0
             }
-            origins.append(CGPoint(x: x, y: y))
+            items.append((CGPoint(x: x, y: y), proposal))
             x += size.width + spacing
             rowHeight = max(rowHeight, size.height)
             widest = max(widest, x - spacing)
         }
-        return (origins, widest, y + rowHeight)
+        return (items, widest, y + rowHeight)
     }
 }
 
