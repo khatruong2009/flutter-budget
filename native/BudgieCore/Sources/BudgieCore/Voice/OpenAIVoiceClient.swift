@@ -9,8 +9,10 @@ import Foundation
 /// - Transcription: `POST /v1/audio/transcriptions`, multipart with the text
 ///   fields `model` and `prompt` first and the `file` part last (package:http
 ///   writes fields before files). No `response_format`, `language` or
-///   `temperature`. The file part carries the file's base name and the MIME
-///   type package:mime derives from the extension (`audio/mp4` for `.m4a`).
+///   `temperature`. The file part carries the file's base name and, like
+///   dart_openai's `MultipartFile.fromPath`, `Content-Type:
+///   application/octet-stream` before its `Content-Disposition` (pinned by
+///   Fixtures/voicerequest). OpenAI identifies the format by the file name.
 ///   The response is the default JSON `{"text": ...}`.
 /// - Chat: `POST /v1/chat/completions`, JSON `{model, messages,
 ///   response_format}`. Each message's `content` is an array of
@@ -75,8 +77,8 @@ public struct OpenAIVoiceClient: Sendable {
         }
         let filename = audioFile.lastPathComponent.replacingOccurrences(of: "\"", with: "%22")
         append(
-            "--\(boundary)\r\nContent-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n"
-                + "Content-Type: \(Self.mimeType(forExtension: audioFile.pathExtension))\r\n\r\n")
+            "--\(boundary)\r\nContent-Type: application/octet-stream\r\n"
+                + "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n\r\n")
         body.append(audio)
         append("\r\n--\(boundary)--\r\n")
 
@@ -88,17 +90,6 @@ public struct OpenAIVoiceClient: Sendable {
         let transcript = DartString.trim(text)
         if transcript.isEmpty { throw .noSpeech }
         return transcript
-    }
-
-    /// `.m4a` is AAC in an MPEG-4 container, registered as `audio/mp4` (what
-    /// package:mime, and so Flutter, sends). OpenAI identifies the format by
-    /// the file name extension, so this is informational for the m4a case.
-    static func mimeType(forExtension pathExtension: String) -> String {
-        switch pathExtension.lowercased() {
-        case "wav": "audio/wav"
-        case "mp3": "audio/mpeg"
-        default: "audio/mp4"
-        }
     }
 
     // MARK: Chat

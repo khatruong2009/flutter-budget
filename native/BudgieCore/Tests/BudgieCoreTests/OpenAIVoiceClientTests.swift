@@ -191,8 +191,8 @@ struct OpenAIVoiceClientTests {
                 ("--\(boundary)\r\nContent-Disposition: form-data; name=\"model\"\r\n\r\ngpt-4o-mini-transcribe\r\n"
                     + "--\(boundary)\r\nContent-Disposition: form-data; name=\"prompt\"\r\n\r\n"
                     + "Personal expense phrases with dollar amounts like $12.50 and merchant names.\r\n"
-                    + "--\(boundary)\r\nContent-Disposition: form-data; name=\"file\"; filename=\"\(audio.lastPathComponent)\"\r\n"
-                    + "Content-Type: audio/mp4\r\n\r\n").utf8))
+                    + "--\(boundary)\r\nContent-Type: application/octet-stream\r\n"
+                    + "Content-Disposition: form-data; name=\"file\"; filename=\"\(audio.lastPathComponent)\"\r\n\r\n").utf8))
         expected.append(bytes)
         expected.append(Data("\r\n--\(boundary)--\r\n".utf8))
         #expect(recorded.body == expected)
@@ -233,15 +233,6 @@ struct OpenAIVoiceClientTests {
         let missing = FileManager.default.temporaryDirectory.appendingPathComponent("missing-\(UUID().uuidString).m4a")
         #expect(await voiceError { () async throws(VoiceEntryError) in try await client.transcribe(audioFile: missing) } == .failed)
         #expect(script.requests.isEmpty)
-    }
-
-    @Test("file content type follows the extension, defaulting to audio/mp4")
-    func mimeTypes() {
-        #expect(OpenAIVoiceClient.mimeType(forExtension: "m4a") == "audio/mp4")
-        #expect(OpenAIVoiceClient.mimeType(forExtension: "M4A") == "audio/mp4")
-        #expect(OpenAIVoiceClient.mimeType(forExtension: "wav") == "audio/wav")
-        #expect(OpenAIVoiceClient.mimeType(forExtension: "mp3") == "audio/mpeg")
-        #expect(OpenAIVoiceClient.mimeType(forExtension: "") == "audio/mp4")
     }
 
     // MARK: Chat

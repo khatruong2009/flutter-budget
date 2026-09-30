@@ -1,0 +1,3431 @@
+{
+  "tz": "America/Santiago",
+  "cases": [
+    {
+      "name": "typical",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$1,436/day for 3 days left",
+            "$4,309",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $4,309. $1,436/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "+$3,200.00",
+        "Expenses recorded",
+        "-$1,620.00",
+        "Upcoming recurring bills",
+        "-$30.00",
+        "Flexible budget reserve",
+        "-$165.51",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$4,309.49",
+        "$1,436.50 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "no_income",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"e1\",\"type\":\"expense\",\"description\":\"e1\",\"amount\":80.0,\"category\":\"Groceries\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$80.00",
+            "$0 in   ·   $80 out",
+            "SHORT THIS MONTH"
+          ],
+          "semantics": "Cash flow, $80.00 short this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $80",
+            "INCOME  $0"
+          ],
+          "value": "0000000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$0",
+            "No August data"
+          ],
+          [
+            "Expenses",
+            "$80",
+            "+100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Projected shortfall",
+            "Add income or reduce planned spending",
+            "$80",
+            "DETAILS"
+          ],
+          "semantics": "Projected shortfall $80. Add income or reduce planned spending. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "e1",
+              "Groceries · Sep 3",
+              "-$80.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Projected shortfall",
+        "What you have spent and reserved for the rest of this month is more than the income you expect.",
+        "Income recorded",
+        "$0.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$80.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Projected shortfall",
+        "$80.00",
+        "Add income or reduce planned spending to close the shortfall · 3 days remaining"
+      ]
+    },
+    {
+      "name": "shortfall",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i\",\"type\":\"income\",\"description\":\"i\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h\",\"type\":\"expense\",\"description\":\"h\",\"amount\":2500.0,\"category\":\"Housing\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"ip\",\"type\":\"income\",\"description\":\"ip\",\"amount\":900.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"hp\",\"type\":\"expense\",\"description\":\"hp\",\"amount\":300.0,\"category\":\"Housing\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Housing\":2000.0,\"Groceries\":100.0},\"recurringTransactions\":[{\"id\":\"bill\",\"type\":\"expense\",\"description\":\"bill\",\"amount\":300.0,\"category\":\"Housing\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":29,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,500.00",
+            "$1,000 in   ·   $2,500 out",
+            "SHORT THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,500.00 short this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $2,500",
+            "INCOME  $1,000"
+          ],
+          "value": "4004000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$1,000",
+            "+11.1% vs August"
+          ],
+          [
+            "Expenses",
+            "$2,500",
+            "+733.3% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Projected shortfall",
+            "Add income or reduce planned spending",
+            "$2,175",
+            "DETAILS"
+          ],
+          "semantics": "Projected shortfall $2,175. Add income or reduce planned spending. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$2,500 of $2,000",
+                "$500 over"
+              ],
+              "bar": "3ff4000000000000"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "h",
+              "Housing · Sep 2",
+              "-$2,500.00"
+            ],
+            [
+              "i",
+              "Salary · Sep 1",
+              "+$1,000.00"
+            ],
+            [
+              "hp",
+              "Housing · Aug 2",
+              "-$300.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Projected shortfall",
+        "What you have spent and reserved for the rest of this month is more than the income you expect.",
+        "Income recorded",
+        "+$1,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$2,500.00",
+        "Upcoming recurring bills",
+        "-$300.00",
+        "Flexible budget reserve",
+        "-$100.00",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Projected shortfall",
+        "$2,175.00",
+        "Add income or reduce planned spending to close the shortfall · 3 days remaining"
+      ]
+    },
+    {
+      "name": "break_even",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i\",\"type\":\"income\",\"description\":\"i\",\"amount\":500.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a\",\"type\":\"expense\",\"description\":\"a\",\"amount\":250.0,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b\",\"type\":\"expense\",\"description\":\"b\",\"amount\":250.0,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$0.00",
+            "$500 in   ·   $500 out",
+            "BREAKING EVEN"
+          ],
+          "semantics": "Cash flow, $0.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $500",
+            "INCOME  $500"
+          ],
+          "value": "3ff0000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$500",
+            "+100.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$500",
+            "+100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$0/day for 3 days left",
+            "$0",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $0. $0/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "b",
+              "Eating Out · Sep 3",
+              "-$250.00"
+            ],
+            [
+              "a",
+              "Groceries · Sep 2",
+              "-$250.00"
+            ],
+            [
+              "i",
+              "Salary · Sep 1",
+              "+$500.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$500.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$500.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$0.00",
+        "$0.00 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "empty",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$0.00",
+            "$0 in   ·   $0 out",
+            "BREAKING EVEN"
+          ],
+          "semantics": "Cash flow, $0.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $0",
+            "INCOME  $0"
+          ],
+          "value": "0000000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$0",
+            "No August data"
+          ],
+          [
+            "Expenses",
+            "$0",
+            "No August data"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$0/day for 3 days left",
+            "$0",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $0. $0/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": true,
+          "rows": []
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "$0.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "$0.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$0.00",
+        "$0.00 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "hidden_balances",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": true,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "••••",
+            "•••• in   ·   •••• out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, •••• this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  ••••",
+            "INCOME  ••••"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "••••",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "••••",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "••••/day for 3 days left",
+            "••••",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend ••••. ••••/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "•••• of ••••",
+                "•••• over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "•••• of ••••",
+                "•••• left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "•••• of ••••",
+                "•••• left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "•••• of ••••",
+                "•••• left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "•••• of ••••",
+                "•••• over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "•••• of ••••",
+                "•••• left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "••••"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "••••"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "••••"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "••••",
+        "Income still expected",
+        "••••",
+        "Expenses recorded",
+        "••••",
+        "Upcoming recurring bills",
+        "••••",
+        "Flexible budget reserve",
+        "••••",
+        "Suggested goal contributions",
+        "••••",
+        "Safe to spend",
+        "••••",
+        "•••• per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "euro_de",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "1.580,00 €",
+            "3.200 € in   ·   1.620 € out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, 1.580,00 € this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  1.620 €",
+            "INCOME  3.200 €"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "3.200 €",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "1.620 €",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "1.436 €/day for 3 days left",
+            "4.309 €",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend 4.309 €. 1.436 €/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "1.000 € of 1.000 €",
+                "0,01 € over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "400 € of 400 €",
+                "0,00 € left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "85,00 € of 85,00 €",
+                "0,00 € left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "84,99 € of 100 €",
+                "15,01 € left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "50,00 € of 49,99 €",
+                "0,01 € over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "0,00 € of 151 €",
+                "151 € left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-50,00 €"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-85,00 €"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-1.000,01 €"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+3.200,00 €",
+        "Income still expected",
+        "+3.200,00 €",
+        "Expenses recorded",
+        "-1.620,00 €",
+        "Upcoming recurring bills",
+        "-30,00 €",
+        "Flexible budget reserve",
+        "-165,51 €",
+        "Suggested goal contributions",
+        "-275,00 €",
+        "Safe to spend",
+        "4.309,49 €",
+        "1.436,50 € per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "yen_ja",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5}}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "¥1,580.00",
+            "¥3,200 in   ·   ¥1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, ¥1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  ¥1,620",
+            "INCOME  ¥3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "¥3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "¥1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "¥471/day for 3 days left",
+            "¥1,414",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend ¥1,414. ¥471/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "¥1,000 of ¥1,000",
+                "¥0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "¥400 of ¥400",
+                "¥0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "¥85.00 of ¥85.00",
+                "¥0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "¥84.99 of ¥100",
+                "¥15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "¥50.00 of ¥49.99",
+                "¥0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "¥0.00 of ¥151",
+                "¥151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-¥50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-¥85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-¥1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+¥3,200.00",
+        "Income still expected",
+        "¥0.00",
+        "Expenses recorded",
+        "-¥1,620.00",
+        "Upcoming recurring bills",
+        "¥0.00",
+        "Flexible budget reserve",
+        "-¥165.51",
+        "Suggested goal contributions",
+        "¥0.00",
+        "Safe to spend",
+        "¥1,414.49",
+        "¥471.50 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "closed_month",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-08-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "August 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$2,799.91",
+            "$3,000 in   ·   $200 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $2,799.91 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $200",
+            "INCOME  $3,000"
+          ],
+          "value": "3fb113086215e663"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,000",
+            "+100.0% vs July"
+          ],
+          [
+            "Expenses",
+            "$200",
+            "+100.0% vs July"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "This month is already closed out",
+            "$1,165",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,165. This month is already closed out. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Travel",
+                "$200 of $151",
+                "$49.49 over"
+              ],
+              "bar": "3ff542eace3a9514"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$0.10 of $400",
+                "$400 left"
+              ],
+              "bar": "3f30624dd2f1a9fc"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$0.00 of $85.00",
+                "$85.00 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Housing",
+                "$0.00 of $1,000",
+                "$1,000 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$0.00 of $49.99",
+                "$49.99 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$200.09",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$1,634.89",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$1,165.02",
+        "This month is already closed out."
+      ]
+    },
+    {
+      "name": "future_month",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-10-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f1\",\"type\":\"expense\",\"description\":\"f1\",\"amount\":40.0,\"category\":\"Travel\",\"date\":\"2026-10-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "October 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$40.00",
+            "$0 in   ·   $40 out",
+            "SHORT THIS MONTH"
+          ],
+          "semantics": "Cash flow, $40.00 short this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $40",
+            "INCOME  $0"
+          ],
+          "value": "0000000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$0",
+            "-100.0% vs September"
+          ],
+          [
+            "Expenses",
+            "$40",
+            "-97.5% vs September"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$36/day for 31 days left",
+            "$1,105",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,105. $36/day for 31 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Travel",
+                "$40.00 of $151",
+                "$111 left"
+              ],
+              "bar": "3fd1028d2ec70441"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$0.00 of $400",
+                "$400 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$0.00 of $85.00",
+                "$85.00 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Housing",
+                "$0.00 of $1,000",
+                "$1,000 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$0.00 of $49.99",
+                "$49.99 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "f1",
+              "Travel · Oct 5",
+              "-$40.00"
+            ],
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "$0.00",
+        "Income still expected",
+        "+$3,200.00",
+        "Expenses recorded",
+        "$0.00",
+        "Upcoming recurring bills",
+        "-$120.00",
+        "Flexible budget reserve",
+        "-$1,700.49",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$1,104.51",
+        "$35.63 per day · 31 days remaining"
+      ]
+    },
+    {
+      "name": "last_day",
+      "clock": "2026-09-30T12:00:00.000",
+      "clockUs": 1790780400000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$1,139/day for 1 day left",
+            "$1,139",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,139. $1,139/day for 1 day left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$1,620.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$165.51",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$1,139.49",
+        "$1,139.49 per day · 1 day remaining"
+      ]
+    },
+    {
+      "name": "last_day_late",
+      "clock": "2026-09-30T23:59:59.999",
+      "clockUs": 1790823599999000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$1,414/day for 1 day left",
+            "$1,414",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,414. $1,414/day for 1 day left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$1,620.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$165.51",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$1,414.49",
+        "$1,414.49 per day · 1 day remaining"
+      ]
+    },
+    {
+      "name": "before_gap",
+      "clock": "2026-09-05T23:59:59.999",
+      "clockUs": 1788667199999000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$174/day for 25 days left",
+            "$4,340",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $4,340. $174/day for 25 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "+$3,200.00",
+        "Expenses recorded",
+        "-$484.99",
+        "Upcoming recurring bills",
+        "-$30.00",
+        "Flexible budget reserve",
+        "-$1,270.50",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$4,339.51",
+        "$173.58 per day · 25 days remaining"
+      ]
+    },
+    {
+      "name": "gap_day",
+      "clock": "2026-09-06T01:30:00.000",
+      "clockUs": 1788669000000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g1\",\"type\":\"expense\",\"description\":\"g1\",\"amount\":12.5,\"category\":\"Eating Out\",\"date\":\"2026-09-06T01:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g2\",\"type\":\"income\",\"description\":\"g2\",\"amount\":100.0,\"category\":\"Salary\",\"date\":\"2026-09-06T01:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,667.50",
+            "$3,300 in   ·   $1,633 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,667.50 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,633",
+            "INCOME  $3,300"
+          ],
+          "value": "3fdfa91d7a91d7a9"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,300",
+            "+10.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,633",
+            "+715.9% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$185/day for 24 days left",
+            "$4,440",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $4,440. $185/day for 24 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$97.49 of $100",
+                "$2.51 left"
+              ],
+              "bar": "3fef32617c1bda51"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "g2",
+              "Salary · Sep 6",
+              "+$100.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,300.00",
+        "Income still expected",
+        "+$3,200.00",
+        "Expenses recorded",
+        "-$1,485.00",
+        "Upcoming recurring bills",
+        "-$30.00",
+        "Flexible budget reserve",
+        "-$270.50",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$4,439.50",
+        "$184.98 per day · 24 days remaining"
+      ]
+    },
+    {
+      "name": "after_gap",
+      "clock": "2026-09-07T00:00:00.000",
+      "clockUs": 1788750000000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":100.0,\"Housing\":1000.0,\"Health\":85.0,\"Pets\":49.99,\"Travel\":150.5},\"recurringTransactions\":[{\"id\":\"gym\",\"type\":\"expense\",\"description\":\"gym\",\"amount\":30.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-09-29T00:00:00.000\",\"nextOccurrence\":\"2026-09-29T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":2,\"isActive\":true},{\"id\":\"pay\",\"type\":\"income\",\"description\":\"pay\",\"amount\":3200.0,\"category\":\"Salary\",\"pattern\":\"monthly\",\"startDate\":\"2026-09-30T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":30,\"dayOfWeek\":null,\"isActive\":true}],\"savingsGoals\":[{\"id\":\"trip\",\"name\":\"trip\",\"targetAmount\":1200.0,\"currentAmount\":100.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-01T09:00:00.000\",\"completedAt\":null}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$180/day for 24 days left",
+            "$4,310",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $4,310. $180/day for 24 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $1,000",
+                "$0.01 over"
+              ],
+              "bar": "3ff0000a7c5ac472"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $400",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $85.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $49.99",
+                "$0.01 over"
+              ],
+              "bar": "3ff000d1c1d4ad17"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $151",
+                "$151 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "+$3,200.00",
+        "Expenses recorded",
+        "-$1,570.00",
+        "Upcoming recurring bills",
+        "-$30.00",
+        "Flexible budget reserve",
+        "-$215.50",
+        "Suggested goal contributions",
+        "-$275.00",
+        "Safe to spend",
+        "$4,309.50",
+        "$179.56 per day · 24 days remaining"
+      ]
+    },
+    {
+      "name": "fold_day",
+      "clock": "2026-04-04T23:30:00.000",
+      "clockUs": 1775356200000000,
+      "month": "2026-04-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i4\",\"type\":\"income\",\"description\":\"i4\",\"amount\":2000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f1\",\"type\":\"expense\",\"description\":\"f1\",\"amount\":60.0,\"category\":\"Groceries\",\"date\":\"2026-04-04T23:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f2\",\"type\":\"expense\",\"description\":\"f2\",\"amount\":15.0,\"category\":\"Eating Out\",\"date\":\"2026-04-04T23:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f3\",\"type\":\"expense\",\"description\":\"f3\",\"amount\":25.0,\"category\":\"Groceries\",\"date\":\"2026-04-05T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"p1\",\"type\":\"expense\",\"description\":\"p1\",\"amount\":500.0,\"category\":\"Housing\",\"date\":\"2026-03-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"p2\",\"type\":\"income\",\"description\":\"p2\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-03-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":100.0,\"Eating Out\":50.0},\"recurringTransactions\":[{\"id\":\"w\",\"type\":\"expense\",\"description\":\"w\",\"amount\":10.0,\"category\":\"General\",\"pattern\":\"weekly\",\"startDate\":\"2026-04-11T00:00:00.000\",\"nextOccurrence\":\"2026-04-11T00:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":6,\"isActive\":true}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "April 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,900.00",
+            "$2,000 in   ·   $100 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,900.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $100",
+            "INCOME  $2,000"
+          ],
+          "value": "3fa999999999999a"
+        },
+        "chips": [
+          [
+            "Income",
+            "$2,000",
+            "+100.0% vs March"
+          ],
+          [
+            "Expenses",
+            "$100",
+            "-80.0% vs March"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$67/day for 27 days left",
+            "$1,820",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,820. $67/day for 27 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Groceries",
+                "$85.00 of $100",
+                "$15.00 left"
+              ],
+              "bar": "3feb333333333333"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$15.00 of $50.00",
+                "$35.00 left"
+              ],
+              "bar": "3fd3333333333333"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "f3",
+              "Groceries · Apr 5",
+              "-$25.00"
+            ],
+            [
+              "f2",
+              "Eating Out · Apr 4",
+              "-$15.00"
+            ],
+            [
+              "f1",
+              "Groceries · Apr 4",
+              "-$60.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$2,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "$0.00",
+        "Upcoming recurring bills",
+        "-$30.00",
+        "Flexible budget reserve",
+        "-$150.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$1,820.00",
+        "$67.41 per day · 27 days remaining"
+      ]
+    },
+    {
+      "name": "budget_edges",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"b1\",\"type\":\"expense\",\"description\":\"b1\",\"amount\":99.999,\"category\":\"General\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b2\",\"type\":\"expense\",\"description\":\"b2\",\"amount\":50.0,\"category\":\"Eating Out\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b3\",\"type\":\"expense\",\"description\":\"b3\",\"amount\":1000.5,\"category\":\"Groceries\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b4\",\"type\":\"expense\",\"description\":\"b4\",\"amount\":15.0,\"category\":\"Housing\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b5\",\"type\":\"expense\",\"description\":\"b5\",\"amount\":123456.789,\"category\":\"Health\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b6\",\"type\":\"expense\",\"description\":\"b6\",\"amount\":20.0,\"category\":\"Travel\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b7\",\"type\":\"expense\",\"description\":\"b7\",\"amount\":20.0,\"category\":\"Clothing\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b8\",\"type\":\"expense\",\"description\":\"b8\",\"amount\":84.99,\"category\":\"Gift\",\"date\":\"2026-09-08T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b9\",\"type\":\"expense\",\"description\":\"b9\",\"amount\":85.0,\"category\":\"Family\",\"date\":\"2026-09-09T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b10\",\"type\":\"expense\",\"description\":\"b10\",\"amount\":0.0,\"category\":\"Books\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b11\",\"type\":\"expense\",\"description\":\"b11\",\"amount\":7.0,\"category\":\"groceries\",\"date\":\"2026-09-11T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b12\",\"type\":\"income\",\"description\":\"b12\",\"amount\":99999.99,\"category\":\"Salary\",\"date\":\"2026-09-12T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"b13\",\"type\":\"income\",\"description\":\"b13\",\"amount\":0.004,\"category\":\"Salary\",\"date\":\"2026-09-13T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"General\":100.0,\"Eating Out\":50.0,\"Groceries\":1000.0,\"Housing\":100.0,\"Health\":1000000.0,\"Travel\":40.0,\"Clothing\":40.0,\"Gift\":100.0,\"Family\":100.0,\"Books\":0.01,\"Pets\":1.005,\"Unknown Category\":10.0,\"groceries\":10.0}}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment",
+        "Books",
+        "Unknown Category"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$24,839.28",
+            "$100,000 in   ·   $124,839 out",
+            "SHORT THIS MONTH"
+          ],
+          "semantics": "Cash flow, $24,839.28 short this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $124,839",
+            "INCOME  $100,000"
+          ],
+          "value": "3ff3f96ac945ef41"
+        },
+        "chips": [
+          [
+            "Income",
+            "$100,000",
+            "+100.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$124,839",
+            "+100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Projected shortfall",
+            "Add income or reduce planned spending",
+            "$901,552",
+            "DETAILS"
+          ],
+          "semantics": "Projected shortfall $901,552. Add income or reduce planned spending. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Health",
+                "$123,457 of $1,000,000",
+                "$876,543 left"
+              ],
+              "bar": "3fbf9add37396360"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$1,001 of $1,000",
+                "$0.50 over"
+              ],
+              "bar": "3ff0020c49ba5e35"
+            },
+            {
+              "texts": [
+                "General",
+                "$100.00 of $100",
+                "$0.00 left"
+              ],
+              "bar": "3fefffeb074a771c"
+            },
+            {
+              "texts": [
+                "Family",
+                "$85.00 of $100",
+                "$15.00 left"
+              ],
+              "bar": "3feb333333333333"
+            },
+            {
+              "texts": [
+                "Gift",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$50.00 of $50.00",
+                "$0.00 left"
+              ],
+              "bar": "3ff0000000000000"
+            },
+            {
+              "texts": [
+                "Clothing",
+                "$20.00 of $40.00",
+                "$20.00 left"
+              ],
+              "bar": "3fe0000000000000"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$20.00 of $40.00",
+                "$20.00 left"
+              ],
+              "bar": "3fe0000000000000"
+            },
+            {
+              "texts": [
+                "Housing",
+                "$15.00 of $100",
+                "$85.00 left"
+              ],
+              "bar": "3fc3333333333333"
+            },
+            {
+              "texts": [
+                "Books",
+                "$0.00 of $0.01",
+                "$0.01 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$0.00 of $1.00",
+                "$1.00 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Unknown Category",
+                "$0.00 of $10.00",
+                "$10.00 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "b13",
+              "Salary · Sep 13",
+              "+$0.00"
+            ],
+            [
+              "b12",
+              "Salary · Sep 12",
+              "+$99,999.99"
+            ],
+            [
+              "b11",
+              "groceries · Sep 11",
+              "-$7.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Projected shortfall",
+        "What you have spent and reserved for the rest of this month is more than the income you expect.",
+        "Income recorded",
+        "+$99,999.99",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$124,839.28",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$876,712.24",
+        "Suggested goal contributions",
+        "$0.00",
+        "Projected shortfall",
+        "$901,551.52",
+        "Add income or reduce planned spending to close the shortfall · 3 days remaining"
+      ]
+    },
+    {
+      "name": "all_budgeted",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"General\":100.0,\"Eating Out\":100.0,\"Groceries\":100.0,\"Housing\":100.0,\"Transportation\":100.0,\"Travel\":100.0,\"Clothing\":100.0,\"Gift\":100.0,\"Health\":100.0,\"Entertainment\":100.0,\"Pets\":100.0,\"Family\":100.0,\"Loan Payment\":100.0}}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,580.00",
+            "$3,200 in   ·   $1,620 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,580.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $1,620",
+            "INCOME  $3,200"
+          ],
+          "value": "3fe0333333333333"
+        },
+        "chips": [
+          [
+            "Income",
+            "$3,200",
+            "+6.7% vs August"
+          ],
+          [
+            "Expenses",
+            "$1,620",
+            "+709.6% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$233/day for 3 days left",
+            "$700",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $700. $233/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Housing",
+                "$1,000 of $100",
+                "$900 over"
+              ],
+              "bar": "4024000d1b71758e"
+            },
+            {
+              "texts": [
+                "Groceries",
+                "$400 of $100",
+                "$300 over"
+              ],
+              "bar": "4010000000000000"
+            },
+            {
+              "texts": [
+                "Health",
+                "$85.00 of $100",
+                "$15.00 left"
+              ],
+              "bar": "3feb333333333333"
+            },
+            {
+              "texts": [
+                "Eating Out",
+                "$84.99 of $100",
+                "$15.01 left"
+              ],
+              "bar": "3feb32617c1bda51"
+            },
+            {
+              "texts": [
+                "Pets",
+                "$50.00 of $100",
+                "$50.00 left"
+              ],
+              "bar": "3fe0000000000000"
+            },
+            {
+              "texts": [
+                "Clothing",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Entertainment",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Family",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "General",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Gift",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Loan Payment",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Transportation",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            },
+            {
+              "texts": [
+                "Travel",
+                "$0.00 of $100",
+                "$100 left"
+              ],
+              "bar": "0000000000000000"
+            }
+          ],
+          "add": null
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "s6",
+              "Pets · Sep 7",
+              "-$50.00"
+            ],
+            [
+              "s5",
+              "Health · Sep 6",
+              "-$85.00"
+            ],
+            [
+              "s4",
+              "Housing · Sep 5",
+              "-$1,000.01"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$3,200.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$1,620.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$880.01",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$699.99",
+        "$233.33 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "year_boundary",
+      "clock": "2027-01-15T10:00:00.000",
+      "clockUs": 1800018000000000,
+      "month": "2027-01-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"j1\",\"type\":\"income\",\"description\":\"j1\",\"amount\":2500.0,\"category\":\"Salary\",\"date\":\"2027-01-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"j2\",\"type\":\"expense\",\"description\":\"j2\",\"amount\":300.0,\"category\":\"Groceries\",\"date\":\"2027-01-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"d1\",\"type\":\"income\",\"description\":\"d1\",\"amount\":2000.0,\"category\":\"Salary\",\"date\":\"2026-12-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"d2\",\"type\":\"expense\",\"description\":\"d2\",\"amount\":900.0,\"category\":\"Housing\",\"date\":\"2026-12-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":350.0}}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "January 2027",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$2,200.00",
+            "$2,500 in   ·   $300 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $2,200.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $300",
+            "INCOME  $2,500"
+          ],
+          "value": "3fbeb851eb851eb8"
+        },
+        "chips": [
+          [
+            "Income",
+            "$2,500",
+            "+25.0% vs December"
+          ],
+          [
+            "Expenses",
+            "$300",
+            "-66.7% vs December"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$126/day for 17 days left",
+            "$2,150",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $2,150. $126/day for 17 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Groceries",
+                "$300 of $350",
+                "$50.00 left"
+              ],
+              "bar": "3feb6db6db6db6db"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "j2",
+              "Groceries · Jan 3",
+              "-$300.00"
+            ],
+            [
+              "j1",
+              "Salary · Jan 1",
+              "+$2,500.00"
+            ],
+            [
+              "d2",
+              "Housing · Dec 3",
+              "-$900.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$2,500.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$300.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$50.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$2,150.00",
+        "$126.47 per day · 17 days remaining"
+      ]
+    },
+    {
+      "name": "delta_down",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e8\",\"type\":\"expense\",\"description\":\"e8\",\"amount\":200.0,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,000.00",
+            "$1,000 in   ·   $0 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,000.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $0",
+            "INCOME  $1,000"
+          ],
+          "value": "0000000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$1,000",
+            "+0.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$0",
+            "-100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$333/day for 3 days left",
+            "$1,000",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,000. $333/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "i9",
+              "Salary · Sep 1",
+              "+$1,000.00"
+            ],
+            [
+              "e8",
+              "Groceries · Aug 2",
+              "-$200.00"
+            ],
+            [
+              "i8",
+              "Salary · Aug 1",
+              "+$1,000.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$1,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "$0.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$1,000.00",
+        "$333.33 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "delta_thirds",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":4000.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e9\",\"type\":\"expense\",\"description\":\"e9\",\"amount\":100.0,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e8\",\"type\":\"expense\",\"description\":\"e8\",\"amount\":300.0,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$3,900.00",
+            "$4,000 in   ·   $100 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $3,900.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $100",
+            "INCOME  $4,000"
+          ],
+          "value": "3f9999999999999a"
+        },
+        "chips": [
+          [
+            "Income",
+            "$4,000",
+            "+33.3% vs August"
+          ],
+          [
+            "Expenses",
+            "$100",
+            "-66.7% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$1,300/day for 3 days left",
+            "$3,900",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $3,900. $1,300/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "e9",
+              "Groceries · Sep 2",
+              "-$100.00"
+            ],
+            [
+              "i9",
+              "Salary · Sep 1",
+              "+$4,000.00"
+            ],
+            [
+              "e8",
+              "Groceries · Aug 2",
+              "-$300.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$4,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$100.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$3,900.00",
+        "$1,300.00 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "delta_new_income",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"e8\",\"type\":\"expense\",\"description\":\"e8\",\"amount\":50.0,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$1,000.00",
+            "$1,000 in   ·   $0 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $1,000.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $0",
+            "INCOME  $1,000"
+          ],
+          "value": "0000000000000000"
+        },
+        "chips": [
+          [
+            "Income",
+            "$1,000",
+            "+100.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$0",
+            "-100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$333/day for 3 days left",
+            "$1,000",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $1,000. $333/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "i9",
+              "Salary · Sep 1",
+              "+$1,000.00"
+            ],
+            [
+              "e8",
+              "Groceries · Aug 2",
+              "-$50.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$1,000.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "$0.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$1,000.00",
+        "$333.33 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "recent_activity",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"r1\",\"type\":\"expense\",\"description\":\"r1\",\"amount\":12.0,\"category\":\"Groceries\",\"date\":\"2026-09-27T09:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-27T09:01:00.000\",\"updatedAt\":\"2026-09-27T09:01:00.000\"},{\"id\":\"r2\",\"type\":\"expense\",\"description\":\"Lunch\",\"amount\":13.0,\"category\":\"Eating Out\",\"date\":\"2026-09-27T18:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-27T18:05:00.000\",\"updatedAt\":\"2026-09-27T18:05:00.000\"},{\"id\":\"r3\",\"type\":\"income\",\"description\":\"r3\",\"amount\":500.0,\"category\":\"Salary\",\"date\":\"2026-09-27T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-27T20:00:00.000\",\"updatedAt\":\"2026-09-27T20:00:00.000\"},{\"id\":\"r4\",\"type\":\"expense\",\"description\":\"\",\"amount\":9.99,\"category\":\"Gift\",\"date\":\"2026-09-27T07:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-27T20:00:00.000\",\"updatedAt\":\"2026-09-27T20:00:00.000\"},{\"id\":\"r5\",\"type\":\"expense\",\"description\":\"r5\",\"amount\":40.0,\"category\":\"Health\",\"date\":\"2026-09-26T12:00:00.000\",\"recurringTemplateId\":\"gym\",\"tagIds\":[],\"createdAt\":\"2026-09-26T12:00:00.000\",\"updatedAt\":\"2026-09-26T12:00:00.000\"},{\"id\":\"r6\",\"type\":\"expense\",\"description\":\"r6\",\"amount\":7.0,\"category\":\"Books\",\"date\":\"2026-10-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-20T00:00:00.000\",\"updatedAt\":\"2026-09-20T00:00:00.000\"},{\"id\":\"r7\",\"type\":\"expense\",\"description\":\"r7\",\"amount\":6.0,\"category\":\"Pets\",\"date\":\"2026-09-06T01:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-06T08:00:00.000\",\"updatedAt\":\"2026-09-06T08:00:00.000\"},{\"id\":\"r8\",\"type\":\"expense\",\"description\":\"r8\",\"amount\":5.0,\"category\":\"Pets\",\"date\":\"2026-04-04T23:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-04-04T23:40:00.000\",\"updatedAt\":\"2026-04-04T23:40:00.000\"}],\"categoryBudgetLimits\":{\"Groceries\":20.0}}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment",
+        "Books"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$419.01",
+            "$500 in   ·   $81 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $419.01 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $81",
+            "INCOME  $500"
+          ],
+          "value": "3fc4bbc2b94d9408"
+        },
+        "chips": [
+          [
+            "Income",
+            "$500",
+            "+100.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$81",
+            "+100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$137/day for 3 days left",
+            "$411",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $411. $137/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [
+            {
+              "texts": [
+                "Groceries",
+                "$12.00 of $20.00",
+                "$8.00 left"
+              ],
+              "bar": "3fe3333333333333"
+            }
+          ],
+          "add": [
+            "Add a budget",
+            "Set a limit for another category"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "r6",
+              "Books · Oct 2",
+              "-$7.00"
+            ],
+            [
+              "Transaction",
+              "Gift · Sep 27",
+              "-$9.99"
+            ],
+            [
+              "r3",
+              "Salary · Sep 27",
+              "+$500.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$500.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$80.99",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "-$8.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$411.01",
+        "$137.00 per day · 3 days remaining"
+      ]
+    },
+    {
+      "name": "recent_ties",
+      "clock": "2026-09-28T09:15:00.000",
+      "clockUs": 1790597700000000,
+      "month": "2026-09-01T00:00:00.000",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"t0\",\"type\":\"expense\",\"description\":\"t0\",\"amount\":10.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"},{\"id\":\"t1\",\"type\":\"income\",\"description\":\"t1\",\"amount\":11.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"},{\"id\":\"t2\",\"type\":\"expense\",\"description\":\"t2\",\"amount\":12.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"},{\"id\":\"t3\",\"type\":\"income\",\"description\":\"t3\",\"amount\":13.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"},{\"id\":\"t4\",\"type\":\"expense\",\"description\":\"t4\",\"amount\":14.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"},{\"id\":\"t5\",\"type\":\"income\",\"description\":\"t5\",\"amount\":15.0,\"category\":\"General\",\"date\":\"2026-09-10T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-10T12:00:00.000\",\"updatedAt\":\"2026-09-10T12:00:00.000\"}]}",
+      "expenseCategories": [
+        "General",
+        "Eating Out",
+        "Groceries",
+        "Housing",
+        "Transportation",
+        "Travel",
+        "Clothing",
+        "Gift",
+        "Health",
+        "Entertainment",
+        "Pets",
+        "Family",
+        "Loan Payment"
+      ],
+      "page": {
+        "pill": "September 2026",
+        "hero": {
+          "texts": [
+            "CASH FLOW",
+            "$3.00",
+            "$39 in   ·   $36 out",
+            "SAVED THIS MONTH"
+          ],
+          "semantics": "Cash flow, $3.00 this month."
+        },
+        "gauge": {
+          "texts": [
+            "SPENT  $36",
+            "INCOME  $39"
+          ],
+          "value": "3fed89d89d89d89e"
+        },
+        "chips": [
+          [
+            "Income",
+            "$39",
+            "+100.0% vs August"
+          ],
+          [
+            "Expenses",
+            "$36",
+            "+100.0% vs August"
+          ]
+        ],
+        "card": {
+          "texts": [
+            "Safe to spend",
+            "$1/day for 3 days left",
+            "$3",
+            "DETAILS"
+          ],
+          "semantics": "Safe to spend $3. $1/day for 3 days left. Double tap for breakdown."
+        },
+        "budgets": {
+          "rows": [],
+          "add": [
+            "Add a budget",
+            "No monthly limits yet"
+          ]
+        },
+        "recent": {
+          "empty": false,
+          "rows": [
+            [
+              "t5",
+              "General · Sep 10",
+              "+$15.00"
+            ],
+            [
+              "t4",
+              "General · Sep 10",
+              "-$14.00"
+            ],
+            [
+              "t3",
+              "General · Sep 10",
+              "+$13.00"
+            ]
+          ]
+        }
+      },
+      "sheet": [
+        "Safe to spend",
+        "A forward-looking estimate for the rest of this month.",
+        "Income recorded",
+        "+$39.00",
+        "Income still expected",
+        "$0.00",
+        "Expenses recorded",
+        "-$36.00",
+        "Upcoming recurring bills",
+        "$0.00",
+        "Flexible budget reserve",
+        "$0.00",
+        "Suggested goal contributions",
+        "$0.00",
+        "Safe to spend",
+        "$3.00",
+        "$1.00 per day · 3 days remaining"
+      ]
+    }
+  ]
+}
