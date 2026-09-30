@@ -375,18 +375,17 @@ public struct FinancialData: Sendable {
         }
         var next = template.applying(edit)
         if next.scheduleKey != template.scheduleKey {
-            var cursor = next.startDate
-            if let last = transactions.filter({ $0.recurringTemplateId == id }).map(\.date).max() {
-                var guardCount = 0
-                while (cursor < last || calendar.isSameDay(cursor, last)) && guardCount < 5000 {
-                    cursor = RecurringGenerator.nextOccurrence(of: next, after: cursor, calendar: calendar)
-                    guardCount += 1
-                }
-            }
-            next = next.with(nextOccurrence: cursor)
+            next = next.with(nextOccurrence: RecurringTemplate.editedCursor(
+                previous: template, edit: edit, lastGenerated: lastGeneratedDate(forTemplate: id), calendar: calendar))
         }
         templateRows[index] = .record(next)
         return true
+    }
+
+    /// The latest date among readable transactions generated from this
+    /// template (`recurringTemplateId`), or nil when there are none.
+    public func lastGeneratedDate(forTemplate id: String) -> DartDateTime? {
+        transactions.filter { $0.recurringTemplateId == id }.map(\.date).max()
     }
 
     @discardableResult

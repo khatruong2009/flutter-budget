@@ -349,6 +349,28 @@ public struct RecurringTemplate: Identifiable, Hashable, Sendable {
         [pattern.rawValue, startDate.toIso8601String(), dayOfMonth.map(String.init) ?? "-"]
     }
 
+    /// The cursor an edit leaves (approved divergence Q2; Dart resets it to
+    /// the start date, which re-generates occurrences that already exist).
+    /// An unchanged schedule (pattern, start date, day of month) keeps the
+    /// cursor. A changed one restarts at the new start date, stepped until
+    /// it is strictly after `lastGenerated` (the latest occurrence already
+    /// generated for this template, not on the same day either).
+    public static func editedCursor(
+        previous: RecurringTemplate, edit: Edit, lastGenerated: DartDateTime?, calendar: DartCalendar
+    ) -> DartDateTime {
+        let next = previous.applying(edit)
+        guard next.scheduleKey != previous.scheduleKey else { return previous.nextOccurrence }
+        var cursor = next.startDate
+        if let last = lastGenerated {
+            var guardCount = 0
+            while (cursor < last || calendar.isSameDay(cursor, last)) && guardCount < 5000 {
+                cursor = RecurringGenerator.nextOccurrence(of: next, after: cursor, calendar: calendar)
+                guardCount += 1
+            }
+        }
+        return cursor
+    }
+
     func applying(_ edit: Edit) -> RecurringTemplate {
         var next = self
         if edit.type != type { next.type = edit.type; next.raw["type"] = .string(edit.type.rawValue) }

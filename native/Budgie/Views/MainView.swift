@@ -3,9 +3,10 @@ import SwiftUI
 
 /// The shell (D2): the native tab bar with Home, Worth, Goals, Spend and
 /// Flow, each tab in its own navigation stack (Liquid Glass on iOS 26+).
-/// Settings is pushed from Home's gear. Also hosts the unsaved-changes
-/// banner, the toasts and the app lock, and opens the add form for quick
-/// actions / widget / deep links (`AddFormPresenter`).
+/// Settings is pushed from Home's gear. Shows the onboarding tour in place
+/// of the tabs on first launch. Also hosts the unsaved-changes banner, the
+/// toasts and the app lock, and opens the add form for quick actions /
+/// widget / deep links (`AddFormPresenter`).
 struct MainView: View {
     @Environment(AppModel.self) private var model
     @State private var tab: Tab = .home
@@ -13,6 +14,26 @@ struct MainView: View {
     enum Tab: Hashable { case home, worth, goals, spend, flow }
 
     var body: some View {
+        // The first-launch tour replaces the tabs until it is completed or
+        // skipped. It is content, not a cover, so the lock screen and the
+        // privacy cover of `.appLock()` stay above it (Flutter's gate order).
+        Group {
+            if model.showsOnboarding {
+                OnboardingView()
+            } else {
+                tabs
+            }
+        }
+        // Opens over the current tab and anything presented on it
+        // (Flutter), once unlocked and past the tour (D14, 1A.8).
+        .onChange(of: model.pendingAdd, initial: true) { _, _ in AddFormPresenter.openPendingAdd(model) }
+        .onChange(of: model.canOpenRoutes) { _, _ in AddFormPresenter.openPendingAdd(model) }
+        // Above the tab bar (49pt).
+        .toastHost(bottomInset: model.showsOnboarding ? 0 : 49)
+        .appLock()
+    }
+
+    private var tabs: some View {
         TabView(selection: $tab) {
             NavigationStack { HomeView() }
                 .tabItem { Label("Home", systemImage: "dollarsign.circle") }
@@ -35,13 +56,6 @@ struct MainView: View {
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.hasUnsavedChanges { UnsavedChangesBanner() }
         }
-        // Opens over the current tab and anything presented on it
-        // (Flutter), once unlocked (D14, 1A.8).
-        .onChange(of: model.pendingAdd, initial: true) { _, _ in AddFormPresenter.openPendingAdd(model) }
-        .onChange(of: model.canOpenRoutes) { _, _ in AddFormPresenter.openPendingAdd(model) }
-        // Above the tab bar (49pt).
-        .toastHost(bottomInset: 49)
-        .appLock()
     }
 }
 

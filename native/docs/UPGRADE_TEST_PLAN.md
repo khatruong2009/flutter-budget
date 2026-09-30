@@ -77,7 +77,9 @@ container).
 
 ### S4: locked / prewarmed launch
 
-1. Erase; install Flutter; inject `store/typical`; install Swift.
+1. Erase; install Flutter; inject `store/typical` and
+   `flutter.onboarding_completed = true` (so the data, not the tour, shows);
+   install Swift.
 2. Launch Swift with `BUDGIE_SIMULATE_LOCKED_SECONDS=12`; after 4 s:
    - [ ] Store files unchanged (mtimes), no `pre-native-migration/`, no
      summary written, "Unlock your iPhone" on screen.
@@ -90,7 +92,8 @@ test is on the pre-ship list.
 
 ### S5: damaged files
 
-1. `store/primary_truncated`: Swift restores the primary from the backup
+1. `store/primary_truncated` (onboarding flag preset as in S4): Swift
+   restores the primary from the backup
    (same revision Dart restores), shows the data.
 2. `store/both_corrupt`: Swift sets both files aside as `.corrupt-<ms>`,
    shows "Your data couldn't be read", writes nothing else (approved

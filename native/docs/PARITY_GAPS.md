@@ -14,7 +14,7 @@ UPGRADE_TEST_RESULTS.md).
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. As in Flutter there is no rule edit, enable switch, amount bounds or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
-| Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
+| Onboarding tour | `flutter.onboarding_completed` | Flag shared with Flutter (`OnboardingFlag`: a CFBoolean true under the same key; missing or another type shows the tour), read at launch after protected data is available, written when the tour is completed or skipped. Available: the three-page tour shows once, in place of the tabs and inside the lock gate (differences under "Deliberate differences"). |
 | Backup export/import (JSON envelope v3) | files chosen by the user | BudgieCore export, decode, restore and pre-restore safety copy are done and match Flutter byte for byte (Fixtures/backup; differences below); the Settings rows still open the "upcoming" page until the UI lands. |
 | CSV import | ledger | Not available. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
@@ -215,6 +215,75 @@ UPGRADE_TEST_RESULTS.md).
   or before the last generated occurrence. Pause/resume is available.
 - Generated recurring transactions and the advanced cursor are saved in
   one write (Flutter saves them separately; a crash in between duplicates).
+- Recurring form "Next 3 Occurrences" while editing starts at the cursor the
+  edit will leave (`RecurringTemplate.editedCursor`: what will really be
+  generated next). Flutter previews from the start date, because its edit
+  resets the cursor there. Adding previews from the start date as Flutter
+  does (Fixtures/recurring, five zones).
+- Recurring form: no Day of Week wheel for weekly/biweekly; `dayOfWeek`
+  stores the start date's weekday (Flutter stores the wheel's value, which
+  can contradict the start date). Nothing in either app reads `dayOfWeek`.
+- Recurring form: the Day of Month wheel follows the picked start day until
+  the wheel is touched (Flutter's defaults to today's day and never
+  follows); the preview uses the wheel's value, as Flutter's does.
+- Recurring form: "Start date cannot be more than 1 year in the past"
+  applies only to a start set in this form (a new template, or an edit that
+  picked a different day), never to an untouched stored start (Flutter
+  refuses to save any edit of a template that started over a year ago). The
+  picker offers only days that pass the rule (`RecurringForm.startDateRange`):
+  Flutter also offers the day of `now - 365 days`, whose midnight always
+  fails unless it is exactly midnight. Re-picking the stored start's own
+  day keeps the stored value and its time, so the schedule and cursor stay
+  (Flutter stores that day's midnight).
+- Recurring form amount: NaN and Infinity are refused with "Please enter a
+  valid number" (Flutter's `double.tryParse` lets NaN through `<= 0` and
+  saves it); the locale's decimal separator is accepted.
+- Recurring "Generate Due Transactions": one awaited write of rows and
+  cursors; "Due transactions generated and next occurrences updated" is
+  shown verbatim, also when nothing was due (Flutter), but a failed write
+  shows the save-failed toast instead (Flutter ignores the result).
+  Deleting a template is awaited too: "Recurring transaction deleted" only
+  after a verified write.
+- Recurring page look (D1, D15): the system navigation bar with the
+  redesign title instead of Flutter's gradient `ModernAppBar`; GlowCards
+  with a tinted 44pt category tile (income green, else accent) and the
+  amount in income green or primary text (Flutter: solid red/green 48pt
+  tile, amount in the type colour); the Edit/Delete buttons are redesign
+  pills, with Delete in danger (Flutter: both secondary). A third
+  "Pause"/"Resume" pill and a "Paused" chip carry the approved pause
+  (the MVP's swipe action; a ScrollView of cards has none). The empty state
+  adds an "Add Recurring" pill (Flutter has no add action on this page;
+  the "+" in the bar is the approved one).
+- Recurring form: a sheet with the redesign fields instead of Flutter's
+  centred dialog, with the Expense/Income toggle when adding (Flutter's
+  type is fixed by the caller); an edit keeps the type fixed as Flutter.
+- Recurrence glyph on every transaction row with a template id (Home
+  Recent activity, Flow preview and Flow SEE ALL too; Flutter shows it only
+  on the Recurring card, the Home SEE ALL month list and the category
+  drill-in), and ", recurring" in those rows' VoiceOver text.
+- Onboarding gate order: the flag is read once per launch, synchronously,
+  after the protected-data wait and before the data screens appear (no
+  loading spinner, and a prewarmed launch cannot read it as missing). A
+  quick action, widget or `budgetapp://` link arriving during the tour stays
+  queued and opens when the tour is completed or skipped (Flutter opens the
+  form over the tour). Completing sets the flag and closes the tour at once
+  (`UserDefaults` writes cannot fail; Flutter closes it in a `finally`), so
+  the button never shows Flutter's spinner.
+- Onboarding page 3 copy (D2, no More tab): "...and Spend, Flow, and
+  Settings (behind the gear on Home) help you understand and manage your
+  budget." (Flutter: "Spend, Flow, and More"). Page 1 keeps Flutter's
+  privacy sentence until voice ships (the OpenAI mention comes with it).
+- Onboarding symbols (D3): `wallet.bifold.fill` (`creditcard.fill` before
+  iOS 18), `chart.bar.xaxis.ascending` and `chart.xyaxis.line` stand in for
+  Material's `account_balance_wallet`, `add_chart` and `insights` (no plus
+  on page 2, no sparkles on page 3), drawn at 40pt so the glyphs are the
+  size of Flutter's 52pt icon boxes.
+- Onboarding accessibility and large text: the page dots are one adjustable
+  VoiceOver element ("Tutorial page, 2 of 3"; swipe up or down to change
+  page), and Continue announces the new page (Flutter only labels the dots
+  and the pages). At large Dynamic Type sizes a page scrolls (Flutter's
+  column overflows), and the Skip and Continue buttons grow with their
+  text.
 - Both store files unreadable: Swift stops with "Your data couldn't be read"
   until the user chooses to start empty (Flutter silently starts empty). The
   set-aside `.corrupt-*` files are kept in both.

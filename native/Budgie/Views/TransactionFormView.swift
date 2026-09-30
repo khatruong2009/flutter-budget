@@ -476,7 +476,7 @@ struct TransactionFormView: View {
 
 /// A wheel row (transaction_form.dart:300-335): a 28pt radius-8 tile in the
 /// type colour with a white category symbol, gap 16, the name.
-private struct CategoryWheelRow: View {
+struct CategoryWheelRow: View {
     let name: String
     let info: CategoryInfo?
     let color: Color
@@ -503,7 +503,7 @@ private struct CategoryWheelRow: View {
 /// the type gradient with a white label (and a spinner while saving),
 /// secondary is outlined. Presses to 0.95 with a light haptic; 0.38 opacity
 /// when disabled.
-private struct FormButton: View {
+struct FormButton: View {
     let title: String
     /// nil is the outlined secondary button.
     let fill: LinearGradient?

@@ -45,6 +45,12 @@ struct Toast: Identifiable, Equatable {
     static var allocationAdded: Toast { Toast(message: "Allocation added") }
     static var goalDeleted: Toast { Toast(message: "Savings goal deleted") }
 
+    /// Recurring page (recurring_transactions_page.dart:133-139, 158-165),
+    /// both income green in Flutter. `dueGenerated` shows even when nothing
+    /// was due, as in Flutter.
+    static var dueGenerated: Toast { Toast(message: "Due transactions generated and next occurrences updated") }
+    static var recurringDeleted: Toast { Toast(message: "Recurring transaction deleted") }
+
     /// After adding a transaction dated outside the month on screen:
     /// "Added to September", or "Added to September 2025" in another year.
     static func addedTo(month: DartDateTime, now: DartDateTime) -> Toast {

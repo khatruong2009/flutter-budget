@@ -2,7 +2,8 @@
 # Home screen integration check on a dedicated "Budgie-System" simulator
 # (created fresh; no other simulator is touched):
 #   1. the Flutter build is installed and launched once (it registers its
-#      three dynamic quick actions, including "Add by Voice");
+#      three dynamic quick actions, including "Add by Voice"), then the
+#      onboarding flag is preset so no tour holds the routes back;
 #   2. SystemIntegrationUITests installs the Swift build over it and drives
 #      SpringBoard: leftover Flutter quick action, Swift quick actions,
 #      budgetapp:// links through the system prompt, and the Quick Add widget.
@@ -22,6 +23,28 @@ xcrun simctl install "$UDID" "$FLUTTER_APP"
 xcrun simctl launch "$UDID" com.khatruong.budgetbuddy >/dev/null
 sleep 15
 xcrun simctl terminate "$UDID" com.khatruong.budgetbuddy || true
+# Nobody finished the Flutter build's tour, so the onboarding flag is absent
+# and the Swift app would keep every quick action and link queued behind its
+# own tour. Preset it as for a user who finished the tour: a CFBoolean under
+# flutter.onboarding_completed in the app container's plist. `simctl spawn
+# defaults write` does not reach the container, and the plist is only read
+# back reliably when edited with the simulator shut down.
+PREFS="$(xcrun simctl get_app_container "$UDID" com.khatruong.budgetbuddy data)/Library/Preferences/com.khatruong.budgetbuddy.plist"
+xcrun simctl shutdown "$UDID"
+python3 - "$PREFS" <<'PY'
+import os, plistlib, sys
+path = sys.argv[1]
+domain = {}
+if os.path.exists(path):
+    with open(path, "rb") as f:
+        domain = plistlib.load(f)
+domain["flutter.onboarding_completed"] = True
+os.makedirs(os.path.dirname(path), exist_ok=True)
+with open(path, "wb") as f:
+    plistlib.dump(domain, f, fmt=plistlib.FMT_BINARY)
+PY
+xcrun simctl boot "$UDID"
+xcrun simctl bootstatus "$UDID" -b >/dev/null
 cd "$NATIVE" && xcodegen generate >/dev/null
 rm -rf "$WORK/result.xcresult"
 xcodebuild build-for-testing -project Budgie.xcodeproj -scheme Budgie -destination "id=$UDID" \

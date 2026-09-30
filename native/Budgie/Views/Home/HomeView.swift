@@ -363,10 +363,13 @@ private struct RecentRow: View {
                     color: BudgieColor.accent)
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(record.description.isEmpty ? "Transaction" : record.description)
-                    .textStyle(.rowTitle)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(record.description.isEmpty ? "Transaction" : record.description)
+                        .textStyle(.rowTitle)
+                        .foregroundStyle(BudgieColor.textPrimary)
+                        .lineLimit(1)
+                    if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
+                }
                 Text("\(record.category) \u{00B7} \(day)")
                     .textStyle(.rowSubtitle)
                     .foregroundStyle(BudgieColor.textSecondary)
@@ -385,7 +388,9 @@ private struct RecentRow: View {
         // same while the description stays findable on its own.
         .accessibilityElement(children: .combine)
         .accessibilityLabel(record.description.isEmpty ? "Transaction" : record.description)
-        .accessibilityValue("\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))")
+        .accessibilityValue(
+            "\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))"
+                + (record.isRecurring ? ", recurring" : ""))
         .accessibilityAddTraits(.isStaticText)
     }
 }

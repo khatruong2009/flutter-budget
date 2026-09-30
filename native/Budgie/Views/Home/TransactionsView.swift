@@ -282,7 +282,7 @@ private struct TransactionRow: View {
                             .textStyle(.labelLarge)
                             .foregroundStyle(BudgieColor.textPrimary)
                             .multilineTextAlignment(.leading)
-                        if record.recurringTemplateId != nil { RecurrenceGlyph(size: 16).fixedSize() }
+                        if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
                     }
                     Text("\(record.category) \u{2022} \(DartDateFormat.MMMd(record.date))")
                         .textStyle(.caption)
@@ -309,6 +309,7 @@ private struct TransactionRow: View {
         // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(
             "\(record.description), \(isIncome ? "income" : "expense") \(amount), category \(record.category), on \(DartDateFormat.yMMMMd(record.date))"
+                + (record.isRecurring ? ", recurring" : "")
         )
         .accessibilityHint("Double tap to edit, swipe left to delete")
     }

@@ -6,13 +6,24 @@ import Foundation
 public enum RecurringGenerator {
     /// `_calculateNextOccurrence`.
     public static func nextOccurrence(of template: RecurringTemplate, after from: DartDateTime, calendar: DartCalendar) -> DartDateTime {
-        switch template.pattern {
+        nextOccurrence(pattern: template.pattern, dayOfMonth: template.dayOfMonth, after: from, calendar: calendar)
+    }
+
+    /// `_calculateNextOccurrence` for a bare schedule. The generator, the
+    /// model's `calculateNextOccurrence` and the form's
+    /// `_calculatePreviewDates` share this arithmetic character for
+    /// character. Monthly: the day, clamped to the next month's length, at
+    /// midnight (Dart's lenient `DateTime(y, m, d)`, so a midnight that does
+    /// not exist becomes 01:00). Dart dereferences `dayOfMonth!`; without a
+    /// day this falls back to `from`'s day (Dart would crash).
+    public static func nextOccurrence(
+        pattern: RecurrencePattern, dayOfMonth: Int?, after from: DartDateTime, calendar: DartCalendar
+    ) -> DartDateTime {
+        switch pattern {
         case .weekly: return from.adding(days: 7)
         case .biweekly: return from.adding(days: 14)
         case .monthly:
-            // `_calculateNextMonthlyOccurrence`: the template's day, clamped to
-            // the next month's length, at midnight. Dart dereferences
-            // `dayOfMonth!`; a monthly template without it cannot be generated.
+            // `_calculateNextMonthlyOccurrence`.
             let f = from.fields
             var nextMonth = f.month + 1
             var nextYear = f.year
@@ -21,9 +32,36 @@ public enum RecurringGenerator {
                 nextYear += 1
             }
             let daysInMonth = calendar.date(nextYear, nextMonth + 1, 0).day
-            let day = template.dayOfMonth ?? f.day
+            let day = dayOfMonth ?? f.day
             return calendar.date(nextYear, nextMonth, day > daysInMonth ? daysInMonth : day)
         }
+    }
+
+    /// The form's "Next 3 Occurrences" (`_calculatePreviewDates`,
+    /// recurring_transaction_form.dart:713-743): `start` verbatim (time of
+    /// day and microseconds kept), then each next occurrence from the one
+    /// before. For a new template this is exactly what the generator writes.
+    public static func previewOccurrences(
+        pattern: RecurrencePattern, start: DartDateTime, dayOfMonth: Int?, count: Int = 3, calendar: DartCalendar
+    ) -> [DartDateTime] {
+        guard count > 0 else { return [] }
+        var dates = [start]
+        while dates.count < count {
+            dates.append(nextOccurrence(pattern: pattern, dayOfMonth: dayOfMonth, after: dates[dates.count - 1], calendar: calendar))
+        }
+        return dates
+    }
+
+    /// The preview while editing (approved divergence): from the cursor the
+    /// edit will leave (`RecurringTemplate.editedCursor`), so it shows what
+    /// will really be generated next. Flutter previews from the start date
+    /// because its edit resets the cursor there.
+    public static func previewOccurrences(
+        editing template: RecurringTemplate, _ edit: RecurringTemplate.Edit, lastGenerated: DartDateTime?, count: Int = 3,
+        calendar: DartCalendar
+    ) -> [DartDateTime] {
+        let cursor = RecurringTemplate.editedCursor(previous: template, edit: edit, lastGenerated: lastGenerated, calendar: calendar)
+        return previewOccurrences(pattern: edit.pattern, start: cursor, dayOfMonth: edit.dayOfMonth, count: count, calendar: calendar)
     }
 
     public struct Result: Sendable {

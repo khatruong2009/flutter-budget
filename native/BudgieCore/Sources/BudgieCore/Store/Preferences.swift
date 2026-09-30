@@ -99,6 +99,29 @@ public extension PreferencesStore {
     }
 }
 
+/// The first-launch tour's flag (onboarding_tutorial.dart:29-49), shared
+/// with the Flutter build: a CFBoolean `true` under
+/// `flutter.onboarding_completed`, only ever written true.
+public enum OnboardingFlag {
+    /// Flutter `getBool(onboarding_completed) ?? false`. A value of another
+    /// type reads as not completed (Dart's `getBool` throws on it and the
+    /// gate then shows the tour).
+    public static func isCompleted(_ preferences: some PreferencesStore) -> Bool {
+        preferences.bool(PreferenceKey.onboardingCompleted) ?? false
+    }
+
+    /// Flutter `setBool(onboarding_completed, true)`.
+    public static func markCompleted(_ preferences: some PreferencesStore) {
+        preferences.set(.bool(true), forKey: PreferenceKey.onboardingCompleted)
+    }
+
+    /// Removes the flag so the tour shows again. Neither app does this;
+    /// UI tests and scripted runs use it to force a first launch.
+    public static func reset(_ preferences: some PreferencesStore) {
+        preferences.set(nil, forKey: PreferenceKey.onboardingCompleted)
+    }
+}
+
 /// `NSUserDefaults.standard`, read through the app's persistent domain (as
 /// the Flutter plugin does), so argument and registration domains never leak
 /// into what counts as stored data.

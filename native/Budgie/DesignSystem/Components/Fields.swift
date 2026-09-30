@@ -70,12 +70,15 @@ struct BudgieField: View {
 
 /// Date row (`_DatePickerTile`): chip surface, radius 14, 1pt card border,
 /// padding 16; calendar symbol, label over value, chevron (right, or down
-/// for the Worth editor's `expand_more`). Light haptic.
+/// for the Worth editor's `expand_more`). Light haptic. With `error` the
+/// symbol and label turn danger and the border 1.5pt danger (the recurring
+/// form's start date).
 struct DateTile: View {
     let label: String
     let value: String
     var symbol = "calendar"
     var trailingSymbol = "chevron.right"
+    var error = false
     let action: () -> Void
 
     @State private var taps = 0
@@ -88,10 +91,10 @@ struct DateTile: View {
             HStack(spacing: 14) {
                 Image(systemName: symbol)
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(BudgieColor.textSecondary)
+                    .foregroundStyle(error ? BudgieColor.danger : BudgieColor.textSecondary)
                     .frame(width: 20)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(label).textStyle(.rowSubtitle).foregroundStyle(BudgieColor.textSecondary)
+                    Text(label).textStyle(.rowSubtitle).foregroundStyle(error ? BudgieColor.danger : BudgieColor.textSecondary)
                     Text(value).textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary)
                 }
                 Spacer(minLength: 8)
@@ -101,7 +104,9 @@ struct DateTile: View {
             }
             .padding(16)
             .background(BudgieColor.chipSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(error ? BudgieColor.danger : BudgieColor.cardBorder, lineWidth: error ? 1.5 : 1))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

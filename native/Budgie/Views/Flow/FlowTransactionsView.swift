@@ -675,11 +675,14 @@ private struct ResultRow: View {
             HStack(spacing: 12) {
                 IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent)
                 VStack(alignment: .leading, spacing: 3) {
-                    // A blank description keeps its line, as in Flutter.
-                    Text(record.description.isEmpty ? " " : record.description)
-                        .textStyle(.rowTitle)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
+                    HStack(spacing: 6) {
+                        // A blank description keeps its line, as in Flutter.
+                        Text(record.description.isEmpty ? " " : record.description)
+                            .textStyle(.rowTitle)
+                            .foregroundStyle(BudgieColor.textPrimary)
+                            .lineLimit(1)
+                        if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
+                    }
                     Text(row.flowSubtitle)
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
@@ -701,6 +704,7 @@ private struct ResultRow: View {
         // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(
             "\(record.description.isEmpty ? "Transaction" : record.description), \(record.category), \(DartDateFormat.yMMMMd(record.date)), \(amount)"
+                + (record.isRecurring ? ", recurring" : "")
         )
         .accessibilityHint("Double tap to edit, swipe left to delete")
         .accessibilityIdentifier("flow.all.row")

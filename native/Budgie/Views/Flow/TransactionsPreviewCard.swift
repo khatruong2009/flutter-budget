@@ -44,11 +44,14 @@ private struct FlowTransactionRow: View {
             HStack(spacing: 12) {
                 IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent)
                 VStack(alignment: .leading, spacing: 3) {
-                    // Flutter shows a blank line for an empty description.
-                    Text(record.description.isEmpty ? " " : record.description)
-                        .textStyle(.rowTitle)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
+                    HStack(spacing: 6) {
+                        // Flutter shows a blank line for an empty description.
+                        Text(record.description.isEmpty ? " " : record.description)
+                            .textStyle(.rowTitle)
+                            .foregroundStyle(BudgieColor.textPrimary)
+                            .lineLimit(1)
+                        if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
+                    }
                     Text("\(record.category) \u{00B7} \(day)")
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
@@ -68,7 +71,9 @@ private struct FlowTransactionRow: View {
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
         // Read like Home's recent-activity rows: the description, then the rest.
         .accessibilityLabel(record.description.isEmpty ? "Transaction" : record.description)
-        .accessibilityValue("\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))")
+        .accessibilityValue(
+            "\(record.category), \(day), \(isIncome ? "income" : "expense") \(formatter.format(record.amount))"
+                + (record.isRecurring ? ", recurring" : ""))
         .accessibilityHint("Opens all transactions")
         .accessibilityIdentifier("flow.preview.row")
     }

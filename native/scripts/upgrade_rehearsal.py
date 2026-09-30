@@ -30,6 +30,9 @@ BUNDLE = "com.khatruong.budgetbuddy"
 GROUP = "group.com.khatruong.budgetbuddy"
 SIM_NAME = "Budgie-Rehearsal"
 SCRATCH = Path(os.environ.get("BUDGIE_REHEARSAL_SCRATCH", tempfile.gettempdir())) / "budgie-rehearsal"
+# The onboarding flag of a user who finished the tour. Without it both
+# builds open on the tour, not the data the screenshots are for.
+ONBOARDED = {"flutter.onboarding_completed": {"type": "bool", "value": True}}
 
 
 def run(cmd, check=True, env=None, **kw):
@@ -424,6 +427,8 @@ class Rehearsal:
         self.fresh()
         self.sim.install(self.flutter_app)
         inject_store(self.sim, FIXTURES / "store" / "typical" / "input")
+        # A user who finished the tour, so "2-after-unlock" shows the data.
+        inject_prefs(self.sim, ONBOARDED)
         self.sim.install(self.swift_app)
         # Reinstalling moves the data container; resolve paths afterwards.
         support = self.sim.data_container() / "Library" / "Application Support"
@@ -477,6 +482,8 @@ class Rehearsal:
         self.fresh()
         self.sim.install(self.flutter_app)
         inject_store(self.sim, FIXTURES / "store" / "primary_truncated" / "input")
+        # A user who finished the tour, so the shot shows the restored data.
+        inject_prefs(self.sim, ONBOARDED)
         self.sim.install(self.swift_app)
         self.swift_launch(name, "1-truncated-primary")
         self.sim.terminate()

@@ -560,14 +560,74 @@ radius 12, above the tab bar (`toastHost`).
 
 ## Recurring
 
-List of `data.templates` (active first, then paused), each showing
-description, amount, pattern ("Weekly", "Every 2 weeks", "Monthly on the
-31st"), next date (`nextOccurrence`), and a Paused badge. Swipe actions:
-Pause/Resume (`setTemplateActive`), Delete (confirm). "+" opens the template
-form: type, description, amount, category, frequency (weekly / biweekly /
-monthly), start date, day of month (1-31, monthly only; default the start
-date's day). `dayOfWeek` = start date's Dart weekday (Mon=1..Sun=7) for
-weekly/biweekly, nil for monthly. Edit uses `updateTemplate`.
+`Views/Recurring/` (`recurring_transactions_page.dart`,
+`recurring_transaction_form.dart`, on the redesign tokens: D1, D15).
+Pushed from Settings > DATA "Recurring transactions". System bar with the
+principal title "Recurring Transactions" (`cardTitle`) and a trailing
+group: refresh (`arrow.clockwise`, "Generate Due Transactions",
+`recurring.generate`) and "+" ("Add recurring transaction",
+`recurring.add`).
+
+- Generate: `model.generateDueNow()`, then its toast: "Due transactions
+  generated and next occurrences updated" (also when nothing was due) or
+  the save-failed toast. The button is disabled while it runs.
+- Empty state (`recurring.empty`): 120pt `primaryGradient` circle with a
+  white `repeat` glyph, "No Recurring Transactions" (`headingLarge`), "Create
+  recurring transactions to automatically\ngenerate expenses and income on
+  a schedule" (`bodyMedium`, secondary), centred, padding 32; plus a filled
+  "Add Recurring" pill (Swift only).
+- List: `data.templates`, active first then paused, each in stored order,
+  `RecurringCard`s 8pt apart, padding 16. Card (`recurring.card`, a
+  GlowCard with padding 16): 44pt `IconTile` (category icon, income green
+  or accent; fallback `bag.fill` / `dollarsign`), description (`cardTitle`)
+  with a 16pt `RecurrenceGlyph` and, when paused, a warning "Paused" chip,
+  the category (`rowSubtitle`, tertiary), the amount (`amount`, income
+  green or primary text, masked by Hide balances); a hairline with 16pt
+  above and below; two columns "Pattern" (`repeat`; Weekly / Bi-weekly /
+  Monthly) and "Next Occurrence" (`calendar`; `MMM dd, yyyy`), labels
+  `caption` w600 secondary, values `bodySmall`; then three 44pt outlined
+  pills: Edit (accent), Pause (warning) / Resume (income), Delete (danger),
+  stacked vertically when they do not fit (large text). A paused card's
+  content is at 0.65 opacity, its buttons are not. VoiceOver: one summary
+  element (`recurring.summary`) "description, income|expense, amount,
+  category, pattern, next occurrence date[, paused]", then the three
+  buttons (`recurring.edit`, `recurring.pause`, `recurring.delete`).
+- Pause / Resume: `setTemplateActive`, save-failed toast on a failed write.
+- Delete: alert "Delete Recurring Transaction?", message `This will stop
+  generating future transactions for "<description>". Previously generated
+  transactions will not be affected.`, Cancel / Delete (destructive, heavy
+  haptic); the awaited `deleteTemplate` shows "Recurring transaction
+  deleted" or the save-failed toast.
+
+Form (`RecurringFormView`, a sheet with `budgieSheetChrome`, large detent;
+also swapped in place into the transaction form by "Make this recurring"):
+title "Add|Edit Recurring Expense|Income" (`headingMedium`); the
+Expense/Income pills when adding only; Amount (`BudgieField`, currency
+symbol, "0.00", decimal pad, focused on open; prefill
+`toStringAsFixed(2)`); Description ("What is this for?"); "Category" wheel,
+"Recurrence Pattern" wheel (Weekly, Bi-weekly, Monthly; default Monthly) and,
+for monthly, "Day of Month" wheel 1-31 (90pt boxes, chip surface, radius 12,
+1.5pt border, selection haptic); "Start Date" `DateTile` (`MMM dd, yyyy`;
+danger border, label and icon with the error below it) opening
+`DayPickerSheet` over `RecurringForm.startDateRange`; the "Next 3
+Occurrences" card (`eye`, `EEEE, MMM dd, yyyy` lines, `bodySmall`); footer
+Cancel (outlined) and Save / Update (expense or income gradient, spinner
+while saving, interactive dismiss disabled). The start is
+`RecurringForm.resolvedStart` (the form-open moment with its time, a picked
+day at midnight, an edit's stored value). Day of Month follows the picked
+start day until the wheel is moved. Save runs `RecurringForm.validate`
+(all three errors at once, the first announced to VoiceOver; typing clears
+the amount / description error, a pick re-checks the date), then
+`addTemplate` / `updateTemplate` with `RecurringForm.edit`, and dismisses
+after the awaited Bool (save-failed toast on false). The preview is
+`previewOccurrences(pattern:start:...)` when adding and
+`previewOccurrences(editing:...)` from the cursor the edit will leave when
+editing (`lastGeneratedDate` is read once when the form opens).
+
+Recurrence glyph: every transaction row shows a 16pt `RecurrenceGlyph`
+after the description when `isRecurring` (Home Recent activity, Home SEE
+ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
+", recurring" to the row's VoiceOver label or value.
 
 ## Settings
 
@@ -578,6 +638,45 @@ weekly/biweekly, nil for monthly. Edit uses `updateTemplate`.
   biometry name; enabling requires a successful authentication first.
 - Export CSV: `ShareLink` of `model.exportCSV()` ("Export transactions").
 - About: version, "Data diagnostics" (the existing `DiagnosticsView`).
+
+## Onboarding (spec full-app/07 section B; Flutter `onboarding_tutorial.dart`)
+
+Shown once, when `flutter.onboarding_completed` is not true
+(`model.showsOnboarding`, read at bootstrap): `MainView` shows
+`OnboardingView` instead of the tabs, before `.appLock()`, so the lock
+screen and privacy cover sit above it (not a `fullScreenCover`). Skip and
+"Start budgeting" call `model.completeOnboarding()`; the tabs replace the
+tour at once (Home) and a queued quick action, widget tap or link opens
+then. Launch hook (DEBUG): `BUDGIE_SKIP_ONBOARDING=1` starts past the tour,
+`=0` removes the flag.
+
+- Background `background`; padding 24 / 8 top / 24 bottom inside the safe
+  area. "Skip" top right: accent, Gabarito Medium 14 (+0.1), 64x48 minimum.
+- Pager: a paged `TabView`, swipeable. Each page, centred (scrolls at large
+  text sizes), padding 8: a 116pt circle (accent 14%) with a `GlowHalo`
+  (blur 32, alpha 0.25; the light-mode ambient version in light) holding a
+  40pt accent symbol (`wallet.bifold.fill` or `creditcard.fill`,
+  `chart.bar.xaxis.ascending`, `chart.xyaxis.line`); 48pt; eyebrow
+  (`.eyebrow`, accent); 16pt; title (`.displayMedium`, primary, header);
+  16pt; body (Gabarito 17, -0.4, line height 1.45, secondary, max width
+  390).
+- Copy: WELCOME TO BUDGIE / "Your money, made clearer." / "Budgie keeps
+  your budget simple and private. Financial data and insights stay on this
+  device unless you choose to export or share a backup."; START HERE /
+  "Track what comes and goes." / "On Home, use the add button for income or
+  expenses. Your balance and recent activity update as you go."; EXPLORE
+  WHEN READY / "Plan ahead, then look back." / "Worth tracks accounts, Goals
+  keeps savings in view, and Spend, Flow, and Settings (behind the gear on
+  Home) help you understand and manage your budget."
+- Dots: active 22x8 accent capsule, others 8x8 `border`, 4pt margins,
+  resized over 150ms linear. VoiceOver: one adjustable element "Tutorial
+  page", value "n of 3".
+- 24pt, then a full-width button (min 56pt, radius 16, accent fill,
+  `onAccent` Gabarito Medium 14): "Continue" moves to the next page (300ms
+  easeInOut; a jump under Reduce Motion) and announces it to VoiceOver;
+  "Start budgeting" on page 3.
+- Identifiers: `onboarding.skip`, `onboarding.next`, `onboarding.dots`,
+  `onboarding.page.<n>`.
 
 ## App lock
 

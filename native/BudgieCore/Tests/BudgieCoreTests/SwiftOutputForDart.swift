@@ -32,13 +32,20 @@ enum SwiftOutput {
     /// given, is Swift's export of this store as the app would make it after
     /// a launch (`backup.json`); the verifier compares it with Flutter's
     /// export of the same store, decodes it, and restores it into an empty
-    /// store to export it again.
+    /// store to export it again. `recurring`, when given, is what Dart's
+    /// `RecurringTransactionModel` must load (every field, stored order,
+    /// amounts as `toString`); `dartGenerateAddsNothing` asks the verifier
+    /// to run Dart's generator at the launch clock afterwards and fail if it
+    /// adds a row or moves a cursor (Swift already generated everything due).
+    /// `onboardingCompleted`, when given, is what Flutter's onboarding gate
+    /// must read from the preferences (true: no tour).
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
         appSettings: AppSettings? = nil, themeMode: String? = nil, categories: FinancialData? = nil,
         categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
-        newRuleIDs: [String] = [], backup: Backup? = nil
+        newRuleIDs: [String] = [], backup: Backup? = nil, recurring: FinancialData? = nil,
+        dartGenerateAddsNothing: Bool = false, onboardingCompleted: Bool? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -118,6 +125,15 @@ enum SwiftOutput {
                 "themeMode": backup.themeMode,
             ]
         }
+        if let recurring {
+            swift["recurringTemplates"] = recurring.templates.map { t -> [Any] in
+                [t.id, t.type.rawValue, t.description, DartDouble.format(t.amount), t.category, t.pattern.rawValue,
+                 t.startDate.toIso8601String(), t.nextOccurrence.toIso8601String(), t.dayOfMonth as Any? ?? NSNull(),
+                 t.dayOfWeek as Any? ?? NSNull(), t.isActive]
+            }
+        }
+        if dartGenerateAddsNothing { swift["dartGenerateAddsNothing"] = true }
+        if let onboardingCompleted { swift["onboardingCompleted"] = onboardingCompleted }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -265,6 +281,48 @@ struct SwiftOutputForDartTests {
                                                       category: "Housing", pattern: .monthly, startDate: calendar.date(2026, 1, 15),
                                                       dayOfMonth: 15, dayOfWeek: nil))
             data.setTemplateActive(id: weekly.id, false)
+
+            // Templates as the recurring form writes them (AppModel.addTemplate:
+            // add, then generate), then edits, then the page's "Generate Due
+            // Transactions" (AppModel.generateDueNow). The untouched default
+            // start is the moment the form opened (microseconds kept); a
+            // picked day is midnight; the Day of Month wheel can differ from
+            // the start day; weekly/biweekly store the start's weekday.
+            func formAdd(_ edit: RecurringTemplate.Edit) -> RecurringTemplate {
+                let template = RecurringTemplate.make(
+                    id: id(), type: edit.type, description: edit.description, amount: edit.amount, category: edit.category,
+                    pattern: edit.pattern, startDate: edit.startDate, dayOfMonth: edit.dayOfMonth, dayOfWeek: edit.dayOfWeek)
+                data.addTemplate(template)
+                _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: id)
+                return template
+            }
+            let opened = now.adding(microseconds: -4_321_987)
+            let formWeekly = formAdd(RecurringForm.edit(
+                type: .expense, description: "Swift gym ☕️", amount: 12.5, category: "Health", pattern: .weekly,
+                start: RecurringForm.resolvedStart(picked: nil, stored: nil, openedAt: opened, calendar: calendar), dayOfMonth: opened.day))
+            let formMonthly = formAdd(RecurringForm.edit(
+                type: .income, description: "Swift \"side\" gig", amount: 0.1 + 0.2, category: "Salary", pattern: .monthly,
+                start: calendar.date(2026, 8, 5), dayOfMonth: 29))
+            let formBiweekly = formAdd(RecurringForm.edit(
+                type: .expense, description: "Swift cleaner", amount: 80, category: "Housing", pattern: .biweekly,
+                start: calendar.date(2026, 7, 6), dayOfMonth: 6))
+            // Edits: the schedule kept (cursor kept), the pattern changed
+            // (cursor recomputed past the rows already generated), the start
+            // re-picked on its own day (stored value kept).
+            data.updateTemplate(id: formWeekly.id, RecurringForm.edit(
+                type: .expense, description: "Swift gym (edited)", amount: 13, category: "Health", pattern: .weekly,
+                start: formWeekly.startDate, dayOfMonth: 1))
+            data.updateTemplate(id: formBiweekly.id, RecurringForm.edit(
+                type: .expense, description: "Swift cleaner", amount: 80, category: "Housing", pattern: .weekly,
+                start: calendar.date(2026, 7, 1), dayOfMonth: 6))
+            data.updateTemplate(id: formMonthly.id, RecurringForm.edit(
+                type: .income, description: "Swift \"side\" gig", amount: 0.1 + 0.2, category: "Salary", pattern: .monthly,
+                start: RecurringForm.resolvedStart(
+                    picked: calendar.date(2026, 8, 5), stored: formMonthly.startDate, openedAt: now, calendar: calendar),
+                dayOfMonth: 20))
+            // The manual generate after every template edit above: Dart's
+            // launch generator must then find nothing due.
+            _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: id)
             data.appSettings.baseCurrencyCode = "EUR"
             data.appSettings.appLockEnabled.toggle()
 
@@ -438,7 +496,8 @@ struct SwiftOutputForDartTests {
                 budgetLimits: data.budgetLimits, netWorth: data, goals: data, categories: data,
                 categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)), tagsRules: data,
                 newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } },
-                backup: try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now))
+                backup: try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now),
+                recurring: data, dartGenerateAddsNothing: true)
         }
     }
 
@@ -460,10 +519,13 @@ struct SwiftOutputForDartTests {
             apply(data.appSettings.setHideBalances(!data.appSettings.hideBalances))
             // AppModel.setThemeMode writes only this preference.
             scenario.preferences.set(.string("dark"), forKey: PreferenceKey.themeMode)
+            // AppModel.completeOnboarding: Flutter must not show its tour
+            // again after a downgrade.
+            OnboardingFlag.markCompleted(scenario.preferences)
             var snapshot = try await store.updateSections([(Section.appSettings, data.appSettingsSection())])
             try SwiftOutput.emit(
                 "settings-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
-                appSettings: data.appSettings, themeMode: "dark")
+                appSettings: data.appSettings, themeMode: "dark", onboardingCompleted: true)
 
             // "Match device" removes the locale mirror and writes null.
             apply(data.appSettings.setLocaleOverride(nil))

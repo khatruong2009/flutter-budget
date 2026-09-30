@@ -12,8 +12,12 @@
 //                       "themeMode", "categories", "categoriesAddedAtLaunch",
 //                       "transactionCategories", "templateCategories",
 //                       "ruleCategories", "transactionTags",
-//                       "categorizationRules": what the Dart models must hold;
+//                       "categorizationRules", "recurringTemplates": what the
+//                       Dart models must hold;
 //                       "newTagIds", "newRuleIds": rows Swift made;
+//                       "dartGenerateAddsNothing": run Dart's generator last
+//                       and fail if it adds rows or moves cursors;
+//                       "onboardingCompleted": what the onboarding gate reads;
 //                       optional "backup": {"appVersion", "exportedAt", "themeMode"}}
 //   backup.json        optional: Swift's backup export of this store after a
 //                       launch (see verifyBackup)
@@ -27,7 +31,9 @@ import 'dart:math';
 import 'package:budget_app/backup.dart';
 import 'package:budget_app/categorization_rule.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
+import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
+import 'package:budget_app/transaction_generator.dart';
 import 'package:budget_app/transaction_tag.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -408,6 +414,24 @@ void main() {
             }
           }
         }
+        // Recurring templates the Swift side wrote (the form's add and edit
+        // paths, pause, generation): Dart must load exactly these.
+        compareRows('recurringTemplates', [
+          for (final r in app.recurringModel.recurringTransactions)
+            [
+              r.id,
+              r.type.name,
+              r.description,
+              r.amount.toString(),
+              r.category,
+              r.pattern.name,
+              iso(r.startDate),
+              iso(r.nextOccurrence),
+              r.dayOfMonth,
+              r.dayOfWeek,
+              r.isActive,
+            ]
+        ]);
         final themeMode = swift['themeMode'];
         if (themeMode is String) {
           final theme = ThemeProvider();
@@ -418,9 +442,45 @@ void main() {
             problems.add('theme mode: dart ${theme.themeMode.name} swift $themeMode');
           }
         }
+        // The onboarding flag Swift wrote: the gate's own read
+        // (onboarding_tutorial.dart `_loadCompletionState`).
+        final onboardingCompleted = swift['onboardingCompleted'];
+        if (onboardingCompleted is bool) {
+          final preferences = await SharedPreferences.getInstance();
+          final completed =
+              preferences.getBool(StorageKeys.onboardingCompleted) ?? false;
+          if (completed != onboardingCompleted) {
+            problems.add('onboarding completed: dart $completed '
+                'swift $onboardingCompleted');
+          }
+        }
         if (app.transactionModel.hasUnsavedChanges ||
             app.recurringModel.hasUnsavedChanges) {
           problems.add('a model reports unsaved changes after load');
+        }
+        // Swift generated everything due at the launch clock (the form's
+        // add path and "Generate Due Transactions"): Dart's own launch
+        // generator, run last (it writes to this case's copy only), must
+        // add no row and move no cursor.
+        if (swift['dartGenerateAddsNothing'] == true) {
+          String cursors() => jsonEncode([
+                for (final r in app.recurringModel.recurringTransactions)
+                  [r.id, iso(r.nextOccurrence), r.isActive]
+              ]);
+          final rowsBefore = app.transactionModel.transactions.length;
+          final cursorsBefore = cursors();
+          await TransactionGenerator(
+            transactionModel: app.transactionModel,
+            recurringModel: app.recurringModel,
+          ).generateDueTransactions();
+          final added = app.transactionModel.transactions.length - rowsBefore;
+          if (added != 0) {
+            problems.add('dart generator added $added rows after Swift generated');
+          }
+          if (cursors() != cursorsBefore) {
+            problems.add('dart generator moved cursors: '
+                'before $cursorsBefore after ${cursors()}');
+          }
         }
       }
 

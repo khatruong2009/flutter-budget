@@ -55,7 +55,10 @@ final class AppModel {
     private(set) var sessionUnlocked = false
     /// The message shown by the root toast host.
     private(set) var toast: Toast?
-    /// The onboarding tour is showing (set by the onboarding flow).
+    /// The first-launch tour shows instead of the tabs: the Flutter flag
+    /// `flutter.onboarding_completed` is not true. Read in `bootstrap()`
+    /// once protected data is available; cleared by `completeOnboarding()`.
+    /// Routes stay queued while it is true (`canOpenRoutes`).
     private(set) var showsOnboarding = false
     private(set) var themeMode: ThemeMode = .system
     private(set) var hasUnsavedChanges = false
@@ -82,10 +85,16 @@ final class AppModel {
     private let storeDirectory: URL
     private let applicationSupport: URL
 
-    init() {
+    /// The app passes nothing. Tests pass a scratch Application Support
+    /// directory and a preferences suite, so a full bootstrap runs without
+    /// touching the host app's data.
+    init(applicationSupport: URL? = nil, preferences: UserDefaultsPreferences? = nil) {
         protectedData = ProtectedDataMonitor()
-        preferences = UserDefaultsPreferences(domainName: AppIdentifiers.bundleID)
-        applicationSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let preferences = preferences ?? UserDefaultsPreferences(domainName: AppIdentifiers.bundleID)
+        let applicationSupport =
+            applicationSupport ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        self.preferences = preferences
+        self.applicationSupport = applicationSupport
         storeDirectory = applicationSupport.appendingPathComponent(StoreFile.directoryName, isDirectory: true)
         let calendar = self.calendar
         store = FinancialStore(
@@ -123,12 +132,19 @@ final class AppModel {
 
         // Preferences are only trustworthy once protected data is available.
         #if DEBUG
-        // UI tests and scripted runs start past the onboarding tour.
-        if ProcessInfo.processInfo.environment["BUDGIE_SKIP_ONBOARDING"] == "1" {
-            preferences.set(.bool(true), forKey: PreferenceKey.onboardingCompleted)
+        // UI tests and scripted runs: "1" starts past the onboarding tour
+        // (the flag is written for real), "0" removes the flag so the tour
+        // shows on a simulator where an earlier run completed it.
+        switch ProcessInfo.processInfo.environment["BUDGIE_SKIP_ONBOARDING"] {
+        case "1": OnboardingFlag.markCompleted(preferences)
+        case "0": OnboardingFlag.reset(preferences)
+        default: break
         }
         #endif
         themeMode = ThemeMode(rawValue: preferences.string(PreferenceKey.themeMode) ?? "") ?? .system
+        // Flutter's gate reads the flag only once the data loaded; here it is
+        // read before, but nothing shows it until `phase` is `.ready`.
+        showsOnboarding = !OnboardingFlag.isCompleted(preferences)
 
         // Rule 1: copy everything before the first read or write.
         do {
@@ -364,6 +380,48 @@ final class AppModel {
     func deleteTemplate(id: String) async -> Bool {
         guard data != nil, data!.deleteTemplate(id: id) else { return false }
         return await persist([Section.recurringTransactions])
+    }
+
+    /// What the Recurring page's "Generate Due Transactions" did.
+    struct DueGeneration: Equatable, Sendable {
+        /// Rows written from due templates (Flutter shows no count).
+        var generated: Int
+        /// The rows and advanced cursors were written and verified, or
+        /// nothing was due. False: they are in memory only (unsaved banner).
+        var saved: Bool
+
+        /// Flutter's message, also when nothing was due; the save-failed
+        /// toast when the write failed.
+        var toast: Toast { saved ? .dueGenerated : .saveFailed }
+    }
+
+    /// `_generateDueTransactions` (recurring_transactions_page.dart:120-146):
+    /// the launch generator, run now for every due template; the rows and
+    /// the advanced cursors go to disk in one write.
+    @discardableResult
+    func generateDueNow() async -> DueGeneration {
+        guard data != nil else { return DueGeneration(generated: 0, saved: true) }
+        let result = RecurringGenerator.generateDue(in: &data!, now: now, clock: { [calendar] in calendar.now() }, newID: newID)
+        guard result.changed else { return DueGeneration(generated: 0, saved: true) }
+        if !result.generated.isEmpty { transactionsChanged() }
+        let saved = await persist([Section.transactions, Section.recurringTransactions])
+        return DueGeneration(generated: result.generated.count, saved: saved)
+    }
+
+    /// The latest transaction generated from a template, for the edit
+    /// form's preview (`RecurringGenerator.previewOccurrences(editing:...)`).
+    /// Read it once when the form opens: it scans the ledger.
+    func lastGeneratedDate(forTemplate id: String) -> DartDateTime? {
+        data?.lastGeneratedDate(forTemplate: id)
+    }
+
+    // MARK: - Onboarding
+
+    /// The tour was completed or skipped: Flutter's `setBool(onboarding_completed,
+    /// true)`, then the tabs show and any queued route opens (`canOpenRoutes`).
+    func completeOnboarding() {
+        OnboardingFlag.markCompleted(preferences)
+        showsOnboarding = false
     }
 
     // MARK: - Budgets

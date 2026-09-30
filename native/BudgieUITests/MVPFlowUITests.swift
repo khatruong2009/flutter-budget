@@ -89,16 +89,16 @@ final class MVPFlowUITests: XCTestCase {
         openSettings()
         app.buttons["Recurring transactions"].firstMatch.tap()
         app.buttons["Add recurring transaction"].tap()
-        let description = app.textFields["Description (required)"]
-        XCTAssertTrue(description.waitForExistence(timeout: 5))
-        type("UI rent", into: description)
-        type("900", into: app.textFields["Amount"])
+        let recurringAmount = app.textFields["Amount"]
+        XCTAssertTrue(recurringAmount.waitForExistence(timeout: 5))
+        type("900", into: recurringAmount)
+        type("UI rent", into: app.textFields["Description"])
         app.buttons["Save"].tap()
-        let template = app.buttons.containing(NSPredicate(format: "label CONTAINS 'UI rent'")).firstMatch
+        let template = app.descendants(matching: .any).matching(identifier: "recurring.card")
+            .containing(NSPredicate(format: "label CONTAINS 'UI rent'")).firstMatch
         XCTAssertTrue(template.waitForExistence(timeout: 5))
-        template.swipeLeft()
-        app.buttons["Pause"].tap()
-        XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS 'paused'")).firstMatch.waitForExistence(timeout: 5))
+        template.buttons["Pause"].tap()
+        XCTAssertTrue(labelled("paused").waitForExistence(timeout: 5))
 
         // Net worth is empty on a fresh install.
         tab("Worth")
