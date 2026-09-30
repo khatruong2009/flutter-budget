@@ -98,18 +98,13 @@ public enum InsightEngine {
         }
         let excluded = Set(excludedIDs.map { Array($0.utf16) })
         candidates.removeAll { excluded.contains(Array($0.id.utf16)) }
-        // Severity rank, then id by code units. Equal (severity, id) pairs
-        // keep candidate order: Dart's sort is stable up to 32 elements.
-        let sorted = candidates.enumerated().sorted { a, b in
-            if a.element.severity.rank != b.element.severity.rank {
-                return a.element.severity.rank < b.element.severity.rank
-            }
-            if !a.element.id.utf16.elementsEqual(b.element.id.utf16) {
-                return DartString.precedes(a.element.id, b.element.id)
-            }
-            return a.offset < b.offset
+        // Severity rank, then id by code units, with Dart's tie order for
+        // equal (severity, id) pairs (repeated `duplicate:` ids).
+        DartSort.sort(&candidates) { a, b in
+            let severity = DartSort.compare(a.severity.rank, b.severity.rank)
+            return severity != 0 ? severity : DartSort.compare(a.id, b.id)
         }
-        return sorted.prefix(limit).map(\.element)
+        return Array(candidates.prefix(limit))
     }
 
     /// `_slug`: trim, lowercase, every run of code units outside `[a-z0-9]`
@@ -299,14 +294,11 @@ private struct Rules {
     /// month that is at least 50 and 2.5x the median of at least four
     /// earlier positive expenses of its category outside the month.
     func unusualTransactions() -> [LocalInsight] {
-        // Newest first; equal instants keep stored order (Dart's insertion
-        // sort, up to 32 rows).
-        let current = (rowsByMonth[selectedKey] ?? [])
-            .filter { transactions[$0].type == .expense }
-            .sorted { a, b in
-                let x = transactions[a].date.microsecondsSinceEpoch, y = transactions[b].date.microsecondsSinceEpoch
-                return x != y ? x > y : a < b
-            }
+        // Newest first (`b.date.compareTo(a.date)`), equal instants in
+        // Dart's tie order.
+        let current = DartSort.sorted((rowsByMonth[selectedKey] ?? []).filter { transactions[$0].type == .expense }) {
+            DartSort.compare(transactions[$1].date.microsecondsSinceEpoch, transactions[$0].date.microsecondsSinceEpoch)
+        }
         guard !current.isEmpty else { return [] }
         // Positive expenses outside the month, by category, oldest first.
         // A candidate's history is the prefix before its instant; its median
@@ -392,10 +384,9 @@ private struct Rules {
         for key in order {
             let group = groups[key]!
             if group.rows.count < 2 { continue }
-            // Newest first; equal instants keep stored order.
-            let items = group.rows.sorted { a, b in
-                let x = transactions[a].date.microsecondsSinceEpoch, y = transactions[b].date.microsecondsSinceEpoch
-                return x != y ? x > y : a < b
+            // Newest first, equal instants in Dart's tie order.
+            let items = DartSort.sorted(group.rows) {
+                DartSort.compare(transactions[$1].date.microsecondsSinceEpoch, transactions[$0].date.microsecondsSinceEpoch)
             }
             let latest = transactions[items[0]]
             let previous = transactions[items[1]]

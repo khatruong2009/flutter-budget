@@ -11,7 +11,7 @@ UPGRADE_TEST_RESULTS.md).
 | Flutter feature | Stored in | MVP status |
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
-| Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
+| Insights | `local_insights_*` prefs | Available: the Insights section on Flow (up to three cards, "Insight options" menu with Snooze for 30 days / Dismiss). The engine and the two preferences match Flutter (Fixtures/insights; Swift-written prefs verified in Dart), so a dismissal or snooze in either app hides the same card in the other. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. As in Flutter there is no rule edit, enable switch, amount bounds or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Flag shared with Flutter (`OnboardingFlag`: a CFBoolean true under the same key; missing or another type shows the tour), read at launch after protected data is available, written when the tour is completed or skipped. Available: the three-page tour shows once, in place of the tabs and inside the lock gate (differences under "Deliberate differences"). |
@@ -96,11 +96,6 @@ UPGRADE_TEST_RESULTS.md).
   24 hours of elapsed time, so its wall-clock time moves an hour across a
   DST change. Dismissals are permanent, and neither list is ever pruned; a
   malformed snoozed preference stays until the next snooze rewrites it.
-- Insights: equal instants among the selected month's expenses (the
-  unusual-expense scan), equal dates within one recurring template, and
-  equal (severity, id) cards keep stored/candidate order (Swift stable
-  sorts); Dart's sort is not stable above 32 elements, so with more than 32
-  such rows the card chosen can differ.
 
 ## Deliberate differences (approved)
 
@@ -790,6 +785,16 @@ UPGRADE_TEST_RESULTS.md).
   surrogate becomes U+FFFD in Swift, and snoozed JSON nested more than 128
   levels deep reads as no snoozes (Dart keeps the entries before the nested
   value). Every id the engine produces is ASCII.
+- Insights UI: the "Insight options" button is an iOS `Menu` (Flutter's
+  Material popup), and the unusual-expense icon is `bell.badge.fill` for
+  Material `notification_important` (UI_SPEC "Flow: Insights"). The cards
+  are computed off the main thread: a dismissed or snoozed card goes at
+  once, and the next candidate appears when the recomputation lands (a
+  frame or two; Flutter swaps it in the same frame). The preferences are
+  read once at launch, so the section is not rebuilt (and does not pop in
+  a frame late) on each visit to Flow as Flutter's is; Flow still
+  recomputes when it appears and when the app becomes active, so a snooze
+  that ended while away shows again.
 
 ### Backup export and restore (D10)
 

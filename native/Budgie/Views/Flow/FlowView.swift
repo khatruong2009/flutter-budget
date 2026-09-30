@@ -110,11 +110,49 @@ enum FlowSheet: Identifiable {
     }
 }
 
-/// Where Flutter's `LocalInsightsSection` sits (hp:78-81), between the
-/// metric strip and the net cash flow card. Filled by the Insights stream
-/// (Phase 3); until then it renders nothing.
+/// Flutter's `LocalInsightsSection` (local_insights_section.dart:95-133,
+/// placed at hp:78-81) between the metric strip and the net cash flow card:
+/// "Insights", 12, one to three `InsightCard`s 10 apart, 8, the caption.
+/// With no cards it takes no space, leaving the two 16pt gaps (32pt).
+/// Cards are keyed by position: two can share an id.
 struct FlowInsightsSlot: View {
-    var body: some View { EmptyView() }
+    @Environment(AppModel.self) private var model
+    @Environment(\.scenePhase) private var scenePhase
+
+    var body: some View {
+        let insights = model.insights
+        Group {
+            if insights.isEmpty {
+                // Zero height, but present so the refreshes below still run.
+                Color.clear.frame(height: 0)
+            } else {
+                VStack(alignment: .leading, spacing: 0) {
+                    SectionHeader(title: "Insights")
+                    VStack(spacing: 10) {
+                        ForEach(Array(insights.enumerated()), id: \.offset) { _, insight in
+                            InsightCard(
+                                insight: insight, onSnooze: { model.snoozeInsight(id: insight.id) },
+                                onDismiss: { model.dismissInsight(id: insight.id) })
+                        }
+                    }
+                    .padding(.top, 12)
+                    Text("Calculated privately on this device \u{B7} Not financial advice")
+                        .textStyle(.caption)
+                        .foregroundStyle(BudgieColor.textTertiary)
+                        .padding(.top, Metrics.spacingS)
+                }
+                .padding(.horizontal, Metrics.pageHorizontal)
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("flow.insights")
+            }
+        }
+        // Flutter derives the cards at every build with `DateTime.now()`:
+        // a snooze can end, or the day (budget pace) move, while away.
+        .onAppear { model.refreshInsights() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { model.refreshInsights() }
+        }
+    }
 }
 
 // MARK: - Metric strip

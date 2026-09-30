@@ -44,7 +44,11 @@ final class AppModel {
     }
 
     private(set) var phase: Phase = .starting
-    private(set) var data: FinancialData?
+    /// Every change (transactions, budget limits, goals, a restore...)
+    /// recomputes the insight cards once the app is ready.
+    private(set) var data: FinancialData? {
+        didSet { if phase == .ready { refreshInsights() } }
+    }
     private(set) var loadReport: FinancialStore.LoadReport?
     private(set) var backupOutcome: PreNativeMigrationBackup.Outcome?
     /// A quick action, widget or deep link waiting to open the add form.
@@ -108,6 +112,7 @@ final class AppModel {
     /// Dart `selectMonth`: normalised to `DateTime(year, month)`.
     func selectMonth(_ month: DartDateTime) {
         selectedMonth = calendar.month(of: month)
+        refreshInsights()
     }
 
     private func newID() -> String { UUID().uuidString.lowercased() }
@@ -142,6 +147,7 @@ final class AppModel {
         }
         #endif
         themeMode = ThemeMode(rawValue: preferences.string(PreferenceKey.themeMode) ?? "") ?? .system
+        insightPreferences = InsightPreferences.load(from: preferences, timeZone: calendar.timeZone)
         // Flutter's gate reads the flag only once the data loaded; here it is
         // read before, but nothing shows it until `phase` is `.ready`.
         showsOnboarding = !OnboardingFlag.isCompleted(preferences)
@@ -211,6 +217,8 @@ final class AppModel {
             LedgerIndex.build(transactions, calendar: calendar)
         }.value
         ledgerRevision &+= 1
+        // Like the index, the first cards are ready for the first frame.
+        await updateInsights(generation: insightsGeneration)
         phase = .ready
         #if DEBUG
         await RehearsalSummary.performScriptedEditsIfRequested(self)
@@ -718,6 +726,71 @@ final class AppModel {
         guard mode != themeMode else { return }
         themeMode = mode
         preferences.set(.string(mode.rawValue), forKey: PreferenceKey.themeMode)
+    }
+
+    // MARK: - Insights (Flutter `LocalInsightsSection` on the Flow tab)
+
+    /// The dismissed and snoozed ids (`flutter.local_insights_dismissed_v1`,
+    /// `flutter.local_insights_snoozed_v1`): preferences, never the store.
+    /// Read in `bootstrap()` once protected data is available.
+    private(set) var insightPreferences = InsightPreferences()
+    /// Flow's insight cards: at most three, in the engine's order. Ids can
+    /// repeat (both cards show and go together), so views key by offset.
+    private(set) var insights: [LocalInsight] = []
+    @ObservationIgnored private var insightsTask: Task<Void, Never>?
+    /// Bumped by every refresh; a result computed for an older one is dropped.
+    @ObservationIgnored private var insightsGeneration = 0
+
+    /// Recomputes `insights` off the main thread from the stored data, the
+    /// selected month, the preferences and the clock. Runs on every data
+    /// change, month change, dismiss and snooze; Flow also calls it when it
+    /// appears and when the scene becomes active (the clock ends snoozes and
+    /// moves budget pace). Several calls in one turn compute once.
+    func refreshInsights() {
+        insightsGeneration &+= 1
+        let generation = insightsGeneration
+        insightsTask?.cancel()
+        insightsTask = Task {
+            guard !Task.isCancelled else { return }
+            await updateInsights(generation: generation)
+        }
+    }
+
+    private func updateInsights(generation: Int) async {
+        guard let data else { return }
+        let now = self.now
+        let transactions = data.transactions, budgetLimits = data.budgetLimits, savingsGoals = data.savingsGoals
+        let selectedMonth = self.selectedMonth, excluded = insightPreferences.excludedIDs(now: now), calendar = self.calendar
+        let result = await Task.detached(priority: .userInitiated) {
+            InsightEngine.generate(
+                transactions: transactions, budgetLimits: budgetLimits, savingsGoals: savingsGoals,
+                selectedMonth: selectedMonth, now: now, excludedIDs: excluded, calendar: calendar)
+        }.value
+        guard generation == insightsGeneration, result != insights else { return }
+        insights = result
+    }
+
+    /// `_dismiss`: hidden for good; the whole dismissed list is rewritten.
+    /// Like Flutter, no confirmation and no undo.
+    func dismissInsight(id: String) {
+        let write = insightPreferences.dismiss(id)
+        preferences.set(write.value, forKey: write.key)
+        hideInsight(id)
+    }
+
+    /// `_snooze`: hidden for 30 x 24 hours from now; the whole snoozed map
+    /// is rewritten.
+    func snoozeInsight(id: String) {
+        let write = insightPreferences.snooze(id, now: now)
+        preferences.set(write.value, forKey: write.key)
+        hideInsight(id)
+    }
+
+    /// Every card with the id goes at once, as Flutter's rebuild does; the
+    /// next candidate fills in when the recomputation lands.
+    private func hideInsight(_ id: String) {
+        insights.removeAll { $0.id.utf16.elementsEqual(id.utf16) }
+        refreshInsights()
     }
 
     // MARK: - Categories (category management)

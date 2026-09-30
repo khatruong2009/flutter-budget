@@ -57,7 +57,7 @@ MUST: the Swift app and widget use exactly these values. Changing a widget
 | D8 | Settings mirror keys | `flutter.base_currency_code` (String), `flutter.locale_override` (String, absent = device), `flutter.app_lock_enabled` (Bool), `flutter.auto_lock_timeout_seconds` (Int), `flutter.hide_balances` (Bool) | read as fallback, dual-written like Dart, never removed |
 | D9 | Real preferences | `flutter.themeMode` (String `light`/`dark`/`system`), `flutter.onboarding_completed` (Bool) | read/write same keys |
 | D10 | Legacy starting balances | `flutter.starting_assets`, `flutter.starting_liabilities` (Double) | read-only, never removed (Dart behaviour, section 8.4) |
-| D11 | Insight prefs | `flutter.local_insights_dismissed_v1` (StringList), `flutter.local_insights_snoozed_v1` (String JSON) | untouched (insights out of scope) |
+| D11 | Insight prefs | `flutter.local_insights_dismissed_v1` (StringList), `flutter.local_insights_snoozed_v1` (String JSON) | read and written by the Insights section on Flow, exactly as Flutter (PARITY_GAPS) |
 | D12 | Widget data | App Group suite: `cashFlow` (Double), `cashFlowMonth` (String `yyyy-MM`), no prefix; Swift also writes `budgieHideBalances` (Bool, Flutter never reads it) | written after every verified transactions save and after load; the hide flag also on every Hide balances change |
 | D13 | Permissions | Face ID consent, notification state (none requested) | carried by iOS; `NSFaceIDUsageDescription` kept verbatim |
 | D14 | Placed widgets, quick actions | SpringBoard | preserved by keeping kinds and types (section 11) |

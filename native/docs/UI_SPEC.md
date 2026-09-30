@@ -174,8 +174,8 @@ ledger's month summaries (no transaction scan).
   haptic and closes). The range drives only the bars and the metric strip;
   the month is `model.selectedMonth` (read-only here).
 - Page order (horizontal padding 20): header, 24, metric strip, 16,
-  `FlowInsightsSlot` (empty until the Insights stream; so 32pt when empty),
-  16, net cash flow, 16, year over year, 16, 12-month trend, 16,
+  `FlowInsightsSlot` (the Insights section below; nothing and so 32pt when
+  there are no cards), 16, net cash flow, 16, year over year, 16, 12-month trend, 16,
   "Transactions" / "SEE ALL", 12, preview.
 - Metric strip: equal-height chips (radius 22, padding 16): AVG SAVED / MO
   (`avgSavedText`) and SAVINGS RATE (`savingsRateText`), income colour when
@@ -210,6 +210,47 @@ ledger's month summaries (no transaction scan).
   `flow.metric.avgSaved`, `flow.metric.savingsRate`, `flow.netCashFlow`,
   `flow.bar.<yyyy-MM>`, `flow.yoy`, `flow.trend`, `flow.preview.row`,
   `flow.preview.empty`; SEE ALL is the button "See all transactions".
+
+### Flow: Insights (Flutter `LocalInsightsSection`, local_insights_section.dart)
+
+`FlowInsightsSlot` (FlowView.swift) and `InsightCard` (InsightCard.swift);
+cards from `model.insights` (BudgieCore `InsightEngine`, limit 3).
+
+- Section (padding 20): `SectionHeader("Insights")`, 12, the cards 10
+  apart, 8, "Calculated privately on this device · Not financial advice"
+  (caption, text tertiary, no inset). No cards: the slot takes no space.
+- Card: plain `GlowCard` (no tap): 40pt `IconTile` in the severity colour
+  (urgent danger, warning warning, positive income, info accent), 12, a
+  column of headline (rowTitle, primary), 4, explanation (rowSubtitle,
+  secondary), 8, suggested action (caption, severity colour), all wrapping
+  without limits; trailing `Menu` with a bold 24pt `ellipsis` in a 48pt box
+  (Flutter's 48pt IconButton, top-aligned), items "Snooze for 30 days" and
+  "Dismiss" (fixed order, no icons, no destructive role). Icons (D3):
+  pace `speedometer`, monthly change `chart.line.uptrend.xyaxis`, unusual
+  `bell.badge.fill` (Material `notification_important`, a bell), savings
+  rate `banknote`, recurring `repeat`, under budget `hand.thumbsup.fill`,
+  goal `flag.fill`, negative flow `chart.line.downtrend.xyaxis`, duplicate
+  `doc.on.doc`.
+- A menu pick acts at once: no confirmation, no undo, no haptic, no
+  animation (Flutter has none, so Reduce Motion changes nothing). Every
+  card with that id goes (ids can repeat; cards are keyed by position) and
+  the next candidate fills in when the recomputation lands.
+- Data: `AppModel` recomputes `insights` off the main thread (a generation
+  counter drops stale results) on every `data` change, month change,
+  dismiss and snooze, and when Flow appears or the scene becomes active
+  (the clock ends snoozes and moves budget pace). The first cards are
+  computed in the bootstrap before `.ready`. The dismissed/snoozed ids are
+  the two `flutter.local_insights_*` preferences, loaded after the
+  protected-data wait and written synchronously like the theme mode (never
+  the store, the retry banner or the backup). Money formatting, Hide
+  balances, currency and locale do not apply (the copy has no amounts).
+- VoiceOver: the tile and the three texts are one element with the actions
+  "Snooze for 30 days" and "Dismiss"; the menu is a separate button
+  "Insight options" (value: the headline); the header has the header trait.
+  Dynamic Type through `TextSpec`.
+- Accessibility identifiers: `flow.insights` (section), `flow.insight.card`
+  and `flow.insight.menu` (each card), `flow.insight.snooze`,
+  `flow.insight.dismiss`.
 ## Flow: all transactions (Flow "SEE ALL"; Flutter `_TransactionsDetailPage`)
 
 `FlowTransactionsView`, pushed from Flow (system back). Every transaction,

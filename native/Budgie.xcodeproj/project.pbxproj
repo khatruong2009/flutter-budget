@@ -32,6 +32,7 @@
 		2817870E0A8560BF37CACB38 /* WorthGrowthChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A226D2ABA030175D1E550B /* WorthGrowthChart.swift */; };
 		281973279A82457BDE68EAD0 /* BudgieCore in Frameworks */ = {isa = PBXBuildFile; productRef = B54562B75CAA02C6A251ACA7 /* BudgieCore */; };
 		291034520F1F8FCA0E5EEE5C /* Gabarito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DDE63388353596BAFA764E9 /* Gabarito-Regular.ttf */; };
+		300EDAE2DDB4850700D173A7 /* InsightsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82B39926BC8858254C52100 /* InsightsUITests.swift */; };
 		310FFC1574711FF99182A14F /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC281C7ED6BA5AFCAAEF93D5 /* Motion.swift */; };
 		3670039B1B91546C7355A767 /* RuleEditorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A6C45595FA738A4CA3C83 /* RuleEditorDialog.swift */; };
 		3A00F0582DF616A78CEBF1BE /* CelebrationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC61ABBB0C4A64D43AC2FB2 /* CelebrationOverlay.swift */; };
@@ -53,6 +54,7 @@
 		626B03DE04BB702D62F699F5 /* Gabarito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B252B4E7CB90F0EE19AF2304 /* Gabarito-SemiBold.ttf */; };
 		64433AACB7BA41416F428F43 /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B27A4D4782E48269084A57 /* TransactionsView.swift */; };
 		67253D481CF6D6074C69FF7C /* TabsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB6C149EE701AF5EB0C1858 /* TabsUITests.swift */; };
+		686B2F2C31484B299E48B679 /* InsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57856BC03CA1E8608F52F3D0 /* InsightCard.swift */; };
 		6D1605A29F887E72113F51C8 /* SplineSansMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */; };
 		6D4565D119A57E52E7C3DD79 /* TransactionFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8BD160059B70E88B177161 /* TransactionFormValidationTests.swift */; };
 		727666CCDFE3450761B5F522 /* SplineSansMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E69FAA56FB03F2975E37E1D4 /* SplineSansMono-Medium.ttf */; };
@@ -93,6 +95,7 @@
 		CBA2719C7FCA371933164D04 /* AddFormPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E914AC86A596DC97136FF9E /* AddFormPresenter.swift */; };
 		CBFB72E304409F034FF1BDA6 /* SpendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ECF37EA2E6079B4908AC93 /* SpendView.swift */; };
 		CCA2CC50FAB9F170B8939EC4 /* AccountEditorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A46CEDEB2213F49AA7A4A0E /* AccountEditorDialog.swift */; };
+		CD122DBCF87F3A9655FB46FE /* InsightModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3CBB30FA5FA8D668A04157 /* InsightModelTests.swift */; };
 		CEE0A6CF48F8336095F2D33A /* SpringBoardProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3C216CCEAB63E8F1DC75E1 /* SpringBoardProbe.swift */; };
 		CF91F2BB29FEC76E755BE877 /* FlowSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B3671771B9C0DC8DD24724 /* FlowSheets.swift */; };
 		CFDDCE5E5079FBD2F0A2DB72 /* ToastHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */; };
@@ -197,6 +200,7 @@
 		36BD27819DF0A258524F0996 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		37D39DC37012306B07E6140E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		3931D9B56E17B4B8A9050D56 /* RouteOverPresentationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteOverPresentationUITests.swift; sourceTree = "<group>"; };
+		3A3CBB30FA5FA8D668A04157 /* InsightModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightModelTests.swift; sourceTree = "<group>"; };
 		3E844E933EE38F40FCF2098F /* NetCashFlowCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetCashFlowCard.swift; sourceTree = "<group>"; };
 		3F4B278CBFA76447B29AB89E /* TagDialogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDialogs.swift; sourceTree = "<group>"; };
 		423B124988FC6629658BB700 /* ProtectedDataMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedDataMonitor.swift; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 		51ADA0B74BB5F802C9C663C8 /* HomeMonthPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMonthPanel.swift; sourceTree = "<group>"; };
 		55D5F50F2340127241F06169 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		56CC2E13F2374B8367D6EB80 /* RecurringUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringUITests.swift; sourceTree = "<group>"; };
+		57856BC03CA1E8608F52F3D0 /* InsightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightCard.swift; sourceTree = "<group>"; };
 		57A8EBB3AF2B4CB200A4B44C /* TransactionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormView.swift; sourceTree = "<group>"; };
 		58876583DBD69473AF4D7388 /* SpendPaletteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendPaletteTests.swift; sourceTree = "<group>"; };
 		5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Medium.ttf"; sourceTree = "<group>"; };
@@ -269,6 +274,7 @@
 		CA16D9B49C027ECF594E0A98 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D0BDFB9B0442602196E25DA6 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		D56928DBFB23A84635CC482B /* RecurringFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringFormView.swift; sourceTree = "<group>"; };
+		D82B39926BC8858254C52100 /* InsightsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsUITests.swift; sourceTree = "<group>"; };
 		DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-SemiBold.ttf"; sourceTree = "<group>"; };
 		DB963B463EA9B6FA04CB9A46 /* ToastHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastHost.swift; sourceTree = "<group>"; };
 		DBBE5D912C19A6258BE48F99 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -315,6 +321,7 @@
 				C75D0A19BC434821835CCF5C /* CategoryRowMenuTests.swift */,
 				5FF752244F61B1DE2509918D /* DayPickerDateTests.swift */,
 				FDF2F936CC7D305389BBED49 /* FontTests.swift */,
+				3A3CBB30FA5FA8D668A04157 /* InsightModelTests.swift */,
 				C619DD485C5001334ED29F30 /* OnboardingCopyTests.swift */,
 				A3081364DE33D9B77DE19520 /* RecurringOnboardingModelTests.swift */,
 				4458A9E28C360553F6FF40A7 /* RoutingTests.swift */,
@@ -384,6 +391,7 @@
 			children = (
 				AF2C15333DB4B53CEC061C60 /* CategoriesUITests.swift */,
 				9F8AD1A2FD9AF25D2A624BFB /* GoalsUITests.swift */,
+				D82B39926BC8858254C52100 /* InsightsUITests.swift */,
 				8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */,
 				F28A98176EFC962CA89B719C /* OnboardingUITests.swift */,
 				56CC2E13F2374B8367D6EB80 /* RecurringUITests.swift */,
@@ -520,6 +528,7 @@
 				84B3671771B9C0DC8DD24724 /* FlowSheets.swift */,
 				A6A7F9FE5703AC6B03F66BC2 /* FlowTransactionsView.swift */,
 				2DF1B6BD45CD3611914BF395 /* FlowView.swift */,
+				57856BC03CA1E8608F52F3D0 /* InsightCard.swift */,
 				3E844E933EE38F40FCF2098F /* NetCashFlowCard.swift */,
 				34255F0F90CB1FC435B72B63 /* TransactionsPreviewCard.swift */,
 				6D9EBB466D4272F48F68DC73 /* TrendCard.swift */,
@@ -813,6 +822,7 @@
 			files = (
 				16E5859E66AF85EACC3638A5 /* CategoriesUITests.swift in Sources */,
 				1CA4701DA16820AFD9D048D2 /* GoalsUITests.swift in Sources */,
+				300EDAE2DDB4850700D173A7 /* InsightsUITests.swift in Sources */,
 				BFC3EC7B557D4B28AD5E1E5B /* MVPFlowUITests.swift in Sources */,
 				7493165BACE175009509A326 /* OnboardingUITests.swift in Sources */,
 				D65461C43522A0FAEE51D806 /* RecurringUITests.swift in Sources */,
@@ -865,6 +875,7 @@
 				19FB5D980F78CF1BB363E8AC /* HomeHero.swift in Sources */,
 				1B9213F25E5905AD4B770CC3 /* HomeMonthPanel.swift in Sources */,
 				FBECFD4FBDB6F096E092588B /* HomeView.swift in Sources */,
+				686B2F2C31484B299E48B679 /* InsightCard.swift in Sources */,
 				F26DB5522522EBBF08088FA5 /* LicencesView.swift in Sources */,
 				0BDCBA1F7A98D49F747333A5 /* MainView.swift in Sources */,
 				A9B03492676EA93C0DFF401B /* Metrics.swift in Sources */,
@@ -933,6 +944,7 @@
 				50D19AAA5AEB0097321C1173 /* CategoryRowMenuTests.swift in Sources */,
 				F431010F0ACAD131C4E8E0C8 /* DayPickerDateTests.swift in Sources */,
 				5AC290014BC51785886288D1 /* FontTests.swift in Sources */,
+				CD122DBCF87F3A9655FB46FE /* InsightModelTests.swift in Sources */,
 				1E6662429CE0A93506A8EF0C /* OnboardingCopyTests.swift in Sources */,
 				972CC1557003B9C952B68421 /* RecurringOnboardingModelTests.swift in Sources */,
 				C0471551D352DE1BFCAF15F6 /* RoutingTests.swift in Sources */,
