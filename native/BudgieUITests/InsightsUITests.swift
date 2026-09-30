@@ -28,11 +28,6 @@ final class InsightsUITests: XCTestCase {
         app.tabBars.buttons[name].tap()
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
     /// The duplicate card whose explanation names `description`.
     private func card(_ description: String) -> XCUIElement {
         app.descendants(matching: .any).matching(NSPredicate(
@@ -47,13 +42,9 @@ final class InsightsUITests: XCTestCase {
         app.buttons["Add transaction"].tap()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
-        type("7", into: amount)
-        type(description, into: app.textFields["Description"])
-        // Return first: with the keyboard up, the tap on Add was sometimes
-        // lost on a busy machine (the form stayed open, nothing saved).
-        app.textFields["Description"].typeText("\n")
-        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "keyboard dismissed")
-        app.buttons["Add"].tap()
+        amount.enterText("7")
+        app.textFields["Description"].enterText(description)
+        app.buttons["Add"].tapSettled()
         XCTAssertTrue(amount.waitForNonExistence(timeout: 10), "form closed")
     }
 

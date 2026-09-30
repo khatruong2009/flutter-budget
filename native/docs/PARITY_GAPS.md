@@ -1148,6 +1148,14 @@ what Flutter reads or shows):
   form) is not covered by the App Lock privacy cover.
 - No iPad layout (the Flutter app is iPhone-only too).
 
+## Deliberate differences (not yet approved)
+
+- Dialog scrims (every `budgieDialog`) ignore taps while the keyboard is
+  showing, hiding or changing height (between UIKit's will- and
+  did-change-frame notifications): the keyboard moves the card then, so a
+  tap on the scrim was aimed at where the card just was, typically its
+  buttons (Flutter's barrier dismisses on any tap).
+
 ## Platform
 
 - Minimum iOS 17 (Flutter: iOS 15). Users on iOS 15/16 stay on the last

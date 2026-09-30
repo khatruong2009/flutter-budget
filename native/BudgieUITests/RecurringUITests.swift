@@ -36,26 +36,12 @@ final class RecurringUITests: XCTestCase {
         app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
     }
 
-    /// Taps once the element exists, is hittable and has stopped moving.
-    private func tapStable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertTrue(element.waitForExistence(timeout: 10), "\(element) exists", file: file, line: line)
-        let deadline = Date().addingTimeInterval(10)
-        var last = CGRect.null
-        while Date() < deadline {
-            let frame = element.frame
-            if element.isHittable && frame == last { break }
-            last = frame
-            Thread.sleep(forTimeInterval: 0.3)
-        }
-        element.tap()
-    }
-
     private func replaceText(in field: XCUIElement, with text: String) {
-        tapStable(field)
+        field.tapSettled()
         if let value = field.value as? String, !value.isEmpty, value != field.placeholderValue {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count))
         }
-        field.typeText(text)
+        field.typeSettled(text)
     }
 
     private func homeRoot() {
@@ -69,8 +55,8 @@ final class RecurringUITests: XCTestCase {
 
     private func openRecurring() {
         homeRoot()
-        tapStable(app.buttons["home.settings"])
-        tapStable(app.buttons["settings.recurring"])
+        app.buttons["home.settings"].tapSettled()
+        app.buttons["settings.recurring"].tapSettled()
         XCTAssertTrue(app.buttons["recurring.add"].waitForExistence(timeout: 10))
     }
 
@@ -128,19 +114,19 @@ final class RecurringUITests: XCTestCase {
         }
 
         // Generate Due Transactions: Flutter's toast even with nothing due.
-        tapStable(app.buttons["recurring.generate"])
+        app.buttons["recurring.generate"].tapSettled()
         XCTAssertTrue(labelled("Due transactions generated and next occurrences updated").waitForExistence(timeout: 10))
 
         // Add a monthly expense: validation first.
-        tapStable(app.buttons["recurring.add"])
+        app.buttons["recurring.add"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForExistence(timeout: 10))
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         XCTAssertTrue(app.staticTexts["Amount is required"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Description is required"].exists)
         let amount = app.textFields["Amount"]
         replaceText(in: amount, with: "0")
         XCTAssertFalse(app.staticTexts["Amount is required"].exists, "typing clears the amount error")
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         XCTAssertTrue(app.staticTexts["Amount must be greater than 0"].waitForExistence(timeout: 5))
         replaceText(in: amount, with: "900")
         replaceText(in: app.textFields["Description"], with: rent)
@@ -152,7 +138,7 @@ final class RecurringUITests: XCTestCase {
             let line = Self.format(date, "EEEE, MMM dd, yyyy")
             XCTAssertTrue(preview.label.contains(line), "monthly preview has \(line): \(preview.label)")
         }
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         // Today's occurrence is generated at once; the cursor moves a month.
         let rentNext = Self.format(monthlyDates[1], "MMM dd, yyyy")
         XCTAssertTrue(summary(rent).waitForExistence(timeout: 10))
@@ -160,9 +146,9 @@ final class RecurringUITests: XCTestCase {
         XCTAssertTrue(summary(rent).label.contains("next occurrence \(rentNext)"), summary(rent).label)
 
         // Add a weekly income: the type toggle, the pattern wheel, its preview.
-        tapStable(app.buttons["recurring.add"])
+        app.buttons["recurring.add"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForExistence(timeout: 10))
-        tapStable(app.buttons["Income"].firstMatch)
+        app.buttons["Income"].firstMatch.tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForExistence(timeout: 5))
         replaceText(in: app.textFields["Amount"], with: "50")
         replaceText(in: app.textFields["Description"], with: salary)
@@ -172,7 +158,7 @@ final class RecurringUITests: XCTestCase {
             let line = Self.format(date, "EEEE, MMM dd, yyyy")
             XCTAssertTrue(preview.label.contains(line), "weekly preview has \(line): \(preview.label)")
         }
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         let salaryNext = Self.format(weeklyDates[1], "MMM dd, yyyy")
         XCTAssertTrue(summary(salary).waitForExistence(timeout: 10))
         XCTAssertTrue(summary(salary).label.contains("Weekly"), summary(salary).label)
@@ -180,18 +166,18 @@ final class RecurringUITests: XCTestCase {
         XCTAssertTrue(summary(salary).label.contains("next occurrence \(salaryNext)"), summary(salary).label)
 
         // Pause, then resume.
-        tapStable(card(rent).buttons["recurring.pause"])
+        card(rent).buttons["recurring.pause"].tapSettled()
         XCTAssertTrue(summary("\(rent)").waitForExistence(timeout: 5))
         let paused = app.descendants(matching: .any).matching(
             NSPredicate(format: "identifier == 'recurring.summary' AND label CONTAINS %@ AND label CONTAINS 'paused'", rent)
         ).firstMatch
         XCTAssertTrue(paused.waitForExistence(timeout: 5), "paused")
         XCTAssertEqual(card(rent).buttons["recurring.pause"].label, "Resume")
-        tapStable(card(rent).buttons["recurring.pause"])
+        card(rent).buttons["recurring.pause"].tapSettled()
         XCTAssertTrue(paused.waitForNonExistence(timeout: 5), "resumed")
 
         // Edit: Flutter's title and prefill; the next occurrence is kept.
-        tapStable(card(rent).buttons["recurring.edit"])
+        card(rent).buttons["recurring.edit"].tapSettled()
         XCTAssertTrue(app.staticTexts["Edit Recurring Expense"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.buttons["recurring.form.save"].label, "Update")
         XCTAssertEqual(app.textFields["Amount"].value as? String, "900.00")
@@ -199,7 +185,7 @@ final class RecurringUITests: XCTestCase {
         XCTAssertTrue(preview.label.contains(Self.format(monthlyDates[1], "EEEE, MMM dd, yyyy")), "edit previews from the cursor")
         let edited = "UI rent edited \(suffix)"
         replaceText(in: app.textFields["Description"], with: edited)
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         XCTAssertTrue(summary(edited).waitForExistence(timeout: 10))
         XCTAssertTrue(summary(edited).label.contains("next occurrence \(rentNext)"), summary(edited).label)
 
@@ -212,20 +198,20 @@ final class RecurringUITests: XCTestCase {
         let openPrompt = springboard.buttons["Open"]
         if openPrompt.waitForExistence(timeout: 3) { openPrompt.tap() }
         XCTAssertTrue(app.staticTexts["Add Income"].waitForExistence(timeout: 10))
-        tapStable(app.buttons["Make this recurring"])
+        app.buttons["Make this recurring"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForExistence(timeout: 10))
-        tapStable(app.buttons["Cancel"].firstMatch)
+        app.buttons["Cancel"].firstMatch.tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForNonExistence(timeout: 10), "the deep link's sheet closed")
         XCTAssertFalse(app.staticTexts["Add Income"].exists)
         XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
 
-        tapStable(app.buttons["Add transaction"])
+        app.buttons["Add transaction"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Expense"].waitForExistence(timeout: 10))
-        tapStable(app.buttons["Make this recurring"])
+        app.buttons["Make this recurring"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForExistence(timeout: 10))
         replaceText(in: app.textFields["Amount"], with: "15")
         replaceText(in: app.textFields["Description"], with: madeRecurring)
-        tapStable(app.buttons["recurring.form.save"])
+        app.buttons["recurring.form.save"].tapSettled()
         XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForNonExistence(timeout: 10), "the sheet closed after Save")
         XCTAssertFalse(app.staticTexts["Add Expense"].exists)
         XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
@@ -238,14 +224,14 @@ final class RecurringUITests: XCTestCase {
         let recent = app.descendants(matching: .any).matching(
             NSPredicate(format: "label CONTAINS %@ AND value CONTAINS 'recurring'", salary)).firstMatch
         XCTAssertTrue(recent.waitForExistence(timeout: 10), "Home recent row marked recurring")
-        tapStable(app.buttons["See all transactions"].firstMatch)
+        app.buttons["See all transactions"].firstMatch.tapSettled()
         let seeAllRow = app.buttons.matching(NSPredicate(format: "label CONTAINS %@ AND label CONTAINS 'recurring'", rent)).firstMatch
         XCTAssertTrue(seeAllRow.waitForExistence(timeout: 10), "Home SEE ALL row marked recurring")
 
         // Delete both templates behind Flutter's alert.
         openRecurring()
         for name in [edited, salary, madeRecurring] {
-            tapStable(card(name).buttons["recurring.delete"])
+            card(name).buttons["recurring.delete"].tapSettled()
             let alert = app.alerts["Delete Recurring Transaction?"]
             XCTAssertTrue(alert.waitForExistence(timeout: 5))
             let message =
@@ -266,8 +252,7 @@ final class RecurringUITests: XCTestCase {
         seeAll.tap()
         let search = app.textFields["flow.all.search"]
         XCTAssertTrue(search.waitForExistence(timeout: 10))
-        search.tap()
-        search.typeText(suffix)
+        search.enterText(suffix)
         let rows = app.buttons.matching(identifier: "flow.all.row")
         XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 10))
         XCTAssertEqual(rows.count, 3)

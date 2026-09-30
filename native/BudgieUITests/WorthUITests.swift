@@ -24,22 +24,43 @@ final class WorthUITests: XCTestCase {
         app.descendants(matching: .any)[identifier]
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
     /// Replaces a field's text (the editor prefills the balance). One
     /// delete at a time: the balance field regroups its commas on every
     /// edit, and a burst of deletes races that rewrite and loses keys
     /// ("1,000" kept "10", so "1250" became "101,250").
     private func replace(_ field: XCUIElement, with text: String) {
-        field.tap()
+        field.tapSettled()
         for _ in 0..<20 {
             guard let value = field.value as? String, !value.isEmpty, value != field.placeholderValue else { break }
             field.typeText(XCUIKeyboardKey.delete.rawValue)
         }
-        field.typeText(text)
+        field.typeSettled(text)
+    }
+
+    /// Shows amounts in US dollars, unmasked, as the checks below expect.
+    /// The simulator keeps settings between runs, and MVPFlowUITests ends
+    /// with Euro and Hide balances on.
+    private func showDollarAmounts() {
+        app.tabBars.buttons["Home"].tap()
+        app.buttons["home.settings"].tapSettled()
+        let currency = app.buttons["settings.currency"]
+        XCTAssertTrue(currency.waitForExistence(timeout: 10))
+        if currency.value as? String != "US Dollar (USD)" {
+            currency.tapSettled()
+            let dollar = app.buttons["US Dollar"]
+            dollar.tapSettled()
+            XCTAssertTrue(dollar.waitForNonExistence(timeout: 5), "currency sheet closed")
+            XCTAssertEqual(currency.value as? String, "US Dollar (USD)")
+        }
+        let hide = app.switches["settings.hideBalances"]
+        XCTAssertTrue(hide.waitForExistence(timeout: 5))
+        if hide.value as? String == "1" {
+            hide.tapSettled()
+            let shown = app.switches.matching(NSPredicate(format: "identifier == 'settings.hideBalances' AND value == '0'"))
+            XCTAssertTrue(shown.firstMatch.waitForExistence(timeout: 5), "Hide balances off")
+        }
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.tabBars.buttons["Worth"].tap()
     }
 
     /// Scrolls the page until `element` is wholly above the floating tab
@@ -74,15 +95,17 @@ final class WorthUITests: XCTestCase {
     }
 
     func testAccountLifecycle() throws {
+        showDollarAmounts()
+
         // Empty state.
         XCTAssertTrue(app.staticTexts["No net worth accounts yet"].waitForExistence(timeout: 10))
 
         // Add an account from the empty state.
         app.buttons["worth.empty.add"].tap()
         XCTAssertTrue(element("worth.editor").waitForExistence(timeout: 5))
-        type(Self.account, into: app.textFields["Account name"])
-        type("1000", into: app.textFields["Asset balance"])
-        app.buttons["worth.editor.save"].tap()
+        app.textFields["Account name"].enterText(Self.account)
+        app.textFields["Asset balance"].enterText("1000")
+        app.buttons["worth.editor.save"].tapSettled()
         let row = element("worth.account.\(Self.account)")
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         XCTAssertFalse(element("worth.editor").exists)
@@ -96,7 +119,7 @@ final class WorthUITests: XCTestCase {
         XCTAssertEqual(balance.value as? String, "1,000")
         replace(balance, with: "1250")
         XCTAssertEqual(balance.value as? String, "1,250")
-        app.buttons["worth.editor.save"].tap()
+        app.buttons["worth.editor.save"].tapSettled()
         XCTAssertTrue(element("worth.editor").waitForNonExistence(timeout: 5))
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         XCTAssertEqual(row.label, "\(Self.account), $1,250")

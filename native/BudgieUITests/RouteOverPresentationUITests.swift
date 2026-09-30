@@ -40,25 +40,6 @@ final class RouteOverPresentationUITests: XCTestCase {
         XCTAssertTrue(title(formTitle).waitForNonExistence(timeout: 5), "\(formTitle) did not close", file: file, line: line)
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
-    /// Taps `element` once it has stopped moving. Switching between the
-    /// text keyboard and the decimal pad moves the form's footer, and a tap
-    /// aimed at Add while it moved landed on the keypad ("5" became "59").
-    private func tapOnceStill(_ element: XCUIElement) {
-        var frame = element.frame
-        for _ in 0..<20 {
-            usleep(300_000)
-            let now = element.frame
-            if now == frame { break }
-            frame = now
-        }
-        element.tap()
-    }
-
     func testRoutesOpenOverWhateverIsPresented() throws {
         // Nothing presented: the route opens the form and it saves.
         route("budgetapp://add-income")
@@ -71,9 +52,9 @@ final class RouteOverPresentationUITests: XCTestCase {
         XCTAssertTrue(pickerCancel.waitForExistence(timeout: 5))
         pickerCancel.tap()
         XCTAssertTrue(pickerCancel.waitForNonExistence(timeout: 5))
-        type("Routed income", into: app.textFields["Description"])
-        type("5", into: amount)
-        tapOnceStill(app.buttons["Add"])
+        app.textFields["Description"].enterText("Routed income")
+        amount.enterText("5")
+        app.buttons["Add"].tapSettled()
         XCTAssertTrue(title("Add Income").waitForNonExistence(timeout: 5))
         // Home rows are combined accessibility elements, not buttons.
         let row = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS 'Routed income'")).firstMatch
@@ -121,7 +102,7 @@ final class RouteOverPresentationUITests: XCTestCase {
         app.buttons["goals.fab"].tap()
         let goalName = app.textFields["Goal name"]
         XCTAssertTrue(goalName.waitForExistence(timeout: 5))
-        type("Kept", into: goalName)
+        goalName.enterText("Kept")
         route("budgetapp://add-income")
         XCTAssertTrue(title("Add Income").waitForExistence(timeout: 10))
 

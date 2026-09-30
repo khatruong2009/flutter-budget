@@ -69,7 +69,7 @@ final class BackupUITests: XCTestCase {
             screen.element("backup.confirm.message").label,
             "This will import 3 transactions, 0 net worth entries, 1 budgets, 0 goals and 0 recurring templates, "
                 + "replacing everything currently in Budgie. This cannot be undone.")
-        screen.tapStable(screen.element("backup.confirm.cancel"))
+        screen.element("backup.confirm.cancel").tapSettled()
         XCTAssertTrue(screen.waitUntil(5) { !title.exists })
         XCTAssertFalse(screen.labelled("Backup restored").waitForExistence(timeout: 2))
         XCTAssertEqual(screen.transactionCount(), before, "Cancel changes nothing")
@@ -126,21 +126,6 @@ struct SettingsDataScreen {
         return false
     }
 
-    /// Taps once the element exists, is hittable and has stopped moving
-    /// (dialog entrances and scrolling shift it).
-    func tapStable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertTrue(element.waitForExistence(timeout: 10), "\(element) exists", file: file, line: line)
-        let deadline = Date().addingTimeInterval(10)
-        var last = CGRect.null
-        while Date() < deadline {
-            let frame = element.frame
-            if element.isHittable && frame == last { break }
-            last = frame
-            Thread.sleep(forTimeInterval: 0.3)
-        }
-        element.tap()
-    }
-
     /// Home's root page (popping anything pushed on the Home tab).
     func homeRoot() {
         app.tabBars.buttons["Home"].tap()
@@ -164,7 +149,7 @@ struct SettingsDataScreen {
         for _ in 0..<6 where !row.isHittable || row.frame.maxY > app.frame.maxY - 140 {
             app.swipeUp(velocity: .slow)
         }
-        tapStable(row)
+        row.tapSettled()
     }
 
     /// The N in the Export as CSV row's "All N transactions".
@@ -187,7 +172,7 @@ struct SettingsDataScreen {
             }
         }
         XCTAssertTrue(item.waitForExistence(timeout: 15), "\(name) in the picker\n\(app.debugDescription)", file: file, line: line)
-        tapStable(item, file: file, line: line)
+        item.tapSettled(file: file, line: line)
     }
 
     /// Closes the share sheet without sharing: the system's compact sheet
@@ -210,7 +195,7 @@ struct SettingsDataScreen {
     func restoreFixtureBackup() {
         tapRow("settings.importBackup")
         pick("Budgie UITest Backup")
-        tapStable(element("backup.confirm.confirm"))
+        element("backup.confirm.confirm").tapSettled()
         XCTAssertTrue(labelled("Backup restored").waitForExistence(timeout: 15))
         XCTAssertTrue(waitUntil(10) { !element("backup.confirm.title").exists })
     }

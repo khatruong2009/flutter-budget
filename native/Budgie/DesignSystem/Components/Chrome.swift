@@ -57,7 +57,8 @@ extension View {
     /// keyboard: a dialog puts the part that may scroll in a `DialogScroll`
     /// (Flutter's `Flexible(SingleChildScrollView)`) so its title and
     /// buttons stay in view. Tapping the scrim dismisses it unless the
-    /// content sets `budgieDialogDismissDisabled(true)` (e.g. while saving).
+    /// content sets `budgieDialogDismissDisabled(true)` (e.g. while saving)
+    /// or the keyboard is moving the card (the tap was aimed at the card).
     /// `padding` 0 lets the content run to the border (the Worth editor's
     /// banner).
     func budgieDialog<Dialog: View>(
@@ -190,12 +191,16 @@ private struct DialogHost<Dialog: View>: View {
     /// How far the bottom card has been dragged down.
     @State private var drag: CGFloat = 0
     @State private var cardHeight: CGFloat = 0
+    /// The keyboard is showing, hiding or changing height, which moves the
+    /// card: a scrim tap now was aimed at where the card just was (its
+    /// buttons), not at the scrim, so it does not dismiss.
+    @State private var keyboardMoving = false
 
     var body: some View {
         ZStack(alignment: placement == .bottom ? .bottom : .center) {
             Color.black.opacity(visible ? 0.54 : 0)
                 .ignoresSafeArea()
-                .onTapGesture { if !dismissDisabled { dismiss() } }
+                .onTapGesture { if !dismissDisabled && !keyboardMoving { dismiss() } }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("Dismiss")
                 .accessibilityHidden(dismissDisabled)
@@ -215,6 +220,12 @@ private struct DialogHost<Dialog: View>: View {
         }
         .onPreferenceChange(DialogGlowKey.self) { color in
             MainActor.assumeIsolated { glow = color }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { _ in
+            keyboardMoving = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidChangeFrameNotification)) { _ in
+            keyboardMoving = false
         }
         .onAppear {
             let animation = placement == .bottom ? Motion.fastOutSlowIn(0.25) : Motion.easeOut(0.15)

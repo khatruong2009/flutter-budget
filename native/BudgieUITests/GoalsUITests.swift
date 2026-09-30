@@ -20,17 +20,12 @@ final class GoalsUITests: XCTestCase {
         app.descendants(matching: .any)[identifier]
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
     private func replace(_ field: XCUIElement, with text: String) {
-        field.tap()
+        field.tapSettled()
         if let value = field.value as? String, !value.isEmpty {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count))
         }
-        field.typeText(text)
+        field.typeSettled(text)
     }
 
     /// Waits for a short-lived element by checking back to back.
@@ -57,9 +52,9 @@ final class GoalsUITests: XCTestCase {
         app.buttons["goals.fab"].tap()
         let name = app.textFields["Goal name"]
         XCTAssertTrue(name.waitForExistence(timeout: 5))
-        type("UI Trip", into: name)
-        type("100", into: app.textFields["Target amount"])
-        app.buttons["goals.form.submit"].tap()
+        name.enterText("UI Trip")
+        app.textFields["Target amount"].enterText("100")
+        app.buttons["goals.form.submit"].tapSettled()
         XCTAssertTrue(text("Savings goal added").waitForExistence(timeout: 5))
         let addMoney = app.buttons["goals.card.addMoney"]
         XCTAssertTrue(addMoney.waitForExistence(timeout: 5))
@@ -68,8 +63,8 @@ final class GoalsUITests: XCTestCase {
         addMoney.tap()
         let finish = app.buttons["goals.allocate.chip.finish"]
         XCTAssertTrue(finish.waitForExistence(timeout: 5))
-        finish.tap()
-        app.buttons["goals.allocate.submit"].tap()
+        finish.tapSettled()
+        app.buttons["goals.allocate.submit"].tapSettled()
         XCTAssertTrue(waitForTransient(element("goals.celebration"), timeout: 2), "celebration shown")
         XCTAssertTrue(addMoney.waitForNonExistence(timeout: 5), "a complete goal has no Add money")
 
@@ -84,7 +79,7 @@ final class GoalsUITests: XCTestCase {
         replace(name, with: "UI Trip Renamed")
         let update = app.buttons["goals.form.submit"]
         XCTAssertEqual(update.label, "Update")
-        update.tap()
+        update.tapSettled()
         XCTAssertTrue(text("Savings goal updated").waitForExistence(timeout: 5))
         XCTAssertTrue(
             app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "UI Trip Renamed")).firstMatch

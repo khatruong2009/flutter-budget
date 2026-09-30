@@ -24,11 +24,6 @@ final class TabsUITests: XCTestCase {
         app.descendants(matching: .any)[identifier]
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
     /// The current month as the app keys its bars ("2026-09").
     private var currentMonthKey: String {
         let formatter = DateFormatter()
@@ -44,9 +39,9 @@ final class TabsUITests: XCTestCase {
         app.buttons["Add transaction"].tap()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
-        type("12.34", into: amount)
-        type(Self.description, into: app.textFields["Description"])
-        app.buttons["Add"].tap()
+        amount.enterText("12.34")
+        app.textFields["Description"].enterText(Self.description)
+        app.buttons["Add"].tapSettled()
         XCTAssertTrue(
             app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", Self.description)).firstMatch
                 .waitForExistence(timeout: 5))
@@ -84,12 +79,11 @@ final class TabsUITests: XCTestCase {
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         let rows = app.buttons.matching(identifier: "flow.all.row")
         XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 5))
-        type("zzz", into: search)
+        search.enterText("zzz")
         XCTAssertTrue(element("flow.all.empty").waitForExistence(timeout: 5))
         XCTAssertEqual(rows.count, 0)
-        app.buttons["Clear search"].tap()
-        search.tap()
-        search.typeText("tabs coffee")
+        app.buttons["Clear search"].tapSettled()
+        search.enterText("tabs coffee")
         let match = rows.firstMatch
         XCTAssertTrue(match.waitForExistence(timeout: 5))
         XCTAssertEqual(rows.count, 1)

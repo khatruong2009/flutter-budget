@@ -91,9 +91,8 @@ final class SystemIntegrationUITests: XCTestCase {
         app.buttons["Add transaction"].tap()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 10))
-        amount.tap()
-        amount.typeText("12")
-        app.buttons["Add"].tap()
+        amount.enterText("12")
+        app.buttons["Add"].tapSettled()
 
         XCUIDevice.shared.press(.home)
         // Edit mode: long-press an empty spot on the home screen.

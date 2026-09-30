@@ -39,11 +39,6 @@ final class MVPFlowUITests: XCTestCase {
         app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
     }
 
-    private func type(_ text: String, into field: XCUIElement) {
-        field.tap()
-        field.typeText(text)
-    }
-
     /// Empties a focused field one delete at a time. Not the edit menu's
     /// Select All: that needs a long press to raise a system menu within a
     /// short wait, and when the menu is late the old step skipped it and
@@ -65,9 +60,9 @@ final class MVPFlowUITests: XCTestCase {
         app.buttons["Add transaction"].tap()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
-        type("12.34", into: amount)
-        type("UI test coffee", into: app.textFields["Description"])
-        app.buttons["Add"].tap()
+        amount.enterText("12.34")
+        app.textFields["Description"].enterText("UI test coffee")
+        app.buttons["Add"].tapSettled()
         // Home's Recent activity shows it.
         XCTAssertTrue(labelled("UI test coffee").waitForExistence(timeout: 5))
 
@@ -80,9 +75,9 @@ final class MVPFlowUITests: XCTestCase {
         XCTAssertTrue(editAmount.waitForExistence(timeout: 5))
         editAmount.tap()
         clear(editAmount)
-        editAmount.typeText("20")
+        editAmount.typeSettled("20")
         XCTAssertEqual(editAmount.value as? String, "20")
-        app.buttons["Update"].tap()
+        app.buttons["Update"].tapSettled()
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS '20.00'")).firstMatch.waitForExistence(timeout: 5))
 
         // Add a recurring template and pause it (Settings > Recurring).
@@ -91,9 +86,9 @@ final class MVPFlowUITests: XCTestCase {
         app.buttons["Add recurring transaction"].tap()
         let recurringAmount = app.textFields["Amount"]
         XCTAssertTrue(recurringAmount.waitForExistence(timeout: 5))
-        type("900", into: recurringAmount)
-        type("UI rent", into: app.textFields["Description"])
-        app.buttons["Save"].tap()
+        recurringAmount.enterText("900")
+        app.textFields["Description"].enterText("UI rent")
+        app.buttons["Save"].tapSettled()
         let template = app.descendants(matching: .any).matching(identifier: "recurring.card")
             .containing(NSPredicate(format: "label CONTAINS 'UI rent'")).firstMatch
         XCTAssertTrue(template.waitForExistence(timeout: 5))
@@ -113,9 +108,9 @@ final class MVPFlowUITests: XCTestCase {
         // Add an income from the Home pill, then delete it from SEE ALL.
         homeRoot()
         app.buttons["Income"].firstMatch.tap()
-        type("5", into: app.textFields["Amount"])
-        type("To delete", into: app.textFields["Description"])
-        app.buttons["Add"].tap()
+        app.textFields["Amount"].enterText("5")
+        app.textFields["Description"].enterText("To delete")
+        app.buttons["Add"].tapSettled()
         app.buttons["See all transactions"].firstMatch.tap()
         let doomed = app.buttons.containing(NSPredicate(format: "label CONTAINS 'To delete'")).firstMatch
         XCTAssertTrue(doomed.waitForExistence(timeout: 5))

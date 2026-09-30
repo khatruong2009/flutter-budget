@@ -71,6 +71,12 @@ next. The screens beneath are hidden from VoiceOver while the host is up.
 Toasts float above the tab bar (`toastHost`), so a toast posted by a form
 opened over a sheet is under that sheet.
 
+Dialogs (`budgieDialog`, centred or bottom) float over a dimmed scrim in a
+full-screen cover. A scrim tap closes the dialog unless its content sets
+`budgieDialogDismissDisabled` (while a write is awaited) or the keyboard is
+showing, hiding or changing height: the keyboard moves the card, so such a
+tap was aimed at the card (e.g. its Add button) and is ignored.
+
 ## Home (spec full-app/02; Flutter `spending_page.dart`)
 
 - Header: logo, month pill (`DartDateFormat.yMMMM(model.selectedMonth)`),
