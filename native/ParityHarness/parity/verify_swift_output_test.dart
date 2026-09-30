@@ -12,8 +12,8 @@
 //                       "themeMode", "categories", "categoriesAddedAtLaunch",
 //                       "transactionCategories", "templateCategories",
 //                       "ruleCategories", "transactionTags",
-//                       "categorizationRules", "recurringTemplates": what the
-//                       Dart models must hold;
+//                       "categorizationRules", "recurringTemplates",
+//                       "transactions": what the Dart models must hold;
 //                       "newTagIds", "newRuleIds": rows Swift made;
 //                       "dartGenerateAddsNothing": run Dart's generator last
 //                       and fail if it adds rows or moves cursors;
@@ -344,6 +344,32 @@ void main() {
           final expected = jsonEncode(savingsGoals);
           if (dart != expected) {
             problems.add('savings goals: dart $dart swift $expected');
+          }
+        }
+        // Transactions the Swift side wrote (edits, the recurring
+        // generator, a CSV import): Dart must load exactly these, in this
+        // order (description and category as UTF-16 code units, amounts as
+        // Dart's toString).
+        final transactions = swift['transactions'];
+        if (transactions is List) {
+          final dart = jsonEncode([
+            for (final t in app.transactionModel.transactions)
+              [
+                t.id,
+                t.type.name,
+                t.description.codeUnits,
+                t.amount.toString(),
+                t.category.codeUnits,
+                iso(t.date),
+                t.recurringTemplateId,
+                t.tagIds,
+                iso(t.createdAt),
+                iso(t.updatedAt),
+              ]
+          ]);
+          final expected = jsonEncode(transactions);
+          if (dart != expected) {
+            problems.add('transactions: dart $dart swift $expected');
           }
         }
         final selectedNetWorthMonth = swift['selectedNetWorthMonth'];

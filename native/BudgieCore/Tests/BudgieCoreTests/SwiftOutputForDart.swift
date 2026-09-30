@@ -43,6 +43,9 @@ enum SwiftOutput {
     /// preference load must hold (`dismissed`, `snoozed` as [id, ISO]) and
     /// the cards its engine and LocalInsightsSection must show at `now` for
     /// `selectedMonth` (`visible` as [id, headline, explanation, action]).
+    /// `transactions`, when given, is what Dart's `TransactionModel` must
+    /// load (every field, stored order; description and category as UTF-16
+    /// code units, amounts as `toString`).
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
@@ -50,7 +53,7 @@ enum SwiftOutput {
         categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
         newRuleIDs: [String] = [], backup: Backup? = nil, recurring: FinancialData? = nil,
         dartGenerateAddsNothing: Bool = false, onboardingCompleted: Bool? = nil,
-        insights: [String: Any]? = nil
+        insights: [String: Any]? = nil, transactions: FinancialData? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -140,6 +143,16 @@ enum SwiftOutput {
         if dartGenerateAddsNothing { swift["dartGenerateAddsNothing"] = true }
         if let onboardingCompleted { swift["onboardingCompleted"] = onboardingCompleted }
         if let insights { swift["insights"] = insights }
+        if let transactions {
+            // A stored name can hold a lone surrogate (typical's "bad \u{D800}
+            // surrogate"), which a Swift String cannot: send code units.
+            swift["transactions"] = transactions.transactions.map { t -> [Any] in
+                [t.id, t.type.rawValue, t.raw["description"]?.stringCodeUnits ?? Array(t.description.utf16),
+                 DartDouble.format(t.amount), t.raw["category"]?.stringCodeUnits ?? Array(t.category.utf16),
+                 t.date.toIso8601String(), t.recurringTemplateId as Any? ?? NSNull(), t.tagIds, t.createdAt.toIso8601String(),
+                 t.updatedAt.toIso8601String()]
+            }
+        }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -490,6 +503,25 @@ struct SwiftOutputForDartTests {
             }
             if let other = categoryID("Other", .income) { data.moveCategory(id: other, offset: -100) }
 
+            // CSV import, as the app commits it: an export of some stored
+            // rows (duplicates, a lone surrogate coming back as U+FFFD),
+            // then new rows (quoted fields, a UTC date, -0, grouped dollars,
+            // two identical rows, new category names of both types, a case
+            // variant of a defined one) and an unreadable row.
+            let exported = CSVExport.export(data.transactions.prefix(40).map {
+                CSVExport.Row(date: $0.date, isIncome: $0.type == .income, category: $0.category, description: $0.description, amount: $0.amount)
+            })
+            let file = exported + Array((
+                "\r\n2026-09-20,Expense,Swift CSV Café,\"Imported, \"\"quoted\"\"\",12.50"
+                + "\r\n2026-09-21T23:30Z,Income,Swift CSV Side Gig,utc,\"$1,234.50\""
+                + "\r\n2026-09-22,expense,Swift CSV Café,zero,-0"
+                + "\r\n2026-09-23,Expense,GROCERIES,twice,3"
+                + "\r\n2026-09-23,Expense,GROCERIES,twice,3"
+                + "\r\n2026-02-30,Expense,Food,bad date,1\r\n").utf8)
+            let summary = try CSVImport.parse(bytes: file, existing: data.transactions, calendar: calendar)
+            #expect(summary.drafts.count >= 5 && summary.rowErrors.count >= 1, "\(name) import")
+            data = data.importTransactions(summary, now: now, newID: id).data
+
             // Every section through its typed serializer, as the app's
             // save and retry paths write them.
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
@@ -503,7 +535,7 @@ struct SwiftOutputForDartTests {
                 categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)), tagsRules: data,
                 newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } },
                 backup: try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now),
-                recurring: data, dartGenerateAddsNothing: true)
+                recurring: data, dartGenerateAddsNothing: true, transactions: data)
         }
     }
 

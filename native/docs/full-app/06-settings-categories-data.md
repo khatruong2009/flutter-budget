@@ -280,16 +280,16 @@ Archive does no cascade at all. Swift must do all of the above in **one commit**
 
 1. **Picker:** `FilePicker.pickFiles(type: custom, allowedExtensions: ['csv'], withData: true)`. Cancel or null bytes means silent return.
 2. **Decode:** `utf8.decode(bytes, allowMalformed: true)`. Invalid bytes become U+FFFD; no error.
-3. **BOM:** strip a leading U+FEFF.
+3. **BOM:** `utf8.decode` drops one leading EF BB BF and `parseTransactionsCsv` strips one more leading U+FEFF, so a double-BOM file passes (a third is removed by the header cell's `trim()`).
 4. **Parse:**
    - csv 6.0.0 `CsvToListConverter(shouldParseNumbers: false, csvSettingsDetector: FirstOccurrenceSettingsDetector(eols: ['\r\n','\n']))`.
    - Field delimiter `,` and text delimiter `"` are fixed (defaults, no detector list for them).
    - **EOL** is whichever of `\r\n` or `\n` occurs first via `indexOf`; if neither occurs, it falls to the default `\r\n`. Mixed endings are therefore NOT normalised: bare `\n` in a CRLF file stays inside the field, and a bare `\r` remains before the LF if LF was detected. Fields are `.trim()`med afterwards, which hides that.
    - Quoted fields may contain newlines and doubled quotes `""`.
    - A quote in the middle of an unquoted field is literal (`_insideString`).
-   - After a closing quote, further characters are appended (`"abc"def` gives `abcdef`).
-   - An unterminated quote runs to EOF (`allowInvalid` defaults true, so no exception).
-   - A trailing empty line at EOF adds no row; an empty line in the middle yields a row `['']`.
+   - After a closing quote, further characters are appended and the field stays quoted, so a following `,` or line break is swallowed too until the next quote (`"abc"def,ghi\nx,y` is the single cell `abcdef,ghi\nx,y`).
+   - An unterminated quote runs to EOF (`allowInvalid` defaults true, so no exception); a lone `"` as the whole last line adds no row.
+   - A trailing empty line at EOF adds no row; an empty line in the middle yields a row `['']` (it still counts in the `Row N` numbering).
    - Port from `~/.pub-cache/hosted/pub.dev/csv-6.0.0/lib/src/csv_parser.dart` and `csv_settings_autodetection.dart`. Work in UTF-16 or unicode scalars, not `Character` ("\r\n" is one Character in Swift).
 5. **Header:** the first row must have exactly 5 cells that, trimmed and lowercased, equal `date, type, category, description, amount`. Otherwise `FormatException('Not a valid transactions CSV export')`. An empty file also throws this.
 6. **Rows** (data rows numbered from 2, `i+1`):
@@ -321,13 +321,13 @@ Archive does no cascade at all. Swift must do all of the above in **one commit**
    - Content is null, or lines joined by `\n`: "{d} duplicates will be skipped" and "{e} rows could not be read".
    - Buttons Cancel / Import.
 10. **Commit** (`importTransactions`, 1178-1189):
-    - New `Transaction(...)` per row: fresh uuid v4, `createdAt = updatedAt = DateTime.now()` evaluated per row (so they are microsecond-increasing, which drives same-day ordering), `recurringTemplateId: null`, `tagIds: []`.
+    - New `Transaction(...)` per row: fresh uuid v4, `createdAt = updatedAt = DateTime.now()` evaluated per valid row while parsing (duplicates included; values can repeat), `recurringTemplateId: null`, `tagIds: []`. Swift assigns the import time plus one microsecond per row instead (D6, PARITY_GAPS "CSV import").
     - Appended to the list in file order.
     - Duplicate ids are regenerated.
     - One `saveTransactions` (transactions section only).
     - Success snackbar (green): "Imported {n} transactions" or "Imported {n} transactions, {d} duplicates skipped".
 11. **Errors:** any other exception gives a red "Could not import: {e}". `e` is `toString()`, so a FormatException prints as "Could not import: FormatException: Not a valid transactions CSV export". Swift can show the bare message.
-12. No category definitions are created at import time. They appear at next launch via `ensureLegacyCategories`. Swift's `pickerList` covers this.
+12. No category definitions are created at import time. They appear at next launch via `ensureLegacyCategories`. Swift defines the imported rows' new names in the same commit, as that launch would (decided; PARITY_GAPS "CSV import").
 
 ### 1.8 Backup export and import (`backup.dart`, `settings_page.dart:279-577`)
 
@@ -568,12 +568,15 @@ Spacing: 4 / 8 / 16 / 24 / 32. Radii: 8 / 12 / 16 / 26 (cards).
 
 ### 4.4 CSV import, `Formatting/CSVImport.swift`
 
-- `CSVParser.parse(_ text: String) -> [[String]]`, a faithful port of csv 6.0.0 with the settings in 1.7 (first-occurrence EOL detection, quoted fields, quote-in-middle literal, no exception on unterminated quote).
-- `CSVImport.parse(text:existing:calendar:now:newID:) throws -> Summary { drafts: [TransactionDraft], duplicateCount: Int, rowErrors: [String] }`.
-  - Reuses `calendar.tryParse` for the date and `DartNumbers.tryParseDouble` for the amount.
-  - Dedupe is a multiset keyed on `yyyy-MM-dd|type|category.trim()|desc.trim()|toStringAsFixed(2)`, using `DartFixed`.
-  - Header failure throws `CSVImportError.notATransactionsCSV` with the message "Not a valid transactions CSV export".
-  - Draft `createdAt` uses one `now()` call per row to keep the microsecond-increasing order.
+Implemented (`Formatting/CSVParser.swift`, `Formatting/CSVImport.swift`; Fixtures/csvimport):
+
+- `CSVParser.parse(_ text: String) -> [[String]]`, a faithful port of csv 6.0.0 with the settings in 1.7 (first-occurrence EOL detection, quoted fields, quote-in-middle literal, no exception on unterminated quote), over UTF-16 code units.
+- `CSVImport.decode(_ bytes: [UInt8]) -> String` (`utf8.decode(allowMalformed: true)`), and `CSVImport.parse(bytes:existing:calendar:)` / `parse(text:existing:calendar:) throws(CSVImport.Failure) -> Summary { drafts: [Draft], duplicateCount: Int, rowErrors: [String] }`. Pure; `existing` is the readable transactions.
+  - Reuses `calendar.tryParse` for the date and `DartDouble.tryParse` for the amount.
+  - Dedupe is a multiset keyed on `yyyy-MM-dd|type|category.trim()|desc.trim()|toStringAsFixed(2)` as UTF-16 code units (existing rows by their stored code units).
+  - Header failure throws `.notATransactionsCSV`; `message` is "Not a valid transactions CSV export", `flutterDescription` Dart's `e.toString()`. `.unreadableFile` is Swift's (D6) for a file that cannot be read.
+  - Copy: `Summary.emptyResultMessage`, `confirmTitle`, `confirmDetails`/`confirmMessage`, `successMessage`, `CSVImport.failureMessage(_:)` (`Message { text, tone: .neutral/.success/.error }`), `cancelButtonTitle`, `importButtonTitle`; D6 singular forms.
+- `FinancialData.importTransactions(_ summary:now:newID:) -> CSVImportResult { data, imported, addedCategories, sections }`: pure; `createdAt` = `now` + i µs; the imported rows' new category names materialised; `sections` is the one commit (`transactions`, plus `categories` when it changed; empty for no drafts).
 
 ### 4.5 Backup envelope, `Formatting/BackupEnvelope.swift`
 

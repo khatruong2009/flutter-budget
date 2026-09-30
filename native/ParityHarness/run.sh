@@ -125,6 +125,13 @@ case "$MODE" in
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/backup_fixtures_test.dart "$@"
       done
     fi
+    if wants csv_import_fixtures_test.dart; then
+      rm -rf "$FIXTURES/csvimport"
+      # New York first: it also writes the zone-independent files.
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/csv_import_fixtures_test.dart "$@"
+      done
+    fi
     if wants insight_fixtures_test.dart; then
       rm -rf "$FIXTURES/insights"
       for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago; do

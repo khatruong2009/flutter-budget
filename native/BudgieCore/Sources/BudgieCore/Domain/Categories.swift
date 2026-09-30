@@ -214,10 +214,23 @@ extension FinancialData {
         }
         normalizeCategorySortOrders()
 
+        materializeCategories(
+            transactions.map { ($0.type, $0.category) }
+                + templates.map { ($0.type, $0.category) }
+                + budgetLimits.map { (TransactionType.expense, $0.0) },
+            newID: newID)
+
+        guard case .array? = stored else { return true }
+        return DartJSON.encode(categoriesSection()) != DartJSON.encode(stored!)
+    }
+
+    /// The naming step of the launch pass (`ensureLegacyCategories` /
+    /// `ensureLegacyCategoryNames`): each (type, name) without a definition
+    /// gets one at the end of its type, then sort orders are renumbered.
+    /// Returns whether any was added.
+    @discardableResult
+    mutating func materializeCategories(_ names: [(TransactionType, String)], newID: () -> String) -> Bool {
         var added = false
-        let names = transactions.map { ($0.type, $0.category) }
-            + templates.map { ($0.type, $0.category) }
-            + budgetLimits.map { (TransactionType.expense, $0.0) }
         for (type, name) in names where !containsCategory(type: type, name: name) {
             let count = categoryRows.filter { $0.record?.type == type }.count
             categoryRows.append(.record(CategoryInfo.make(
@@ -226,9 +239,7 @@ extension FinancialData {
             added = true
         }
         if added { normalizeCategorySortOrders() }
-
-        guard case .array? = stored else { return true }
-        return DartJSON.encode(categoriesSection()) != DartJSON.encode(stored!)
+        return added
     }
 
     /// Dart `_containsName`: same type, names equal after lowercasing (the

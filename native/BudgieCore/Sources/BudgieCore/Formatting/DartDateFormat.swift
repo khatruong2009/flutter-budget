@@ -74,10 +74,11 @@ public enum DartDateFormat {
         "\(EEEE(d)), \(MMMddyyyy(d))"
     }
 
-    /// `DateFormat('yyyy-MM-dd')`.
+    /// `DateFormat('yyyy-MM-dd')`. intl's `formatYear` prints the year
+    /// without its sign (date_format_field.dart:401-408): year -1 is "0001".
     public static func yyyyMMdd(_ d: DartDateTime) -> String {
         let f = d.fields
-        return "\(pad(f.year, 4))-\(pad(f.month, 2))-\(pad(f.day, 2))"
+        return "\(pad(abs(f.year), 4))-\(pad(f.month, 2))-\(pad(f.day, 2))"
     }
 
     /// `DateFormat('yyyy-MM')`.

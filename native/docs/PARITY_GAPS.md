@@ -16,7 +16,7 @@ UPGRADE_TEST_RESULTS.md).
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Flag shared with Flutter (`OnboardingFlag`: a CFBoolean true under the same key; missing or another type shows the tour), read at launch after protected data is available, written when the tour is completed or skipped. Available: the three-page tour shows once, in place of the tabs and inside the lock gate (differences under "Deliberate differences"). |
 | Backup export/import (JSON envelope v3) | files chosen by the user | BudgieCore export, decode, restore and pre-restore safety copy are done and match Flutter byte for byte (Fixtures/backup; differences below); the Settings rows still open the "upcoming" page until the UI lands. |
-| CSV import | ledger | Not available. |
+| CSV import | ledger | BudgieCore parser, decode, validation, dedupe, copy and the one-commit import match Flutter (Fixtures/csvimport; differences under "CSV import" below); the Settings row still opens the "upcoming" page until the UI lands. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
 ## Flutter behaviour reproduced on purpose (approved Q1; fix in both apps later)
@@ -814,6 +814,72 @@ UPGRADE_TEST_RESULTS.md).
   a frame late) on each visit to Flow as Flutter's is; Flow still
   recomputes when it appears and when the app becomes active, so a snooze
   that ended while away shows again.
+
+### CSV import
+
+The parser (csv 6.0.0 with the app's settings), `utf8.decode`, header and
+row validation with their messages, the multiset dedupe and the page's
+copy are Flutter's (Fixtures/csvimport: the real parser on random input,
+the real `parseTransactionsCsv` and `importTransactions` in five zones, the
+real Settings page for the copy). Differences (D6; Dart cannot see them):
+
+- The failure toast shows the bare message, "Could not import: Not a
+  valid transactions CSV export" (Flutter prints `e.toString()`: "Could
+  not import: FormatException: Not a valid transactions CSV export").
+- Singular forms when a count is 1: "Import 1 transaction?", "1 duplicate
+  will be skipped", "1 row could not be read", "Imported 1 transaction, 1
+  duplicate skipped", "No new transactions: 1 duplicate skipped, 1 row
+  could not be read", "No transactions imported: 1 row could not be read".
+  Flutter always uses the plural.
+- The success toast shows only after the verified write; a failed write
+  gets the save-failed toast (Flutter ignores the write result and shows
+  success; its retry banner appears).
+- A picked file whose bytes cannot be read shows "Could not import: The
+  file could not be read" (Flutter returns silently, like a cancel).
+  Cancel stays silent.
+- Imported rows get `createdAt` = `updatedAt` = the import time plus one
+  microsecond per row, in file order, so the last file row sorts first on
+  its day. Flutter calls `DateTime.now()` per valid row while parsing
+  (before the confirm dialog, deduplicated rows included); equal values
+  are possible, and then the random ids decide the same-day order.
+- Category names the imported rows bring without a definition get one in
+  the same commit (`transactions` and `categories` together), exactly as
+  Flutter's next launch defines them (slug or `type-<uuid>` id, end of the
+  type, icon grid, accent); the stores are then equal. Only the imported
+  rows' names are materialised: running the whole launch pass again would
+  add a padded legacy name once more (see the padded-name entry above).
+- Rows already stored are kept byte for byte. Flutter rewrites the whole
+  `transactions` section in `toJson` form, which differs only for rows
+  another writer produced, e.g. a local time that does not exist in the
+  current zone (typical's New York midnight read in Santiago), which
+  Flutter writes back as the resolved time. Unreadable rows: see above.
+
+Flutter behaviour kept on purpose (D6 candidates; fixing them would change
+what gets stored):
+- Amounts are en-US with one optional leading `$`: `1.234,56`, `€5`,
+  `$ 1,000` and `1,23` are row errors (a file has no locale, the exporter
+  writes `1234.50`, and Flutter rejects decimal commas on purpose).
+- Negative amounts are rejected ("invalid amount"), although the export
+  writes them (`-12.50`), so they do not survive an export and re-import.
+  `-0` is accepted and stored as `-0.0`.
+- A `Z` or `±hh:mm` date is stored as a UTC value (with `Z`) and filed
+  under its UTC day; the written day must be that UTC day
+  (`2026-02-15T23:30-08:00` is a row error). Date-only cells are local
+  midnight (the resolved time in a DST gap).
+- Category names are not matched to definitions or case-normalised
+  (`groceries` is stored as written; it shares the `Groceries` definition).
+- The confirm dialog shows counts only; the `Row N: ...` messages exist
+  (`Summary.rowErrors`) but are not shown.
+- No size cap. Identical rows within one file are all imported. The dedupe
+  key joins its parts with an unescaped `|` (category `c|a` + description
+  `b` matches `c` + `a|b`) and compares UTF-16 code units (NFC and NFD
+  spellings differ). A stored name with a lone surrogate exports as
+  U+FFFD, so re-importing that export adds a copy of the row.
+- Row numbers count CSV records (the header is Row 1, blank records
+  included). A quote after a closing quote keeps the field quoted, so the
+  rest of the line and following lines join that field until the next
+  quote. A bare CR is never a line break (a CR-only file is one row and
+  fails the header check).
 
 ### Backup export and restore (D10)
 

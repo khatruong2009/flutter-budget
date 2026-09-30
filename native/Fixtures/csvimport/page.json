@@ -1,0 +1,287 @@
+{
+  "commit": "a6d610d15f5bb8ec46da40d1c2149fefb294e891",
+  "cases": [
+    {
+      "name": "two new rows",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudA0KMjAyNi0wNC0wMixFeHBlbnNlLEdyb2NlcmllcyxNaWxrLDMuNDkNCjIwMjYtMDQtMDMsSW5jb21lLFNhbGFyeSxCb251cyw1MA==",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": {
+        "title": "Import 2 transactions?",
+        "content": null,
+        "buttons": [
+          "Cancel",
+          "Import"
+        ]
+      },
+      "snackbar": {
+        "text": "Imported 2 transactions",
+        "color": "income"
+      },
+      "storeWritten": true
+    },
+    {
+      "name": "new rows, a duplicate and row errors",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAyLEV4cGVuc2UsR3JvY2VyaWVzLE1pbGssMy40OQoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQoyMDI2LTA0LTAzLEV4cGVuc2UsR3JvY2VyaWVzLEJyZWFkLDIKMjAyNi0wNC0zMSxFeHBlbnNlLEdyb2NlcmllcyxCYWQsMQoyMDI2LTA0LTA0LEV4cGVuc2UsQ29mZmVlIFNob3BzLExhdHRlLDUKMjAyNi0wNC0wNSxFeHBlbnNlLEZvb2QseAo=",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": {
+        "title": "Import 3 transactions?",
+        "content": "1 duplicates will be skipped\n2 rows could not be read",
+        "buttons": [
+          "Cancel",
+          "Import"
+        ]
+      },
+      "snackbar": {
+        "text": "Imported 3 transactions, 1 duplicates skipped",
+        "color": "income"
+      },
+      "storeWritten": true
+    },
+    {
+      "name": "the same file, cancelled",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAyLEV4cGVuc2UsR3JvY2VyaWVzLE1pbGssMy40OQoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQo=",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "cancel": true,
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": {
+        "title": "Import 1 transactions?",
+        "content": "1 duplicates will be skipped",
+        "buttons": [
+          "Cancel",
+          "Import"
+        ]
+      },
+      "snackbar": null,
+      "storeWritten": false
+    },
+    {
+      "name": "one of each",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQoyMDI2LTA0LTAyLEV4cGVuc2UsR3JvY2VyaWVzLE1pbGssMy40OQoyMDI2LTA0LTAzLEV4cGVuc2UsLHgsMQo=",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": {
+        "title": "Import 1 transactions?",
+        "content": "1 duplicates will be skipped\n1 rows could not be read",
+        "buttons": [
+          "Cancel",
+          "Import"
+        ]
+      },
+      "snackbar": {
+        "text": "Imported 1 transactions, 1 duplicates skipped",
+        "color": "income"
+      },
+      "storeWritten": true
+    },
+    {
+      "name": "all duplicates",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQoyMDI2LTA0LTAxLEluY29tZSxTYWxhcnksUGF5Y2hlY2ssMTAwMAo=",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "All transactions in this file already exist",
+        "color": "default"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "header only",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudA==",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "No transactions found in this file",
+        "color": "default"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "only unreadable rows",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTAyLTMwLEV4cGVuc2UsRm9vZCx4LDEKbm9wZQo=",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "No transactions imported: 2 rows could not be read",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "one unreadable row",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudApub3BlCg==",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "No transactions imported: 1 rows could not be read",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "duplicates and unreadable rows",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQoyMDI2LTA0LTAxLEluY29tZSxTYWxhcnksUGF5Y2hlY2ssMTAwMApub3BlCg==",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "No new transactions: 2 duplicates skipped, 1 rows could not be read",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "one duplicate and one unreadable row",
+      "bytes": "RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudAoyMDI2LTA0LTAxLEV4cGVuc2UsRWF0aW5nIE91dCxDb2ZmZWUsNC4yNQpub3BlCg==",
+      "existing": "[{\"id\":\"6f525e6a-846a-4d90-b1f9-603d639fe3b0\",\"type\":\"expense\",\"description\":\"Coffee\",\"amount\":4.25,\"category\":\"Eating Out\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9cdc63d1-5d3d-4763-a6bd-2d91f9f361bb\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-04-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "No new transactions: 1 duplicates skipped, 1 rows could not be read",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "wrong header",
+      "bytes": "V2hlbixLaW5kLEJ1Y2tldCxOb3RlLFZhbHVlCjIwMjYtMDQtMDEsRXhwZW5zZSx4LHksMQo=",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "Could not import: FormatException: Not a valid transactions CSV export",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "empty file",
+      "bytes": "",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": {
+        "text": "Could not import: FormatException: Not a valid transactions CSV export",
+        "color": "expense"
+      },
+      "storeWritten": false
+    },
+    {
+      "name": "picker cancelled",
+      "bytes": null,
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": null,
+      "snackbar": null,
+      "storeWritten": false
+    },
+    {
+      "name": "BOM and one row",
+      "bytes": "77u/RGF0ZSxUeXBlLENhdGVnb3J5LERlc2NyaXB0aW9uLEFtb3VudA0KMjAyNi0wNC0wMixJbmNvbWUsU2lkZSBIdXN0bGUsR2lnLDgw",
+      "existing": "[]",
+      "picker": {
+        "type": "custom",
+        "allowedExtensions": [
+          "csv"
+        ],
+        "withData": true
+      },
+      "dialog": {
+        "title": "Import 1 transactions?",
+        "content": null,
+        "buttons": [
+          "Cancel",
+          "Import"
+        ]
+      },
+      "snackbar": {
+        "text": "Imported 1 transactions",
+        "color": "income"
+      },
+      "storeWritten": true
+    }
+  ]
+}

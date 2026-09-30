@@ -47,10 +47,8 @@ public enum CSVExport {
         return "transactions_\(pad(f.year, 4))\(pad(f.month, 2))\(pad(f.day, 2))_\(pad(f.hour, 2))\(pad(f.minute, 2))\(pad(f.second, 2)).csv"
     }
 
-    private static func dateText(_ date: DartDateTime) -> String {
-        let f = date.fields
-        return "\(pad(f.year, 4))-\(pad(f.month, 2))-\(pad(f.day, 2))"
-    }
+    /// `DateFormat('yyyy-MM-dd')` (a negative year prints without its sign).
+    private static func dateText(_ date: DartDateTime) -> String { DartDateFormat.yyyyMMdd(date) }
 
     private static func pad(_ value: Int, _ width: Int) -> String {
         let digits = String(value.magnitude)
