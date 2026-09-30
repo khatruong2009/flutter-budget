@@ -18,7 +18,9 @@
 //                       "dartGenerateAddsNothing": run Dart's generator last
 //                       and fail if it adds rows or moves cursors;
 //                       "onboardingCompleted": what the onboarding gate reads;
-//                       optional "backup": {"appVersion", "exportedAt", "themeMode"}}
+//                       optional "backup": {"appVersion", "exportedAt", "themeMode"};
+//                       optional "insights": what the insight preferences
+//                       load as, and the cards shown at a clock}
 //   backup.json        optional: Swift's backup export of this store after a
 //                       launch (see verifyBackup)
 //
@@ -30,11 +32,15 @@ import 'dart:math';
 
 import 'package:budget_app/backup.dart';
 import 'package:budget_app/categorization_rule.dart';
+import 'package:budget_app/insights/insight_engine.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
 import 'package:budget_app/transaction_generator.dart';
 import 'package:budget_app/transaction_tag.dart';
+import 'package:budget_app/widgets/glow_card.dart';
+import 'package:budget_app/widgets/local_insights_section.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -117,6 +123,72 @@ Future<List<String>> verifyBackup(Directory dir, File backupFile,
     } catch (error) {
       problems.add('backup: restore threw $error');
     }
+  }
+  return problems;
+}
+
+/// Copied verbatim from `_LocalInsightsSectionState._loadPreferences`
+/// (local_insights_section.dart:36-64; its fields are private), returning
+/// what it would put in `_dismissedIds` and `_snoozedUntil`.
+Future<(Set<String>, Map<String, DateTime>)> loadInsightPreferences() async {
+  const dismissedKey = 'local_insights_dismissed_v1';
+  const snoozedKey = 'local_insights_snoozed_v1';
+  final prefs = await SharedPreferences.getInstance();
+  final dismissed = prefs.getStringList(dismissedKey) ?? const [];
+  final rawSnoozed = prefs.getString(snoozedKey);
+  final snoozed = <String, DateTime>{};
+  if (rawSnoozed != null) {
+    try {
+      final decoded = jsonDecode(rawSnoozed) as Map<String, dynamic>;
+      for (final entry in decoded.entries) {
+        final date = DateTime.tryParse(entry.value as String);
+        if (date != null) snoozed[entry.key] = date;
+      }
+    } on FormatException {
+      // Ignore only this optional UI preference if it becomes malformed.
+    } on TypeError {
+      // Older or invalid values should not prevent the dashboard loading.
+    }
+  }
+  return (<String>{...dismissed}, snoozed);
+}
+
+/// The insight checks for one case: Flutter's preference load holds what
+/// Swift wrote, and the real engine shows the cards Swift computed.
+Future<List<String>> insightProblems(
+    Map<String, dynamic> insights, AppHarness app) async {
+  final problems = <String>[];
+  final (dismissed, snoozed) = await loadInsightPreferences();
+  final dartDismissed = jsonEncode(dismissed.toList());
+  if (dartDismissed != jsonEncode(insights['dismissed'])) {
+    problems.add('insight dismissals: dart $dartDismissed swift ${jsonEncode(insights['dismissed'])}');
+  }
+  final dartSnoozed = jsonEncode([
+    for (final e in snoozed.entries) [e.key, iso(e.value)]
+  ]);
+  if (dartSnoozed != jsonEncode(insights['snoozed'])) {
+    problems.add('insight snoozes: dart $dartSnoozed swift ${jsonEncode(insights['snoozed'])}');
+  }
+  final now = DateTime.parse(insights['now'] as String);
+  final excluded = <String>{
+    ...dismissed,
+    for (final e in snoozed.entries)
+      if (e.value.isAfter(now)) e.key,
+  };
+  final visible = const InsightEngine().generate(
+    transactions: app.transactionModel.transactions,
+    categoryBudgetLimits: app.transactionModel.categoryBudgetLimits,
+    savingsGoals: app.transactionModel.savingsGoals,
+    selectedMonth: DateTime.parse(insights['selectedMonth'] as String),
+    now: now,
+    excludedIds: excluded,
+  );
+  final dartVisible = jsonEncode([
+    for (final i in visible)
+      [i.id, i.headline, i.explanation, i.suggestedAction]
+  ]);
+  if (dartVisible != jsonEncode(insights['visible'])) {
+    problems.add('insight cards: dart $dartVisible swift ${jsonEncode(insights['visible'])}');
   }
   return problems;
 }
@@ -454,6 +526,10 @@ void main() {
                 'swift $onboardingCompleted');
           }
         }
+        final insights = swift['insights'];
+        if (insights is Map<String, dynamic>) {
+          problems.addAll(await insightProblems(insights, app));
+        }
         if (app.transactionModel.hasUnsavedChanges ||
             app.recurringModel.hasUnsavedChanges) {
           problems.add('a model reports unsaved changes after load');
@@ -499,6 +575,62 @@ void main() {
         if (summary != null) 'summary': summary,
       };
       expect(problems, isEmpty, reason: problems.join('\n'));
+    });
+
+    // The real LocalInsightsSection, loading the Swift-written preferences
+    // itself, must show the cards Swift computed.
+    final swiftFile = File('${dir.path}/swift.json');
+    final insights = swiftFile.existsSync()
+        ? (jsonDecode(swiftFile.readAsStringSync()) as Map<String, dynamic>)['insights']
+        : null;
+    if (insights is! Map<String, dynamic>) continue;
+    testWidgets('$name: LocalInsightsSection', (tester) async {
+      final app = AppHarness();
+      await tester.runAsync(() async {
+        final work = await Directory.systemTemp.createTemp('verify_widget_$name');
+        final storeDir = Directory('${work.path}/financial_store');
+        copyDir(Directory('${dir.path}/financial_store'), storeDir);
+        SharedPreferences.setMockInitialValues(
+            Map.of(prefsFrom(File('${dir.path}/prefs.json'))));
+        pinClock(launchNow);
+        await AtomicFinancialStore.instance.resetForTesting(directory: storeDir);
+        await app.initialize(generate: false);
+      });
+      final now = DateTime.parse(insights['now'] as String);
+      app.transactionModel.selectedMonth =
+          DateTime.parse(insights['selectedMonth'] as String);
+      pinClock(now);
+      tester.view.physicalSize = const Size(402 * 3, 2400 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: LocalInsightsSection(model: app.transactionModel),
+          ),
+        ),
+      ));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      final cards = find.descendant(
+          of: find.byType(LocalInsightsSection),
+          matching: find.byType(GlowCard));
+      final shown = [
+        for (var i = 0; i < cards.evaluate().length; i++)
+          [
+            for (final element in find
+                .descendant(of: cards.at(i), matching: find.byType(Text))
+                .evaluate())
+              (element.widget as Text).data!
+          ]
+      ];
+      final expected = [
+        for (final card in insights['visible'] as List)
+          (card as List).sublist(1)
+      ];
+      await tester.pumpWidget(const SizedBox());
+      report['$name: LocalInsightsSection'] = {'cards': shown};
+      expect(jsonEncode(shown), jsonEncode(expected));
     });
   }
 }

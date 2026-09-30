@@ -39,13 +39,18 @@ enum SwiftOutput {
     /// adds a row or moves a cursor (Swift already generated everything due).
     /// `onboardingCompleted`, when given, is what Flutter's onboarding gate
     /// must read from the preferences (true: no tour).
+    /// `insights`, when given, is what Flutter's insight
+    /// preference load must hold (`dismissed`, `snoozed` as [id, ISO]) and
+    /// the cards its engine and LocalInsightsSection must show at `now` for
+    /// `selectedMonth` (`visible` as [id, headline, explanation, action]).
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
         appSettings: AppSettings? = nil, themeMode: String? = nil, categories: FinancialData? = nil,
         categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
         newRuleIDs: [String] = [], backup: Backup? = nil, recurring: FinancialData? = nil,
-        dartGenerateAddsNothing: Bool = false, onboardingCompleted: Bool? = nil
+        dartGenerateAddsNothing: Bool = false, onboardingCompleted: Bool? = nil,
+        insights: [String: Any]? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -134,6 +139,7 @@ enum SwiftOutput {
         }
         if dartGenerateAddsNothing { swift["dartGenerateAddsNothing"] = true }
         if let onboardingCompleted { swift["onboardingCompleted"] = onboardingCompleted }
+        if let insights { swift["insights"] = insights }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
     }
@@ -554,6 +560,72 @@ struct SwiftOutputForDartTests {
         try SwiftOutput.emit(
             "settings-prefs-only", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
             appSettings: data.appSettings)
+    }
+
+    @Test("insights: dismiss and snooze preferences written by Swift")
+    func insights() async throws {
+        // "typical" starts from preferences shaped like Flutter's (unsorted
+        // and repeated dismissals, a UTC and a compact snooze time, a
+        // non-string value that drops the rest); "fresh_install" has none.
+        for name in ["typical", "fresh_install"] {
+            let scenario = try Scenario(Fixtures.url("store/\(name)"))
+            guard var data = try await launch(scenario) else { continue }
+            let calendar = data.calendar
+            let now = scenario.launchNow
+            let month = calendar.month(of: now)
+            let store = scenario.makeStore()
+            _ = try await store.read()
+            var counter = 0
+            func add(_ amount: Double, _ description: String, _ category: String, _ date: DartDateTime) {
+                counter += 1
+                _ = data.addTransaction(
+                    type: .expense, description: description, amount: amount, category: category, date: date,
+                    id: "insight-\(counter)", now: now)
+            }
+            for (day, text) in [(1, "Swift Alpha"), (2, "Swift Bravo \u{2615}\u{FE0F}"), (3, "Swift Charlie \"q\""), (4, "Swift Delta")] {
+                add(10.5, text, "Groceries", calendar.date(2026, 9, day, 8))
+                add(10.5, text, "Groceries", calendar.date(2026, 9, day, 20))
+            }
+            _ = data.setBudgetLimit(category: "Swift Pace", limit: 40)
+            add(45, "Pace", "Swift Pace", calendar.date(2026, 9, 5))
+
+            if name == "typical" {
+                scenario.preferences.set(
+                    .stringList(["zzz-unknown", "duplicate:expense:swift-bravo:10.50:2026-09-02T00:00:00.000", "\u{3A9}", "zzz-unknown"]),
+                    forKey: InsightPreferences.dismissedKey)
+                scenario.preferences.set(
+                    .string(#"{"a-utc":"2026-10-01T00:00:00.000Z","b-compact":"20261001","c-bad":"x","d":5,"e-lost":"2026-10-01"}"#),
+                    forKey: InsightPreferences.snoozedKey)
+            }
+            var prefs = InsightPreferences.load(from: scenario.preferences, timeZone: calendar.timeZone)
+            func visible() -> [LocalInsight] {
+                InsightEngine.generate(
+                    transactions: data.transactions, budgetLimits: data.budgetLimits, savingsGoals: data.savingsGoals,
+                    selectedMonth: month, now: now, excludedIDs: prefs.excludedIDs(now: now), calendar: calendar)
+            }
+            // What AppModel will do: memory first, then the one preference
+            // Flutter rewrites.
+            func apply(_ write: (key: String, value: PreferenceValue)) { scenario.preferences.set(write.value, forKey: write.key) }
+            #expect(visible().count == 3)
+            apply(prefs.dismiss(visible()[0].id))
+            apply(prefs.snooze(visible()[1].id, now: now))
+            apply(prefs.snooze(visible()[0].id, now: now.adding(microseconds: -1)))
+            if name == "typical" { apply(prefs.snooze("a-utc", now: now)) }
+            let reloaded = InsightPreferences.load(from: scenario.preferences, timeZone: calendar.timeZone)
+            #expect(reloaded == prefs || name == "typical")
+            #expect(Set(reloaded.excludedIDs(now: now)) == Set(prefs.excludedIDs(now: now)))
+
+            let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
+            try SwiftOutput.emit(
+                "insights-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
+                insights: [
+                    "now": now.toIso8601String(),
+                    "selectedMonth": month.toIso8601String(),
+                    "dismissed": reloaded.dismissed,
+                    "snoozed": reloaded.snoozed.map { [$0.id, $0.until.toIso8601String()] },
+                    "visible": visible().map { [$0.id, $0.headline, $0.explanation, $0.suggestedAction] },
+                ])
+        }
     }
 
     @Test("store: damaged inputs recovered by Swift, then saved")

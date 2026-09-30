@@ -87,6 +87,20 @@ UPGRADE_TEST_RESULTS.md).
   the edit form completes the goal with no haptic or overlay, and whether
   Add money celebrates is judged on the goal as shown before the dialog
   (`amount >= remaining`), not on the model's own completion test.
+- Insights (BudgieCore `InsightEngine`, `InsightPreferences`; verified by
+  Fixtures/insights): ids can repeat (three identical rows give two
+  `duplicate:` cards with one id, and two budget keys that slug alike give
+  one pace id); both cards show and one dismissal hides both. Recurring
+  change and goal behind ignore the selected month. Goal day counts are
+  elapsed 24-hour units (one short across a DST change). A snooze is 30 x
+  24 hours of elapsed time, so its wall-clock time moves an hour across a
+  DST change. Dismissals are permanent, and neither list is ever pruned; a
+  malformed snoozed preference stays until the next snooze rewrites it.
+- Insights: equal instants among the selected month's expenses (the
+  unusual-expense scan), equal dates within one recurring template, and
+  equal (severity, id) cards keep stored/candidate order (Swift stable
+  sorts); Dart's sort is not stable above 32 elements, so with more than 32
+  such rows the card chosen can differ.
 
 ## Deliberate differences (approved)
 
@@ -760,6 +774,22 @@ UPGRADE_TEST_RESULTS.md).
   (file_download), `arrow.up.to.line` (file_upload), `icloud.and.arrow.up`
   (backup), `arrow.counterclockwise.circle` (settings_backup_restore),
   `info.circle`, `moon` (dark_mode), `chevron.right`.
+- Insights preferences of the wrong type (`local_insights_dismissed_v1`
+  not a string list, or holding a non-string; `local_insights_snoozed_v1`
+  not a string) read as absent (D6). Flutter's `getStringList`/`getString`
+  throw an uncaught `TypeError` there and the Insights section never
+  appears until the preference is fixed. The next dismiss or snooze
+  replaces the bad value with a valid one. Nothing in either app writes
+  such values.
+- Insights on hand-edited data whose percentage is NaN or infinite (a
+  "NaN" goal amount, amounts that overflow to Infinity): Dart's `round()`
+  throws inside `generate` and the section is replaced by an error widget;
+  Swift shows no Insights section. Finite overflows print the saturated
+  value (`9223372036854775807%`) in both.
+- Insights preferences edited by hand: an id holding a lone UTF-16
+  surrogate becomes U+FFFD in Swift, and snoozed JSON nested more than 128
+  levels deep reads as no snoozes (Dart keeps the entries before the nested
+  value). Every id the engine produces is ASCII.
 
 ### Backup export and restore (D10)
 

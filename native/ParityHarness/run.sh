@@ -125,6 +125,12 @@ case "$MODE" in
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/backup_fixtures_test.dart "$@"
       done
     fi
+    if wants insight_fixtures_test.dart; then
+      rm -rf "$FIXTURES/insights"
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/insight_fixtures_test.dart "$@"
+      done
+    fi
     ;;
   verify)
     export SWIFT_OUT="${SWIFT_OUT:-$FIXTURES/swift-written}"

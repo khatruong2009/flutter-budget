@@ -36,6 +36,11 @@ public enum PreferenceKey {
     // Real preferences.
     public static let themeMode = flutter("themeMode")
     public static let onboardingCompleted = flutter("onboarding_completed")
+    /// Insight cards dismissed for good (StringList, UTF-16 sorted), and
+    /// snoozed until a time (String holding a JSON object of id to local
+    /// ISO date). Literals from local_insights_section.dart:21-22.
+    public static let localInsightsDismissed = flutter("local_insights_dismissed_v1")
+    public static let localInsightsSnoozed = flutter("local_insights_snoozed_v1")
 
     // Settings mirror (dual-written by the app, never removed).
     public static let baseCurrencyCode = flutter("base_currency_code")
@@ -75,6 +80,13 @@ public extension PreferencesStore {
     /// throw a cast error; nothing in the app writes mismatched types).
     func string(_ key: String) -> String? {
         if case .string(let value) = value(forKey: key) { return value }
+        return nil
+    }
+
+    /// Dart `getStringList`. A value of another type, or a list holding a
+    /// non-string, reads as absent (Dart would throw a cast error).
+    func stringList(_ key: String) -> [String]? {
+        if case .stringList(let value) = value(forKey: key) { return value }
         return nil
     }
 
