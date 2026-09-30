@@ -2,7 +2,7 @@ import Foundation
 
 /// A transaction as the model described it, before the confirmation sheet.
 /// No id or timestamps: the sheet hands these fields to the add form.
-public struct VoiceDraft: Equatable, Sendable {
+public struct VoiceDraft: Hashable, Sendable {
     public var type: TransactionType
     public var description: String
     public var amount: Double
