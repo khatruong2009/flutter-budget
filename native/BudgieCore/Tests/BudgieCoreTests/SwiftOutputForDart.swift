@@ -47,7 +47,36 @@ enum SwiftOutput {
     /// `selectedMonth` (`visible` as [id, headline, explanation, action]).
     /// `transactions`, when given, is what Dart's `TransactionModel` must
     /// load (every field, stored order; description and category as UTF-16
-    /// code units, amounts as `toString`).
+    /// code units, amounts as `toString`). Every date above is a cell
+    /// `[ISO text, epoch microseconds]` (`cell`): the text of an instant in
+    /// a repeated DST hour is the same for both occurrences, so the verifier
+    /// compares the instant too. `csv`, when given, is Swift's export of the
+    /// ledger (`export.csv`) and what the importer must make of it: Dart's
+    /// `parseTransactionsCsv` over this store's transactions and over none.
+    /// A date as the verifier compares it: its ISO text and its instant.
+    static func cell(_ date: DartDateTime) -> [Any] {
+        [date.toIso8601String(), date.microsecondsSinceEpoch]
+    }
+
+    /// Swift's export of a ledger and what Swift's own importer makes of it
+    /// with the store's rows present and with none.
+    struct CSVCase {
+        var file: [UInt8]
+        var existing: CSVImport.Summary
+        var empty: CSVImport.Summary
+    }
+
+    static func summaryJSON(_ summary: CSVImport.Summary) -> [String: Any] {
+        [
+            "drafts": summary.drafts.map { draft -> [Any] in
+                [cell(draft.date), draft.type.rawValue, Array(draft.category.utf16), Array(draft.description.utf16),
+                 DartDouble.format(draft.amount)]
+            },
+            "duplicates": summary.duplicateCount,
+            "rowErrors": summary.rowErrors,
+        ]
+    }
+
     /// Suggestion probes over `rules` as [type, description, amount as a
     /// Dart double lexeme, the id Swift's `suggest` picks or null]: every
     /// rule's pattern as stored and padded, upper-cased with a suffix, for
@@ -79,7 +108,7 @@ enum SwiftOutput {
         categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
         newRuleIDs: [String] = [], backup: Backup? = nil, recurring: FinancialData? = nil,
         dartGenerateAddsNothing: Bool = false, onboardingCompleted: Bool? = nil,
-        insights: [String: Any]? = nil, transactions: FinancialData? = nil
+        insights: [String: Any]? = nil, transactions: FinancialData? = nil, csv: CSVCase? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
@@ -87,6 +116,7 @@ enum SwiftOutput {
         try? FileManager.default.removeItem(at: caseDir)
         try FileManager.default.createDirectory(at: storeDir, withIntermediateDirectories: true)
         if let backup { try Data(backup.bytes).write(to: caseDir.appendingPathComponent("backup.json")) }
+        if let csv { try Data(csv.file).write(to: caseDir.appendingPathComponent("export.csv")) }
         for (file, bytes) in fileSystem.snapshot {
             try Data(bytes).write(to: storeDir.appendingPathComponent(file))
         }
@@ -111,16 +141,15 @@ enum SwiftOutput {
         }
         if let netWorth {
             swift["netWorthEntries"] = netWorth.netWorthEntries.map { entry -> [Any] in
-                [entry.id, entry.name, entry.type.rawValue, entry.createdAt.toIso8601String(),
-                 entry.snapshots.map { [$0.recordedAt.toIso8601String(), DartDouble.format($0.amount)] }]
+                [entry.id, entry.name, entry.type.rawValue, cell(entry.createdAt),
+                 entry.snapshots.map { [cell($0.recordedAt), DartDouble.format($0.amount)] }]
             }
-            swift["selectedNetWorthMonth"] = netWorth.selectedNetWorthMonth.toIso8601String()
+            swift["selectedNetWorthMonth"] = cell(netWorth.selectedNetWorthMonth)
         }
         if let goals {
             swift["savingsGoals"] = goals.savingsGoals.map { goal -> [Any] in
                 [goal.id, goal.name, DartDouble.format(goal.targetAmount), DartDouble.format(goal.currentAmount),
-                 goal.targetDate.toIso8601String(), goal.createdAt.toIso8601String(),
-                 goal.completedAt.map { $0.toIso8601String() as Any } ?? NSNull()]
+                 cell(goal.targetDate), cell(goal.createdAt), goal.completedAt.map { cell($0) as Any } ?? NSNull()]
             }
         }
         if let appSettings {
@@ -163,7 +192,7 @@ enum SwiftOutput {
         if let recurring {
             swift["recurringTemplates"] = recurring.templates.map { t -> [Any] in
                 [t.id, t.type.rawValue, t.description, DartDouble.format(t.amount), t.category, t.pattern.rawValue,
-                 t.startDate.toIso8601String(), t.nextOccurrence.toIso8601String(), t.dayOfMonth as Any? ?? NSNull(),
+                 cell(t.startDate), cell(t.nextOccurrence), t.dayOfMonth as Any? ?? NSNull(),
                  t.dayOfWeek as Any? ?? NSNull(), t.isActive]
             }
         }
@@ -176,9 +205,11 @@ enum SwiftOutput {
             swift["transactions"] = transactions.transactions.map { t -> [Any] in
                 [t.id, t.type.rawValue, t.raw["description"]?.stringCodeUnits ?? Array(t.description.utf16),
                  DartDouble.format(t.amount), t.raw["category"]?.stringCodeUnits ?? Array(t.category.utf16),
-                 t.date.toIso8601String(), t.recurringTemplateId as Any? ?? NSNull(), t.tagIds, t.createdAt.toIso8601String(),
-                 t.updatedAt.toIso8601String()]
+                 cell(t.date), t.recurringTemplateId as Any? ?? NSNull(), t.tagIds, cell(t.createdAt), cell(t.updatedAt)]
             }
+        }
+        if let csv {
+            swift["csvImport"] = ["existing": summaryJSON(csv.existing), "empty": summaryJSON(csv.empty)]
         }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
@@ -216,13 +247,37 @@ struct SwiftOutputForDartTests {
         }
     }
 
-    @Test("backup: Swift exports of the store fixtures, and Swift restores of them into a fresh install")
+    /// The one commit a Swift restore makes of `backup` over the store
+    /// scenario `target`, as the Settings page's restore does it: load the
+    /// store and its preference mirrors, decode, restore, write the sections,
+    /// the preference mirrors and the theme. Emits the resulting store.
+    func restore(_ backup: SwiftOutput.Backup, over target: String, emitting emitName: String) async throws {
+        let scenario = try Scenario(Fixtures.url("store/\(target)"))
+        let now = scenario.launchNow
+        let calendar = DartCalendar(timeZone: Scenario.zone)
+        func newID() -> String { UUID().uuidString.lowercased() }
+        let store = scenario.makeStore()
+        let current = FinancialData.load(
+            try await store.read(), preferences: scenario.preferences, calendar: calendar, now: { now }, newID: newID
+        ).data
+        let plan = try BackupEnvelope.decode(bytes: backup.bytes, calendar: calendar, now: now, newID: newID)
+        #expect(plan.keptItems.isEmpty, "\(emitName)")
+        let result = current.restoring(plan, now: now, newID: newID)
+        let written = try await store.updateSections(result.sections)
+        for write in result.preferenceWrites { scenario.preferences.set(write.value, forKey: write.key) }
+        if let theme = result.themeMode { scenario.preferences.set(.string(theme), forKey: PreferenceKey.themeMode) }
+        try SwiftOutput.emit(
+            emitName, fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: written,
+            budgetLimits: result.data.budgetLimits, netWorth: result.data, goals: result.data,
+            appSettings: result.data.appSettings, themeMode: result.themeMode,
+            backup: try SwiftOutput.backup(of: written, preferences: scenario.preferences, now: now))
+    }
+
+    @Test("backup: Swift exports of the store fixtures, and Swift restores of them into a fresh install and over populated stores")
     func backups() async throws {
         for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k"] {
             let scenario = try Scenario(Fixtures.url("store/\(name)"))
             let now = scenario.launchNow
-            let calendar = DartCalendar(timeZone: Scenario.zone)
-            func newID() -> String { UUID().uuidString.lowercased() }
             let snapshot = try await scenario.makeStore().read()
             let backup = try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now)
             try SwiftOutput.emit(
@@ -230,22 +285,14 @@ struct SwiftOutputForDartTests {
                 backup: backup)
 
             // The one commit a Swift restore makes, over a fresh install.
-            let fresh = try Scenario(Fixtures.url("store/fresh_install"))
-            let store = fresh.makeStore()
-            let current = FinancialData.load(
-                try await store.read(), preferences: fresh.preferences, calendar: calendar, now: { now }, newID: newID
-            ).data
-            let plan = try BackupEnvelope.decode(bytes: backup.bytes, calendar: calendar, now: now, newID: newID)
-            #expect(plan.keptItems.isEmpty, "\(name)")
-            let result = current.restoring(plan, now: now, newID: newID)
-            let written = try await store.updateSections(result.sections)
-            for write in result.preferenceWrites { fresh.preferences.set(write.value, forKey: write.key) }
-            if let theme = result.themeMode { fresh.preferences.set(.string(theme), forKey: PreferenceKey.themeMode) }
-            try SwiftOutput.emit(
-                "backup-restored-\(name)", fileSystem: fresh.fileSystem, preferences: fresh.preferences, snapshot: written,
-                budgetLimits: result.data.budgetLimits, netWorth: result.data, goals: result.data,
-                appSettings: result.data.appSettings, themeMode: result.themeMode,
-                backup: try SwiftOutput.backup(of: written, preferences: fresh.preferences, now: now))
+            try await restore(backup, over: "fresh_install", emitting: "backup-restored-\(name)")
+            // And over stores that already hold other data and preference
+            // mirrors of their own (typical's backup into each).
+            if name == "typical" {
+                for target in ["old_schema", "unknown_data"] {
+                    try await restore(backup, over: target, emitting: "backup-restored-over-\(target)")
+                }
+            }
         }
     }
 
@@ -307,6 +354,7 @@ struct SwiftOutputForDartTests {
             let store = scenario.makeStore()
             _ = try await store.read()
             func id() -> String { UUID().uuidString.lowercased() }
+            let storedTemplates = data.templates
 
             let added = data.addTransaction(
                 type: .expense, description: "Swift ☕️ \"quoted\", comma", amount: 1200, category: "Groceries",
@@ -387,6 +435,16 @@ struct SwiftOutputForDartTests {
             _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: id)
             #expect(data.transactions.filter { $0.recurringTemplateId == resumed.id }
                 .allSatisfy { !$0.date.isBefore(now) || calendar.isSameDay($0.date, now) }, "resume back-filled")
+            // Template deletion (AppModel.deleteTemplate): a stored one and
+            // a Swift one go; their generated rows stay and keep pointing at
+            // them. Dart must load the rest, and its generator find nothing.
+            if let doomedStored = storedTemplates.first {
+                let deleted = data.deleteTemplate(id: doomedStored.id)
+                #expect(deleted, "\(name) delete stored template")
+            }
+            let deletedSwift = data.deleteTemplate(id: weekly.id)
+            let deletedUnknown = data.deleteTemplate(id: "no-such-template")
+            #expect(deletedSwift && !deletedUnknown, "\(name) delete Swift and unknown templates")
             data.appSettings.baseCurrencyCode = "EUR"
             data.appSettings.appLockEnabled.toggle()
 
@@ -611,6 +669,14 @@ struct SwiftOutputForDartTests {
             #expect(summary.drafts.count >= 5 && summary.rowErrors.count >= 1, "\(name) import")
             data = data.importTransactions(summary, now: now, newID: id).data
 
+            // Dates only a DST zone makes hard (see `dstEdits`).
+            _ = try Self.dstEdits(&data, zone: Scenario.zone.identifier, now: now, newID: id)
+
+            // Swift's own CSV export of the whole ledger (plus rows with
+            // awkward fields that never get stored), read by Flutter's
+            // importer (`csv`).
+            let csv = try Self.csvCase(data, now: now)
+
             // Every section through its typed serializer, as the app's
             // save and retry paths write them.
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
@@ -624,8 +690,146 @@ struct SwiftOutputForDartTests {
                 categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)), tagsRules: data,
                 newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } },
                 backup: try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now),
-                recurring: data, dartGenerateAddsNothing: true, transactions: data)
+                recurring: data, dartGenerateAddsNothing: true, transactions: data, csv: csv)
         }
+    }
+
+    /// A local time that does not exist (`gap`) and one that happens twice
+    /// (`fold`) in `zone`'s 2026 DST changes, as [year, month, day, hour,
+    /// minute]. America/Santiago and Asia/Beirut change at midnight: their
+    /// gap swallows the first hour of a day and their fold repeats the last.
+    /// Zones without a row have none.
+    static func dstPoints(_ zone: String) -> (gap: [Int], fold: [Int])? {
+        switch zone {
+        case "America/New_York": ([2026, 3, 8, 2, 30], [2026, 11, 1, 1, 30])
+        case "America/Santiago": ([2026, 9, 6, 0, 30], [2026, 4, 4, 23, 30])
+        case "Asia/Beirut": ([2026, 3, 29, 0, 30], [2026, 10, 24, 23, 30])
+        case "Australia/Lord_Howe": ([2026, 10, 4, 2, 15], [2026, 4, 5, 1, 45])
+        default: nil
+        }
+    }
+
+    /// Every kind of date the app stores, on the gap, the fold and the
+    /// midnights around them of the running zone: transactions (plain and
+    /// the voice sheet's prefilled date), a goal's target date, net worth
+    /// snapshots, templates that cross the gap, and a CSV file. Dart must
+    /// read each back as the same instant (`cell`). Returns false for a
+    /// zone without DST points.
+    static func dstEdits(_ data: inout FinancialData, zone: String, now: DartDateTime, newID: () -> String) throws -> Bool {
+        guard let points = dstPoints(zone) else { return false }
+        let calendar = data.calendar
+        func at(_ p: [Int]) -> DartDateTime { calendar.date(p[0], p[1], p[2], p[3], p[4]) }
+        func day(_ p: [Int], _ offset: Int = 0) -> DartDateTime { calendar.date(p[0], p[1], p[2] + offset) }
+        func dayText(_ p: [Int]) -> String { String(format: "%04d-%02d-%02d", p[0], p[1], p[2]) }
+        let gap = at(points.gap)
+        let fold = at(points.fold)
+        let gapDay = day(points.gap)
+        let foldDay = day(points.fold)
+        let hour: Int64 = 3_600_000_000
+
+        // Transactions. A second occurrence of the fold would print the same
+        // text as the first (Flutter cannot store it either), so the rows
+        // around the fold are unambiguous instants.
+        let rows: [(String, TransactionType, DartDateTime)] = [
+            ("gap", .expense, gap), ("gap day midnight", .expense, gapDay),
+            ("last ms before gap day", .expense, gapDay.adding(microseconds: -1_000)),
+            ("gap day end", .expense, day(points.gap, 1).adding(microseconds: -1_000)),
+            ("hour before fold", .expense, fold.adding(microseconds: -hour)), ("fold", .income, fold),
+            ("fold day midnight", .expense, foldDay), ("two hours after fold", .expense, fold.adding(microseconds: 2 * hour)),
+        ]
+        for (index, row) in rows.enumerated() {
+            _ = data.addTransaction(
+                type: row.1, description: "Swift DST \(row.0)", amount: 10 + Double(index) / 4,
+                category: row.1 == .income ? "Paycheck ✨" : "Health", date: row.2, id: newID(), now: now)
+        }
+
+        // The voice sheet's prefilled date: the spoken day's midnight, on
+        // the gap day itself and on the day after it.
+        let reply = #"{"type":"expense","description":"Swift voice DST","amount":7.5,"category":"Health","date":"\#(dayText(points.gap))"}"#
+        for today in [
+            calendar.date(points.gap[0], points.gap[1], points.gap[2], 12), calendar.date(points.gap[0], points.gap[1], points.gap[2] + 1, 9),
+        ] {
+            let draft = try VoiceDraftParser.parse(
+                modelOutput: reply, transcript: "spoken", today: today, expenseCategories: ["Health"], incomeCategories: ["Paycheck ✨"])
+            _ = data.addTransaction(
+                type: draft.type, description: draft.description, amount: draft.amount, category: draft.category, date: draft.date,
+                id: newID(), now: now)
+        }
+
+        // Goals: a target date is a local midnight; one reaches its target.
+        let gapGoal = data.addSavingsGoal(
+            name: "Swift DST gap goal", targetAmount: 900, targetDate: gapDay, id: SavingsGoalRecord.makeID(now: now, counter: 10), now: now)!
+        let foldGoal = data.addSavingsGoal(
+            name: "Swift DST fold goal", targetAmount: 900, targetDate: foldDay, id: SavingsGoalRecord.makeID(now: now, counter: 11), now: now)!
+        data.allocateToSavingsGoal(id: gapGoal.id, amount: 900, now: now)
+        data.allocateToSavingsGoal(id: foldGoal.id, amount: 450, now: now)
+
+        // Net worth snapshots recorded on the gap, the fold and the midnight.
+        let account = data.addNetWorthEntry(
+            name: "Swift DST account", type: .asset, amount: 500, month: calendar.month(of: gap), id: newID(), now: now)!
+        data.updateNetWorthEntry(id: account.id, name: account.name, type: .asset, amount: 510, recordedAt: fold, now: now)
+        data.updateNetWorthEntry(id: account.id, name: account.name, type: .asset, amount: 520, recordedAt: gap, now: now)
+        data.updateNetWorthEntry(id: account.id, name: account.name, type: .asset, amount: 530, recordedAt: gapDay, now: now)
+
+        // Templates that start before the gap and cross it, one that starts
+        // in it, then the generator at the launch clock.
+        func template(_ label: String, _ pattern: RecurrencePattern, _ start: DartDateTime) {
+            data.addTemplate(RecurringTemplate.make(
+                id: newID(), type: .expense, description: "Swift DST \(label)", amount: 15, category: "Health", pattern: pattern,
+                startDate: start, dayOfMonth: pattern == .monthly ? start.day : nil, dayOfWeek: pattern == .monthly ? nil : start.weekday))
+        }
+        template("weekly before gap", .weekly, day(points.gap, -7))
+        template("biweekly before gap", .biweekly, calendar.date(points.gap[0], points.gap[1], points.gap[2] - 14, 9))
+        template("monthly on gap day", .monthly, gapDay)
+        template("weekly in gap", .weekly, gap)
+        _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: newID)
+
+        // A CSV file with the gap day, the fold as a date-time and the
+        // fold day's midnight, imported as the app commits it.
+        func hhmm(_ p: [Int]) -> String { String(format: "%02d:%02d", p[3], p[4]) }
+        let file = CSVExport.export([]) + Array((
+            "\r\n\(dayText(points.gap)),Expense,Health,Swift DST CSV gap day,4.25"
+            + "\r\n\(dayText(points.fold))T\(hhmm(points.fold)),Income,Paycheck ✨,Swift DST CSV fold,9"
+            + "\r\n\(dayText(points.fold))T00:00:00.000,Expense,Health,Swift DST CSV midnight,3\r\n").utf8)
+        let summary = try CSVImport.parse(bytes: file, existing: data.transactions, calendar: calendar)
+        #expect(summary.drafts.count == 3 && summary.rowErrors.isEmpty, "\(zone) DST csv \(summary.rowErrors)")
+        data = data.importTransactions(summary, now: now, newID: newID).data
+        return true
+    }
+
+    /// Swift's export of the ledger and of rows with awkward fields (a
+    /// line break and quotes, padding, an empty description, an empty
+    /// category and a negative amount Flutter rejects, huge and tiny
+    /// amounts), with what Swift's importer makes of the file.
+    static func csvCase(_ data: FinancialData, now: DartDateTime) throws -> SwiftOutput.CSVCase {
+        let calendar = data.calendar
+        func row(_ description: String, _ category: String, _ amount: Double, income: Bool = false, _ date: DartDateTime? = nil)
+            -> CSVExport.Row
+        {
+            CSVExport.Row(
+                date: date ?? calendar.date(2026, 9, 20), isIncome: income, category: category, description: description, amount: amount)
+        }
+        var rows = data.transactions.map {
+            CSVExport.Row(date: $0.date, isIncome: $0.type == .income, category: $0.category, description: $0.description, amount: $0.amount)
+        }
+        rows += [
+            row("line\r\nbreak, \"quoted\"", "Health", 5),
+            row("  padded  ", " Padded Export ", 6.5, income: true),
+            row("", "Health", 7),
+            row("no category", "", 8),
+            row("negative", "Health", -5),
+            row("huge", "Health", 1e21),
+            row("tiny", "Health", 0.005),
+            row("large", "Health", 1234567.891, income: true),
+            row("emoji ☕️ 🎉", "Health ✨", 1.25),
+            row("last of the month", "Health", 2, calendar.date(2026, 2, 28)),
+        ]
+        let file = CSVExport.export(rows)
+        let existing = try CSVImport.parse(bytes: file, existing: data.transactions, calendar: calendar)
+        let empty = try CSVImport.parse(bytes: file, existing: [], calendar: calendar)
+        #expect(existing.duplicateCount > 0 || data.transactions.isEmpty)
+        #expect(existing.rowErrors.count >= 2)
+        return SwiftOutput.CSVCase(file: file, existing: existing, empty: empty)
     }
 
     @Test("settings: stores and preference mirrors after the Swift settings setters")
@@ -743,7 +947,7 @@ struct SwiftOutputForDartTests {
                     "now": now.toIso8601String(),
                     "selectedMonth": month.toIso8601String(),
                     "dismissed": reloaded.dismissed,
-                    "snoozed": reloaded.snoozed.map { [$0.id, $0.until.toIso8601String()] },
+                    "snoozed": reloaded.snoozed.map { [$0.id, SwiftOutput.cell($0.until)] },
                     "visible": visible().map { [$0.id, $0.headline, $0.explanation, $0.suggestedAction] },
                 ])
         }

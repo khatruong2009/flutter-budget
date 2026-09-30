@@ -7,6 +7,9 @@
 //   financial_store/   files written by BudgieCore
 //   prefs.json         typed preferences (optional)
 //   swift.json         {"revision": int, "sectionsFnv": "<fnv of Dart-canonical sections>",
+//                       every date is a cell [ISO text, epoch microseconds]:
+//                       both are compared (the text of an instant in a
+//                       repeated DST hour is the same for both occurrences);
 //                       optional "categoryBudgetLimits", "netWorthEntries",
 //                       "selectedNetWorthMonth", "savingsGoals", "appSettings",
 //                       "themeMode", "categories", "categoriesAddedAtLaunch",
@@ -26,6 +29,14 @@
 //                       load as, and the cards shown at a clock}
 //   backup.json        optional: Swift's backup export of this store after a
 //                       launch (see verifyBackup)
+//   export.csv         optional: Swift's CSV export of the ledger; swift.json
+//                       "csvImport" is what the importer must make of it (see
+//                       csvProblems)
+//
+// The whole run is under one zone (VERIFY_TZ in run.sh = the zone Swift wrote
+// the stores in, BUDGIE_SWIFT_ZONE). The summary of every loaded store
+// (`summarize`, at the launch clock) goes to dart-verification.json, where
+// the Swift side compares it with its own numbers (DartSummaryOfSwiftStores).
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
@@ -41,6 +52,7 @@ import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_generator.dart';
+import 'package:budget_app/transaction_model.dart';
 import 'package:budget_app/transaction_tag.dart';
 import 'package:budget_app/widgets/glow_card.dart';
 import 'package:budget_app/widgets/local_insights_section.dart';
@@ -168,7 +180,7 @@ Future<List<String>> insightProblems(
     problems.add('insight dismissals: dart $dartDismissed swift ${jsonEncode(insights['dismissed'])}');
   }
   final dartSnoozed = jsonEncode([
-    for (final e in snoozed.entries) [e.key, iso(e.value)]
+    for (final e in snoozed.entries) [e.key, cell(e.value)]
   ]);
   if (dartSnoozed != jsonEncode(insights['snoozed'])) {
     problems.add('insight snoozes: dart $dartSnoozed swift ${jsonEncode(insights['snoozed'])}');
@@ -194,6 +206,52 @@ Future<List<String>> insightProblems(
   if (dartVisible != jsonEncode(insights['visible'])) {
     problems.add('insight cards: dart $dartVisible swift ${jsonEncode(insights['visible'])}');
   }
+  return problems;
+}
+
+/// A date as the Swift side writes it: its ISO text and its instant. The
+/// text alone cannot tell the two occurrences of a repeated DST hour apart.
+List<Object> cell(DateTime date) =>
+    [iso(date), date.microsecondsSinceEpoch];
+
+/// Swift's CSV export of a ledger read by Flutter's importer
+/// (`TransactionModel.parseTransactionsCsv`): over this store's
+/// transactions and over none, the rows it imports, the duplicates it skips
+/// and the errors it reports must be what Swift's importer made of the same
+/// file.
+List<String> csvProblems(
+    String text, Map<String, dynamic> expected, TransactionModel existing) {
+  final problems = <String>[];
+  void check(String label, TransactionModel model, Object? want) {
+    final CsvImportSummary summary;
+    try {
+      summary = model.parseTransactionsCsv(text);
+    } catch (error) {
+      problems.add('csv ($label): parseTransactionsCsv threw $error');
+      return;
+    }
+    final dart = jsonEncode({
+      'drafts': [
+        for (final t in summary.transactions)
+          [
+            cell(t.date),
+            t.type.name,
+            t.category.codeUnits,
+            t.description.codeUnits,
+            t.amount.toString(),
+          ]
+      ],
+      'duplicates': summary.duplicateCount,
+      'rowErrors': summary.rowErrors,
+    });
+    final swift = jsonEncode(want);
+    if (dart != swift) {
+      problems.add('csv ($label): dart $dart swift $swift');
+    }
+  }
+
+  check('with the store\'s rows', existing, expected['existing']);
+  check('into an empty ledger', TransactionModel(), expected['empty']);
   return problems;
 }
 
@@ -317,10 +375,10 @@ void main() {
                 e.id,
                 e.name,
                 e.type.name,
-                iso(e.createdAt),
+                cell(e.createdAt),
                 [
                   for (final s in e.snapshots)
-                    [iso(s.recordedAt), s.amount.toString()]
+                    [cell(s.recordedAt), s.amount.toString()]
                 ],
               ]
           ]);
@@ -340,9 +398,9 @@ void main() {
                 g.name,
                 g.targetAmount.toString(),
                 g.currentAmount.toString(),
-                iso(g.targetDate),
-                iso(g.createdAt),
-                g.completedAt == null ? null : iso(g.completedAt!),
+                cell(g.targetDate),
+                cell(g.createdAt),
+                g.completedAt == null ? null : cell(g.completedAt!),
               ]
           ]);
           final expected = jsonEncode(savingsGoals);
@@ -364,11 +422,11 @@ void main() {
                 t.description.codeUnits,
                 t.amount.toString(),
                 t.category.codeUnits,
-                iso(t.date),
+                cell(t.date),
                 t.recurringTemplateId,
                 t.tagIds,
-                iso(t.createdAt),
-                iso(t.updatedAt),
+                cell(t.createdAt),
+                cell(t.updatedAt),
               ]
           ]);
           final expected = jsonEncode(transactions);
@@ -377,12 +435,12 @@ void main() {
           }
         }
         final selectedNetWorthMonth = swift['selectedNetWorthMonth'];
-        if (selectedNetWorthMonth is String &&
-            iso(app.transactionModel.selectedNetWorthMonth) !=
-                selectedNetWorthMonth) {
+        if (selectedNetWorthMonth is List &&
+            jsonEncode(cell(app.transactionModel.selectedNetWorthMonth)) !=
+                jsonEncode(selectedNetWorthMonth)) {
           problems.add('selected net worth month: dart '
-              '${iso(app.transactionModel.selectedNetWorthMonth)} '
-              'swift $selectedNetWorthMonth');
+              '${jsonEncode(cell(app.transactionModel.selectedNetWorthMonth))} '
+              'swift ${jsonEncode(selectedNetWorthMonth)}');
         }
         // Settings the Swift side set: Dart must load exactly these.
         final appSettings = swift['appSettings'];
@@ -548,13 +606,20 @@ void main() {
               r.amount.toString(),
               r.category,
               r.pattern.name,
-              iso(r.startDate),
-              iso(r.nextOccurrence),
+              cell(r.startDate),
+              cell(r.nextOccurrence),
               r.dayOfMonth,
               r.dayOfWeek,
               r.isActive,
             ]
         ]);
+        // Swift's CSV export, read by Flutter's importer.
+        final csvExpected = swift['csvImport'];
+        final csvFile = File('${dir.path}/export.csv');
+        if (csvExpected is Map<String, dynamic> && csvFile.existsSync()) {
+          problems.addAll(csvProblems(utf8.decode(csvFile.readAsBytesSync()),
+              csvExpected, app.transactionModel));
+        }
         final themeMode = swift['themeMode'];
         if (themeMode is String) {
           final theme = ThemeProvider();
@@ -626,7 +691,9 @@ void main() {
         if (summary != null) 'summary': summary,
       };
       expect(problems, isEmpty, reason: problems.join('\n'));
-    });
+      // The 10k-row stores take well over the default 30 seconds on a busy
+      // machine.
+    }, timeout: const Timeout(Duration(minutes: 5)));
 
     // The real LocalInsightsSection, loading the Swift-written preferences
     // itself, must show the cards Swift computed.

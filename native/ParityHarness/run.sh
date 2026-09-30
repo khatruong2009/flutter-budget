@@ -189,7 +189,9 @@ case "$MODE" in
     ;;
   verify)
     export SWIFT_OUT="${SWIFT_OUT:-$FIXTURES/swift-written}"
-    TZ=America/New_York PARITY_TZ=America/New_York flutter test test/parity/verify_swift_output_test.dart "$@"
+    # The zone the Swift side wrote its stores in (BUDGIE_SWIFT_ZONE).
+    VERIFY_TZ="${VERIFY_TZ:-America/New_York}"
+    TZ="$VERIFY_TZ" PARITY_TZ="$VERIFY_TZ" flutter test test/parity/verify_swift_output_test.dart "$@"
     ;;
   *) echo "unknown mode $MODE" >&2; exit 2 ;;
 esac

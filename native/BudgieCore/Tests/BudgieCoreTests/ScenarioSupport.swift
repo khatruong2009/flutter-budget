@@ -11,7 +11,10 @@ struct Scenario {
     let fileSystem: InMemoryFileSystem
     let preferences: InMemoryPreferences
 
-    static let zone = TimeZone(identifier: "America/New_York")!
+    /// The zone every scenario runs in. The fixtures were generated in
+    /// America/New_York; the Swift-written-store checks run in other zones
+    /// (BUDGIE_SWIFT_ZONE, see native/scripts/verify-swift-output-in-dart.sh).
+    static let zone = TimeZone(identifier: ProcessInfo.processInfo.environment["BUDGIE_SWIFT_ZONE"] ?? "America/New_York")!
 
     init(_ url: URL) throws {
         self.url = url
@@ -52,12 +55,16 @@ struct Scenario {
     }
 
     /// The Dart launch clock for every expectation.
-    var launchNow: DartDateTime {
-        try! DartDateTime.parse(expected["launchNow"] as! String, timeZone: Scenario.zone)
+    var launchNow: DartDateTime { launchNow(in: Scenario.zone) }
+
+    /// The same local launch clock text in another zone (the launch fixtures
+    /// pin `DateTime(2026, 9, 28, 9, 15, 30, 250, 125)` under every zone).
+    func launchNow(in zone: TimeZone) -> DartDateTime {
+        try! DartDateTime.parse(expected["launchNow"] as! String, timeZone: zone)
     }
 
-    func makeStore(protectedData: ProtectedDataAvailability = AlwaysAvailable()) -> FinancialStore {
-        let now = launchNow
+    func makeStore(protectedData: ProtectedDataAvailability = AlwaysAvailable(), zone: TimeZone = Scenario.zone) -> FinancialStore {
+        let now = launchNow(in: zone)
         return FinancialStore(fileSystem: fileSystem, preferences: preferences, protectedData: protectedData, clock: { now })
     }
 
