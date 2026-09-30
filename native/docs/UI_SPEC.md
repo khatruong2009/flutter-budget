@@ -890,7 +890,41 @@ When `appSettings.appLockEnabled`: an opaque privacy cover whenever the
 scene is inactive/background; on returning after
 `autoLockTimeoutSeconds` (0 = immediately), or at launch, require
 `LAContext.evaluatePolicy(.deviceOwnerAuthentication)` before showing data.
-The lock never blocks the bootstrap or saves. While locked, everything
-beneath the lock screen (the tabs, or the onboarding tour) is hidden from
-VoiceOver (`accessibilityHidden(model.isLocked)`, Flutter's
-`ExcludeSemantics`), and the lock screen is modal (`.isModal`).
+The lock never blocks the bootstrap or saves.
+
+The cover and the lock screen are drawn in a second `UIWindow` of the same
+scene (`AppLockWindow`, `windowLevel = .alert + 1`), not as an overlay on
+`MainView`: sheets, `budgieDialog`s and the over-full-screen `AddFormHost`
+are presented inside the app window, so an overlay sat below them (a sheet
+stayed in the app-switcher snapshot, and after a relock the lock screen
+showed under a still-open sheet). The window is created by the
+`SceneDelegate` after the app window (which stays key), hosts
+`PrivacyCover` or, while `model.isLocked`, `LockScreen` (theme tokens; it
+gets the same `overrideUserInterfaceStyle` as the app window), and is
+`isHidden` (no touches, no VoiceOver) whenever neither applies. Nothing is
+dismissed: the user's sheets and their input stay as they were underneath.
+
+- Timing: the cover goes up synchronously in `sceneWillResignActive` (and
+  `sceneDidEnterBackground`) when the lock is on: window shown, laid out
+  and `CATransaction.flush()`ed before the callback returns, with an opaque
+  #0A0A12 background on the window's root view as a floor until SwiftUI has
+  rendered. It does not wait for `scenePhase`. `sceneDidBecomeActive` relocks
+  (`model.relock()`) when the time since `sceneDidEnterBackground` is at
+  least `autoLockTimeoutSeconds`, then lowers the cover; a lock screen that
+  takes over stays up with no gap. A brief inactive period (Control Center,
+  a system alert) only covers.
+- Enable prompt: the decision to cover is taken at resign, when the lock is
+  not on yet while Settings' Face ID / passcode prompt (`isEnablingAppLock`)
+  is up, so no cover flashes over Settings when the lock turns on under the
+  prompt (this replaces the old `coverHeld`).
+- VoiceOver while locked: the app window has `accessibilityElementsHidden`
+  (so the tabs, the tour, any sheet and any over-full-screen host are out of
+  the tree, which `AddFormHost`'s own hiding of the screens beneath does
+  not cover), and the lock screen is modal. Unhidden again on unlock.
+- Keyboard: when the cover goes up the app window's first responder is
+  resigned (`endEditing`). The keyboard and its QuickType bar are in system
+  windows above any app window and could show typed text in the snapshot.
+  Text already typed stays; the field only loses focus.
+- Identifier: `applock.lock` on the lock screen. UI tests: `AppLockUITests`
+  with the DEBUG hooks `BUDGIE_UITEST_APP_LOCK=<seconds>` (lock on, in
+  memory) and `BUDGIE_UITEST_AUTH_SUCCESSES=<n>` (`AppLockTestHooks`).

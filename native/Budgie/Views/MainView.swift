@@ -16,7 +16,8 @@ struct MainView: View {
     var body: some View {
         // The first-launch tour replaces the tabs until it is completed or
         // skipped. It is content, not a cover, so the lock screen and the
-        // privacy cover of `.appLock()` stay above it (Flutter's gate order).
+        // privacy cover (`AppLockWindow`, a window above this one and every
+        // sheet) stay above it (Flutter's gate order).
         Group {
             if model.showsOnboarding {
                 OnboardingView()

@@ -41,6 +41,9 @@ final class SceneState {
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    /// The privacy cover and lock screen, above the app window and every
+    /// presentation in it (`AppLockWindow`).
+    private var lockWindow: AppLockWindow?
     private let sceneState = MainActor.assumeIsolated { SceneState() }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -49,11 +52,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let model = AppDelegate.model
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIHostingController(
-                rootView: AppRoot(model: model, sceneState: sceneState) { [weak window] style in
+                rootView: AppRoot(model: model, sceneState: sceneState) { [weak self, weak window] style in
                     window?.overrideUserInterfaceStyle = style
+                    self?.lockWindow?.applyInterfaceStyle(style)
                 })
             window.makeKeyAndVisible()
             self.window = window
+            // Created after the app window, which stays the key window.
+            lockWindow = AppLockWindow(windowScene: windowScene, mainWindow: window, model: model, sceneState: sceneState)
             if let url = connectionOptions.urlContexts.first?.url { model.open(url) }
             if let shortcut = connectionOptions.shortcutItem { model.handleShortcut(shortcut.type) }
         }
@@ -73,11 +79,19 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        MainActor.assumeIsolated { sceneState.phase = .active }
+        MainActor.assumeIsolated {
+            sceneState.phase = .active
+            lockWindow?.sceneDidBecomeActive()
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        MainActor.assumeIsolated { sceneState.phase = .inactive }
+        // The cover goes up here, before the callback returns and so before
+        // iOS takes the app-switcher snapshot.
+        MainActor.assumeIsolated {
+            lockWindow?.sceneWillResignActive()
+            sceneState.phase = .inactive
+        }
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -87,6 +101,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         MainActor.assumeIsolated {
             sceneState.phase = .background
+            lockWindow?.sceneDidEnterBackground()
             AppModel.registerShortcuts()
             // Like the Flutter app: retry unsaved changes on backgrounding.
             let model = AppDelegate.model

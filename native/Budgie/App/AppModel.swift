@@ -259,6 +259,13 @@ final class AppModel {
         ledgerRevision &+= 1
         // Like the index, the first cards are ready for the first frame.
         await updateInsights(generation: insightsGeneration)
+        #if DEBUG
+        // In memory only (nothing is written): UI tests turn App Lock on.
+        if let seconds = AppLockTestHooks.timeoutSeconds {
+            data?.appSettings.appLockEnabled = true
+            data?.appSettings.autoLockTimeoutSeconds = seconds
+        }
+        #endif
         phase = .ready
         #if DEBUG
         await RehearsalSummary.performScriptedEditsIfRequested(self)

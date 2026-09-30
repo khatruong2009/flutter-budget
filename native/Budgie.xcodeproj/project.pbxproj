@@ -14,6 +14,7 @@
 		08260060690300F8A2D702DE /* Headers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BBD70AF06C9C13FFE5A573C /* Headers.swift */; };
 		0860E2AFB8E9781A5396C119 /* SplineSansMono-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB3E7017FDAA6228AFB3AE3C /* SplineSansMono-SemiBold.ttf */; };
 		0BDCBA1F7A98D49F747333A5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30909C3F10B6B69B9FE7DE2C /* MainView.swift */; };
+		1027507622CB9F201411C517 /* AppLockTestHooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9113D22308CF5B7659177CF6 /* AppLockTestHooks.swift */; };
 		11E857F5EF1E31B97EF3D43B /* TextLineHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800FA2FCB6FBC4E3D3E72E06 /* TextLineHeightTests.swift */; };
 		122195B6962D7B71268770FA /* TrendCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9EBB466D4272F48F68DC73 /* TrendCard.swift */; };
 		16E5859E66AF85EACC3638A5 /* CategoriesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2C15333DB4B53CEC061C60 /* CategoriesUITests.swift */; };
@@ -73,6 +74,7 @@
 		847A524749C84D4CCC56914B /* GoalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2520D7EA4306F24110F195 /* GoalCard.swift */; };
 		8ADD0777977928235CF3B44A /* GoalForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D446321DA383AD1E6B29197 /* GoalForm.swift */; };
 		8F1656985A23437F8FCD8BA5 /* BudgetWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		90E5F8F9282C405AC3DBB10F /* AppLockUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797B05365FF25E2F1D89F5B1 /* AppLockUITests.swift */; };
 		90F6E489893123A00170EE80 /* Gabarito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A0807866638A207419BDBB4 /* Gabarito-Medium.ttf */; };
 		92C347F5E42211337D69F8AD /* AllocationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6683EC36749C15D7C77A49B2 /* AllocationDialog.swift */; };
 		9594C1D2AE4C9E17DDBC5992 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8576F10D7E1C1D7C72E312B /* ShareSheet.swift */; };
@@ -251,6 +253,7 @@
 		6FB0B4F7B497DD7C0697DC03 /* Budgie.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budgie.entitlements; sourceTree = "<group>"; };
 		706B0B604B43DD43AB07DA98 /* Pills.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pills.swift; sourceTree = "<group>"; };
 		768D07F36F5FF6B04D4A8F95 /* VoiceRecordingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecordingSheet.swift; sourceTree = "<group>"; };
+		797B05365FF25E2F1D89F5B1 /* AppLockUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockUITests.swift; sourceTree = "<group>"; };
 		7BC61ABBB0C4A64D43AC2FB2 /* CelebrationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationOverlay.swift; sourceTree = "<group>"; };
 		800FA2FCB6FBC4E3D3E72E06 /* TextLineHeightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLineHeightTests.swift; sourceTree = "<group>"; };
 		84B3671771B9C0DC8DD24724 /* FlowSheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowSheets.swift; sourceTree = "<group>"; };
@@ -260,6 +263,7 @@
 		8D446321DA383AD1E6B29197 /* GoalForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalForm.swift; sourceTree = "<group>"; };
 		8EEBFF6A3864E8DA7A0385E9 /* MVPFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVPFlowUITests.swift; sourceTree = "<group>"; };
 		90C357B65E15C391D2624D5F /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
+		9113D22308CF5B7659177CF6 /* AppLockTestHooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockTestHooks.swift; sourceTree = "<group>"; };
 		91CC962E50A36F957F4DD544 /* OFL-Gabarito.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OFL-Gabarito.txt"; sourceTree = "<group>"; };
 		95305E260118DBE605359800 /* BudgetWidgetsExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BudgetWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		98832354F506137CEF66DFC4 /* SplineSansMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SplineSansMono-Regular.ttf"; sourceTree = "<group>"; };
@@ -418,6 +422,7 @@
 		3D025C807F45FB00FB783484 /* BudgieUITests */ = {
 			isa = PBXGroup;
 			children = (
+				797B05365FF25E2F1D89F5B1 /* AppLockUITests.swift */,
 				D9CF826AA81D428AADF1FB75 /* BackupUITests.swift */,
 				AF2C15333DB4B53CEC061C60 /* CategoriesUITests.swift */,
 				D995A7E368330A846DC5324C /* CSVImportUITests.swift */,
@@ -682,6 +687,7 @@
 		FF57D4A315C9B882E3C30DBD /* Debug */ = {
 			isa = PBXGroup;
 			children = (
+				9113D22308CF5B7659177CF6 /* AppLockTestHooks.swift */,
 				A7C7FD591C40F5FE192B6FDF /* DesignGalleryView.swift */,
 				3DB5CCEBA896C753606691E9 /* VoiceTestHooks.swift */,
 			);
@@ -903,6 +909,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90E5F8F9282C405AC3DBB10F /* AppLockUITests.swift in Sources */,
 				ED1408D66E67AD68EB5668C3 /* BackupUITests.swift in Sources */,
 				626D05D6DF17191AFF04A224 /* CSVImportUITests.swift in Sources */,
 				16E5859E66AF85EACC3638A5 /* CategoriesUITests.swift in Sources */,
@@ -932,6 +939,7 @@
 				92C347F5E42211337D69F8AD /* AllocationDialog.swift in Sources */,
 				A33249F54E8B2B0DE95E1C20 /* AmountInput.swift in Sources */,
 				DC0ACEC38D74059FC1D891E5 /* AppLock.swift in Sources */,
+				1027507622CB9F201411C517 /* AppLockTestHooks.swift in Sources */,
 				25510BEC61B1A34228AA2554 /* AppModel.swift in Sources */,
 				B714CE63FA132A02FE2E4890 /* BudgetLimitSheet.swift in Sources */,
 				D92EB23D1CA2485689CF5FBB /* BudgetsSection.swift in Sources */,

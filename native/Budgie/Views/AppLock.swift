@@ -1,5 +1,6 @@
 import LocalAuthentication
 import SwiftUI
+import UIKit
 
 /// Device-owner authentication shared by the lock screen and the Settings
 /// toggle. Touches no model state.
@@ -25,6 +26,9 @@ enum DeviceAuth {
     }
 
     static func authenticate(reason: String) async -> Outcome {
+        #if DEBUG
+        if let outcome = AppLockTestHooks.authenticationOutcome() { return outcome }
+        #endif
         let context = LAContext()
         var error: NSError?
         guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
@@ -39,61 +43,147 @@ enum DeviceAuth {
 }
 
 extension View {
-    /// UI_SPEC "App lock": privacy cover and lock screen over the content.
-    /// Cosmetic only; the model's bootstrap and saves never depend on it.
+    /// UI_SPEC "App lock": turning the lock on keeps the open session
+    /// unlocked. The cover and the lock screen are not drawn here: they live
+    /// in `AppLockWindow`, above every sheet.
     func appLock() -> some View { modifier(AppLockModifier()) }
 }
 
 private struct AppLockModifier: ViewModifier {
     @Environment(AppModel.self) private var model
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var backgroundedAt: ContinuousClock.Instant?
-    /// Settings' enable prompt made the scene inactive: no cover until the
-    /// scene is active again (or goes to the background).
-    @State private var coverHeld = false
-
-    private var enabled: Bool { model.data?.appSettings.appLockEnabled == true }
-    private var timeout: Int { model.data?.appSettings.autoLockTimeoutSeconds ?? 0 }
 
     func body(content: Content) -> some View {
         content
-            // While locked VoiceOver reaches only the lock screen, not the
-            // tabs or the tour beneath it (Flutter's `ExcludeSemantics`).
-            .accessibilityHidden(model.isLocked)
-            .overlay {
-                if model.isLocked {
-                    LockScreen { model.markUnlocked() }
-                } else if enabled && scenePhase != .active && !coverHeld {
-                    PrivacyCover()
-                }
-            }
-            .onChange(of: enabled) { _, isOn in
+            .onChange(of: model.data?.appSettings.appLockEnabled == true) { _, isOn in
                 // Turning the lock on (Settings authenticated first) must not
                 // lock the session that is already open.
                 if isOn { model.markUnlocked() }
             }
-            .onChange(of: model.isEnablingAppLock) { _, enabling in
-                if enabling {
-                    coverHeld = true
-                } else if scenePhase == .active {
-                    coverHeld = false
-                }
+    }
+}
+
+/// The privacy cover and the lock screen, in a second window of the same
+/// scene above the app's own (UI_SPEC "App lock"). Presentations (SwiftUI
+/// sheets, dialogs, the over-full-screen `AddFormHost`) live inside the app
+/// window, so an overlay on the content would sit below them; a window at
+/// `.alert + 1` is above all of them. It is hidden (and so takes no touches
+/// and no VoiceOver focus) whenever neither applies.
+///
+/// The cover is raised synchronously from the scene callbacks
+/// (`sceneWillResignActive`), before iOS takes the app-switcher snapshot,
+/// not from SwiftUI's `scenePhase`, whose render comes a cycle later. The
+/// lock screen follows `model.isLocked`. Cosmetic only: bootstrap and saves
+/// never depend on it.
+@MainActor
+final class AppLockWindow {
+    /// The scene resigned active (or went to the background) with App Lock on.
+    private var showsPrivacyCover = false
+    private let model: AppModel
+    private let mainWindow: UIWindow
+    private let window: UIWindow
+    private var backgroundedAt: ContinuousClock.Instant?
+
+    private var enabled: Bool { model.data?.appSettings.appLockEnabled == true }
+
+    init(windowScene: UIWindowScene, mainWindow: UIWindow, model: AppModel, sceneState: SceneState) {
+        self.model = model
+        self.mainWindow = mainWindow
+        window = UIWindow(windowScene: windowScene)
+        window.windowLevel = .alert + 1
+        let controller = UIHostingController(rootView: AppLockWindowRoot(model: model, sceneState: sceneState))
+        window.rootViewController = controller
+        // The hosting view is on screen before the first cover needs it.
+        controller.loadViewIfNeeded()
+        window.isHidden = true
+        track()
+    }
+
+    /// The app window's interface style (the theme preference) for the lock
+    /// screen, which uses the theme tokens.
+    func applyInterfaceStyle(_ style: UIUserInterfaceStyle) { window.overrideUserInterfaceStyle = style }
+
+    func sceneWillResignActive() { raiseCover() }
+
+    /// A scene can go to the background without a resign the app saw (and
+    /// starts the timeout clock).
+    func sceneDidEnterBackground() {
+        backgroundedAt = .now
+        raiseCover()
+    }
+
+    /// Relocks once the app was in the background for the timeout (0 =
+    /// immediately), then lowers the cover. A lock screen that takes over
+    /// from the cover stays up without a gap.
+    func sceneDidBecomeActive() {
+        let timeout = model.data?.appSettings.autoLockTimeoutSeconds ?? 0
+        if let since = backgroundedAt, since.duration(to: .now) >= .seconds(max(timeout, 0)) {
+            model.relock()
+        }
+        backgroundedAt = nil
+        showsPrivacyCover = false
+        sync()
+    }
+
+    /// Nothing is covered when the lock is off, nor while Settings' enable
+    /// prompt (Face ID / passcode, which makes the scene inactive) is up: the
+    /// lock is not on yet then, and is not retro-fitted with a cover when it
+    /// turns on under the prompt, since the decision is made here, at resign.
+    private func raiseCover() {
+        guard enabled else { return }
+        // A focused field's keyboard and QuickType bar live in windows above
+        // this one and can show typed text in the snapshot: end editing first.
+        // The fields keep their text; only the focus goes.
+        mainWindow.endEditing(true)
+        showsPrivacyCover = true
+        sync()
+    }
+
+    private func sync() {
+        let locked = model.isLocked
+        // While locked, VoiceOver reaches only the lock screen: the whole
+        // app window (tabs, tour, any sheet or over-full-screen host) is out.
+        mainWindow.accessibilityElementsHidden = locked
+        window.rootViewController?.view.backgroundColor =
+            locked ? UIColor(BudgieColor.background) : UIColor(red: 0x0A / 255, green: 0x0A / 255, blue: 0x12 / 255, alpha: 1)
+        window.isHidden = !(locked || showsPrivacyCover)
+        guard !window.isHidden else { return }
+        // Committed before the callback returns, so the snapshot has it.
+        window.layoutIfNeeded()
+        CATransaction.flush()
+    }
+
+    /// Follows `model.isLocked` (the launch lock, unlocking) for the cases
+    /// the scene callbacks do not cover.
+    private func track() {
+        withObservationTracking {
+            _ = model.isLocked
+        } onChange: { [weak self] in
+            Task { @MainActor in
+                self?.sync()
+                self?.track()
             }
-            .onChange(of: scenePhase) { _, phase in
-                switch phase {
-                case .background:
-                    backgroundedAt = .now
-                    coverHeld = false
-                case .active:
-                    if !model.isEnablingAppLock { coverHeld = false }
-                    if let since = backgroundedAt, since.duration(to: .now) >= .seconds(max(timeout, 0)) {
-                        model.relock()
-                    }
-                    backgroundedAt = nil
-                default:
-                    break
-                }
+        }
+    }
+}
+
+/// The window's root: the lock screen while locked, else the privacy cover.
+/// Environment as `AppRoot` gives the app (the model; the scene phase the
+/// lock screen waits on before it authenticates).
+private struct AppLockWindowRoot: View {
+    let model: AppModel
+    let sceneState: SceneState
+
+    var body: some View {
+        Group {
+            if model.isLocked {
+                LockScreen { model.markUnlocked() }
+            } else {
+                PrivacyCover()
             }
+        }
+        .font(TextSpec.bodyLarge.font())
+        .environment(model)
+        .environment(\.scenePhase, sceneState.phase)
     }
 }
 
@@ -162,6 +252,7 @@ struct LockScreen: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
+        .accessibilityIdentifier("applock.lock")
         // Evaluating while the scene is inactive fails, so wait for active.
         // Auto-attempt once; the Unlock button retries.
         .onChange(of: scenePhase, initial: true) { _, phase in
