@@ -36,7 +36,7 @@ and vice versa. The MVP does not redesign any storage format.
 | Deep links | `budgetapp://add-income`, `add-expense`, `voice-add` (+ underscore variants) |
 | Device family / orientation | iPhone only, portrait only |
 | Category | `public.app-category.finance` |
-| Current version | `3.4.0` build `1` (from `pubspec.yaml`); App Store Connect history unknown (section 14, Q6) |
+| Current version | `3.4.0` build `1` (from `pubspec.yaml`), the last upload (section 14, Q6) |
 
 MUST: the Swift app and widget use exactly these values. Changing a widget
 `kind` blanks widgets users have already placed (research I section 2).
@@ -582,7 +582,7 @@ black screen.) The rehearsal records the persisted class after every step.
 | Q3 | Both files unreadable: set aside like Dart, then a blocking "data could not be read" screen; no write until the user chooses "Start fresh". |
 | Q4 | Deployment target iOS 17.0. |
 | Q5 | No extra header keys; use `native.lastCommittedChecksum`. |
-| Q6 | Provisional: marketing version 4.0.0 (full rewrite). Build number to be set above the last App Store Connect upload before any submission; ask first. |
+| Q6 | Marketing version 4.0.0 (full rewrite), build 1 (resolved 2026-09-30). The last upload is 3.4.0 (1): every local Flutter archive of this bundle ID uses build 1, and build numbers only have to increase within a version. Raise the build for each re-upload of 4.0.0. |
 | Q7 | Option (a): `native/ParityHarness/` against a `git archive` copy of `budget_app` in scratch. Nothing in `budget_app/` changes. |
 | Q8 | Beads set up (prefix `budgie`, local-only, no remotes). |
 | Q9 | XcodeGen; commit `project.yml` and the generated `Budgie.xcodeproj`. |

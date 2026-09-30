@@ -11,8 +11,10 @@ settings:
   base:
     DEVELOPMENT_TEAM: TJ37GFZKW2
     CODE_SIGN_STYLE: Automatic
-    # Provisional (Q6): the build number must exceed the last App Store
-    # Connect upload before any submission.
+    # Q6 (resolved 2026-09-30): the last upload is 3.4.0 (1) (every Flutter
+    # archive in ~/Library/Developer/Xcode/Archives uses build 1). 4.0.0 is a
+    # new version train, so build 1 is valid; raise it for each re-upload of
+    # 4.0.0.
     MARKETING_VERSION: "4.0.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "6.0"
