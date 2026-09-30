@@ -7,7 +7,9 @@
 #   native/scripts/stage_import_fixtures.sh <simulator UDID>
 #
 # Run it after an erase and boot, before the UI tests. Only that simulator
-# is touched. Files: "Budgie UITest Backup.json" (schema 3, three
+# is touched. Those two suites replace the app's data, so they belong on an
+# erased simulator only: they launch the app with BUDGIE_UITEST_DATA_GUARD=1,
+# which refuses a store UI tests did not make (the tests then skip). Files: "Budgie UITest Backup.json" (schema 3, three
 # transactions), "Budgie UITest Corrupt.json", "Budgie UITest Import.csv"
 # (two duplicates of the backup's rows, two new rows, one bad row),
 # "Budgie UITest Duplicates.csv" and "Budgie UITest Bad Header.csv".

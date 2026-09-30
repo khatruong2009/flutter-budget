@@ -87,6 +87,36 @@ public actor FinancialStore {
         return next
     }
 
+    /// Why a `commit(_:afterSafetyCopy:)` wrote nothing.
+    public enum SafetyCopiedCommitError: Error, Equatable, Sendable {
+        /// The copy could not be made (its error, in words).
+        case safetyCopyFailed(String)
+        case store(FinancialStoreError)
+    }
+
+    /// A restore's commit (D10): `safetyCopy` (the pre-restore copy of the
+    /// store files) runs on the actor, then `updateSections`, with no other
+    /// commit before, between or during them. The copy therefore holds
+    /// exactly the files this commit replaces, never half of a commit in
+    /// flight. Nothing is written when the copy throws. Returns the copy's
+    /// folder (for the prune, which must never remove it).
+    public func updateSections(
+        _ updates: [(String, JSONValue)], afterSafetyCopy safetyCopy: @Sendable () throws -> URL
+    ) throws(SafetyCopiedCommitError) -> URL {
+        let copy: URL
+        do {
+            copy = try safetyCopy()
+        } catch {
+            throw .safetyCopyFailed(String(describing: error))
+        }
+        do {
+            try updateSections(updates)
+        } catch {
+            throw .store(error)
+        }
+        return copy
+    }
+
     /// Dart `replace`: all sections replaced, revision = current + 1.
     @discardableResult
     public func replace(sections: JSONObject) throws(FinancialStoreError) -> FinancialSnapshot {

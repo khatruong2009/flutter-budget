@@ -36,7 +36,7 @@ struct PreRestoreBackupTests {
         let folder = try backup(support, store: store).create()
         #expect(folder.deletingLastPathComponent().lastPathComponent == PreRestoreBackup.folderName)
         #expect(folder.deletingLastPathComponent().deletingLastPathComponent().path == support.path)
-        #expect(folder.lastPathComponent.hasPrefix("20260921-141320-000000-"))
+        #expect(folder.lastPathComponent.hasPrefix("s000001-20260921-141320-000000-"))
         for (name, bytes) in files {
             let copy = try Data(contentsOf: folder.appendingPathComponent(StoreFile.directoryName).appendingPathComponent(name))
             #expect([UInt8](copy) == bytes, "\(name)")
@@ -96,6 +96,76 @@ struct PreRestoreBackupTests {
         #expect(Set(removed.map(\.lastPathComponent)) == Set((created.prefix(2) + [incomplete]).map(\.lastPathComponent)))
         #expect(try backup(support, store: store).completeSnapshots().map(\.lastPathComponent) == created.suffix(3).map(\.lastPathComponent))
         #expect(FileManager.default.fileExists(atPath: sibling.path))
+    }
+
+    @Test("a clock set back still numbers the new copy last: prune never removes it")
+    func backwardsClock() throws {
+        let support = support()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let store = InMemoryFileSystem(files: try typicalFiles())
+        // Three copies made with the right date, then the clock goes back a
+        // year: the new copy's stamp sorts first but its sequence is last.
+        var created: [URL] = []
+        for second in 0..<3 {
+            created.append(try backup(support, store: store, at: 1_790_000_000_000_000 + Int64(second) * 1_000_000).create())
+        }
+        let yearEarlier: Int64 = 1_790_000_000_000_000 - 365 * 86_400 * 1_000_000
+        let newest = try backup(support, store: store, at: yearEarlier).create()
+        #expect(newest.lastPathComponent.hasPrefix("s000004-2025"))
+        #expect(newest.lastPathComponent.dropFirst(8) < created[0].lastPathComponent.dropFirst(8), "its stamp alone would sort first")
+        #expect(try backup(support, store: store).completeSnapshots().last?.lastPathComponent == newest.lastPathComponent)
+
+        let removed = try backup(support, store: store, at: yearEarlier).prune(protecting: newest)
+        #expect(removed.map(\.lastPathComponent) == [created[0].lastPathComponent])
+        #expect(
+            try backup(support, store: store).completeSnapshots().map(\.lastPathComponent)
+                == (created.suffix(2) + [newest]).map(\.lastPathComponent))
+    }
+
+    @Test("the protected copy survives any prune; unnumbered folders count as oldest")
+    func protectedAndLegacy() throws {
+        let support = support()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let store = InMemoryFileSystem(files: try typicalFiles())
+        // A complete copy from before the sequence, stamped far in the future.
+        let legacy = support.appendingPathComponent(PreRestoreBackup.folderName).appendingPathComponent("20991231-235959-000000-beef")
+        try FileManager.default.createDirectory(at: legacy, withIntermediateDirectories: true)
+        try Data("ok\n".utf8).write(to: legacy.appendingPathComponent(PreRestoreBackup.completeMarker))
+        let first = try backup(support, store: store).create()
+        #expect(first.lastPathComponent.hasPrefix("s000001-"))
+        let second = try backup(support, store: store).create()
+        #expect(second.lastPathComponent.hasPrefix("s000002-"))
+        #expect(
+            try backup(support, store: store).completeSnapshots().map(\.lastPathComponent)
+                == [legacy, first, second].map(\.lastPathComponent))
+
+        let removed = try backup(support, store: store).prune(keeping: 0, protecting: second)
+        #expect(Set(removed.map(\.lastPathComponent)) == Set([legacy, first].map(\.lastPathComponent)))
+        #expect(try backup(support, store: store).completeSnapshots().map(\.lastPathComponent) == [second.lastPathComponent])
+    }
+
+    @Test("the restore commit copies first on the store actor; no copy, no commit")
+    func commitAfterSafetyCopy() async throws {
+        let support = support()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let files = InMemoryFileSystem(files: try typicalFiles())
+        let store = FinancialStore(fileSystem: files, preferences: InMemoryPreferences(), protectedData: AlwaysAvailable(), clock: fixedNow)
+        let before = try await store.read()
+        let copier = backup(support, store: files)
+
+        struct CopyFailed: Error {}
+        do {
+            _ = try await store.updateSections([(Section.transactions, .array([]))], afterSafetyCopy: { throw CopyFailed() })
+            Issue.record("committed without a copy")
+        } catch {
+            guard case .safetyCopyFailed = error else { Issue.record("\(error)"); return }
+        }
+        #expect(try await store.read().revision == before.revision, "nothing written")
+
+        let folder = try await store.updateSections([(Section.transactions, .array([]))], afterSafetyCopy: { try copier.create() })
+        #expect(try await store.read().revision == before.revision + 1)
+        let copied = try Data(contentsOf: folder.appendingPathComponent(StoreFile.directoryName).appendingPathComponent(StoreFile.primaryName))
+        #expect(StoreFile.verify([UInt8](copied))?.revision == before.revision, "the copy is the store the commit replaced")
     }
 }
 

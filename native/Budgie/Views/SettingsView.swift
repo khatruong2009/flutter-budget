@@ -21,7 +21,9 @@ struct SettingsView: View {
     /// `_isImporting`, `_isBackingUp`, `_isRestoring`): from the tap until
     /// its toast, through the share sheet, picker and confirmation.
     @State private var dataTask: DataTask?
-    @State private var shareFile: ShareFile?
+    /// Whether the page is on screen: an export that finishes after it was
+    /// left is not shared (its file is deleted).
+    @State private var isVisible = false
     /// What the document picker is choosing a file for. One `.fileImporter`
     /// serves both imports (a second one on the same view is ignored).
     @State private var importKind: ImportKind?
@@ -60,14 +62,6 @@ struct SettingsView: View {
         }
         .navigationDestination(item: $destination) { $0.view }
         .sheet(item: $choice) { choiceSheet($0) }
-        .sheet(item: $shareFile, onDismiss: finishDataTask) { file in
-            ShareSheet(url: file.url, subject: file.subject) { completed in
-                if completed { model.showToast(file.completedToast) }
-                // It holds financial data; Flutter leaves it in tmp.
-                try? FileManager.default.removeItem(at: file.url)
-            }
-            .ignoresSafeArea()
-        }
         .fileImporter(
             isPresented: $showsImporter, allowedContentTypes: (importKind ?? .backup).contentTypes, allowsMultipleSelection: false,
             onCompletion: picked, onCancellation: finishDataTask
@@ -76,6 +70,8 @@ struct SettingsView: View {
         .budgieDialog(item: Binding(get: { confirmation }, set: { if $0 == nil { closeConfirmation() } })) {
             confirmationDialog($0)
         }
+        .onAppear { isVisible = true }
+        .onDisappear { isVisible = false }
         .alert("App lock", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -358,17 +354,22 @@ struct SettingsView: View {
         model.showToast(Toast(message: message.text, style: style))
     }
 
-    /// `_exportTransactions`: the share sheet, with the row's spinner while
-    /// it is open and the success message once the file was shared.
+    /// `_exportTransactions`: the file is built off the main thread (the
+    /// row's spinner shows meanwhile), then shared; the spinner stays until
+    /// the sheet closes, and the success message shows once an activity
+    /// completed.
     private func exportCSV() {
         dataTask = .exportCSV
-        do {
-            shareFile = ShareFile(
-                url: try model.exportCSV(), subject: "Budget Transactions Export",
-                completedToast: Toast(message: "Transactions exported successfully!"))
-        } catch {
-            finishDataTask()
-            model.showToast(Toast(message: "Error exporting transactions: \(error.localizedDescription)", style: .danger))
+        Task {
+            do {
+                let url = try await model.exportCSV()
+                share(ShareFile(
+                    url: url, subject: "Budget Transactions Export",
+                    completedToast: Toast(message: "Transactions exported successfully!")))
+            } catch {
+                finishDataTask()
+                model.showToast(Toast(message: "Error exporting transactions: \(error.localizedDescription)", style: .danger))
+            }
         }
     }
 
@@ -379,12 +380,32 @@ struct SettingsView: View {
         Task {
             do throws(AppModel.DataTransferError) {
                 let url = try await model.exportBackup()
-                shareFile = ShareFile(
-                    url: url, subject: BackupEnvelope.shareSubject, completedToast: Toast(message: BackupEnvelope.exportedMessage))
+                share(ShareFile(
+                    url: url, subject: BackupEnvelope.shareSubject, completedToast: Toast(message: BackupEnvelope.exportedMessage)))
             } catch {
                 finishDataTask()
                 model.showToast(Toast(message: BackupEnvelope.exportFailedMessage(error.reason), style: .danger))
             }
+        }
+    }
+
+    /// The system share sheet for an export. The file is deleted once the
+    /// sheet closes, or at once when the page was left while the file was
+    /// being built or the sheet could not be shown.
+    private func share(_ file: ShareFile) {
+        guard isVisible else {
+            model.finishExport(file.url)
+            finishDataTask()
+            return
+        }
+        let presented = SharePresenter.present(file) { completed in
+            model.finishExport(file.url)
+            finishDataTask()
+            if completed { model.showToast(file.completedToast) }
+        }
+        if !presented {
+            model.finishExport(file.url)
+            finishDataTask()
         }
     }
 
@@ -395,42 +416,59 @@ struct SettingsView: View {
     }
 
     /// The picked file's bytes, read in place, then the CSV preview or the
-    /// backup decode. A file that cannot be read gets a message (Flutter
-    /// returns silently, as for a cancel).
+    /// backup decode. A file that cannot be read, or is over
+    /// `CSVImport.maximumFileBytes`, gets a message (Flutter returns
+    /// silently for the first and reads any size).
     private func picked(_ result: Result<[URL], any Error>) {
         guard let kind = importKind else { return }
         Task {
-            var bytes: [UInt8]? = nil
-            if case .success(let urls) = result, let url = urls.first { bytes = await Self.read(url) }
-            guard let bytes else {
+            let read: Result<[UInt8], CSVImport.Failure>
+            if case .success(let urls) = result, let url = urls.first {
+                read = await Self.read(url)
+            } else {
+                read = .failure(.unreadableFile)
+            }
+            switch read {
+            case .failure(let failure):
                 finishDataTask()
                 switch kind {
-                case .csv: showToast(CSVImport.failureMessage(.unreadableFile))
+                case .csv: showToast(CSVImport.failureMessage(failure))
                 case .backup:
-                    model.showToast(Toast(
-                        message: BackupEnvelope.importFailedMessage(CSVImport.Failure.unreadableFile.message), style: .danger))
+                    model.showToast(Toast(message: BackupEnvelope.importFailedMessage(failure.message), style: .danger))
                 }
-                return
-            }
-            switch kind {
-            case .csv: await previewCSV(bytes)
-            case .backup: await decodeBackup(bytes)
+            case .success(let bytes):
+                switch kind {
+                case .csv: await previewCSV(bytes)
+                case .backup: await decodeBackup(bytes)
+                }
             }
         }
     }
 
     /// Off the main thread, inside the file's security scope, coordinated
-    /// (an iCloud file that is not downloaded yet is fetched first).
-    private static func read(_ url: URL) async -> [UInt8]? {
-        await Task.detached(priority: .userInitiated) { () -> [UInt8]? in
+    /// (an iCloud file that is not downloaded yet is fetched first). The
+    /// size is checked before anything is read (before the download too
+    /// when iCloud reports it), and the file is mapped rather than copied,
+    /// so only the returned bytes are held.
+    private static func read(_ url: URL) async -> Result<[UInt8], CSVImport.Failure> {
+        await Task.detached(priority: .userInitiated) { () -> Result<[UInt8], CSVImport.Failure> in
             let scoped = url.startAccessingSecurityScopedResource()
             defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-            var bytes: [UInt8]? = nil
+            func tooLarge(_ url: URL) -> Bool {
+                let values = try? url.resourceValues(forKeys: [.fileSizeKey, .totalFileSizeKey])
+                return (values?.fileSize ?? values?.totalFileSize ?? 0) > CSVImport.maximumFileBytes
+            }
+            if tooLarge(url) { return .failure(.fileTooLarge) }
+            var result: Result<[UInt8], CSVImport.Failure> = .failure(.unreadableFile)
             var error: NSError? = nil
             NSFileCoordinator().coordinate(readingItemAt: url, options: [], error: &error) { readable in
-                bytes = (try? Data(contentsOf: readable)).map { [UInt8]($0) }
+                if tooLarge(readable) {
+                    result = .failure(.fileTooLarge)
+                } else if let data = try? Data(contentsOf: readable, options: .mappedIfSafe) {
+                    result = .success([UInt8](data))
+                }
             }
-            return bytes
+            return result
         }.value
     }
 
@@ -469,7 +507,8 @@ struct SettingsView: View {
         case .csv(let summary):
             DataImportDialog(
                 title: summary.confirmTitle, message: summary.confirmMessage, confirmTitle: CSVImport.importButtonTitle,
-                destructive: false, identifier: "csvimport.confirm", onCancel: closeConfirmation
+                destructive: false, busyLabel: DataTask.importCSV.busyLabel, identifier: "csvimport.confirm",
+                onCancel: closeConfirmation
             ) {
                 let saved = await model.importCSV(summary)
                 closeConfirmation()
@@ -478,7 +517,8 @@ struct SettingsView: View {
         case .restore(let plan):
             DataImportDialog(
                 title: RestorePlan.confirmationTitle, message: plan.confirmationMessage,
-                confirmTitle: RestorePlan.replaceButtonTitle, destructive: true, identifier: "backup.confirm",
+                confirmTitle: RestorePlan.replaceButtonTitle, destructive: true, busyLabel: DataTask.importBackup.busyLabel,
+                identifier: "backup.confirm",
                 onCancel: closeConfirmation
             ) {
                 let outcome = await model.restoreBackup(plan)

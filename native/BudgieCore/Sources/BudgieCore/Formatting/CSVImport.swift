@@ -40,6 +40,9 @@ public enum CSVImport {
         /// Swift only (D6): the picked file's bytes could not be read.
         /// Flutter returns silently when `bytes == null`.
         case unreadableFile
+        /// Swift only: the picked file is larger than `maximumFileBytes`,
+        /// refused before it is read (Flutter reads any size).
+        case fileTooLarge
 
         /// The bare message the toast shows (D6: Flutter shows
         /// `e.toString()`, "FormatException: ...").
@@ -47,6 +50,7 @@ public enum CSVImport {
             switch self {
             case .notATransactionsCSV: "Not a valid transactions CSV export"
             case .unreadableFile: "The file could not be read"
+            case .fileTooLarge: "The file is larger than 50 MB"
             }
         }
 
@@ -54,10 +58,15 @@ public enum CSVImport {
         public var flutterDescription: String? {
             switch self {
             case .notATransactionsCSV: "FormatException: Not a valid transactions CSV export"
-            case .unreadableFile: nil
+            case .unreadableFile, .fileTooLarge: nil
             }
         }
     }
+
+    /// The largest file either import reads (a CSV or a backup): 50 MB,
+    /// far above any real export (10,000 transactions are about 1 MB as a
+    /// backup), so a file picked by mistake is refused before it is read.
+    public static let maximumFileBytes = 50 * 1024 * 1024
 
     // MARK: - Decode and parse
 
@@ -69,11 +78,13 @@ public enum CSVImport {
         return String(decoding: slice, as: UTF8.self)
     }
 
-    /// `decode` then `parse(text:existing:calendar:)`.
+    /// `decode` then `parse(text:existing:calendar:)`. The decoded string
+    /// is dropped once its UTF-16 units are taken, so it is not held
+    /// during the parse.
     public static func parse(
         bytes: [UInt8], existing: [TransactionRecord], calendar: DartCalendar
     ) throws(Failure) -> Summary {
-        try parse(text: decode(bytes), existing: existing, calendar: calendar)
+        try parse(units: Array(decode(bytes).utf16), existing: existing, calendar: calendar)
     }
 
     /// `parseTransactionsCsv`: header check, per-row validation in Flutter's
@@ -82,9 +93,14 @@ public enum CSVImport {
     public static func parse(
         text: String, existing: [TransactionRecord], calendar: DartCalendar
     ) throws(Failure) -> Summary {
-        var units = Array(text.utf16)
+        try parse(units: Array(text.utf16), existing: existing, calendar: calendar)
+    }
+
+    private static func parse(
+        units: consuming [UInt16], existing: [TransactionRecord], calendar: DartCalendar
+    ) throws(Failure) -> Summary {
         if units.first == 0xFEFF { units.removeFirst() }  // :1045-1048, a second BOM
-        let rows = CSVParser.parse(units: units)
+        let rows = CSVParser.parse(units: consume units)
 
         func trimmed(_ cell: [UInt16]) -> String { DartString.trim(String(decoding: cell, as: UTF16.self)) }
         // :1058-1066

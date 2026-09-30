@@ -39,6 +39,14 @@ public final class PersistenceTracker {
         return true
     }
 
+    /// Flags `sections` as unsaved without writing them (a write that must
+    /// not run now, e.g. during a restore): the banner and the retries take
+    /// them from here.
+    public func flag(_ sections: [String], because error: FinancialStoreError) {
+        unsavedSections.formUnion(sections)
+        lastError = error
+    }
+
     /// Retries every flagged section. True when nothing is left unsaved.
     @discardableResult
     public func retry(serialize: (String) -> JSONValue) async -> Bool {

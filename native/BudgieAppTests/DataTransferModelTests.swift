@@ -273,7 +273,8 @@ final class BackupModelTests: XCTestCase {
         XCTAssertEqual(try scratch.completeSafetyCopies(), [])
     }
 
-    /// Each restore makes a safety copy; only the newest three are kept.
+    /// Each restore makes a safety copy, numbered in creation order; only
+    /// the newest three are kept.
     func testSafetyCopiesArePrunedToThree() async throws {
         let model = await scratch.start()
         let plan = try await model.decodeBackup(Array(Self.schema3.utf8))
@@ -281,7 +282,8 @@ final class BackupModelTests: XCTestCase {
             let outcome = await model.restoreBackup(plan)
             XCTAssertEqual(outcome, .restored(generated: 0))
         }
-        XCTAssertEqual(try scratch.completeSafetyCopies().count, 3)
+        let copies = try scratch.completeSafetyCopies().map(\.lastPathComponent)
+        XCTAssertEqual(copies.map { String($0.prefix(8)) }, ["s000002-", "s000003-", "s000004-"])
     }
 
     /// A failed commit leaves memory, preferences, the theme and the unsaved
@@ -324,9 +326,9 @@ final class BackupModelTests: XCTestCase {
         XCTAssertEqual(after.revision, before.revision)
     }
 
-    /// A restore supersedes changes that were only in memory: their flags
-    /// clear and a later retry writes nothing old back.
-    func testRestoreClearsUnsavedFlags() async throws {
+    /// Changes only in memory are saved before a restore, so the safety
+    /// copy holds them; afterwards nothing is left to retry.
+    func testRestoreSavesUnsavedChangesFirst() async throws {
         let model = try await seededModel()
         let plan = try await model.decodeBackup(Array(Self.schema3.utf8))
         let unlock = try scratch.lockStoreDirectory()
@@ -344,6 +346,102 @@ final class BackupModelTests: XCTestCase {
         let afterRetry = try await scratch.stored()
         XCTAssertEqual(afterRetry.revision, revision, "nothing left to retry")
         XCTAssertEqual(model.data?.transactions.map(\.description), ["Backup pay", "Backup rent"])
+
+        let copy = try XCTUnwrap(try scratch.completeSafetyCopies().last)
+        let primary = copy.appendingPathComponent(StoreFile.directoryName).appendingPathComponent(StoreFile.primaryName)
+        let copied = try XCTUnwrap(StoreFile.decode([UInt8](try Data(contentsOf: primary))))
+        let descriptions = copied.sections[Section.transactions]?.arrayValue?.compactMap { $0.objectValue?["description"]?.stringValue }
+        XCTAssertEqual(descriptions, ["Old lunch", "Unsaved"], "the safety copy has the change that was unsaved")
+    }
+
+    /// Changes that still cannot be saved refuse the restore: nothing is
+    /// copied, written or replaced, and they stay in memory behind the banner.
+    func testRestoreRefusedWhileChangesCannotBeSaved() async throws {
+        let model = try await seededModel()
+        let plan = try await model.decodeBackup(Array(Self.schema3.utf8))
+        let unlock = try scratch.lockStoreDirectory()
+        defer { unlock() }
+        let added = await model.addTransaction(type: .expense, description: "Unsaved", amount: 1, category: "Food", date: today)
+        XCTAssertFalse(added)
+
+        let outcome = await model.restoreBackup(plan)
+        XCTAssertEqual(outcome, .failed(.unsavedChanges))
+        XCTAssertEqual(
+            outcome.toast.message,
+            "Could not import backup: Some changes are not saved yet. Tap Retry at the top of the screen, then import the backup again.")
+        XCTAssertTrue(model.hasUnsavedChanges)
+        XCTAssertFalse(model.isRestoring)
+        XCTAssertEqual(model.data?.transactions.map(\.description), ["Old lunch", "Unsaved"])
+        XCTAssertEqual(try scratch.completeSafetyCopies(), [])
+        unlock()
+        await model.retrySaves()
+        XCTAssertFalse(model.hasUnsavedChanges)
+        let disk = try await scratch.stored()
+        XCTAssertEqual(disk.sections[Section.transactions]?.arrayValue?.count, 2)
+    }
+
+    /// While a restore runs routes wait, and a save that arrives anyway is
+    /// flagged (not written, not dropped); the restore then stops before its
+    /// commit, so the edit is kept and a retry saves it. A retry during the
+    /// restore writes nothing.
+    func testSaveDuringRestoreIsKept() async throws {
+        let model = try await seededModel()
+        let plan = try await model.decodeBackup(Array(Self.schema3.utf8))
+        let before = try await scratch.stored()
+        model.pendingAdd = .expense
+
+        let restore = Task { await model.restoreBackup(plan) }
+        while !model.isRestoring { await Task.yield() }
+        XCTAssertFalse(model.canOpenRoutes, "routes wait for the restore")
+        XCTAssertNil(model.takePendingAdd())
+        let added = await model.addTransaction(type: .expense, description: "Mid-restore", amount: 2, category: "Food", date: today)
+        XCTAssertFalse(added)
+        XCTAssertTrue(model.hasUnsavedChanges, "flagged: the banner and Retry take over")
+        await model.retrySaves()
+        let duringRestore = try await scratch.stored().revision
+        XCTAssertEqual(duringRestore, before.revision, "no retry during the restore")
+
+        let outcome = await restore.value
+        XCTAssertEqual(outcome, .failed(.changedDuringRestore))
+        XCTAssertFalse(model.isRestoring)
+        XCTAssertTrue(model.canOpenRoutes)
+        XCTAssertEqual(model.takePendingAdd(), .expense, "the queued route opens now")
+        XCTAssertEqual(model.data?.transactions.map(\.description), ["Old lunch", "Mid-restore"])
+        let afterRestore = try await scratch.stored().revision
+        XCTAssertEqual(afterRestore, before.revision, "the restore wrote nothing")
+
+        await model.retrySaves()
+        XCTAssertFalse(model.hasUnsavedChanges)
+        let disk = try await scratch.stored()
+        XCTAssertEqual(disk.sections[Section.transactions]?.arrayValue?.count, 2)
+    }
+
+    /// "Match device" in the file removes the locale mirror (both apps fall
+    /// back to it when the stored value is null); a failed commit puts the
+    /// old mirror back.
+    func testMatchDeviceLocaleMirror() async throws {
+        let model = try await seededModel()
+        let set = await model.setLocaleOverride("de_DE")
+        XCTAssertTrue(set)
+        XCTAssertEqual(scratch.preferences.value(forKey: PreferenceKey.localeOverride), .string("de_DE"))
+        let plan = try await model.decodeBackup(Array(Self.schema3.utf8))
+
+        let unlock = try scratch.lockStoreDirectory()
+        let failed = await model.restoreBackup(plan)
+        guard case .failed = failed else { return XCTFail("\(failed)") }
+        XCTAssertEqual(scratch.preferences.value(forKey: PreferenceKey.localeOverride), .string("de_DE"), "put back")
+        XCTAssertEqual(model.data?.appSettings.localeOverride, "de_DE")
+        unlock()
+
+        let outcome = await model.restoreBackup(plan)
+        XCTAssertEqual(outcome, .restored(generated: 0))
+        XCTAssertNil(scratch.preferences.value(forKey: PreferenceKey.localeOverride))
+        XCTAssertNil(model.data?.appSettings.localeOverride)
+        let disk = try await scratch.stored()
+        XCTAssertEqual(disk.sections[Section.appSettings]?.objectValue?["localeOverride"], .null)
+        // What a relaunch reads: the null section value, no mirror to fall back on.
+        let relaunched = await scratch.start()
+        XCTAssertNil(relaunched.data?.appSettings.localeOverride)
     }
 
     /// Restore never marks the session unlocked: a file that turns App Lock
@@ -449,6 +547,72 @@ final class CSVImportModelTests: XCTestCase {
         XCTAssertFalse(saved)
         XCTAssertTrue(model.hasUnsavedChanges)
         XCTAssertEqual(model.data?.transactions.map(\.description), ["Lunch"])
+    }
+
+    /// A failed write of rows that bring a new category flags both sections:
+    /// one retry writes the rows and the definition together.
+    func testFailedWriteWithNewCategoryFlagsBoth() async throws {
+        let model = await scratch.start()
+        let summary = try await model.previewCSVImport(csv("2026-09-01,Expense,Board games,Dice,12.50"))
+        let unlock = try scratch.lockStoreDirectory()
+        let saved = await model.importCSV(summary)
+        XCTAssertFalse(saved)
+        XCTAssertTrue(model.hasUnsavedChanges)
+        XCTAssertTrue(model.categories(for: .expense).contains { $0.name == "Board games" }, "in memory")
+        unlock()
+
+        await model.retrySaves()
+        XCTAssertFalse(model.hasUnsavedChanges)
+        let disk = try await scratch.stored()
+        XCTAssertEqual(disk.sections[Section.transactions]?.arrayValue?.count, 1)
+        XCTAssertTrue(
+            disk.sections[Section.categories]?.arrayValue?.contains { $0.objectValue?["name"]?.stringValue == "Board games" } ?? false)
+    }
+
+    /// 10,000 rows imported onto a 10,000-row ledger: the rows and the
+    /// sections are built off the main thread, which never stalls for long
+    /// (the confirmation's spinner keeps turning).
+    func testLargeImportKeepsTheMainThreadFree() async throws {
+        let model = await scratch.start()
+        func rows(_ prefix: String) -> [UInt8] {
+            let lines = (0..<10_000).map { "2026-0\(1 + $0 % 9)-1\($0 % 10),Expense,Food,\(prefix) \($0),\($0 % 97).25" }
+            return Array(([Self.header] + lines).joined(separator: "\r\n").utf8)
+        }
+        let first = try await model.previewCSVImport(rows("Seed"))
+        let seeded = await model.importCSV(first)
+        XCTAssertTrue(seeded)
+        let summary = try await model.previewCSVImport(rows("Second"))
+        XCTAssertEqual(summary.drafts.count, 10_000)
+
+        // A main-actor ticker: the longest gap between its ticks is the
+        // longest time the main thread was busy with something else.
+        final class Stall: @unchecked Sendable {
+            var longest: TimeInterval = 0
+            var ticks = 0
+            var running = true
+        }
+        let stall = Stall()
+        let ticker = Task { @MainActor in
+            var last = Date()
+            while stall.running {
+                try? await Task.sleep(for: .milliseconds(5))
+                let now = Date()
+                stall.longest = max(stall.longest, now.timeIntervalSince(last))
+                stall.ticks += 1
+                last = now
+            }
+        }
+        while stall.ticks < 2 { try await Task.sleep(for: .milliseconds(5)) }
+        stall.longest = 0
+        let started = Date()
+        let saved = await model.importCSV(summary)
+        let elapsed = Date().timeIntervalSince(started)
+        stall.running = false
+        await ticker.value
+        XCTAssertTrue(saved)
+        XCTAssertEqual(model.data?.transactions.count, 20_000)
+        print("large import: \(elapsed)s, longest main-thread stall \(stall.longest)s")
+        XCTAssertLessThan(stall.longest, 0.25, "longest main-thread stall during the import")
     }
 
     /// Nothing to import writes nothing.

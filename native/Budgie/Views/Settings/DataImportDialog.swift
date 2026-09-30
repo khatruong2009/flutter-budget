@@ -5,8 +5,10 @@ import SwiftUI
 /// centred card: "Import 3 transactions?" with the skipped counts
 /// (`_confirmImport`, settings_page.dart:217-286) or "Replace all data?"
 /// with the counts the backup brings (`_confirmRestore`, :525-577), then
-/// Cancel and the action. The action is awaited with the dialog inert
-/// (no Cancel, no scrim dismiss); `onConfirm` closes it.
+/// Cancel and the action. The action is awaited with the dialog modal and
+/// inert (no Cancel, no scrim dismiss) while the action pill shows a
+/// spinner, read and announced as `busyLabel` ("Restoring", "Importing");
+/// `onConfirm` closes it.
 struct DataImportDialog: View {
     let title: String
     /// The body; nil shows none (Flutter's `content: null`).
@@ -14,6 +16,8 @@ struct DataImportDialog: View {
     let confirmTitle: String
     /// "Replace" is drawn in the danger colour (Flutter `AppColors.expense`).
     let destructive: Bool
+    /// What VoiceOver hears while the action runs.
+    let busyLabel: String
     /// Prefix of the accessibility identifiers (`<prefix>.title`, `.message`,
     /// `.cancel`, `.confirm`).
     let identifier: String
@@ -21,6 +25,8 @@ struct DataImportDialog: View {
     let onConfirm: @MainActor () async -> Void
 
     @State private var busy = false
+
+    private var actionColor: Color { destructive ? BudgieColor.danger : BudgieColor.accent }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,22 +46,39 @@ struct DataImportDialog: View {
             }
             HStack(spacing: 12) {
                 PillButton(title: CSVImport.cancelButtonTitle, color: BudgieColor.textSecondary, height: 44, action: onCancel)
+                    .disabled(busy)
+                    .opacity(busy ? 0.4 : 1)
                     .accessibilityIdentifier("\(identifier).cancel")
-                PillButton(
-                    title: confirmTitle, color: destructive ? BudgieColor.danger : BudgieColor.accent, filled: true, height: 44,
-                    action: confirm
-                )
-                .accessibilityIdentifier("\(identifier).confirm")
+                if busy {
+                    busyPill
+                } else {
+                    PillButton(title: confirmTitle, color: actionColor, filled: true, height: 44, action: confirm)
+                        .accessibilityIdentifier("\(identifier).confirm")
+                }
             }
             .padding(.top, 24)
         }
-        .disabled(busy)
         .budgieDialogDismissDisabled(busy)
+    }
+
+    /// The action pill while it runs: its fill with the spinner in place of
+    /// the title (the app's other busy buttons do the same).
+    private var busyPill: some View {
+        ProgressView()
+            .tint(BudgieColor.onAccent)
+            .frame(maxWidth: .infinity)
+            .frame(height: 44)
+            .background(actionColor, in: Capsule())
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(busyLabel)
+            .accessibilityAddTraits(.updatesFrequently)
+            .accessibilityIdentifier("\(identifier).busy")
     }
 
     private func confirm() {
         guard !busy else { return }
         busy = true
+        AccessibilityNotification.Announcement(busyLabel).post()
         Task { await onConfirm() }
     }
 }

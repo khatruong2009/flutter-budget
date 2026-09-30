@@ -755,26 +755,36 @@ ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
   `settings.importBackup`). While one of the four data rows runs (from the
   tap until its message, through the share sheet, the document picker and
   the confirmation) all four are disabled and the running one shows the
-  20pt spinner; VoiceOver reads "Exporting", "Importing" or
+  20pt accent spinner; VoiceOver reads "Exporting", "Importing" or
   "Restoring" for it.
-  Recurring is never disabled.
-- Share sheet (`ShareSheet`: `UIActivityViewController` with a
-  `UIActivityItemSource`): the subject ("Budgie Backup", "Budget
-  Transactions Export") is the Mail subject and the sheet's header title.
-  The success toast ("Backup exported", "Transactions exported
-  successfully!") shows only when an activity completed; the temporary
-  file is deleted when the sheet reports back. The backup file is built
-  off the main thread (`model.exportBackup()`).
+  Recurring is never disabled. Row subtitles take two lines at
+  accessibility text sizes (one otherwise).
+- Share sheet (`SharePresenter`: a `UIActivityViewController` with a
+  `UIActivityItemSource`, presented from the topmost presented controller,
+  so it is the system's compact sheet, as share_plus): the subject
+  ("Budgie Backup", "Budget Transactions Export") is the Mail subject and
+  the header's title; the header's subtitle is share_plus's "JSON • 70 KB"
+  / "CSV • 6 KB". The success toast ("Backup exported", "Transactions
+  exported successfully!") shows only when an activity completed. Both
+  files are built off the main thread (`model.exportBackup()`,
+  `model.exportCSV()`), written with complete file protection, and passed
+  to `model.finishExport` (deleted) when the sheet reports back, or at
+  once when the page was left before the file was ready; leftovers are
+  swept at launch and when the app goes to the background.
 - Document picker: one `.fileImporter` on the page, typed by what it is
   choosing (`.json` for a backup, `.commaSeparatedText` for CSV); the
   file is read in place (security scope, `NSFileCoordinator`) off the
   main thread. Cancel is silent; an unreadable file toasts "Could not
   import backup: The file could not be read" / "Could not import: The file
-  could not be read".
+  could not be read", and a file over 50 MB (checked before reading) "...:
+  The file is larger than 50 MB".
 - Confirmation: `DataImportDialog`, the centred `budgieDialog` card
   (goalTitle title, bodyMedium secondary message in a `DialogScroll`,
   Cancel and the action as 44pt pills). The action is awaited with the
-  card inert (no Cancel, no scrim dismiss); a scrim tap is Cancel.
+  card modal and inert (Cancel disabled at 40% opacity, no scrim dismiss;
+  the action pill shows an `onAccent` spinner on its fill, identifier
+  `<prefix>.busy`, VoiceOver label and announcement "Restoring" /
+  "Importing"); a scrim tap is Cancel.
   - Backup: "Replace all data?", `RestorePlan.confirmationMessage`
     (Flutter's text, plus the kept-items sentence for a file that leaves
     sections out), Cancel / Replace (danger fill). Identifiers

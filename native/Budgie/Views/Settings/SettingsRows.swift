@@ -71,8 +71,9 @@ enum SettingsGlyph {
 }
 
 /// `_SettingsRow` (sp:1227-1310): 40pt tile (the colour at 14% unless
-/// `tile` overrides it), title and a one-line subtitle, then the trailing
-/// view; padding 14 x 12. With `action` the whole row is a button (light
+/// `tile` overrides it), title and a one-line subtitle (two at accessibility
+/// text sizes), then the trailing view; padding 14 x 12. With `action` the
+/// whole row is a button (light
 /// haptic, no visible press state, VoiceOver "title, subtitle"); without
 /// one it is plain. While `busy` VoiceOver hears `busyLabel` ("Exporting",
 /// "Importing", "Restoring") for the subtitle.
@@ -212,10 +213,14 @@ struct SettingsThemeRow: View {
 }
 
 /// Title (`rowTitle`) over the subtitle (`rowSubtitle`, secondary), 2 apart.
+/// A one-line subtitle gets a second line at accessibility text sizes,
+/// where one line keeps only its first word or two (Flutter clips it).
 private struct SettingsRowText: View {
     let title: String
     let subtitle: String
     let subtitleLines: Int?
+
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -225,7 +230,7 @@ private struct SettingsRowText: View {
             Text(subtitle)
                 .textStyle(.rowSubtitle)
                 .foregroundStyle(BudgieColor.textSecondary)
-                .lineLimit(subtitleLines)
+                .lineLimit(subtitleLines == 1 && typeSize.isAccessibilitySize ? 2 : subtitleLines)
                 .truncationMode(.tail)
                 .fixedSize(horizontal: false, vertical: subtitleLines == nil)
         }
@@ -233,8 +238,9 @@ private struct SettingsRowText: View {
     }
 }
 
-/// The trailing `chevron_right` (20pt, tertiary), or Flutter's 20pt
-/// progress indicator in the text colour while the row's action runs.
+/// The trailing `chevron_right` (20pt, tertiary), or a 20pt progress
+/// indicator in the accent while the row's action runs (Flutter: a ring in
+/// the text colour).
 struct SettingsChevron: View {
     var busy = false
 
@@ -242,7 +248,7 @@ struct SettingsChevron: View {
         if busy {
             ProgressView()
                 .controlSize(.small)
-                .tint(BudgieColor.textPrimary)
+                .tint(BudgieColor.accent)
                 .frame(width: 20, height: 20)
                 .accessibilityHidden(true)
         } else {

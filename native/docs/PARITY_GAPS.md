@@ -880,12 +880,24 @@ UPGRADE_TEST_RESULTS.md).
   (Flutter shows "Budgie 2.0.0" for a frame while PackageInfo loads).
 - Export as CSV shows "Transactions exported successfully!" only when the
   share sheet completed (Flutter shows it after any dismissal, a cancel
-  included); the spinner shows while the share sheet is open, as in
-  Flutter. The share subject is Flutter's ("Budget Transactions Export",
-  the Mail subject and the sheet's title). The temporary file is written
-  with file protection and deleted once the sheet reports back (Flutter
-  leaves it in `tmp`); leftovers of an interrupted export are swept at
-  the next export.
+  included); the spinner shows while the file is built (off the main
+  thread) and while the share sheet is open, as in Flutter. The sheet is
+  the system's compact one presented from the topmost controller, as
+  share_plus does, with Flutter's subject ("Budget Transactions Export",
+  the Mail subject and the header's title) and share_plus's header
+  subtitle ("CSV • 6 KB"). Both exports' temporary files are written with
+  complete file protection (unreadable while the device is locked; the
+  store is `completeUntilFirstUserAuthentication` because the app reads it
+  in the background, which an export never needs) and deleted once the
+  sheet reports back, or at once when the page was left before the file
+  was ready (Flutter leaves them in `tmp`). Leftovers (a kill while the
+  sheet was open) are swept at launch, when the app goes to the
+  background (except the file an open sheet is using) and before each
+  export.
+- Settings row subtitles get a second line at accessibility text sizes
+  (Flutter's `_SettingsRow` clips them to one, so at AX sizes only the
+  first word or two showed). The running data row's spinner is the
+  accent colour (Flutter: a ring in the text colour).
 - The Theme pills slide one accent capsule between segments (the shared
   `SegmentedPills`); Flutter fades each segment's fill in place.
 - Settings SF Symbols stand in for Material Symbols: `square.on.circle`
@@ -947,6 +959,12 @@ real Settings page for the copy). Differences (D6; Dart cannot see them):
 - A picked file whose bytes cannot be read shows "Could not import: The
   file could not be read" (Flutter returns silently, like a cancel).
   Cancel stays silent.
+- A picked file over 50 MB is refused before it is read: "Could not
+  import: The file is larger than 50 MB" (and "Could not import backup:
+  ..." for a backup). Flutter reads any size; a large file picked by
+  mistake could run the app out of memory during the preview. Real
+  exports are far smaller (10,000 transactions are about 1 MB). The file
+  is memory-mapped and the decoded text is not kept during the parse.
 - Imported rows get `createdAt` = `updatedAt` = the import time plus one
   microsecond per row, in file order, so the last file row sorts first on
   its day. Flutter calls `DateTime.now()` per valid row while parsing
@@ -966,7 +984,11 @@ real Settings page for the copy). Differences (D6; Dart cannot see them):
 
 - The confirmation is the redesign's centred card (Cancel and an accent
   "Import" pill; Flutter: a Material AlertDialog with text buttons); the
-  import is awaited with the card inert. The data rows stay disabled from
+  import is awaited with the card modal and inert, Cancel dimmed and a
+  spinner in the Import pill, which VoiceOver reads and announces as
+  "Importing". The rows and the sections to write are built off the main
+  thread and written as built, in one commit, as a background task (so
+  leaving the app does not stop it part way). The data rows stay disabled from
   the tap until the message (Flutter's `_isImporting`), VoiceOver reading
   "Importing" for the row. The picked file is read in place (Flutter's
   picker copies it into the app cache and leaves it there).
@@ -990,7 +1012,7 @@ what gets stored):
   (`groceries` is stored as written; it shares the `Groceries` definition).
 - The confirm dialog shows counts only; the `Row N: ...` messages exist
   (`Summary.rowErrors`) but are not shown.
-- No size cap. Identical rows within one file are all imported. The dedupe
+- Identical rows within one file are all imported. The dedupe
   key joins its parts with an unescaped `|` (category `c|a` + description
   `b` matches `c` + `a|b`) and compares UTF-16 code units (NFC and NFD
   spellings differ). A stored name with a lone surrogate exports as
@@ -1014,11 +1036,35 @@ existed, 1 (six `data` keys, July 2026) and 3; there is no "v2".
   commit; on failure nothing changes and nothing is flagged unsaved
   (Flutter can leave a partial restore and still say "Backup restored").
 - A safety copy of the store files and preferences is written to
-  `Application Support/pre-restore/<stamp>/` first, and the restore does
-  not run if it cannot be made. The newest three are kept, pruned only
-  after a successful restore. Flutter has none (its `.backup.json` ends up
-  holding a mid-restore generation). The copy also keeps any stored rows
-  neither app can read, which the restore replaces (as Flutter).
+  `Application Support/pre-restore/s<sequence>-<stamp>/` first, on the
+  store actor right before the commit (no other write can land between
+  them, so the copy is exactly what the commit replaces), and the restore
+  does not run if it cannot be made. The newest three are kept, pruned
+  only after a successful restore; "newest" is the creation sequence in
+  the folder name, not the clock, and the copy the restore just made is
+  never pruned (a device clock set back cannot remove it). Flutter has
+  none (its `.backup.json` ends up holding a mid-restore generation). The
+  copy also keeps any stored rows neither app can read, which the restore
+  replaces (as Flutter).
+- Changes that are only in memory (a failed save, the unsaved banner) are
+  retried before a restore; if some still cannot be saved, the restore is
+  refused with "Could not import backup: Some changes are not saved yet.
+  Tap Retry at the top of the screen, then import the backup again." and
+  nothing is copied, written or replaced. The safety copy is taken from
+  disk, so an unsaved change would otherwise be in neither the restored
+  data nor the copy. Flutter restores over them.
+- The restore runs as a background task, so leaving the app does not stop
+  it between the commit and the preference mirrors and theme. A "Match
+  device" locale in the file removes the `flutter.locale_override` mirror
+  just before the commit (Flutter writes all its mirrors before its
+  commit): both apps fall back to that mirror when the stored
+  `localeOverride` is null, so a kill after the commit could otherwise
+  bring the old locale back. The other mirrors follow the commit (their
+  stored values are never null, so the mirrors are only fallbacks); a
+  failed commit puts the locale mirror back. Remaining window: a kill in
+  the instant between the verified commit and the mirror writes (the same
+  main-actor turn) leaves the theme and the fallback mirrors stale; the
+  data itself is restored.
 - A `data` key that is absent or null leaves its section or setting
   unchanged: schema-1 files keep categories, tags, rules and the five
   settings (and their preferences). Flutter resets them to the built-ins,
@@ -1053,16 +1099,25 @@ existed, 1 (six `data` keys, July 2026) and 3; there is no "v2".
   running one with a spinner, as Flutter's `_dataBusy`; VoiceOver reads
   "Exporting" or "Restoring" for it. "Backup exported" shows only when a
   share activity completed (Flutter: after any dismissal, a cancel
-  included), with "Budgie Backup" as the Mail subject and the sheet's
-  title; the temporary file is written with file protection and deleted
-  once the sheet reports back (Flutter leaves it in `tmp`). The picked
+  included), in the system's compact share sheet with "Budgie Backup" as
+  the Mail subject and the header's title and share_plus's "JSON • 70 KB"
+  subtitle; the temporary file is handled as the CSV export's (complete
+  file protection, deleted once the sheet reports back, swept at launch
+  and in the background; Flutter leaves it in `tmp`). The picked
   file is read in place (Flutter copies it into `tmp` and leaves it); a
   file that cannot be read shows "Could not import backup: The file could
   not be read" (Flutter returns silently, like a cancel).
 - The confirmation is the redesign's centred card (Cancel and a danger
   "Replace" pill; Flutter: a Material AlertDialog with text buttons). The
-  restore is awaited with the card inert and the rows disabled; saving
-  retries and other writes are held off until it ends (`isRestoring`).
+  restore is awaited with the card modal and inert (Cancel dimmed, a
+  spinner in the Replace pill, read and announced as "Restoring") and the
+  rows disabled. Nothing can edit the data while it runs: quick actions,
+  widget taps and `budgetapp://` links wait and open the add form once it
+  ends (`canOpenRoutes`), and retries wait. A save that reached the store
+  layer anyway would be flagged unsaved (banner, Retry), never dropped,
+  and the restore would then stop before its commit with "Your data
+  changed while the backup was being restored. Nothing was replaced; try
+  again.", keeping that change.
   A backup that turns App Lock on locks the session at once (Flutter's
   false -> true; the session is never marked unlocked by a restore).
 - Export: `exportedAt` and the file name come from one clock read (Flutter

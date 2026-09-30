@@ -9,7 +9,14 @@ import Foundation
 /// Unlike `PreNativeMigrationBackup.ensure` this always copies (a restore
 /// replaces a store the Swift app itself wrote). The restore must not run
 /// when `create()` throws. After a successful restore, `prune()` keeps the
-/// newest `retained` complete copies; nothing else deletes them.
+/// newest `retained` complete copies and always the one that restore
+/// made; nothing else deletes them.
+///
+/// "Newest" is creation order, not the clock: each folder name starts with
+/// a sequence number one above the highest already there
+/// (`s000004-20260930-...`), so a device clock set back cannot make the
+/// copy just taken sort first and be pruned. Folders from before the
+/// sequence (a bare stamp) count as older than every numbered one.
 public struct PreRestoreBackup: Sendable {
     public static let folderName = "pre-restore"
     public static let retained = 3
@@ -48,7 +55,8 @@ public struct PreRestoreBackup: Sendable {
     /// step fails, after removing the partial folder.
     @discardableResult
     public func create() throws -> URL {
-        let folder = root.appendingPathComponent(stampName(), isDirectory: true)
+        let sequence = (try folders().last.map { Self.sequence(of: $0) } ?? 0) + 1
+        let folder = root.appendingPathComponent(folderName(sequence: sequence), isDirectory: true)
         let copy = DirectoryFileSystem(directory: folder.appendingPathComponent(StoreFile.directoryName, isDirectory: true))
         let meta = DirectoryFileSystem(directory: folder)
         do {
@@ -88,20 +96,22 @@ public struct PreRestoreBackup: Sendable {
         }
     }
 
-    /// Complete copies, oldest first (folder names sort by time).
+    /// Complete copies, oldest first (creation order).
     public func completeSnapshots() throws -> [URL] {
         try folders().filter(isComplete)
     }
 
     /// Removes all but the newest `keeping` complete copies, and any
-    /// incomplete folder (a copy that failed part way). Call only after a
-    /// successful restore. Returns the removed folders.
+    /// incomplete folder (a copy that failed part way). `protecting` (the
+    /// copy the restore just made, `create()`'s result) is never removed.
+    /// Call only after a successful restore. Returns the removed folders.
     @discardableResult
-    public func prune(keeping: Int = PreRestoreBackup.retained) throws -> [URL] {
+    public func prune(keeping: Int = PreRestoreBackup.retained, protecting newest: URL? = nil) throws -> [URL] {
         let all = try folders()
         let complete = all.filter(isComplete)
-        let keep = Set(complete.suffix(max(keeping, 0)))
-        let doomed = all.filter { !keep.contains($0) }
+        var keep = Set(complete.suffix(max(keeping, 0)).map(\.lastPathComponent))
+        if let newest { keep.insert(newest.lastPathComponent) }
+        let doomed = all.filter { !keep.contains($0.lastPathComponent) }
         for folder in doomed { try FileManager.default.removeItem(at: folder) }
         return doomed
     }
@@ -115,15 +125,24 @@ public struct PreRestoreBackup: Sendable {
                 var isDirectory: ObjCBool = false
                 return FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue
             }
-            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+            .sorted { (Self.sequence(of: $0), $0.lastPathComponent) < (Self.sequence(of: $1), $1.lastPathComponent) }
+    }
+
+    /// The creation sequence in a folder's name (`s<digits>-...`); 0 for a
+    /// folder without one (made before the sequence existed).
+    static func sequence(of folder: URL) -> Int {
+        let name = folder.lastPathComponent
+        guard name.hasPrefix("s") else { return 0 }
+        return Int(name.dropFirst().prefix { $0 != "-" }) ?? 0
     }
 
     private func isComplete(_ folder: URL) -> Bool {
         FileManager.default.fileExists(atPath: folder.appendingPathComponent(PreRestoreBackup.completeMarker).path)
     }
 
-    /// `yyyyMMdd-HHmmss-uuuuuu-<8 hex>` in UTC: sorts by time, unique.
-    private func stampName() -> String {
+    /// `s<sequence, 6+ digits>-yyyyMMdd-HHmmss-uuuuuu-<8 hex>`, the stamp in
+    /// UTC: ordered by the sequence, readable by the stamp, unique.
+    private func folderName(sequence: Int) -> String {
         let now = clock()
         let f = DartDateTime(microsecondsSinceEpoch: now.microsecondsSinceEpoch, isUtc: true, timeZone: now.timeZone).fields
         func pad(_ value: Int, _ width: Int) -> String {
@@ -131,7 +150,8 @@ public struct PreRestoreBackup: Sendable {
             return String(repeating: "0", count: max(0, width - digits.count)) + digits
         }
         let micros = f.millisecond * 1_000 + f.microsecond
-        return "\(pad(f.year, 4))\(pad(f.month, 2))\(pad(f.day, 2))-\(pad(f.hour, 2))\(pad(f.minute, 2))\(pad(f.second, 2))-"
+        return "s\(pad(sequence, 6))-"
+            + "\(pad(f.year, 4))\(pad(f.month, 2))\(pad(f.day, 2))-\(pad(f.hour, 2))\(pad(f.minute, 2))\(pad(f.second, 2))-"
             + "\(pad(micros, 6))-\(UUID().uuidString.prefix(8).lowercased())"
     }
 

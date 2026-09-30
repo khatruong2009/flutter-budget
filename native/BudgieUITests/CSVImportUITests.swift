@@ -7,7 +7,9 @@ import XCTest
 /// only duplicates (the neutral message) and a file without the header
 /// (Flutter's error, bare).
 ///
-/// Needs the picker files: after an erase and boot, run
+/// Erased simulators only: like BackupUITests, it replaces the app's data
+/// and launches with the data guard (it skips over data UI tests did not
+/// make). Needs the picker files: after an erase and boot, run
 /// `native/scripts/stage_import_fixtures.sh <UDID>`.
 @MainActor
 final class CSVImportUITests: XCTestCase {
@@ -16,10 +18,8 @@ final class CSVImportUITests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
-        app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
-        app.launch()
-        XCTAssertTrue(app.tabBars.buttons["Home"].waitForExistence(timeout: 20))
         screen = SettingsDataScreen(app: app)
+        try screen.launchOverTestData()
         screen.openSettings()
         screen.restoreFixtureBackup()
         XCTAssertEqual(screen.transactionCount(), 3)

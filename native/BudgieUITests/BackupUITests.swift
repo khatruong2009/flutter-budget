@@ -5,11 +5,18 @@ import XCTest
 /// message), a corrupt file gives Flutter's error, and a backup is
 /// restored after its confirmation (Cancel first changes nothing).
 ///
+/// Erased simulators only. Restoring replaces the app's data with the
+/// fixture's three transactions (dated last month, so a later suite's
+/// current month starts empty), and each restore's safety copy pushes an
+/// older one out. The app is launched with `BUDGIE_UITEST_DATA_GUARD=1`:
+/// the first guarded launch must find nothing entered (an erased
+/// simulator, before other suites add data), which marks the install as
+/// the tests'; any other data is refused and the tests skip. Never run
+/// them on a simulator with real or demo data.
+///
 /// Needs the picker files: after an erase and boot, run
 /// `native/scripts/stage_import_fixtures.sh <UDID>` (they show under
-/// Browse > On My iPhone). Restoring replaces the simulator's data with the
-/// fixture's three transactions (dated last month, so a later suite's
-/// current month starts empty).
+/// Browse > On My iPhone).
 @MainActor
 final class BackupUITests: XCTestCase {
     let app = XCUIApplication()
@@ -17,10 +24,8 @@ final class BackupUITests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
-        app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
-        app.launch()
-        XCTAssertTrue(app.tabBars.buttons["Home"].waitForExistence(timeout: 20))
         screen = SettingsDataScreen(app: app)
+        try screen.launchOverTestData()
     }
 
     /// The share sheet opens with the file (titled with the subject);
@@ -83,6 +88,21 @@ final class BackupUITests: XCTestCase {
 @MainActor
 struct SettingsDataScreen {
     let app: XCUIApplication
+
+    /// Launches past onboarding with the data guard on (see
+    /// `BackupUITests`); skips when the app refused the store.
+    func launchOverTestData(file: StaticString = #filePath, line: UInt = #line) throws {
+        app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["BUDGIE_UITEST_DATA_GUARD"] = "1"
+        app.launch()
+        let home = app.tabBars.buttons["Home"]
+        let refused = app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH %@", "UI test data guard")).firstMatch
+        _ = waitUntil(20) { home.exists || refused.exists }
+        if refused.exists {
+            throw XCTSkip("The app's data was not made by UI tests: erase the simulator, stage the fixtures, then run again.")
+        }
+        XCTAssertTrue(home.exists, "Home", file: file, line: line)
+    }
 
     func element(_ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier]
@@ -170,10 +190,19 @@ struct SettingsDataScreen {
         tapStable(item, file: file, line: line)
     }
 
-    /// Closes the share sheet without sharing (its header's close button,
-    /// once the sheet has settled).
-    func closeShareSheet() {
-        tapStable(app.buttons["header.closeButton"])
+    /// Closes the share sheet without sharing: the system's compact sheet
+    /// has no close button, so it is dragged down by its header once it
+    /// has settled.
+    func closeShareSheet(file: StaticString = #filePath, line: UInt = #line) {
+        let header = element("LP.CaptionBar.TopCaption")
+        XCTAssertTrue(header.waitForExistence(timeout: 10), "share sheet header", file: file, line: line)
+        var last = CGRect.null
+        _ = waitUntil(10) {
+            defer { last = header.frame }
+            return header.isHittable && header.frame == last
+        }
+        let start = header.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        start.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 1.0)))
     }
 
     /// Settings > Import backup > "Budgie UITest Backup" > Replace, then

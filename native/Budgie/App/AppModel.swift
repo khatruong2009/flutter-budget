@@ -49,8 +49,14 @@ final class AppModel {
     /// limits, goals) recomputes them. A path that replaces much of the data
     /// (a restore, a CSV import) should assign `data` once, not per row.
     private(set) var data: FinancialData? {
-        didSet { if phase == .ready { refreshInsights() } }
+        didSet {
+            dataRevision &+= 1
+            if phase == .ready { refreshInsights() }
+        }
     }
+    /// Bumped by every change of `data`: work built from a copy off the
+    /// main thread (a CSV import) checks that nothing changed meanwhile.
+    @ObservationIgnored private var dataRevision = 0
     private(set) var loadReport: FinancialStore.LoadReport?
     private(set) var backupOutcome: PreNativeMigrationBackup.Outcome?
     /// A quick action, widget or deep link waiting to open the add form.
@@ -142,6 +148,8 @@ final class AppModel {
             await protectedData.waitUntilAvailable()
         }
         phase = .starting
+        // Exports a kill left behind while their share sheet was open.
+        removeStaleExports()
 
         // Preferences are only trustworthy once protected data is available.
         #if DEBUG
@@ -200,6 +208,28 @@ final class AppModel {
 
         var loaded = FinancialData.load(
             snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)
+        #if DEBUG
+        // BackupUITests and CSVImportUITests replace the data (restores
+        // over it, and their safety copies push older ones out). With
+        // BUDGIE_UITEST_DATA_GUARD=1 the app opens only data UI tests own:
+        // a store with nothing anyone entered (an erased simulator: at most
+        // the built-in categories a first launch writes) marks the install
+        // as theirs, and any other store is refused before anything is
+        // written (the tests then skip).
+        if ProcessInfo.processInfo.environment["BUDGIE_UITEST_DATA_GUARD"] == "1" {
+            let marker = "budgie.uitest.ownsData"
+            let d = loaded.data
+            let nothingEntered =
+                d.transactionRows.isEmpty && d.templateRows.isEmpty && d.netWorthRows.isEmpty && d.goalRows.isEmpty
+                && d.tagRows.isEmpty && d.ruleRows.isEmpty && d.budgetLimitsObject.members.isEmpty
+                && d.categories.allSatisfy(\.isBuiltIn)
+            if nothingEntered { preferences.set(.bool(true), forKey: marker) }
+            guard preferences.bool(marker) == true else {
+                phase = .blocked(.readFailed("UI test data guard: this data was not made by UI tests (erase the simulator first)."))
+                return
+            }
+        }
+        #endif
         data = loaded.data
         netWorthRevision &+= 1
         // Hide balances may have changed where the widget flag was not
@@ -268,27 +298,51 @@ final class AppModel {
     }
 
     /// Writes the named sections (plus anything still unsaved) and waits for
-    /// the verified result. The change is already visible in memory.
+    /// the verified result. The change is already visible in memory. False
+    /// means the sections are flagged: the unsaved banner and the retries
+    /// take over.
     ///
-    /// While a restore runs nothing is written (its commit would overwrite
-    /// the write, and a write after it would put back the old memory):
-    /// returns false. The restore's confirmation keeps the UI inert
-    /// meanwhile, so no edit reaches this.
+    /// No edit can start while a restore runs: routes wait
+    /// (`canOpenRoutes`), the confirmation card covers Settings, and nothing
+    /// else writes. If one reaches this anyway it is not written (the
+    /// restore's commit would overwrite it, or it would put old memory back
+    /// over the restore): its sections are flagged, and the restore then
+    /// stops before its commit, so the edit stays in memory behind the
+    /// banner (`restoreBackup`).
     @discardableResult
     private func persist(_ sections: [String]) async -> Bool {
-        guard !isRestoring else { return false }
-        let payload = sections.map { ($0, serialize($0)) }
+        guard !isRestoring else { return holdDuringRestore(sections) }
+        return await persist(prepared: sections.map { ($0, serialize($0)) })
+    }
+
+    /// `persist` for sections already serialised (off the main thread).
+    private func persist(prepared payload: [(String, JSONValue)]) async -> Bool {
+        guard !isRestoring else { return holdDuringRestore(payload.map(\.0)) }
         let saved = await tracker.persist(payload, serialize: serialize)
         hasUnsavedChanges = tracker.hasUnsavedChanges
         lastSaveError = tracker.lastError.map { String(describing: $0) }
-        if saved && sections.contains(Section.transactions) { syncWidget() }
+        if saved && payload.contains(where: { $0.0 == Section.transactions }) { syncWidget() }
         return saved
     }
 
+    private func holdDuringRestore(_ sections: [String]) -> Bool {
+        editedDuringRestore = true
+        Self.dataLog.error("a save arrived during a restore; flagged, not written")
+        tracker.flag(sections, because: .writeFailed(name: StoreFile.primaryName, reason: "Not saved while a backup was restored."))
+        hasUnsavedChanges = tracker.hasUnsavedChanges
+        lastSaveError = tracker.lastError.map { String(describing: $0) }
+        return false
+    }
+
     /// Writes every flagged section again. A no-op while a restore runs: a
-    /// retry serialising the old memory after its commit would undo it.
+    /// retry serialising the old memory after its commit would undo it
+    /// (the restore retries before it starts, see `restoreBackup`).
     func retrySaves() async {
         guard !isRestoring else { return }
+        await retryFlaggedSections()
+    }
+
+    private func retryFlaggedSections() async {
         _ = await tracker.retry(serialize: serialize)
         hasUnsavedChanges = tracker.hasUnsavedChanges
         lastSaveError = tracker.lastError.map { String(describing: $0) }
@@ -1073,17 +1127,72 @@ final class AppModel {
             hideBalances: settings?.hideBalances ?? false)
     }
 
+    // MARK: - Export files
+
+    /// The export file whose share sheet is being prepared or is open: the
+    /// background sweep leaves it alone. Nil otherwise.
+    private var activeExport: URL?
+
+    /// A new file in the temporary directory for an export. Complete file
+    /// protection: it is only needed while the share sheet is up (so the
+    /// device is unlocked), and a copy left behind is unreadable while the
+    /// device is locked. The store itself is `.completeUntilFirstUserAuthentication`
+    /// because the app reads it in the background; an export never is.
+    private func beginExport(named name: String) -> URL {
+        removeStaleExports()
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
+        activeExport = url
+        return url
+    }
+
+    nonisolated private static let exportWriteOptions: Data.WritingOptions = [.atomic, .completeFileProtection]
+
+    /// The share sheet is done with `url` (or never showed): the file is
+    /// deleted (it holds financial data; Flutter leaves it in `tmp`).
+    func finishExport(_ url: URL) {
+        try? FileManager.default.removeItem(at: url)
+        if activeExport == url { activeExport = nil }
+    }
+
+    /// Deletes export files left in the temporary directory, except the one
+    /// a share sheet is using: at launch (a kill while the sheet was open),
+    /// when the app goes to the background (an export whose screen was left
+    /// before its sheet showed), and before each export.
+    func removeStaleExports() {
+        let directory = FileManager.default.temporaryDirectory
+        guard let names = try? FileManager.default.contentsOfDirectory(atPath: directory.path) else { return }
+        for name in names
+        where (name.hasPrefix("budgie_backup_") && name.hasSuffix(".json")) || (name.hasPrefix("transactions_") && name.hasSuffix(".csv")) {
+            let url = directory.appendingPathComponent(name)
+            if url.lastPathComponent == activeExport?.lastPathComponent { continue }
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+
     // MARK: - CSV export
 
-    /// Writes the export to a temporary file for the share sheet (deleted
-    /// once the sheet closes).
-    func exportCSV() throws -> URL {
-        let rows = (data?.transactions ?? []).map {
-            CSVExport.Row(date: $0.date, isIncome: $0.type == .income, category: $0.category, description: $0.description, amount: $0.amount)
+    /// `_exportTransactions`: the CSV built and written off the main thread
+    /// to a temporary file for the share sheet; the caller passes it to
+    /// `finishExport` once the sheet closes.
+    func exportCSV() async throws -> URL {
+        let data = self.data
+        let url = beginExport(named: CSVExport.fileName(now: now))
+        let written = await Task.detached(priority: .userInitiated) { () -> Result<Void, any Error> in
+            Result {
+                let rows = (data?.transactions ?? []).map {
+                    CSVExport.Row(
+                        date: $0.date, isIncome: $0.type == .income, category: $0.category, description: $0.description,
+                        amount: $0.amount)
+                }
+                try Data(CSVExport.export(rows)).write(to: url, options: Self.exportWriteOptions)
+            }
+        }.value
+        do {
+            try written.get()
+        } catch {
+            finishExport(url)
+            throw error
         }
-        Self.removeStaleExports()
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(CSVExport.fileName(now: now))
-        try Data(CSVExport.export(rows)).write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         return url
     }
 
@@ -1103,16 +1212,32 @@ final class AppModel {
 
     /// The second half (`importTransactions`): the summary's rows appended
     /// in file order, with the new category names they bring, in one
-    /// awaited commit. True when it verified (or there was nothing to
-    /// import); false when the rows are only in memory (the unsaved banner).
+    /// awaited commit. The rows and the sections to write are built off the
+    /// main thread, and those sections are written as built (not serialised
+    /// again). True when it verified (or there was nothing to import); false
+    /// when the rows are only in memory (the unsaved banner). Runs as a
+    /// background task, so leaving the app does not stop it part way.
     @discardableResult
     func importCSV(_ summary: CSVImport.Summary) async -> Bool {
-        guard !isRestoring, let current = data else { return false }
-        let result = current.importTransactions(summary, now: now, newID: newID)
+        guard !isRestoring, data != nil else { return false }
+        let background = BackgroundWork("Import CSV")
+        defer { background.end() }
+        var result: FinancialData.CSVImportResult
+        // Built from a copy: a change made meanwhile (none can be, the card
+        // is modal) is never overwritten, the rows are built again over it.
+        repeat {
+            guard let current = data else { return false }
+            let revision = dataRevision
+            let now = self.now
+            result = await Task.detached(priority: .userInitiated) {
+                current.importTransactions(summary, now: now, newID: { UUID().uuidString.lowercased() })
+            }.value
+            if revision == dataRevision { break }
+        } while true
         guard !result.sections.isEmpty else { return true }
         data = result.data
         transactionsChanged()
-        return await persist(result.sections.map(\.0))
+        return await persist(prepared: result.sections)
     }
 
     // MARK: - Backup export and restore (D10)
@@ -1125,23 +1250,30 @@ final class AppModel {
     /// for "Could not export backup: …" / "Could not import backup: …".
     struct DataTransferError: Error, Equatable {
         let reason: String
+
+        /// Refused before anything was done: some changes are only in memory.
+        static let unsavedChanges = DataTransferError(
+            reason: "Some changes are not saved yet. Tap Retry at the top of the screen, then import the backup again.")
+        /// An edit arrived while the restore ran (none can: see `persist`).
+        static let changedDuringRestore = DataTransferError(
+            reason: "Your data changed while the backup was being restored. Nothing was replaced; try again.")
+        static let safetyCopyFailed = DataTransferError(reason: "A safety copy of your current data could not be made.")
     }
 
     /// `_exportBackup`: the envelope built and encoded off the main thread
     /// from the current data and theme, written to a temporary file named
     /// for one clock read (the same one as `exportedAt`). The caller shares
-    /// it and deletes it once the share sheet closes.
+    /// it and passes it to `finishExport` once the share sheet closes.
     func exportBackup() async throws(DataTransferError) -> URL {
         guard let data else { throw DataTransferError(reason: "Your data is not loaded yet.") }
         let now = self.now
         let theme = themeMode.rawValue
         let version = Self.appVersion
-        Self.removeStaleExports()
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(BackupEnvelope.fileName(now: now))
+        let url = beginExport(named: BackupEnvelope.fileName(now: now))
         let written = await Task.detached(priority: .userInitiated) { () -> DataTransferError? in
             do {
                 let bytes = try BackupEnvelope.encode(data: data, themeMode: theme, appVersion: version, now: now)
-                try Data(bytes).write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+                try Data(bytes).write(to: url, options: Self.exportWriteOptions)
                 return nil
             } catch let error as BackupExportError {
                 return DataTransferError(reason: error.message)
@@ -1149,7 +1281,10 @@ final class AppModel {
                 return DataTransferError(reason: error.localizedDescription)
             }
         }.value
-        if let written { throw written }
+        if let written {
+            finishExport(url)
+            throw written
+        }
         return url
     }
 
@@ -1166,8 +1301,12 @@ final class AppModel {
         return try result.get()
     }
 
-    /// A restore is running: nothing else writes (`persist`, `retrySaves`).
+    /// A restore is running, from its start until memory, the tracker and
+    /// the mirrors were swapped (or it failed): routes wait
+    /// (`canOpenRoutes`) and `persist` / `retrySaves` write nothing.
     private(set) var isRestoring = false
+    /// A save reached `persist` since the restore started.
+    @ObservationIgnored private var editedDuringRestore = false
 
     enum RestoreOutcome: Equatable {
         /// Committed and verified; memory swapped. `generated`: rows the
@@ -1185,20 +1324,49 @@ final class AppModel {
         }
     }
 
-    /// Replaces the data with `plan` (D10): a safety copy of the store and
-    /// preferences first (no restore without it), then ONE commit of all
-    /// ten sections, and only once it verified the swap of memory, the
-    /// cleared unsaved flags, the settings' preference mirrors and the
-    /// theme (its setter's no-op guard included). Sections the file leaves
-    /// out are rewritten unchanged. The session is not marked unlocked, so
-    /// App Lock turned on by the file locks at once, as in Flutter.
+    /// Replaces the data with `plan` (D10):
+    ///
+    /// 1. Changes that are only in memory are retried first. If some still
+    ///    are not saved, the restore is refused (nothing done; the banner
+    ///    and its Retry stay): they would be in neither the restored data
+    ///    nor the safety copy, which is taken from disk.
+    /// 2. The restored data is built off the main thread.
+    /// 3. On the store actor, with no other commit in between: the safety
+    ///    copy of the store and preferences (no restore without it), then
+    ///    ONE commit of all ten sections (sections the file leaves out are
+    ///    rewritten unchanged).
+    /// 4. Only once it verified: memory, a fresh tracker (the commit wrote
+    ///    every section a flag can name, from the data now in memory), the
+    ///    settings' preference mirrors and the theme (its setter's no-op
+    ///    guard included). Then the older safety copies are pruned, never
+    ///    the one just made.
+    ///
+    /// A "Match device" locale is the one mirror removed before the commit
+    /// (Flutter writes all its mirrors before its commit): both apps fall
+    /// back to the mirror when the stored `localeOverride` is null, so a
+    /// kill between the commit and the mirrors would otherwise bring the
+    /// old locale back. The other settings are never null in the section,
+    /// so their mirrors are only fallbacks and follow the commit. A failed
+    /// commit puts the locale mirror back. The whole restore runs as a
+    /// background task, so leaving the app does not stop it between the
+    /// commit and the mirrors and theme.
+    ///
+    /// The session is not marked unlocked, so App Lock turned on by the file
+    /// locks at once, as in Flutter.
     func restoreBackup(_ plan: RestorePlan) async -> RestoreOutcome {
-        guard phase == .ready, let current = data, !isRestoring else {
+        guard phase == .ready, data != nil, !isRestoring else {
             return .failed(DataTransferError(reason: "Your data is not loaded yet."))
         }
         isRestoring = true
+        editedDuringRestore = false
         defer { isRestoring = false }
+        let background = BackgroundWork("Restore backup")
+        defer { background.end() }
 
+        if hasUnsavedChanges { await retryFlaggedSections() }
+        guard !hasUnsavedChanges else { return .failed(.unsavedChanges) }
+
+        guard let current = data else { return .failed(DataTransferError(reason: "Your data is not loaded yet.")) }
         let now = self.now
         let result = await Task.detached(priority: .userInitiated) {
             current.restoring(plan, now: now, newID: { UUID().uuidString.lowercased() })
@@ -1209,23 +1377,33 @@ final class AppModel {
             applicationSupport: applicationSupport, store: DirectoryFileSystem(directory: storeDirectory),
             exportPreferences: { [preferences] in try preferences.exportDomain() }, appVersion: Self.appVersion,
             clock: { calendar.now() })
-        let copied = await Task.detached(priority: .userInitiated) { () -> Bool in
-            (try? safetyCopy.create()) != nil
-        }.value
-        guard copied else {
-            Self.dataLog.error("restore aborted: the pre-restore safety copy failed")
-            return .failed(DataTransferError(reason: "A safety copy of your current data could not be made."))
-        }
+        guard !editedDuringRestore else { return .failed(.changedDuringRestore) }
+        let removesLocaleMirror = result.preferenceWrites.contains { $0.key == PreferenceKey.localeOverride && $0.value == nil }
+        let localeMirror = preferences.value(forKey: PreferenceKey.localeOverride)
 
+        let copy: URL
         do {
-            try await store.updateSections(result.sections)
+            copy = try await store.updateSections(result.sections, afterSafetyCopy: { [preferences] in
+                let folder = try safetyCopy.create()
+                // After the copy, which keeps the preferences as they were.
+                if removesLocaleMirror { preferences.set(nil, forKey: PreferenceKey.localeOverride) }
+                return folder
+            })
         } catch {
-            Self.dataLog.error("restore commit failed: \(String(describing: error), privacy: .public)")
-            return .failed(DataTransferError(reason: Self.describe(error)))
+            switch error {
+            case .safetyCopyFailed(let reason):
+                Self.dataLog.error("restore aborted: the pre-restore safety copy failed: \(reason, privacy: .public)")
+                return .failed(.safetyCopyFailed)
+            case .store(let error):
+                if removesLocaleMirror { preferences.set(localeMirror, forKey: PreferenceKey.localeOverride) }
+                Self.dataLog.error("restore commit failed: \(String(describing: error), privacy: .public)")
+                return .failed(DataTransferError(reason: Self.describe(error)))
+            }
         }
 
-        // Committed: every section a flag can name was just written from
-        // the new data.
+        // Committed. An edit that reached `persist` while the commit ran
+        // (none can) was made on the data just replaced; the restore wins.
+        if editedDuringRestore { Self.dataLog.fault("a save arrived during the restore commit; superseded by the restore") }
         data = result.data
         tracker = PersistenceTracker(store: store)
         hasUnsavedChanges = false
@@ -1235,7 +1413,12 @@ final class AppModel {
         netWorthRevision &+= 1
         transactionsChanged()
         syncWidget()
-        _ = await Task.detached(priority: .utility) { try? safetyCopy.prune(keeping: PreRestoreBackup.retained) }.value
+        // Memory and disk agree again: edits and routes may run while the
+        // older copies are pruned.
+        isRestoring = false
+        _ = await Task.detached(priority: .utility) {
+            try? safetyCopy.prune(keeping: PreRestoreBackup.retained, protecting: copy)
+        }.value
         return .restored(generated: result.generatedTransactions)
     }
 
@@ -1248,17 +1431,6 @@ final class AppModel {
         case .readFailed(_, let reason), .writeFailed(_, let reason): reason
         case .verificationFailed: "The saved data did not verify."
         case .dataUnreadable: "The stored data could not be read."
-        }
-    }
-
-    /// Export files a crash (or a sheet that never reported back) left in
-    /// the temporary directory: they hold all financial data.
-    private static func removeStaleExports() {
-        let directory = FileManager.default.temporaryDirectory
-        guard let names = try? FileManager.default.contentsOfDirectory(atPath: directory.path) else { return }
-        for name in names
-        where (name.hasPrefix("budgie_backup_") && name.hasSuffix(".json")) || (name.hasPrefix("transactions_") && name.hasSuffix(".csv")) {
-            try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
         }
     }
 
@@ -1290,8 +1462,10 @@ final class AppModel {
 
     /// Routes open only over unlocked, onboarded data: a quick action or
     /// deep link on a locked launch waits for the unlock (it used to open
-    /// the form above the lock screen).
-    var canOpenRoutes: Bool { phase == .ready && !isLocked && !showsOnboarding }
+    /// the form above the lock screen). One arriving during a restore waits
+    /// for it to end (the form would edit data the restore is replacing);
+    /// `MainView` opens it when this turns true.
+    var canOpenRoutes: Bool { phase == .ready && !isLocked && !showsOnboarding && !isRestoring }
 
     /// The pending add route, cleared, when it may open now; otherwise nil
     /// and the route stays queued.
@@ -1329,5 +1503,27 @@ final class AppModel {
                 type: "action_add_income", localizedTitle: "Add Income", localizedSubtitle: nil,
                 icon: UIApplicationShortcutIcon(systemImageName: "plus.circle.fill")),
         ]
+    }
+}
+
+/// Asks iOS for time to finish work the user may leave part way (a
+/// restore, an import): until `end()`, or until the system's limit, when
+/// it is ended for the app. Without it a restore suspended in the
+/// background between its commit and the preference mirrors would leave
+/// them stale until it resumed (or for good if the app was then killed).
+@MainActor
+private final class BackgroundWork {
+    private var identifier = UIBackgroundTaskIdentifier.invalid
+
+    init(_ name: String) {
+        identifier = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+            MainActor.assumeIsolated { self?.end() }
+        }
+    }
+
+    func end() {
+        guard identifier != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(identifier)
+        identifier = .invalid
     }
 }

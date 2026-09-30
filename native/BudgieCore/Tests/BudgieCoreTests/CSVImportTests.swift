@@ -366,6 +366,8 @@ struct CSVImportTests {
         #expect(CSVImport.failureMessage(.notATransactionsCSV) == .init(text: "Could not import: Not a valid transactions CSV export", tone: .error))
         #expect(CSVImport.Failure.notATransactionsCSV.flutterDescription == "FormatException: Not a valid transactions CSV export")
         #expect(CSVImport.failureMessage(.unreadableFile) == .init(text: "Could not import: The file could not be read", tone: .error))
+        #expect(CSVImport.failureMessage(.fileTooLarge) == .init(text: "Could not import: The file is larger than 50 MB", tone: .error))
+        #expect(CSVImport.maximumFileBytes == 52_428_800)
         #expect(CSVImport.cancelButtonTitle == "Cancel" && CSVImport.importButtonTitle == "Import")
     }
 

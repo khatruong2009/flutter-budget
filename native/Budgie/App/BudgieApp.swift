@@ -91,6 +91,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Like the Flutter app: retry unsaved changes on backgrounding.
             let model = AppDelegate.model
             if model.hasUnsavedChanges { Task { await model.retrySaves() } }
+            // Export files no share sheet is using (they hold financial data).
+            model.removeStaleExports()
         }
     }
 }
