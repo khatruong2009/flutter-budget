@@ -141,6 +141,75 @@ extension CategorizationRuleRecord {
         return copy
     }
 
+    /// Swift-only edit in place: the rule with `draft`'s fields, patching in
+    /// `raw` only the keys whose value differs (compared as Dart reads them:
+    /// strings as UTF-16 after the pattern's Dart `trim`, bounds as
+    /// doubles, so a stored `5` for a draft's 5.0 stays `5`). The id, the
+    /// key order, unknown keys and untouched lexemes stay. A cleared bound
+    /// or "any type" is written as a present `null`, as Dart's `toJson`
+    /// does; a key the row lacks is appended only when its value changes.
+    /// nil when nothing differs.
+    func applying(_ draft: RuleDraft) -> CategorizationRuleRecord? {
+        var copy = self
+        var changed = false
+        let pattern = DartString.trim(draft.merchantPattern)
+        if !DartString.equal(pattern, merchantPattern) {
+            copy.merchantPattern = pattern
+            copy.raw["merchantPattern"] = .string(pattern)
+            changed = true
+        }
+        if draft.matchType != matchType {
+            copy.matchType = draft.matchType
+            copy.raw["matchType"] = .string(draft.matchType.rawValue)
+            changed = true
+        }
+        if draft.transactionType != transactionType {
+            copy.transactionType = draft.transactionType
+            copy.raw["transactionType"] = draft.transactionType.map { .string($0.rawValue) } ?? .null
+            changed = true
+        }
+        if draft.minimumAmount != minimumAmount {
+            copy.minimumAmount = draft.minimumAmount
+            copy.raw["minimumAmount"] = draft.minimumAmount.map { .double($0) } ?? .null
+            changed = true
+        }
+        if draft.maximumAmount != maximumAmount {
+            copy.maximumAmount = draft.maximumAmount
+            copy.raw["maximumAmount"] = draft.maximumAmount.map { .double($0) } ?? .null
+            changed = true
+        }
+        if !DartString.equal(draft.category, category) {
+            copy.category = draft.category
+            copy.raw["category"] = .string(draft.category)
+            changed = true
+        }
+        if draft.tagIds.count != tagIds.count || zip(draft.tagIds, tagIds).contains(where: { !DartString.equal($0, $1) }) {
+            copy.tagIds = draft.tagIds
+            copy.raw["tagIds"] = .array(draft.tagIds.map { .string($0) })
+            changed = true
+        }
+        if draft.priority != priority {
+            copy.priority = draft.priority
+            copy.raw["priority"] = .int(draft.priority)
+            changed = true
+        }
+        if draft.isEnabled != isEnabled {
+            copy.isEnabled = draft.isEnabled
+            copy.raw["isEnabled"] = .bool(draft.isEnabled)
+            changed = true
+        }
+        return changed ? copy : nil
+    }
+
+    /// The rule's fields as a draft (the editor's prefill; `applying` it
+    /// changes nothing).
+    public var draft: RuleDraft {
+        RuleDraft(
+            merchantPattern: merchantPattern, matchType: matchType, transactionType: transactionType,
+            minimumAmount: minimumAmount, maximumAmount: maximumAmount, category: category, tagIds: tagIds,
+            priority: priority, isEnabled: isEnabled)
+    }
+
     /// The category rename (Dart `CategorizationProvider.renameCategory`
     /// rebuilds the rule with only `category` changed).
     func with(category: String) -> CategorizationRuleRecord {

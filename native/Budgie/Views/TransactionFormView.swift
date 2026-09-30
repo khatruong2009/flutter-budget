@@ -560,7 +560,11 @@ struct FlowLayout: Layout {
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let rows = arrange(width: proposal.width ?? .infinity, subviews: subviews)
-        return CGSize(width: rows.width, height: rows.height)
+        // Whole points up: the parent places the layout at this width
+        // snapped to the pixel grid, and a width rounded below the
+        // fractional sum made `placeSubviews` wrap a row that was measured
+        // as one (its last chip then overlapped the view below).
+        return CGSize(width: rows.width.rounded(.up), height: rows.height)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {

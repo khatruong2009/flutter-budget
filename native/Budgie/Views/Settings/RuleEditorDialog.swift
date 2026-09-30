@@ -3,51 +3,92 @@ import SwiftUI
 
 /// The "New merchant rule" dialog (`_addRule`,
 /// categorization_settings_page.dart:128-260) in the redesign's centred
-/// card, fields in Flutter's order: "Merchant text" (hint "Whole Foods",
-/// autofocused), "Type" (Income, Expense; default Expense), "Match"
-/// (Contains, Starts with, Exact match; default Contains), "Category" (the
-/// type's active categories in order; default the first), then the tags as
-/// chips when there are any, selected in tap order. Cancel and Add.
+/// card, and its Swift-only edit mode ("Edit merchant rule", prefilled,
+/// Save). Fields in Flutter's order: "Merchant text" (hint "Whole Foods",
+/// autofocused when new), "Type" (Income, Expense, and the Swift-only "Any
+/// type"; default Expense), "Match" (Contains, Starts with, Exact match;
+/// default Contains), "Category", then the tags as chips when there are
+/// any, selected in tap order; then the Swift-only optional "Minimum
+/// amount" / "Maximum amount" (inclusive, as Dart's `matches`). Cancel and
+/// Add / Save.
 ///
-/// The rule gets only Flutter's fields: no amount bounds, priority 0,
-/// enabled. Changing the type keeps the shown category (the picked one, or
-/// the old type's first when none was picked, as Flutter's variable starts
-/// at the first expense category) when the new type has that name
+/// Category lists: the type's active categories in order; for Any type
+/// the expense list followed by the income names it lacks (UTF-16), since
+/// the rule then serves both forms. The form only applies a suggestion
+/// whose category is in its list (and tries no later rule), so an Any-type
+/// rule on a one-type category says under the picker that the other type
+/// won't be categorized. An edited rule's own category stays selectable
+/// under its type even when archived or unknown, so Save never changes it
+/// silently. Changing the type keeps the shown category (the picked one,
+/// or the old list's first when none was picked, as Flutter's variable
+/// starts at the first expense category) when the new list has that name
 /// (UTF-16), else takes its first; the tag selection stays.
-/// Add is disabled while the trimmed merchant text is empty (Flutter's Add
-/// does nothing then). The add is awaited with the dialog inert; it closes
-/// once written, and also when the write failed (the rule is in memory
-/// behind the unsaved banner), with the save-failed toast. A refusal shows
-/// its message above the buttons.
+///
+/// Amounts parse with the money format's separators (`AmountInput`, D6);
+/// empty is no bound; an edit prefills a bound rounded to cents and a
+/// field left as prefilled keeps the stored value exactly. Checked on
+/// Add / Save, inline under the field: not an amount of 0 or more, and a
+/// minimum above the maximum. Add / Save is disabled while the trimmed
+/// merchant text is empty (Flutter's Add does nothing then). The write is
+/// awaited with the dialog inert; it closes once written, and also when
+/// the write failed (the change is in memory behind the unsaved banner),
+/// with the save-failed toast. A refusal shows its message above the
+/// buttons. The rule's priority and enabled state are kept as stored (the
+/// switch is on the page's row).
 ///
 /// The keyboard (Flutter's: no capitalisation, a Done key) goes away on
 /// Done and when a dropdown opens, so the menu is not cut by it. With the
 /// keyboard up the fields scroll; the scroll indicator flashes once the
 /// keyboard is shown and the bottom edge fades while more is below, cues
-/// that Category and Tags are there.
-struct NewRuleDialog: View {
+/// that the fields below are there.
+struct RuleEditorDialog: View {
+    /// The rule to edit; nil adds a new one.
+    let rule: CategorizationRuleRecord?
+    let formatter: MoneyFormatter
     let onClose: () -> Void
 
     @Environment(AppModel.self) private var model
-    @State private var pattern = ""
-    @State private var type: TransactionType = .expense
-    @State private var matchType: MerchantMatchType = .contains
+    @State private var pattern: String
+    @State private var type: TransactionType?
+    @State private var matchType: MerchantMatchType
     @State private var category: String?
-    @State private var tagIds: [String] = []
+    @State private var tagIds: [String]
+    @State private var minimumText: String
+    @State private var maximumText: String
+    @State private var minimumError: String?
+    @State private var maximumError: String?
     @State private var error: String?
     @State private var busy = false
     /// Flashes the fields' scroll indicator.
     @State private var scrollFlash = 0
+    /// The edit's bound prefills, which stand for the stored bounds exactly.
+    private let minimumPrefill: String
+    private let maximumPrefill: String
 
-    /// Flutter's `TransactionTyp.values` order.
-    private static let types: [TransactionType] = [.income, .expense]
+    init(rule: CategorizationRuleRecord?, formatter: MoneyFormatter, onClose: @escaping () -> Void) {
+        self.rule = rule
+        self.formatter = formatter
+        self.onClose = onClose
+        minimumPrefill = Self.prefill(rule?.minimumAmount, formatter: formatter)
+        maximumPrefill = Self.prefill(rule?.maximumAmount, formatter: formatter)
+        _pattern = State(initialValue: rule?.merchantPattern ?? "")
+        _type = State(initialValue: rule == nil ? .expense : rule?.transactionType)
+        _matchType = State(initialValue: rule?.matchType ?? .contains)
+        _category = State(initialValue: rule?.category)
+        _tagIds = State(initialValue: rule?.tagIds ?? [])
+        _minimumText = State(initialValue: minimumPrefill)
+        _maximumText = State(initialValue: maximumPrefill)
+    }
+
+    /// Flutter's `TransactionTyp.values` order, then the Swift-only nil.
+    static let types: [TransactionType?] = [.income, .expense, nil]
 
     var body: some View {
-        let categories = model.categories(for: type).map(\.name)
+        let categories = categoryNames(for: type)
         let selectedCategory = Self.resolvedCategory(category, in: categories)
-        let canAdd = !DartString.trim(pattern).isEmpty
+        let canSubmit = !DartString.trim(pattern).isEmpty
         VStack(spacing: 0) {
-            TagsRulesDialogTitle(text: "New merchant rule")
+            TagsRulesDialogTitle(text: rule == nil ? "New merchant rule" : "Edit merchant rule")
             DialogScroll { fields(categories: categories, selectedCategory: selectedCategory) }
                 .scrollIndicatorsFlash(trigger: scrollFlash)
                 .modifier(MoreBelowFade())
@@ -63,9 +104,9 @@ struct NewRuleDialog: View {
             HStack(spacing: 12) {
                 PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onClose)
                     .accessibilityIdentifier("rules.editor.cancel")
-                PillButton(title: "Add", filled: true, height: 44) { submit(category: selectedCategory) }
-                    .disabled(!canAdd)
-                    .opacity(canAdd ? 1 : Metrics.opacityDisabled)
+                PillButton(title: rule == nil ? "Add" : "Save", filled: true, height: 44) { submit(category: selectedCategory) }
+                    .disabled(!canSubmit)
+                    .opacity(canSubmit ? 1 : Metrics.opacityDisabled)
                     .accessibilityIdentifier("rules.editor.submit")
             }
             .padding(.top, 24)
@@ -73,9 +114,16 @@ struct NewRuleDialog: View {
         .disabled(busy)
         .budgieDialogDismissDisabled(busy)
         .onChange(of: pattern) { error = nil }
+        .onChange(of: minimumText) {
+            minimumError = nil
+            error = nil
+        }
+        .onChange(of: maximumText) {
+            maximumError = nil
+            error = nil
+        }
         .onChange(of: type) { old, new in
-            category = Self.categoryAfterTypeChange(
-                category, from: model.categories(for: old).map(\.name), to: model.categories(for: new).map(\.name))
+            category = Self.categoryAfterTypeChange(category, from: categoryNames(for: old), to: categoryNames(for: new))
         }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
             scrollFlash += 1
@@ -83,9 +131,10 @@ struct NewRuleDialog: View {
     }
 
     private func fields(categories: [String], selectedCategory: String) -> some View {
-        VStack(alignment: .leading, spacing: Metrics.spacingM) {
+        let symbol = AmountInput.currencySymbolName(formatter)
+        return VStack(alignment: .leading, spacing: Metrics.spacingM) {
             BudgieField(
-                title: "Merchant text", text: $pattern, prompt: "Whole Foods", capitalization: .never, autofocus: true)
+                title: "Merchant text", text: $pattern, prompt: "Whole Foods", capitalization: .never, autofocus: rule == nil)
                 .submitLabel(.done)
                 .onSubmit(Self.dismissKeyboard)
                 .accessibilityIdentifier("rules.editor.pattern")
@@ -101,15 +150,33 @@ struct NewRuleDialog: View {
                     get: { MerchantMatchType.allCases.firstIndex(of: matchType) ?? 0 },
                     set: { matchType = MerchantMatchType.allCases[$0] }),
                 identifier: "rules.editor.match")
-            MenuField(
-                title: "Category", options: categories,
-                selection: Binding(
-                    get: { categories.firstIndex { DartString.equal($0, selectedCategory) } ?? 0 },
-                    set: { if categories.indices.contains($0) { category = categories[$0] } }),
-                identifier: "rules.editor.category")
+            VStack(alignment: .leading, spacing: 6) {
+                MenuField(
+                    title: "Category", options: categories,
+                    selection: Binding(
+                        get: { categories.firstIndex { DartString.equal($0, selectedCategory) } ?? 0 },
+                        set: { if categories.indices.contains($0) { category = categories[$0] } }),
+                    identifier: "rules.editor.category")
+                if type == nil, let note = anyTypeNote(selectedCategory) {
+                    Text(note)
+                        .textStyle(.caption)
+                        .foregroundStyle(BudgieColor.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 4)
+                        .accessibilityIdentifier("rules.editor.anyTypeNote")
+                }
+            }
             if !model.tags.isEmpty {
                 tagChips
             }
+            BudgieField(
+                title: "Minimum amount", text: $minimumText, prompt: "Optional", symbol: symbol, keyboard: .decimalPad,
+                error: minimumError)
+                .accessibilityIdentifier("rules.editor.minimum")
+            BudgieField(
+                title: "Maximum amount", text: $maximumText, prompt: "Optional", symbol: symbol, keyboard: .decimalPad,
+                error: maximumError)
+                .accessibilityIdentifier("rules.editor.maximum")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -145,14 +212,47 @@ struct NewRuleDialog: View {
         }
     }
 
+    /// The picker's names for `type` (nil: Any type), plus the edited
+    /// rule's own category under its own type when the list lacks it.
+    private func categoryNames(for type: TransactionType?) -> [String] {
+        var names = type.map { model.categories(for: $0).map(\.name) }
+            ?? Self.anyTypeCategories(
+                expense: model.categories(for: .expense).map(\.name), income: model.categories(for: .income).map(\.name))
+        if let rule, rule.transactionType == type, !names.contains(where: { DartString.equal($0, rule.category) }) {
+            names.append(rule.category)
+        }
+        return names
+    }
+
+    /// Under Any type, when only one type has the category: the other
+    /// type's form will not take this rule's suggestion.
+    private func anyTypeNote(_ name: String) -> String? {
+        Self.anyTypeNote(
+            name, expense: model.categories(for: .expense).map(\.name), income: model.categories(for: .income).map(\.name))
+    }
+
     private func submit(category: String) {
         guard !busy, !DartString.trim(pattern).isEmpty else { return }
         error = nil
+        let minimum = Self.bound(minimumText, prefill: minimumPrefill, stored: rule?.minimumAmount, formatter: formatter)
+        let maximum = Self.bound(maximumText, prefill: maximumPrefill, stored: rule?.maximumAmount, formatter: formatter)
+        minimumError = minimum == nil ? Self.amountError : nil
+        maximumError = maximum == nil ? Self.amountError : nil
+        if let low = minimum ?? nil, let high = maximum ?? nil, low > high {
+            maximumError = CategorizationEditError.ruleMinimumAboveMaximum.message
+        }
+        if let message = minimumError ?? maximumError {
+            AccessibilityNotification.Announcement(message).post()
+            return
+        }
+        guard let minimum, let maximum else { return }
         busy = true
         let draft = RuleDraft(
-            merchantPattern: pattern, matchType: matchType, transactionType: type, category: category, tagIds: tagIds)
+            merchantPattern: pattern, matchType: matchType, transactionType: type, minimumAmount: minimum,
+            maximumAmount: maximum, category: category, tagIds: tagIds, priority: rule?.priority ?? 0,
+            isEnabled: rule?.isEnabled ?? true)
         Task {
-            let outcome = await model.addRule(draft)
+            let outcome = if let rule { await model.updateRule(id: rule.id, draft) } else { await model.addRule(draft) }
             busy = false
             switch outcome {
             case .saved, .unchanged: onClose()
@@ -164,6 +264,42 @@ struct NewRuleDialog: View {
                 AccessibilityNotification.Announcement(rejection.message).post()
             }
         }
+    }
+
+    /// The inline error for a bound that is not an amount of 0 or more.
+    static let amountError = "Enter an amount of 0 or more"
+
+    /// A bound field: `.some(nil)` when empty (no bound), the stored value
+    /// while the text is its prefill, else the parse (`AmountInput`: 0 or
+    /// more, finite, the format's separators); nil when it does not parse.
+    static func bound(_ text: String, prefill: String, stored: Double?, formatter: MoneyFormatter) -> Double?? {
+        if let stored, text == prefill { return .some(stored) }
+        if text.allSatisfy(\.isWhitespace) { return .some(nil) }
+        return AmountInput.parse(text, formatter: formatter).map { .some($0) }
+    }
+
+    /// An edit's bound prefill: rounded to cents, locale-grouped
+    /// (`formatNumber`, not masked by Hide balances, like the goal form).
+    static func prefill(_ bound: Double?, formatter: MoneyFormatter) -> String {
+        bound.map { formatter.formatNumber($0, decimalDigits: 2) } ?? ""
+    }
+
+    /// The Any-type list: the expense names in order, then the income
+    /// names the expense list lacks (UTF-16 equality), in order.
+    static func anyTypeCategories(expense: [String], income: [String]) -> [String] {
+        var names = expense
+        for name in income where !names.contains(where: { DartString.equal($0, name) }) { names.append(name) }
+        return names
+    }
+
+    /// The Any-type caption for `name`: nil when both types have it (or
+    /// neither does).
+    static func anyTypeNote(_ name: String, expense: [String], income: [String]) -> String? {
+        let inExpense = expense.contains { DartString.equal($0, name) }
+        let inIncome = income.contains { DartString.equal($0, name) }
+        if inExpense && !inIncome { return "Only expenses have \(name), so income won't be categorized by this rule." }
+        if inIncome && !inExpense { return "Only income has \(name), so expenses won't be categorized by this rule." }
+        return nil
     }
 
     /// The picked category while the type's list has it (UTF-16 equality,
@@ -187,8 +323,12 @@ struct NewRuleDialog: View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
-    static func typeLabel(_ type: TransactionType) -> String {
-        type == .income ? "Income" : "Expense"
+    static func typeLabel(_ type: TransactionType?) -> String {
+        switch type {
+        case .income?: "Income"
+        case .expense?: "Expense"
+        case nil: "Any type"
+        }
     }
 
     static func matchLabel(_ match: MerchantMatchType) -> String {
@@ -301,7 +441,7 @@ private struct MenuField: View {
     private func tap() {
         if keyboardUp {
             opening = true
-            NewRuleDialog.dismissKeyboard()
+            RuleEditorDialog.dismissKeyboard()
         } else {
             open = true
         }

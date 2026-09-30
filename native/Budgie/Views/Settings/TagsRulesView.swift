@@ -6,17 +6,21 @@ import SwiftUI
 /// PERSONALIZATION > Tags & rules: "Tags" with its ADD button over the tags
 /// in stored order (or the empty card), then "Merchant rules" over the
 /// rules in Flutter's `rules` order (priority descending). Each row has a
-/// trailing delete button; rows have no tap (as Flutter).
+/// trailing delete button; tag rows have no tap (as Flutter).
 ///
 /// Differences from Flutter (PARITY_GAPS): the rows use the redesign's
 /// icon tiles and row text; deleting a tag asks first (it also leaves every
 /// rule that used it), deleting a rule does not (as Flutter); the dialogs
 /// are the redesign's centred card and show refusals inline; a failed
-/// write shows the save-failed toast (Flutter is silent).
+/// write shows the save-failed toast (Flutter is silent). Swift-only: a
+/// rule row opens the rule editor (tap, or VoiceOver's Edit action) and
+/// has an enable switch; a disabled rule's text and tile are dimmed.
 struct TagsRulesView: View {
     @Environment(AppModel.self) private var model
 
     @State private var dialog: TagsRulesDialog?
+    /// Rules whose switch write is in flight (their switch is inert).
+    @State private var switching: Set<String> = []
 
     /// M3 `TextButton` label (`labelLarge`: 14 / w500, tracking 0.1, 1.43).
     static let addText = TextSpec(face: .gabaritoMedium, size: 14, tracking: 0.1, height: 1.43, relativeTo: .subheadline)
@@ -48,7 +52,13 @@ struct TagsRulesView: View {
                             .accessibilityIdentifier("rules.empty")
                     } else {
                         GlowListCard(rows: Self.keyed(rules, id: \.id).map { item in
-                            RuleRow(rule: item.value, key: item.key) { deleteRule(item.value) }
+                            let rule = item.value
+                            return RuleRow(
+                                rule: rule, key: item.key, subtitle: Self.ruleSubtitle(rule, formatter: model.moneyFormatter),
+                                switching: switching.contains(rule.id),
+                                onEdit: { dialog = .editRule(rule, key: item.key) },
+                                onToggle: { setEnabled(rule, $0) },
+                                onDelete: { deleteRule(rule) })
                         })
                     }
                 }
@@ -77,7 +87,8 @@ struct TagsRulesView: View {
         .budgieDialog(item: $dialog) { presented in
             switch presented {
             case .newTag: NewTagDialog { dialog = nil }
-            case .newRule: NewRuleDialog { dialog = nil }
+            case .newRule: RuleEditorDialog(rule: nil, formatter: model.moneyFormatter) { dialog = nil }
+            case .editRule(let rule, _): RuleEditorDialog(rule: rule, formatter: model.moneyFormatter) { dialog = nil }
             case .deleteTag(let tag): DeleteTagDialog(tag: tag) { dialog = nil }
             }
         }
@@ -94,12 +105,43 @@ struct TagsRulesView: View {
         }
     }
 
-    /// The rule row's subtitle, Flutter's exact string: the raw match type
-    /// name, the category, and " · n tags" when it has any (never
-    /// singular): "contains · Groceries · 1 tags".
-    static func ruleSubtitle(_ rule: CategorizationRuleRecord) -> String {
-        let tags = rule.tagIds.isEmpty ? "" : " \u{00B7} \(rule.tagIds.count) tags"
-        return "\(rule.matchType.rawValue) \u{00B7} \(rule.category)\(tags)"
+    /// Swift-only enable switch. Memory changes first (the switch and the
+    /// dimming follow at once); the switch is inert until the write is
+    /// done. Silent when saved, the save-failed toast (and the unsaved
+    /// banner) when only memory changed.
+    private func setEnabled(_ rule: CategorizationRuleRecord, _ enabled: Bool) {
+        guard !switching.contains(rule.id) else { return }
+        switching.insert(rule.id)
+        Task {
+            let outcome = await model.setRuleEnabled(id: rule.id, enabled)
+            switching.remove(rule.id)
+            if outcome == .failed { model.showToast(.saveFailed) }
+        }
+    }
+
+    /// The rule row's subtitle. It starts with Flutter's exact string: the
+    /// raw match type name, the category, and " · n tags" when it has any
+    /// (never singular): "contains · Groceries · 1 tags", which is all of
+    /// it for a rule Flutter's dialog could make (one type, no bounds,
+    /// enabled). Swift-only parts follow, each after " · ": "any type" (no
+    /// type), the bounds ("at least $5.00", "up to $20.00", "$5.00 to
+    /// $20.00", "exactly $5.00"; money format, so Hide balances masks
+    /// them), and "off" when disabled:
+    /// "contains · Gift · any type · up to $20.00 · off".
+    static func ruleSubtitle(_ rule: CategorizationRuleRecord, formatter: MoneyFormatter) -> String {
+        let separator = " \u{00B7} "
+        let tags = rule.tagIds.isEmpty ? "" : "\(separator)\(rule.tagIds.count) tags"
+        var parts = ["\(rule.matchType.rawValue)\(separator)\(rule.category)\(tags)"]
+        if rule.transactionType == nil { parts.append("any type") }
+        switch (rule.minimumAmount, rule.maximumAmount) {
+        case let (minimum?, maximum?) where minimum == maximum: parts.append("exactly \(formatter.format(minimum))")
+        case let (minimum?, maximum?): parts.append("\(formatter.format(minimum)) to \(formatter.format(maximum))")
+        case let (minimum?, nil): parts.append("at least \(formatter.format(minimum))")
+        case let (nil, maximum?): parts.append("up to \(formatter.format(maximum))")
+        case (nil, nil): break
+        }
+        if !rule.isEnabled { parts.append("off") }
+        return parts.joined(separator: separator)
     }
 
     /// Row keys: the id, with its occurrence for a repeated id (foreign
@@ -119,12 +161,15 @@ struct TagsRulesView: View {
 enum TagsRulesDialog: Identifiable {
     case newTag
     case newRule
+    /// The rule and its row key (unique even for a repeated id).
+    case editRule(CategorizationRuleRecord, key: String)
     case deleteTag(TransactionTagRecord)
 
     var id: String {
         switch self {
         case .newTag: "newTag"
         case .newRule: "newRule"
+        case .editRule(_, let key): "editRule.\(key)"
         case .deleteTag(let tag): "deleteTag.\(tag.id)"
         }
     }
@@ -224,34 +269,58 @@ private struct TagRow: View {
 }
 
 /// A rule (two-line M3 `ListTile`, 72 tall): the `sparkles` tile in info
-/// (Settings' Tags & rules tint), the merchant text over Flutter's
-/// subtitle, the delete button (instant, as Flutter). VoiceOver: the text
-/// is one element (pattern, value = subtitle) with Delete as an action,
-/// then "Delete rule {pattern}".
+/// (Settings' Tags & rules tint), the merchant text over the subtitle
+/// (`ruleSubtitle`), then the Swift-only enable switch and the delete
+/// button (instant, as Flutter). Swift-only: the tile and text open the
+/// rule editor; a disabled rule's tile and text are dimmed (muted
+/// opacity), the switch and delete button are not. VoiceOver: the text is
+/// one button (pattern, value = subtitle) with Edit and Delete actions,
+/// then the switch "Enable rule {pattern}", then "Delete rule {pattern}".
 private struct RuleRow: View {
     let rule: CategorizationRuleRecord
     let key: String
+    let subtitle: String
+    /// The switch's write is in flight.
+    let switching: Bool
+    let onEdit: () -> Void
+    let onToggle: @MainActor (Bool) -> Void
     let onDelete: () -> Void
 
     var body: some View {
-        let subtitle = TagsRulesView.ruleSubtitle(rule)
         HStack(spacing: Metrics.spacingM) {
-            IconTile(symbol: "sparkles", color: BudgieColor.info)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(rule.merchantPattern)
-                    .textStyle(.rowTitle)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                Text(subtitle)
-                    .textStyle(.rowSubtitle)
-                    .foregroundStyle(BudgieColor.textSecondary)
+            Button(action: onEdit) {
+                HStack(spacing: Metrics.spacingM) {
+                    IconTile(symbol: "sparkles", color: BudgieColor.info)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(rule.merchantPattern)
+                            .textStyle(.rowTitle)
+                            .foregroundStyle(BudgieColor.textPrimary)
+                        Text(subtitle)
+                            .textStyle(.rowSubtitle)
+                            .foregroundStyle(BudgieColor.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .opacity(rule.isEnabled ? 1 : Metrics.opacityMuted)
+                .contentShape(Rectangle())
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .ignore)
+            .buttonStyle(.plain)
             .accessibilityLabel(rule.merchantPattern)
             .accessibilityValue(subtitle)
+            .accessibilityAction(named: "Edit") { onEdit() }
             .accessibilityAction(named: "Delete") { onDelete() }
             .accessibilityIdentifier("rules.row.\(key)")
-            DeleteButton(label: "Delete rule \(rule.merchantPattern)", identifier: "rules.row.delete.\(key)", action: onDelete)
+            // The delete button's 48pt frame already spaces its icon from
+            // the switch.
+            HStack(spacing: 0) {
+                // The app's switch colour (Settings rows, Show archived).
+                Toggle("Enable rule \(rule.merchantPattern)", isOn: Binding(get: { rule.isEnabled }, set: onToggle))
+                    .labelsHidden()
+                    .tint(.green)
+                    .disabled(switching)
+                    .accessibilityIdentifier("rules.row.enabled.\(key)")
+                DeleteButton(label: "Delete rule \(rule.merchantPattern)", identifier: "rules.row.delete.\(key)", action: onDelete)
+            }
         }
         .padding(.leading, Metrics.spacingM)
         .padding(.trailing, Metrics.spacingL)

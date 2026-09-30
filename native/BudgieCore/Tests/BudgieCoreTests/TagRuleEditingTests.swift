@@ -159,4 +159,198 @@ struct TagRuleEditingTests {
                 == "high")
         #expect(CategorizationEngine.suggestion(rules: d.rules, type: .income, description: "shop", amount: 1, activeCategoryNames: ["Salary"])?.id == "income")
     }
+
+    // MARK: - Swift-only: edit, enable, bounds, any type
+
+    @Test("updateRule: in place (id and position), only the changed keys, Dart lexemes, present nulls")
+    func updateRuleInPlace() throws {
+        var d = try data(twoTags)
+        try d.addRule(RuleDraft(merchantPattern: "a", transactionType: .expense, category: "A"), id: "r1")
+        try d.addRule(RuleDraft(merchantPattern: "Whole Foods", transactionType: .expense, category: "Groceries", tagIds: ["t1"]), id: "r2")
+        try d.addRule(RuleDraft(merchantPattern: "c", transactionType: .income, category: "C"), id: "r3")
+
+        var draft = d.rules[1].draft
+        draft.merchantPattern = "  Whole Foods Market "
+        draft.category = "Food"
+        draft.transactionType = nil
+        draft.minimumAmount = 0
+        draft.maximumAmount = 0.1 + 0.2
+        draft.tagIds = ["t2", "t1"]
+        let changed = try d.updateRule(id: "r2", draft)
+        #expect(changed)
+        #expect(d.rules.map(\.id) == ["r1", "r2", "r3"], "position kept")
+        #expect(text(d.rulesSection()) == "[" + [
+            #"{"id":"r1","merchantPattern":"a","matchType":"contains","transactionType":"expense","minimumAmount":null,"maximumAmount":null,"category":"A","tagIds":[],"priority":0,"isEnabled":true}"#,
+            #"{"id":"r2","merchantPattern":"Whole Foods Market","matchType":"contains","transactionType":null,"minimumAmount":0.0,"maximumAmount":0.30000000000000004,"category":"Food","tagIds":["t2","t1"],"priority":0,"isEnabled":true}"#,
+            #"{"id":"r3","merchantPattern":"c","matchType":"contains","transactionType":"income","minimumAmount":null,"maximumAmount":null,"category":"C","tagIds":[],"priority":0,"isEnabled":true}"#,
+        ].joined(separator: ",") + "]")
+
+        // Clearing a bound writes a present null; a type comes back.
+        draft = d.rules[1].draft
+        draft.minimumAmount = nil
+        draft.maximumAmount = 20
+        draft.transactionType = .income
+        draft.matchType = .exact
+        try d.updateRule(id: "r2", draft)
+        #expect(text(d.rulesSection()).contains(
+            #"{"id":"r2","merchantPattern":"Whole Foods Market","matchType":"exact","transactionType":"income","minimumAmount":null,"maximumAmount":20.0,"category":"Food","tagIds":["t2","t1"],"priority":0,"isEnabled":true}"#))
+
+        // The same draft again changes nothing.
+        let before = text(d.rulesSection())
+        let again = try d.updateRule(id: "r2", d.rules[1].draft)
+        #expect(!again)
+        #expect(text(d.rulesSection()) == before)
+        // The edited record reads back as itself.
+        let reparsed = try data(#"{"transactionTags":"# + text(d.tagsSection()) + #","categorizationRules":"# + before + "}")
+        #expect(reparsed.rules == d.rules)
+    }
+
+    @Test("updateRule on a foreign row: unknown keys, lexemes and key order stay; missing keys appended only when changed")
+    func updateForeignRule() throws {
+        var d = try data(#"""
+            {"transactionTags":[{"id":"t1","name":"Work","colorToken":"accent"}],
+             "categorizationRules":[
+               {"future":{"k":[1.50]},"category":"Rent","merchantPattern":"  rent ","id":"r1","minimumAmount":5,"matchType":"fuzzy","transactionType":"weird","tagIds":["t1",1,"gone"],"priority":2.7},
+               "bad",
+               {"id":"r2","merchantPattern":"x","category":"X"}]}
+            """#)
+        let foreign = d.rules[0]
+        #expect(foreign.minimumAmount == 5 && foreign.matchType == .contains && foreign.transactionType == .expense && foreign.priority == 2)
+        // The prefill changes nothing (the stored `5`, "fuzzy", "weird",
+        // 2.7, the padded pattern and the orphan "gone" all stay).
+        let untouched = try d.updateRule(id: "r1", foreign.draft)
+        #expect(!untouched)
+        var draft = foreign.draft
+        draft.maximumAmount = 1500
+        draft.category = "Housing"
+        let changed = try d.updateRule(id: "r1", draft)
+        #expect(changed)
+        #expect(text(d.rulesSection()) == "[" + [
+            #"{"future":{"k":[1.50]},"category":"Housing","merchantPattern":"  rent ","id":"r1","minimumAmount":5,"matchType":"fuzzy","transactionType":"weird","tagIds":["t1",1,"gone"],"priority":2.7,"maximumAmount":1500.0}"#,
+            #""bad""#,
+            #"{"id":"r2","merchantPattern":"x","category":"X"}"#,
+        ].joined(separator: ",") + "]")
+        // A new orphan is refused; the stored one may stay.
+        draft.tagIds = ["t1", "gone", "t9"]
+        #expect(throws: CategorizationEditError.unknownTag("t9")) { try d.updateRule(id: "r1", draft) }
+        // A row without the key already reads as any type; switching a type
+        // on and back off leaves a present null.
+        var plain = d.rules[1].draft
+        plain.transactionType = nil
+        let unchanged = try d.updateRule(id: "r2", plain)
+        #expect(!unchanged)
+        plain.transactionType = .income
+        try d.updateRule(id: "r2", plain)
+        plain.transactionType = nil
+        try d.updateRule(id: "r2", plain)
+        #expect(text(d.rulesSection()).hasSuffix(#"{"id":"r2","merchantPattern":"x","category":"X","transactionType":null}]"#))
+    }
+
+    @Test("updateRule refuses (nothing changes): unknown id, blank text, non-finite, negative, min above max")
+    func updateRuleRefusals() throws {
+        var d = try data(twoTags)
+        try d.addRule(RuleDraft(merchantPattern: "a", transactionType: .expense, category: "A"), id: "r1")
+        let before = text(d.rulesSection())
+        let draft = d.rules[0].draft
+        #expect(throws: CategorizationEditError.ruleNotFound) { try d.updateRule(id: "R1", draft) }
+        func refused(_ error: CategorizationEditError, _ change: (inout RuleDraft) -> Void) {
+            var edited = draft
+            change(&edited)
+            #expect(throws: error) { try d.updateRule(id: "r1", edited) }
+            #expect((d.validateRule(edited) ?? edited.boundsError) == error)
+        }
+        refused(.rulePatternRequired) { $0.merchantPattern = "\u{FEFF} " }
+        refused(.ruleAmountNotFinite) { $0.minimumAmount = .nan }
+        refused(.ruleAmountNotFinite) { $0.maximumAmount = -.infinity }
+        refused(.ruleAmountNegative) { $0.minimumAmount = -0.01 }
+        refused(.ruleAmountNegative) { $0.maximumAmount = -5 }
+        refused(.ruleMinimumAboveMaximum) {
+            $0.minimumAmount = 20.01
+            $0.maximumAmount = 20
+        }
+        refused(.unknownTag("t9")) { $0.tagIds = ["t9"] }
+        #expect(text(d.rulesSection()) == before)
+        #expect(CategorizationEditError.ruleMinimumAboveMaximum.message == "Minimum can't be more than maximum")
+        #expect(CategorizationEditError.ruleAmountNegative.message == "Amounts can't be negative")
+        #expect(CategorizationEditError.ruleNotFound.message == "This rule no longer exists")
+        // Equal bounds (one exact amount) and zero are fine; -0.0 is not negative.
+        var exact = draft
+        exact.minimumAmount = 20
+        exact.maximumAmount = 20
+        #expect(exact.boundsError == nil)
+        exact.minimumAmount = -0.0
+        exact.maximumAmount = 0
+        #expect(exact.boundsError == nil)
+        // Dart's addRule stores such bounds (Fixtures/tags has one), so
+        // Swift's does too; only the editor and updateRule refuse them.
+        exact.minimumAmount = 3
+        exact.maximumAmount = 2
+        #expect(exact.boundsError == .ruleMinimumAboveMaximum)
+        #expect(d.validateRule(exact) == nil)
+        try d.addRule(exact, id: "r2")
+        #expect(d.rules.map(\.id) == ["r1", "r2"])
+    }
+
+    @Test("updateRule and setRuleEnabled edit every readable row with the id")
+    func repeatedIDs() throws {
+        var d = try data(#"{"categorizationRules":[{"id":"r1","merchantPattern":"a","category":"A","isEnabled":true},7,{"id":"r1","merchantPattern":"b","category":"B"}]}"#)
+        let off = d.setRuleEnabled(id: "r1", false)
+        #expect(off)
+        #expect(text(d.rulesSection()) == #"[{"id":"r1","merchantPattern":"a","category":"A","isEnabled":false},7,{"id":"r1","merchantPattern":"b","category":"B","isEnabled":false}]"#)
+        let offAgain = d.setRuleEnabled(id: "r1", false)
+        let unknown = d.setRuleEnabled(id: "nope", true)
+        #expect(!offAgain && !unknown)
+        let on = d.setRuleEnabled(id: "r1", true)
+        #expect(on)
+        #expect(text(d.rulesSection()) == #"[{"id":"r1","merchantPattern":"a","category":"A","isEnabled":true},7,{"id":"r1","merchantPattern":"b","category":"B","isEnabled":true}]"#)
+        var draft = d.rules[1].draft
+        draft.category = "C"
+        try d.updateRule(id: "r1", draft)
+        #expect(d.rules.map(\.category) == ["C", "C"])
+    }
+
+    @Test("edited rules suggest as Dart's matches: inclusive bounds, any type, disabled rules skipped")
+    func editedRulesSuggest() throws {
+        var d = try data(twoTags)
+        try d.addRule(RuleDraft(merchantPattern: "Cafe", transactionType: .expense, category: "Coffee"), id: "bounded")
+        try d.addRule(RuleDraft(merchantPattern: "cafe", transactionType: .expense, category: "Eating Out"), id: "fallback")
+        try d.addRule(RuleDraft(merchantPattern: "Gift", matchType: .startsWith, transactionType: .expense, category: "Gift"), id: "any")
+        try d.addRule(RuleDraft(merchantPattern: "salary", transactionType: .income, category: "Salary"), id: "off")
+
+        var bounded = d.rules[0].draft
+        bounded.minimumAmount = 5
+        bounded.maximumAmount = 20.5
+        try d.updateRule(id: "bounded", bounded)
+        func suggested(_ type: TransactionType, _ description: String, _ amount: Double) -> String? {
+            CategorizationEngine.suggest(rules: d.rules, type: type, description: description, amount: amount)?.id
+        }
+        // Both bounds inclusive; just outside falls to the next rule.
+        #expect(suggested(.expense, "Corner cafe", 5) == "bounded")
+        #expect(suggested(.expense, "Corner cafe", 20.5) == "bounded")
+        #expect(suggested(.expense, "Corner cafe", 12) == "bounded")
+        #expect(suggested(.expense, "Corner cafe", 5.0.nextDown) == "fallback")
+        #expect(suggested(.expense, "Corner cafe", 20.5.nextUp) == "fallback")
+        #expect(suggested(.expense, "Corner cafe", 0) == "fallback", "an empty amount reads as 0")
+        // NaN passes both bounds (every comparison is false), as in Dart.
+        #expect(suggested(.expense, "Corner cafe", .nan) == "bounded")
+        #expect(suggested(.expense, "Corner cafe", .infinity) == "fallback")
+
+        // Any type: income too.
+        #expect(suggested(.income, "Gift from Sam", 10) == nil)
+        var any = d.rules[2].draft
+        any.transactionType = nil
+        try d.updateRule(id: "any", any)
+        #expect(suggested(.income, "Gift from Sam", 10) == "any")
+        #expect(suggested(.expense, "gift shop", 10) == "any")
+
+        // Disabled: skipped, and a later match is tried.
+        #expect(suggested(.income, "Salary September", 3000) == "off")
+        let disabled = d.setRuleEnabled(id: "off", false)
+        #expect(disabled)
+        #expect(suggested(.income, "Salary September", 3000) == nil)
+        let offBounded = d.setRuleEnabled(id: "bounded", false)
+        #expect(offBounded)
+        #expect(suggested(.expense, "Corner cafe", 12) == "fallback")
+        #expect(d.rules.map(\.isEnabled) == [false, true, true, false])
+    }
 }

@@ -14,6 +14,9 @@
 //                       "ruleCategories", "transactionTags",
 //                       "categorizationRules", "recurringTemplates",
 //                       "transactions": what the Dart models must hold;
+//                       "ruleSuggestions": [type, description, amount
+//                       lexeme, rule id or null] probes Dart's `suggest`
+//                       must answer as Swift did;
 //                       "newTagIds", "newRuleIds": rows Swift made;
 //                       "dartGenerateAddsNothing": run Dart's generator last
 //                       and fail if it adds rows or moves cursors;
@@ -36,6 +39,7 @@ import 'package:budget_app/insights/insight_engine.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/storage/storage_keys.dart';
 import 'package:budget_app/theme_provider.dart';
+import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_generator.dart';
 import 'package:budget_app/transaction_tag.dart';
 import 'package:budget_app/widgets/glow_card.dart';
@@ -478,6 +482,27 @@ void main() {
                 r.isEnabled,
               ]
           ]);
+          // Swift's rule edits (bounds, any type, disabled) must mean the
+          // same to Flutter's matcher: `suggest` picks the rule Swift's
+          // suggest picked for every probe.
+          final probes = swift['ruleSuggestions'];
+          if (probes is List) {
+            for (final probe in probes.cast<List>()) {
+              final type = TransactionTyp.values.byName(probe[0] as String);
+              final got = provider
+                  .suggest(
+                    type: type,
+                    description: probe[1] as String,
+                    amount: double.parse(probe[2] as String),
+                  )
+                  ?.rule
+                  .id;
+              if (got != probe[3]) {
+                problems.add('suggest(${probe[0]}, ${jsonEncode(probe[1])}, '
+                    '${probe[2]}): Dart $got, Swift ${probe[3]}');
+              }
+            }
+          }
           void canonical(String section, List<Object?> ids,
               String Function(Map<String, dynamic>) toJson) {
             final rows = snapshot.sections[section] as List? ?? const [];

@@ -12,7 +12,7 @@ UPGRADE_TEST_RESULTS.md).
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Insights | `local_insights_*` prefs | Available: the Insights section on Flow (up to three cards, "Insight options" menu with Snooze for 30 days / Dismiss). The engine and the two preferences match Flutter (Fixtures/insights; Swift-written prefs verified in Dart), so a dismissal or snooze in either app hides the same card in the other. |
-| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. As in Flutter there is no rule edit, enable switch, amount bounds or reorder. |
+| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. Swift also edits a rule in place, switches it on and off, and sets amount bounds and "Any type" (Swift superset, all within Flutter's schema and applied by Flutter's matcher; see "Deliberate differences"). As in Flutter there is no priority or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Flag shared with Flutter (`OnboardingFlag`: a CFBoolean true under the same key; missing or another type shows the tour), read at launch after protected data is available, written when the tour is completed or skipped. Available: the three-page tour shows once, in place of the tabs and inside the lock gate (differences under "Deliberate differences"). |
 | Backup export/import (JSON envelope v3) | files chosen by the user | Available: Settings > Export backup (share sheet) and Import backup (document picker, "Replace all data?", one-commit restore after a safety copy). Export, decode and restore match Flutter byte for byte (Fixtures/backup); differences under "Backup export and restore" below. |
@@ -391,9 +391,20 @@ UPGRADE_TEST_RESULTS.md).
   amount bound is not finite, or that names a tag id no tag has. Flutter's
   provider accepts all three: its dialog never sends the first (Add does
   nothing), the second cannot be saved, and the third makes its backup
-  import refuse the file. The New merchant rule dialog would show such a
-  refusal in danger caption above its buttons, but its fields cannot
-  produce one.
+  import refuse the file. The rule editor and the Swift-only edit
+  (`updateRule`) also refuse (`RuleDraft.boundsError`; Core's `addRule`
+  stores them, as Flutter's provider does, but the editor checks first)
+  a negative bound ("Amounts can't be negative": every amount a
+  rule is checked against is 0 or more, since the form reads an empty or
+  unparsable field as 0 on a decimal pad without a minus key and saves only
+  amounts above 0, so under Dart's `matches` a negative minimum is no bound
+  and a negative maximum never matches) and a minimum above the maximum
+  ("Minimum can't be more than maximum": the rule could never match; equal
+  bounds are one exact amount). An edit may keep tag ids the rule already
+  stores without a tag (foreign data), and an edit of an unknown id is
+  refused ("This rule no longer exists"). The rule editor shows a refusal
+  in danger caption above its buttons; its fields check the bounds first
+  and show the two bound messages under the fields.
 - Tags & rules page (D1 port of the Material page): padded 16 like
   Flutter's ListView; the title is cardTitle in the navigation bar
   (Flutter: M3 titleLarge AppBar); rows use the redesign's 40pt icon tiles
@@ -441,7 +452,56 @@ UPGRADE_TEST_RESULTS.md).
   removed on the page behind the dialog.
 - VoiceOver reads each rule's delete button as "Delete rule {pattern}"
   (Flutter's tooltip is "Delete rule" on every row) and offers Delete as
-  an action on each tag and rule row.
+  an action on each tag and rule row (and Edit on each rule row).
+- Swift superset (approved 2026-09-29): Flutter can only add and delete a
+  rule. Every addition below writes only fields Flutter's
+  `CategorizationRule` schema already has, in its `toJson` form, and
+  Flutter's `matches` / `suggest` already apply them, so a downgraded
+  Flutter build loads the rules and suggests exactly as Swift did
+  (`verify_swift_output_test.dart`: the loaded rules, `toJson` bytes of
+  Swift-made rows, and `suggest` over probes at, just below and just above
+  every bound, for both types). Priority stays 0 for new rules and is kept
+  as stored on edits; there is no priority or reorder UI.
+  - Edit in place: tapping a rule row (or VoiceOver's Edit action) opens
+    "Edit merchant rule", prefilled, with Save. The rule keeps its id and
+    stored position (Flutter's `addRule` with an existing id would move it
+    to the end), and only the keys whose value changed are patched (a
+    stored `5` for a 5.0 bound, unknown keys and a foreign `matchType`
+    stay). Every readable row with the id is edited (foreign data can
+    repeat an id; the backup import refuses that anyway). An edited rule's
+    own category stays selectable under its type even when archived or
+    missing, so Save never changes it silently. Flutter would list the
+    edited rule where it is stored, as Swift does.
+  - Enable switch (`isEnabled`): each rule row has a switch (the app's
+    green, like the Settings switches); a disabled rule's tile and text are
+    dimmed (muted opacity) and its subtitle ends in "off". Dart's `matches`
+    skips disabled rules, so the next matching rule is tried.
+  - Amount bounds (`minimumAmount` / `maximumAmount`): optional "Minimum
+    amount" / "Maximum amount" fields at the end of the editor, with the
+    currency symbol, parsed like the other amount fields (`AmountInput`,
+    D6); empty is no bound. Both are inclusive, as Dart's `matches`
+    (NaN would pass both; the form never sends it). Written as Dart
+    doubles (`20.0`), a cleared bound as a present `null`. An edit
+    prefills a bound rounded to cents; a field left as prefilled keeps the
+    stored value exactly. The form checks a rule's bounds against its
+    Amount field, which reads as 0 until typed, so a rule with a minimum
+    above 0 waits for the amount (as it would in Flutter).
+  - Any type (`transactionType: null`): the Type dropdown offers "Any
+    type" after Income and Expense. Its Category list is the expense list
+    followed by the income names the expense list lacks (UTF-16), since
+    the rule serves both forms. The form applies a suggestion only when
+    its category is in the form's list and then tries no later rule
+    (Flutter's gate, reproduced), so an Any-type rule on a one-type
+    category suggests nothing for the other type and hides later rules
+    there; the editor says so under the picker ("Only expenses have
+    Groceries, so income won't be categorized by this rule.").
+  - Subtitle: it starts with Flutter's exact string, which is all of it
+    for a rule Flutter's dialog could make (one type, no bounds, enabled):
+    "contains · Groceries · 1 tags". Swift-only parts follow, each after
+    " · ": "any type", the bounds ("at least $5.00", "up to $20.00",
+    "$5.00 to $20.00", "exactly $5.00"; the money format, so Hide balances
+    masks them) and "off": "contains · Gift · any type · up to $20.00 ·
+    off". Flutter shows only the leading part for these rules.
 - Category Move up / Move down with archived rows hidden moves the row past
   the previous or next shown row. Flutter moves by one in the full list
   (archived rows included), so a move over a hidden archived row seemed to

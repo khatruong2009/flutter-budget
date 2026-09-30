@@ -27,7 +27,9 @@ enum SwiftOutput {
     /// and the categories its transactions, templates and rules must carry.
     /// `tagsRules`, when given, is what Dart's `CategorizationProvider` must
     /// load (`tags`, and `rules` in its getter's order, bounds as
-    /// `toString`); `newTagIDs` / `newRuleIDs` are rows Swift made, whose
+    /// `toString`), and whose `suggest` must pick the rule Swift's does for
+    /// every `ruleProbes` probe; `newTagIDs` / `newRuleIDs` are rows Swift
+    /// made (edits included), whose
     /// stored JSON must be Dart's `toJson` byte for byte. `backup`, when
     /// given, is Swift's export of this store as the app would make it after
     /// a launch (`backup.json`); the verifier compares it with Flutter's
@@ -46,6 +48,30 @@ enum SwiftOutput {
     /// `transactions`, when given, is what Dart's `TransactionModel` must
     /// load (every field, stored order; description and category as UTF-16
     /// code units, amounts as `toString`).
+    /// Suggestion probes over `rules` as [type, description, amount as a
+    /// Dart double lexeme, the id Swift's `suggest` picks or null]: every
+    /// rule's pattern as stored and padded, upper-cased with a suffix, for
+    /// both types, at 0, 12 and each bound with its neighbouring doubles
+    /// (so inclusive bounds, any type and disabled rules are all probed).
+    static func ruleProbes(_ rules: [CategorizationRuleRecord]) -> [[Any]] {
+        var probes: [[Any]] = []
+        for rule in rules {
+            var amounts: [Double] = [0, 12]
+            for bound in [rule.minimumAmount, rule.maximumAmount].compactMap({ $0 }) {
+                amounts += [bound, bound.nextDown, bound.nextUp]
+            }
+            for description in [rule.merchantPattern, " \(rule.merchantPattern.uppercased()) market "] {
+                for type in [TransactionType.expense, .income] {
+                    for amount in amounts {
+                        let hit = CategorizationEngine.suggest(rules: rules, type: type, description: description, amount: amount)
+                        probes.append([type.rawValue, description, DartDouble.format(amount), hit?.id as Any? ?? NSNull()])
+                    }
+                }
+            }
+        }
+        return probes
+    }
+
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
@@ -124,6 +150,7 @@ enum SwiftOutput {
                  r.minimumAmount.map(DartDouble.format) as Any? ?? NSNull(), r.maximumAmount.map(DartDouble.format) as Any? ?? NSNull(),
                  r.category, r.tagIds, r.priority, r.isEnabled]
             }
+            swift["ruleSuggestions"] = ruleProbes(tagsRules.rules)
             swift["newTagIds"] = newTagIDs
             swift["newRuleIds"] = newRuleIDs
         }
@@ -469,6 +496,50 @@ struct SwiftOutputForDartTests {
             let moved = id()
             try addRule(RuleDraft(merchantPattern: "swift first", transactionType: .expense, category: "Gift"), id: moved)
             try addRule(RuleDraft(merchantPattern: "swift moved", transactionType: .income, category: "Gift", tagIds: [plainTag.id]), id: moved)
+            // Swift-only rule edits (in place, only the changed keys; Dart
+            // must load them and its matcher suggest the same, see
+            // `ruleProbes`): a Swift rule moved to any type with both
+            // bounds, a new pattern, match, category and tag; a bounded
+            // income rule disabled; the disabled "swift rent" re-enabled;
+            // and a stored (Dart-written) rule re-typed to any type, its
+            // maximum set or cleared, and switched.
+            let editedRule = id()
+            try addRule(RuleDraft(merchantPattern: "swift edit me", transactionType: .expense, category: "Groceries"), id: editedRule)
+            var ruleEdit = try #require(data.rules.first { $0.id == editedRule }).draft
+            ruleEdit.merchantPattern = " Swift Edited Café "
+            ruleEdit.matchType = .startsWith
+            ruleEdit.transactionType = nil
+            ruleEdit.minimumAmount = 5
+            ruleEdit.maximumAmount = 20.5
+            ruleEdit.category = "Gift"
+            ruleEdit.tagIds = [swiftTag.id]
+            let ruleEdited = try data.updateRule(id: editedRule, ruleEdit)
+            #expect(ruleEdited)
+            let disabledRule = id()
+            try addRule(
+                RuleDraft(merchantPattern: "swift bounded pay", transactionType: .income, maximumAmount: 100, category: "Salary"),
+                id: disabledRule)
+            let ruleDisabled = data.setRuleEnabled(id: disabledRule, false)
+            #expect(ruleDisabled)
+            func suggested(_ type: TransactionType, _ description: String, _ amount: Double) -> String? {
+                CategorizationEngine.suggest(rules: data.rules, type: type, description: description, amount: amount)?.id
+            }
+            #expect(suggested(.income, "swift edited café x", 5) == editedRule, "\(name)")
+            #expect(suggested(.expense, "SWIFT EDITED CAFÉ", 20.5) == editedRule, "\(name)")
+            #expect(suggested(.income, "swift edited café x", 20.5.nextUp) != editedRule, "\(name)")
+            #expect(suggested(.income, "swift bounded pay", 50) != disabledRule, "\(name)")
+            if let rent = data.rules.first(where: { $0.merchantPattern == "swift rent" }) {
+                let rentEnabled = data.setRuleEnabled(id: rent.id, true)
+                #expect(rentEnabled)
+            }
+            if let stored = data.rules.last(where: { !newRuleIDs.contains($0.id) }) {
+                var storedEdit = stored.draft
+                storedEdit.transactionType = nil
+                storedEdit.maximumAmount = stored.maximumAmount == nil ? 50 : nil
+                let storedEdited = try data.updateRule(id: stored.id, storedEdit)
+                let storedSwitched = data.setRuleEnabled(id: stored.id, !stored.isEnabled)
+                #expect(storedEdited && storedSwitched)
+            }
             let doomedRule = id()
             try addRule(RuleDraft(merchantPattern: "swift delete me", transactionType: .expense, category: "Groceries"), id: doomedRule)
             data.deleteRule(id: doomedRule)

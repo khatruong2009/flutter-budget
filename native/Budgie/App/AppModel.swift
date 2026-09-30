@@ -962,6 +962,23 @@ final class AppModel {
         await editTagsAndRules { data in data.deleteRule(id: id) ? [Section.categorizationRules] : [] }
     }
 
+    /// Swift-only rule edit: in place (id and stored position kept), only
+    /// the changed keys patched. Writes `categorizationRules`;
+    /// `.unchanged` when the draft matches the rule.
+    @discardableResult
+    func updateRule(id: String, _ draft: RuleDraft) async -> TagRuleOutcome {
+        await editTagsAndRules { data throws(CategorizationEditError) in
+            try data.updateRule(id: id, draft) ? [Section.categorizationRules] : []
+        }
+    }
+
+    /// Swift-only enable switch (`isEnabled`). Writes `categorizationRules`;
+    /// `.unchanged` when the rule is unknown or already so.
+    @discardableResult
+    func setRuleEnabled(id: String, _ enabled: Bool) async -> TagRuleOutcome {
+        await editTagsAndRules { data in data.setRuleEnabled(id: id, enabled) ? [Section.categorizationRules] : [] }
+    }
+
     /// Runs one tag or rule edit on a copy (a refused edit leaves `data`
     /// untouched), then memory first and one awaited commit of the sections
     /// it returns.

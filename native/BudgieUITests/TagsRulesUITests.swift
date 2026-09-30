@@ -6,8 +6,10 @@ import XCTest
 /// form, find the saved expense through Flow SEE ALL's tag filter, delete
 /// the tag through its confirmation while the rule still uses it (the rule
 /// keeps its category and loses the tag; the tag is gone from the form),
-/// then delete the rule (instant: no more suggestion). Names carry a
-/// per-run suffix so a rerun without an erase starts clean.
+/// then delete the rule (instant: no more suggestion). A second test
+/// covers the Swift-only rule edit, maximum amount, enable switch and Any
+/// type. Names carry a per-run suffix so a rerun without an erase starts
+/// clean.
 ///
 /// The test leaves the store as it found it, failed or not: `tearDown`
 /// relaunches the app and runs `cleanUp` (delete the added expense, then
@@ -102,13 +104,15 @@ final class TagsRulesUITests: XCTestCase {
         XCTAssertTrue(target.isHittable, "\(target) on screen")
     }
 
-    /// Opens the add-expense form and types an amount and a description.
-    private func openExpenseForm(description: String) {
+    /// Opens the add-expense form (or Home's Income pill's form) and types
+    /// an amount and a description.
+    private func openExpenseForm(description: String, amount amountText: String = "12", income: Bool = false) {
         homeRoot()
-        tapStable(app.buttons["Add transaction"])
+        tapStable(income ? app.buttons["Income"].firstMatch : app.buttons["Add transaction"])
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
-        amount.typeText("12")
+        if income { tapStable(amount) }
+        amount.typeText(amountText)
         guard !description.isEmpty else { return }
         tapStable(app.textFields["Description"])
         app.textFields["Description"].typeText(description)
@@ -290,5 +294,129 @@ final class TagsRulesUITests: XCTestCase {
         openSeeAll()
         XCTAssertFalse(app.buttons[tag].waitForExistence(timeout: 2), "tag chip gone from SEE ALL")
         leaveSeeAll()
+    }
+
+    // MARK: - Swift-only: edit, bounds, enable switch, any type
+
+    /// The rule row's enable switch.
+    private func ruleSwitch(_ pattern: String) -> XCUIElement {
+        app.switches.matching(NSPredicate(format: "identifier BEGINSWITH 'rules.row.enabled.' AND label == %@", "Enable rule \(pattern)"))
+            .firstMatch
+    }
+
+    /// Picks `option` from one of the editor's dropdowns.
+    private func pick(_ option: String, in identifier: String) {
+        tapStable(element(identifier))
+        tapStable(app.buttons[option].firstMatch)
+        XCTAssertTrue(waitUntil { self.element(identifier).value as? String == option }, "\(identifier) is \(option)")
+    }
+
+    /// Opens a form, checks the wheel, and cancels it.
+    private func expectSuggestion(
+        _ expected: Bool, category: String, description: String, amount: String, income: Bool = false,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
+        openExpenseForm(description: description, amount: amount, income: income)
+        if expected {
+            XCTAssertTrue(
+                waitUntil { self.wheelValue.contains(category) }, "suggested \(category), wheel shows \(wheelValue)", file: file,
+                line: line)
+        } else {
+            Thread.sleep(forTimeInterval: 0.5)
+            XCTAssertFalse(wheelValue.contains(category), "no suggestion, wheel shows \(wheelValue)", file: file, line: line)
+        }
+        tapStable(app.buttons["Cancel"])
+        XCTAssertTrue(app.textFields["Amount"].waitForNonExistence(timeout: 10))
+    }
+
+    /// Edit a rule in place (pattern, category, a maximum), see the form
+    /// suggest only under the maximum, switch the rule off (no suggestion)
+    /// and on again, then make it Any type with a category both types have
+    /// and see the income form take it too. Nothing is saved but the rule,
+    /// which `tearDown` deletes.
+    func testEditBoundsEnableAndAnyType() throws {
+        let suffix = String(Int.random(in: 1000...9999))
+        let merchant = "UIEdit \(suffix)"
+        let edited = "UIEdited \(suffix)"
+        let description = "uiedited \(suffix) cafe"
+        cleanUp = {
+            self.openTagsAndRules()
+            for name in [merchant, edited] {
+                let delete = self.app.buttons["Delete rule \(name)"]
+                if delete.exists {
+                    self.reveal(delete)
+                    self.tapStable(delete)
+                    XCTAssertTrue(delete.waitForNonExistence(timeout: 5), "rule \(name) deleted")
+                }
+            }
+        }
+
+        // A plain rule (Expense, Contains, the first category).
+        openTagsAndRules()
+        tapStable(app.buttons["rules.add"])
+        let pattern = app.textFields["Merchant text"]
+        XCTAssertTrue(pattern.waitForExistence(timeout: 5))
+        pattern.typeText(merchant)
+        tapStable(app.buttons["rules.editor.submit"])
+        XCTAssertTrue(pattern.waitForNonExistence(timeout: 10), "rule dialog closed")
+        let row = labelled(merchant)
+        reveal(row)
+
+        // Edit it: prefilled, Save, in place under the new text.
+        tapStable(row)
+        XCTAssertTrue(labelled("Edit merchant rule").waitForExistence(timeout: 5))
+        XCTAssertEqual(pattern.value as? String, merchant)
+        XCTAssertEqual(app.buttons["rules.editor.submit"].label, "Save")
+        XCTAssertFalse(app.keyboards.firstMatch.waitForExistence(timeout: 1), "an edit does not autofocus")
+        tapStable(pattern)
+        pattern.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: merchant.count) + edited + "\n")
+        pick("Eating Out", in: "rules.editor.category")
+        let maximum = app.textFields["Maximum amount"]
+        tapStable(maximum)
+        maximum.typeText("20")
+        tapStable(app.buttons["rules.editor.submit"])
+        XCTAssertTrue(pattern.waitForNonExistence(timeout: 10), "editor closed")
+        let editedRow = labelled(edited)
+        reveal(editedRow)
+        let subtitle = editedRow.value as? String ?? ""
+        XCTAssertTrue(subtitle.hasPrefix("contains \u{00B7} Eating Out \u{00B7} up to "), subtitle)
+        XCTAssertFalse(labelled(merchant).exists, "edited in place, no second row")
+
+        // Only amounts up to the maximum (inclusive) get the suggestion.
+        expectSuggestion(false, category: "Eating Out", description: description, amount: "25")
+        expectSuggestion(true, category: "Eating Out", description: description, amount: "20")
+
+        // Switched off: dimmed "off", no suggestion.
+        openTagsAndRules()
+        let toggle = ruleSwitch(edited)
+        reveal(toggle)
+        XCTAssertEqual(toggle.value as? String, "1")
+        tapStable(toggle)
+        XCTAssertTrue(waitUntil { toggle.value as? String == "0" }, "switched off")
+        XCTAssertTrue(waitUntil { (editedRow.value as? String ?? "").hasSuffix("\u{00B7} off") }, "subtitle says off")
+        expectSuggestion(false, category: "Eating Out", description: description, amount: "12")
+
+        // On again, then Any type with Gift (both types have it).
+        openTagsAndRules()
+        reveal(toggle)
+        tapStable(toggle)
+        XCTAssertTrue(waitUntil { toggle.value as? String == "1" }, "switched on")
+        reveal(editedRow)
+        tapStable(editedRow)
+        XCTAssertTrue(labelled("Edit merchant rule").waitForExistence(timeout: 5))
+        XCTAssertEqual(maximum.value as? String, "20.00", "the maximum prefilled")
+        pick("Any type", in: "rules.editor.type")
+        XCTAssertEqual(element("rules.editor.category").value as? String, "Eating Out", "kept: the Any list has it")
+        XCTAssertTrue(element("rules.editor.anyTypeNote").exists, "Eating Out is expense-only")
+        pick("Gift", in: "rules.editor.category")
+        XCTAssertFalse(element("rules.editor.anyTypeNote").exists, "Gift is in both lists")
+        tapStable(app.buttons["rules.editor.submit"])
+        XCTAssertTrue(pattern.waitForNonExistence(timeout: 10), "editor closed")
+        reveal(editedRow)
+        XCTAssertTrue(
+            waitUntil { (editedRow.value as? String ?? "").hasPrefix("contains \u{00B7} Gift \u{00B7} any type \u{00B7} up to ") },
+            editedRow.value as? String ?? "")
+        expectSuggestion(true, category: "Gift", description: description, amount: "12", income: true)
+        expectSuggestion(true, category: "Gift", description: description, amount: "12")
     }
 }

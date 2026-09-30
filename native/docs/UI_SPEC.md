@@ -536,8 +536,10 @@ every mutation is an awaited `AppModel` call returning `CategoryOutcome`.
 PERSONALIZATION > Tags & rules (system back; "Tags & rules" in cardTitle
 in the bar). Reads `model.tags` (stored order) and `model.rules` (Flutter's
 `rules`, priority descending); every mutation is an awaited `AppModel` call
-returning `TagRuleOutcome`. Scope is Flutter's: add / delete tag, add /
-delete rule (no rule edit, toggle, bounds or reorder).
+returning `TagRuleOutcome`. Scope is Flutter's add / delete tag and add /
+delete rule, plus the Swift superset (PARITY_GAPS): edit a rule in place
+(`updateRule`), an enable switch (`setRuleEnabled`), optional amount
+bounds and "Any type". No priority or reorder.
 
 - Page: a scroll view padded 16 (Flutter's ListView). "Tags"
   (headingMedium) with a trailing "ADD" text button (accent, M3 labelLarge
@@ -547,12 +549,22 @@ delete rule (no rule edit, toggle, bounds or reorder).
   group transactions across categories." / "Rules can automatically choose
   a category and tags from a merchant name."
 - Rows (`GlowListCard`, padding 16 / 24, 16 gaps, trailing 48pt `trash`
-  button in textSecondary; no row tap): a tag is the `tag` IconTile in
-  accent and the name (rowTitle), 56 tall; a rule is the `sparkles`
-  IconTile in info, the merchant text (rowTitle) over Flutter's exact
-  subtitle (rowSubtitle, secondary): `"{matchType raw} · {category}"` plus
-  `" · {n} tags"` when it has tags ("contains · Groceries · 1 tags"), 72
-  tall.
+  button in textSecondary): a tag is the `tag` IconTile in accent and the
+  name (rowTitle), 56 tall, no tap; a rule is the `sparkles` IconTile in
+  info and the merchant text (rowTitle) over the subtitle (rowSubtitle,
+  secondary), both one button that opens the editor, then the enable
+  switch (system Toggle, `.green` like the Settings switches, inert while
+  its write is in flight), then the trash button; 72 tall. A disabled
+  rule's tile and text are at `Metrics.opacityMuted` (the switch and
+  trash are not dimmed). Subtitle (`TagsRulesView.ruleSubtitle`):
+  Flutter's exact `"{matchType raw} · {category}"` plus `" · {n} tags"`
+  when it has tags ("contains · Groceries · 1 tags"), then, each after
+  " · ", "any type" (no type), the bounds via `model.moneyFormatter`
+  ("at least $5.00", "up to $20.00", "$5.00 to $20.00", "exactly
+  $5.00") and "off" when disabled. A rule Flutter's dialog could make
+  shows exactly Flutter's string.
+- Enable switch: memory first (switch and dimming follow at once), one
+  awaited write; `.failed` shows `Toast.saveFailed`.
 - Delete rule: instant (Flutter); memory changes first, so the row goes
   at once and the write follows (failure: `Toast.saveFailed` and the
   unsaved banner). Delete
@@ -566,39 +578,59 @@ delete rule (no rule edit, toggle, bounds or reorder).
   planning", words; Return adds), Cancel / Add pills (44). A blank name
   closes silently (Flutter); `validateTagName`'s "A tag with this name
   already exists" shows inline and then follows the text.
-- "New merchant rule" (`NewRuleDialog`): "Merchant text" (prompt "Whole
+- "New merchant rule" / "Edit merchant rule" (`RuleEditorDialog`, `rule`
+  nil for new): "Merchant text" (prompt "Whole
   Foods", autofocus, no capitalisation, Done closes the keyboard), then
   dropdowns in the field style (caption above, chip-surface box radius 14,
   52 tall, value in rowTitle, footnote up-down chevron): a tap opens a
   popover list anchored to the box (rowTitle rows at least 48 tall, accent
   check on the current one, scrolled to it, about nine rows high), and
   with the keyboard up it first dismisses the keyboard and opens once
-  it has gone. "Type" (Income, Expense; default Expense), "Match"
-  (Contains, Starts with, Exact match; default Contains), "Category"
-  (`model.categories(for:)` names; default the first; a type change keeps
-  the shown name when the new type has it, else its first); then, when
-  tags exist, a "Tags" caption over the form's tag pills (FlowLayout 8,
-  one line, truncated at the card's width), selected in tap order. The
-  fields are a `DialogScroll`: its indicator flashes when the keyboard has
-  shown, and its bottom 48pt fades while more is below (iOS 18+). Add is
-  disabled (38%) while the trimmed text is empty. The draft sets only
-  Flutter's fields. A refusal shows in danger caption above the buttons.
+  it has gone. "Type" (Income, Expense, Any type; default Expense),
+  "Match" (Contains, Starts with, Exact match; default Contains),
+  "Category" (`model.categories(for:)` names; for Any type the expense
+  names then the income names they lack, UTF-16; an edited rule's own
+  category is appended under its own type when the list lacks it;
+  default the first; a type change keeps the shown name when the new
+  list has it, else its first). Under Any type with a one-type category,
+  a caption (caption, secondary): "Only expenses have {name}, so income
+  won't be categorized by this rule." (or "Only income has {name}, so
+  expenses won't ..."). Then, when tags exist, a "Tags" caption over the
+  form's tag pills (FlowLayout 8, one line, truncated at the card's
+  width), selected in tap order. Then "Minimum amount" and "Maximum
+  amount" (`BudgieField`, prompt "Optional", the currency's SF symbol,
+  decimal pad; empty is no bound; an edit prefills
+  `formatNumber(bound, 2)` and a field left as prefilled keeps the stored
+  value). The fields are a `DialogScroll`: its indicator flashes when the
+  keyboard has shown, and its bottom 48pt fades while more is below (iOS
+  18+). Add / Save is disabled (38%) while the trimmed text is empty.
+  On submit the bounds are checked first, inline under the field ("Enter
+  an amount of 0 or more"; "Minimum can't be more than maximum" under
+  Maximum), announced. The edit mode (tap on a rule row) is titled "Edit
+  merchant rule", is prefilled, does not autofocus, and saves with
+  `updateRule`; priority and enabled state are kept as stored. A refusal
+  shows in danger caption above the buttons.
 - Outcomes: `.saved` / `.unchanged` close silently; `.failed` closes with
   `Toast.saveFailed`; `.rejected` shows `error.message` inline.
-- VoiceOver: a tag row's name and a rule row's text (label pattern, value
-  subtitle) are one element each with a "Delete" action, followed by the
-  "Delete {name}" / "Delete rule {pattern}" button; section titles and
-  dialog titles are headers; dropdowns read "Type, Expense"; tag pills
-  and the dropdown list's current row carry the selected trait.
+- VoiceOver: a tag row's name is one element with a "Delete" action; a
+  rule row's text is one button (label pattern, value subtitle) with
+  "Edit" and "Delete" actions, then the switch "Enable rule {pattern}";
+  each is followed by the "Delete {name}" / "Delete rule {pattern}"
+  button; section titles and dialog titles are headers; dropdowns read
+  "Type, Expense"; tag pills and the dropdown list's current row carry the
+  selected trait. No animation is added (the switch is the system's).
 - UI-test identifiers: `tagsRules.list`, `tags.add`, `rules.add`,
   `tags.empty`, `rules.empty`, `tags.row.<id>`, `tags.row.delete.<id>`,
-  `rules.row.<id>`, `rules.row.delete.<id>`, `tags.editor.name`,
+  `rules.row.<id>`, `rules.row.enabled.<id>`, `rules.row.delete.<id>`,
+  `rules.editor.minimum`, `rules.editor.maximum`,
+  `rules.editor.anyTypeNote`, `tags.editor.name`,
   `tags.editor.submit`, `tags.editor.cancel`, `tags.delete.confirm`,
   `tags.delete.cancel`, `rules.editor.pattern`, `rules.editor.type`,
   `rules.editor.match`, `rules.editor.category`,
   `rules.editor.tag.<id>`, `rules.editor.submit`, `rules.editor.cancel`;
   the Settings row is the button "Tags & rules"; the fields are the text
-  fields "Tag name" and "Merchant text".
+  fields "Tag name", "Merchant text", "Minimum amount" and "Maximum
+  amount"; each rule's switch is labelled "Enable rule {pattern}".
 
 ## Toasts
 
