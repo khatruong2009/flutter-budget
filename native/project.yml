@@ -39,6 +39,9 @@ targets:
     # changed since the last pass (a failing check writes no stamp, so it re-runs).
     preBuildScripts:
       - name: Check OpenAI key
+        # Xcode echoes every exported build setting (the key included) into
+        # the log of a script phase unless this is off.
+        showEnvVars: false
         inputFiles:
           - $(SRCROOT)/Config/Budgie.xcconfig
           - $(SRCROOT)/Config/Secrets.xcconfig

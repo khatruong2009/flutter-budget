@@ -891,6 +891,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$CONFIGURATION\" = \"Release\" ]; then\n  key=\"$(printf '%s' \"$OPENAI_API_KEY\" | tr -d '[:space:]')\"\n  if [ -z \"$key\" ] || [ \"$key\" = \"REPLACE_WITH_OPENAI_API_KEY\" ]; then\n    echo \"error: OPENAI_API_KEY is empty or still the placeholder. Copy native/Config/Secrets.example.xcconfig to native/Config/Secrets.xcconfig and set a real key (native/docs/FULL_APP_PLAN.md section 6). Release builds require it for voice entry.\"\n    exit 1\n  fi\nfi\n: > \"$SCRIPT_OUTPUT_FILE_0\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

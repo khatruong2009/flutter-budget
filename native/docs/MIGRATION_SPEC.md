@@ -494,7 +494,9 @@ OpenAI project (FULL_APP_PLAN section 6). Debug builds work without a key
 (voice reports "not configured"). The "Check OpenAI key" build phase fails
 Release builds when the value is empty or the placeholder; it reads only the
 build-setting environment variable, so it works with user-script sandboxing,
-and it never prints the key.
+and it never prints the key (`showEnvVars: false` keeps Xcode from echoing the
+exported settings, key included, into that phase's log). The key still ends up
+in the built Info.plist, so treat archives and IPAs as containing it.
 
 App Store privacy label and `PrivacyInfo.xcprivacy`: the recording (Audio
 Data) and its transcript (Other User Content) are sent to OpenAI for
