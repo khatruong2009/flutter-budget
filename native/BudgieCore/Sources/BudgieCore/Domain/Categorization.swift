@@ -174,14 +174,12 @@ extension CategorizationRuleRecord {
 /// Dart `CategorizationProvider.rules` and `suggest`
 /// (categorization_provider.dart:26-30, 152-167).
 public enum CategorizationEngine {
-    /// Dart's `rules` getter: priority descending. Equal priorities keep
-    /// their stored order (a stable sort). Dart's `List.sort` is stable only
-    /// up to 33 elements; from 34 rules on its order of equal priorities
-    /// differs (PARITY_GAPS).
+    /// Dart's `rules` getter: a copy sorted by priority descending with
+    /// Dart's `List.sort` (`DartSort`), so equal priorities come out in
+    /// Dart's order too: stored order up to 33 rules, the quicksort's order
+    /// from 34.
     public static func ordered(_ rules: [CategorizationRuleRecord]) -> [CategorizationRuleRecord] {
-        rules.enumerated().sorted { a, b in
-            a.element.priority != b.element.priority ? a.element.priority > b.element.priority : a.offset < b.offset
-        }.map(\.element)
+        DartSort.sorted(rules) { DartSort.compare($1.priority, $0.priority) }
     }
 
     /// Dart `suggest`: the first rule in `ordered` order that matches.

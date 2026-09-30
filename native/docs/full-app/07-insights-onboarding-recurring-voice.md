@@ -114,7 +114,7 @@ public enum InsightEngine {
 - Add an internal `dartSlug(_:)` helper.
 - Use the UTF-16 comparator for the id tie-break (`Array(a.id.utf16).lexicographicallyPrecedes(...)`, as in `TransactionRecord.newestFirst`).
 - Dart `.round()` is half away from zero, which matches Swift `.rounded()`.
-- Use a stable sort. Dart's `List.sort` is insertion sort below 32 elements (stable) and unstable above; only exact-timestamp ties in `unusual`/`recurring` could diverge. Add that to `PARITY_GAPS.md`.
+- Use `DartSort`. Dart's `List.sort` is insertion sort (stable) up to 33 elements and an unstable quicksort from 34; exact-timestamp ties in `unusual`/`recurring` depend on it.
 - Perf: `unusual` is O(monthExpenses×n). It is fine, but compute off the main thread (`FinancialData` is a value type, so pass a copy into a `Task`) and cache, as `HistoryView` does.
 
 New file `Insights/InsightPreferences.swift`:

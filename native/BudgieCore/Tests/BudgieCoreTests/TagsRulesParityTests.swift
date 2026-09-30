@@ -64,8 +64,8 @@ struct TagsRulesParityTests {
     /// and only when Dart's stored content changed; the section bytes are
     /// identical for data Dart wrote itself; the memory (`rules` in the
     /// getter's order) and `suggest` agree; what Swift wrote loads back
-    /// unchanged. From 34 tied rules Dart's sort reorders ties and Swift's
-    /// stable sort does not (a known issue until a Dart sort port lands).
+    /// unchanged. From 34 tied rules Dart's sort reorders ties; `DartSort`
+    /// reproduces that order (the `sort_*` scenarios).
     @Test("mutation scenarios")
     func mutations() throws {
         let f = try fixture()
@@ -75,7 +75,7 @@ struct TagsRulesParityTests {
             "canonical", "names_unicode", "typical", "sort_33_tied", "sort_34_tied", "sort_40_mixed", "sort_70_tied", "foreign",
             "malformed",
         ])
-        var deleteTags = 0, noOps = 0, probes = 0, knownSortSteps = 0
+        var deleteTags = 0, noOps = 0, probes = 0, unstableSortSteps = 0
         for s in scenarios where s["name"].string != "malformed" {
             let name = s["name"].string!
             let byteComparable = s["byteComparable"].bool!
@@ -91,16 +91,9 @@ struct TagsRulesParityTests {
             func compareMemory(_ want: J, _ at: String) {
                 let swift = memory(data), dart = memory(want)
                 #expect(swift["tags"] == dart["tags"], "\(at) tags")
-                if dartSortUnstable {
-                    #expect(Set(swift["rules"]!) == Set(dart["rules"]!), "\(at) rules")
-                    #expect(data.rulesByPriority.map(\.priority) == data.rulesByPriority.map(\.priority).sorted(by: >), "\(at) priority order")
-                    knownSortSteps += 1
-                    withKnownIssue("Dart's sort is not stable from 34 rules; Swift's is (PARITY_GAPS)") {
-                        #expect(swift["rules"] == dart["rules"], "\(at) rules order")
-                    }
-                } else {
-                    #expect(swift["rules"] == dart["rules"], "\(at) rules")
-                }
+                // DartSort: Dart's tie order also from 34 rules.
+                if dartSortUnstable { unstableSortSteps += 1 }
+                #expect(swift["rules"] == dart["rules"], "\(at) rules")
             }
             compareMemory(s["launched"]["memory"], "\(name) launch")
             if byteComparable {
@@ -138,19 +131,12 @@ struct TagsRulesParityTests {
                 case "deleteRule":
                     changed = data.deleteRule(id: step["id"].string!) ? [Section.categorizationRules] : []
                 case "check":
-                    let run = {
-                        for probe in step["probes"].array {
-                            let swift = CategorizationEngine.suggest(
-                                rules: data.rules, type: type(probe["type"])!, description: probe["description"].string!,
-                                amount: probe["amount"].double!)
-                            #expect(swift?.id == probe["rule"].string, "\(at) \(probe["description"].string!) \(probe["amount"].double!)")
-                            probes += 1
-                        }
-                    }
-                    if dartSortUnstable {
-                        withKnownIssue("Dart's sort is not stable from 34 rules", isIntermittent: true) { run() }
-                    } else {
-                        run()
+                    for probe in step["probes"].array {
+                        let swift = CategorizationEngine.suggest(
+                            rules: data.rules, type: type(probe["type"])!, description: probe["description"].string!,
+                            amount: probe["amount"].double!)
+                        #expect(swift?.id == probe["rule"].string, "\(at) \(probe["description"].string!) \(probe["amount"].double!)")
+                        probes += 1
                     }
                 default:
                     Issue.record("unknown op \(op)")
@@ -184,7 +170,7 @@ struct TagsRulesParityTests {
                 }
             }
         }
-        #expect(deleteTags == 9 && noOps == 2 && probes == 75 && knownSortSteps == 14, "\(deleteTags) \(noOps) \(probes) \(knownSortSteps)")
+        #expect(deleteTags == 9 && noOps == 2 && probes == 75 && unstableSortSteps == 14, "\(deleteTags) \(noOps) \(probes) \(unstableSortSteps)")
     }
 
     /// Dart loads tags and rules all or nothing: one row its casts reject

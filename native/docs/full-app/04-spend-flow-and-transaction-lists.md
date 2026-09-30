@@ -44,7 +44,7 @@ Findings that change the plan:
 - `previousMonthTotal`:
   - `null` if the previous month has zero transactions of either type.
   - Otherwise the sum of that month's expenses, which may be 0.
-- Records are sorted descending by amount. Dart's sort is not stable above 32 elements; below that it is insertion sort and stable, so ties keep first-appearance order. Swift's stable sort matches for less than or equal to 32 categories.
+- Records are sorted descending by amount. Dart's sort is insertion sort (stable) up to 33 elements and an unstable quicksort from 34, so ties keep first-appearance order up to 33 categories. Swift's stable sort matches up to 33; `DartSort` matches at any size.
 - `percentage = amount / total * 100`.
 - Colours for ranks 0..5 come from the fixed palette `[accent, income, danger, warning, info, pink]` (`:119-129`):
 
@@ -568,7 +568,7 @@ Risks:
 - **Float parity.**
   - Category total is a fold over per-category sums; metrics fold months ascending; filter summary folds in newest-first order. Swift must preserve these exact orders.
   - Percentage strings must use `DartFixed.toStringAsFixed` (round half away from zero, negative zero preserved, e.g. '-0%').
-- **Sort ties.** Dart is stable only below 33 elements; category ties beyond that may differ from Swift.
+- **Sort ties.** Dart is stable only up to 33 elements; category ties from 34 differ from a stable sort (`DartSort` matches).
 - **Category colour fallback.** Dart `String.hashCode` cannot be reproduced. Ranks >= 7 for unknown or archived names will get a different colour than Flutter unless we pick a defined substitute.
 - **Chart fidelity.**
   - fl_chart's cubic smoothing vs `.catmullRom` may differ visibly on spiky series.

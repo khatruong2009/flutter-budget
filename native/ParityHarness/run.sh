@@ -112,6 +112,13 @@ case "$MODE" in
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/flow_fixtures_test.dart "$@"
       done
     fi
+    if wants backup_fixtures_test.dart; then
+      rm -rf "$FIXTURES/backup"
+      # New York first: it also writes the zone-independent files.
+      for tz in America/New_York Australia/Lord_Howe UTC; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/backup_fixtures_test.dart "$@"
+      done
+    fi
     ;;
   verify)
     export SWIFT_OUT="${SWIFT_OUT:-$FIXTURES/swift-written}"

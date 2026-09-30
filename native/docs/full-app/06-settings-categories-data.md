@@ -9,7 +9,7 @@ Paths: `F` = `W/budget_app/lib`, `S` = `W/native`. Line refs are Flutter unless 
 3. **There are three real Flutter quirks to decide on.** These are Flutter bugs that Swift must either copy or consciously fix, and the fix is invisible to Dart:
    - The category-rename cascade renames rules by category name only, ignoring rule type.
    - Deleting a tag leaves orphan `tagIds` on transactions.
-   - Restoring a v1/v2 backup silently resets settings, categories, tags and rules.
+   - Restoring a schema-1 backup silently resets settings, categories, tags and rules.
 4. **Swift Theme has one colour mismatch.** Flutter `purple` = `0xFF818CF8` in both modes (`category_settings_page.dart:402`, `AppColors.primaryLight`). `S:Budgie/Views/Theme.swift` uses 8B5CF6/A78BFA.
 5. **Swift `CategoryInfo` drops `isBuiltIn`.** It is read-only and has no raw row. Writing categories needs both.
 6. **Two Swift gaps in `AppModel` that block this area.**
@@ -245,7 +245,7 @@ Archive does no cascade at all. Swift must do all of the above in **one commit**
 4. Compare `description.trim().toLowerCase()` against `merchantPattern.toLowerCase()` using contains / startsWith / `==`, which are UTF-16 code-unit comparisons.
    - Swift: do NOT use `String.contains` or `==` (Character and canonical-equivalence semantics). Use UTF-16 arrays or `NSString.range(of:options:[.literal])`. Test with e + combining acute versus precomposed é.
 
-**Priority order:** `rules` getter sorts by priority descending (26-30). Dart's sort is insertion sort (stable) under 32 elements, so with the UI always writing 0 the order is insertion order. `suggest` (152-167) returns the first match in that order.
+**Priority order:** `rules` getter sorts by priority descending (26-30). Dart's sort is insertion sort (stable) up to 33 elements, so with the UI always writing 0 the order is insertion order up to 33 rules (from 34 it is the quicksort's order; `DartSort` reproduces it). `suggest` (152-167) returns the first match in that order.
 
 **When rules run** (`transaction_form.dart:78-124`):
 - Only inside the Add/Edit transaction form, on every change of the amount or description field, and once for a `prefill` (voice) transaction.
@@ -354,10 +354,10 @@ Archive does no cascade at all. Swift must do all of the above in **one commit**
 - The Flutter snackbar says "Backup exported" whether or not the user completed the share. On error: red "Could not export backup: {e}".
 
 **Decode/validate** (`decodeBackup`, 90-170), in this exact order, since the first failing check determines the message:
-1. Strip a U+FEFF BOM. `jsonDecode` failure gives "This is not a valid Budgie backup file".
+1. Strip a U+FEFF BOM (`utf8.decode` already drops one, so one or two BOMs are accepted and three are not; verified). `jsonDecode` failure gives "This is not a valid Budgie backup file".
 2. Not an object, or `schemaVersion` not an int, gives the same message.
 3. `schemaVersion > 3` gives "This backup was made by a newer version of Budgie. Update the app and try again."
-   - Any int ≤ 3 is accepted, including 0 and negatives; v1 and v2 differ only by missing keys.
+   - Any int ≤ 3 is accepted, including 0 and negatives; only schemas 1 (six `data` keys) and 3 ever existed; they differ only by missing keys.
 4. `data` not an object gives "This backup file is missing its data."
 5. Decode `categories`, `transactionTags`, `categorizationRules`.
    - A null section is an empty list.
@@ -398,7 +398,7 @@ Archive does no cascade at all. Swift must do all of the above in **one commit**
    - **Recurring generator:** `TransactionGenerator.generateDueTransactions()` runs at the end. It can create up to 90 days of due rows immediately.
 3. Widget cash flow is synced.
 4. Green "Backup restored". A `FormatException` gives red "Could not import backup: {e.message}"; any other error gives red "Could not import backup: {e}".
-5. **Side effect to flag:** restoring a v1/v2 backup (no `categories`, tags, rules, currency, locale, lock, hide keys) resets those to defaults or built-ins. Custom categories, tags, rules and all settings are erased.
+5. **Side effect to flag:** restoring a schema-1 backup (no `categories`, tags, rules, currency, locale, lock, hide keys) resets those to defaults or built-ins. Custom categories, tags, rules and all settings are erased.
 6. If the restored `appLockEnabled` is true, the gate locks the current session immediately.
 
 ### 1.9 Version row and "More"
@@ -563,7 +563,7 @@ Spacing: 4 / 8 / 16 / 24 / 32. Radii: 8 / 12 / 16 / 26 (cards).
 - `FinancialData.addTag(name:colorToken:id:)` (throws "Tag name is required" or "A tag with this name already exists").
 - `deleteTag(id:)`: removes the tag and its id from every rule's `tagIds`, and (recommended, invisible to Dart) leaves transactions untouched. Persists tags + rules.
 - `addRule(_:)` (replace same id), `deleteRule(id:)`.
-- `rulesByPriority` (stable sort by priority descending).
+- `rulesByPriority` (priority descending with `DartSort`, Dart's tie order).
 - `suggest(type:description:amount:) -> (category: String, tagIds: [String])?` implementing 1.6 exactly, including the active-category check the form performs. Expose `activeCategoryNames(for:)`.
 
 ### 4.4 CSV import, `Formatting/CSVImport.swift`
@@ -696,7 +696,7 @@ func importTransactions(_ drafts: [TransactionDraft]) async -> Bool
   - Option B: swap memory first and use the tracker (banner on failure).
   - Option A is safer for a destructive replace. It bypasses the tracker, so an `AppModel`-internal path is needed and any pending unsaved sections must be cleared or superseded.
   - Flutter uses about 10 commits with no rollback, so either option is an improvement.
-- **v1/v2 backups reset settings, categories, tags and rules.** Parity or skip absent keys? (Skipping is safer; it changes the outcome, not the file format.)
+- **Schema-1 backups reset settings, categories, tags and rules.** Parity or skip absent keys? (Skipping is safer; it changes the outcome, not the file format.)
 - **Backup with `appLockEnabled:true`** locks immediately after restore. On a device with no passcode Swift lets the user in; Flutter shows "Disable App Lock".
 - **Import size and iCloud:** no size cap in Flutter; a huge or not-yet-downloaded iCloud file can fail or stall. UTF-8 with `allowMalformed` silently replaces bad bytes, which can alter descriptions.
 - **Cascade correctness:**
@@ -715,7 +715,7 @@ func importTransactions(_ drafts: [TransactionDraft]) async -> Bool
 2. Delete tag: leave orphan `tagIds` on transactions (Flutter) or clean them?
 3. Move up/down: keep Flutter's index-in-full-list quirk, or move relative to the visible list? Drag-to-reorder instead?
 4. Restore strategy A vs B, and add the pre-restore safety copy?
-5. Restore of a v1/v2 backup: reset settings/categories/tags/rules like Flutter, or leave absent keys unchanged?
+5. Restore of a schema-1 backup: reset settings/categories/tags/rules like Flutter, or leave absent keys unchanged?
 6. Should the widget mask amounts when Hide balances is on? Flutter does not.
 7. Keep Swift's authenticate-before-enabling App Lock (differs from Flutter, which locks immediately), and its no-passcode fall-through?
 8. The user calls this the "More tab": does the plan replace the "Settings" tab, and where does Recurring live? The Flutter Settings page hosts the Recurring row under DATA (excluded here).

@@ -13,13 +13,18 @@
 //                       "transactionCategories", "templateCategories",
 //                       "ruleCategories", "transactionTags",
 //                       "categorizationRules": what the Dart models must hold;
-//                       "newTagIds", "newRuleIds": rows Swift made}
+//                       "newTagIds", "newRuleIds": rows Swift made;
+//                       optional "backup": {"appVersion", "exportedAt", "themeMode"}}
+//   backup.json        optional: Swift's backup export of this store after a
+//                       launch (see verifyBackup)
 //
 // Writes $SWIFT_OUT/dart-verification.json and fails if any case failed.
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:budget_app/backup.dart';
 import 'package:budget_app/categorization_rule.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
 import 'package:budget_app/theme_provider.dart';
@@ -31,23 +36,83 @@ import 'fixture_runner.dart';
 import 'harness_support.dart';
 import 'model_summary.dart';
 
-Map<String, Object> prefsFrom(File file) {
-  if (!file.existsSync()) return {};
-  final typed = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-  final out = <String, Object>{};
-  typed.forEach((key, value) {
-    final entry = value as Map<String, dynamic>;
-    final raw = entry['value'];
-    out[key] = switch (entry['type']) {
-      'bool' => raw as bool,
-      'int' => raw as int,
-      'double' => (raw as num).toDouble(),
-      'string' => raw as String,
-      'stringList' => List<String>.from(raw as List),
-      _ => throw ArgumentError('bad pref type ${entry['type']}'),
-    };
-  });
-  return out;
+/// A Swift-exported backup of the store in [dir]:
+///  1. equals Flutter's export of the same store after a launch (load and
+///     recurring generation), ids generated during that launch aside;
+///  2. `decodeBackup` accepts it;
+///  3. restored into an empty store by the page's restore chain, then
+///     exported again, it is the same file.
+Future<List<String>> verifyBackup(Directory dir, File backupFile,
+    Map<String, dynamic> spec, Map<String, Object> prefs) async {
+  final problems = <String>[];
+  final bytes = backupFile.readAsBytesSync();
+  final swiftText = utf8.decode(bytes);
+  final appVersion = spec['appVersion'] as String;
+  final exportedAt = DateTime.parse(spec['exportedAt'] as String);
+  final theme = themeFrom(spec['themeMode'] as String?);
+  String firstDifference(String a, String b) {
+    var i = 0;
+    while (i < a.length && i < b.length && a[i] == b[i]) {
+      i++;
+    }
+    final from = max(0, i - 80);
+    return 'at $i: swift «${a.substring(from, min(a.length, i + 80))}» '
+        'dart «${b.substring(from, min(b.length, i + 80))}»';
+  }
+
+  // 1. Flutter's export after its own launch of the same files.
+  final work = await Directory.systemTemp.createTemp('verify_backup');
+  final storeDir = Directory('${work.path}/financial_store');
+  copyDir(Directory('${dir.path}/financial_store'), storeDir);
+  SharedPreferences.setMockInitialValues(Map.of(prefs));
+  pinClock(launchNow);
+  await AtomicFinancialStore.instance.resetForTesting(directory: storeDir);
+  final sections = (await AtomicFinancialStore.instance.read()).sections;
+  final launched = AppHarness();
+  await launched.initialize(generate: true);
+  final dartText = encodeBackup(exportData(launched, theme),
+      appVersion: appVersion, exportedAt: exportedAt);
+  final aligned = alignGeneratedIds(swiftText, dartText, sections);
+  if (aligned == null) {
+    problems.add('backup: generated ids differ in number');
+  } else if (aligned != dartText) {
+    problems.add('backup: Flutter export differs ${firstDifference(aligned, dartText)}');
+  }
+
+  // 2. Flutter reads it.
+  BackupData? decoded;
+  try {
+    decoded = decodeBackup(utf8.decode(bytes, allowMalformed: true));
+  } catch (error) {
+    problems.add('backup: decodeBackup threw $error');
+  }
+
+  // 3. Restore into an empty store, export again.
+  if (decoded != null) {
+    final restoreWork = await Directory.systemTemp.createTemp('verify_restore');
+    SharedPreferences.setMockInitialValues({});
+    await AtomicFinancialStore.instance.resetForTesting(
+        directory: Directory('${restoreWork.path}/financial_store'));
+    final restored = AppHarness();
+    await restored.initialize(generate: false);
+    final themeProvider = ThemeProvider();
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    try {
+      await restoreChain(restored, themeProvider, decoded);
+      final again = encodeBackup(exportData(restored, themeProvider.themeMode),
+          appVersion: appVersion, exportedAt: exportedAt);
+      if (again != swiftText) {
+        problems.add('backup: restore then export differs ${firstDifference(swiftText, again)}');
+      }
+      if (restored.transactionModel.hasUnsavedChanges ||
+          restored.recurringModel.hasUnsavedChanges) {
+        problems.add('backup: unsaved changes after the restore');
+      }
+    } catch (error) {
+      problems.add('backup: restore threw $error');
+    }
+  }
+  return problems;
 }
 
 void main() {
@@ -357,6 +422,13 @@ void main() {
             app.recurringModel.hasUnsavedChanges) {
           problems.add('a model reports unsaved changes after load');
         }
+      }
+
+      // A backup Swift exported from this store (after a launch).
+      final backupFile = File('${dir.path}/backup.json');
+      if (summary != null && backupFile.existsSync()) {
+        problems.addAll(await verifyBackup(
+            dir, backupFile, swift['backup'] as Map<String, dynamic>, prefs));
       }
 
       report[name] = {

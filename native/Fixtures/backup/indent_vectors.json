@@ -1,0 +1,977 @@
+{
+  "commit": "f4746867cc7c585baf27e941f66dd511123eef94",
+  "cases": [
+    {
+      "json": "[]",
+      "indented": "[]"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "\"s\"",
+      "indented": "\"s\""
+    },
+    {
+      "json": "\"\"",
+      "indented": "\"\""
+    },
+    {
+      "json": "1",
+      "indented": "1"
+    },
+    {
+      "json": "-0",
+      "indented": "0"
+    },
+    {
+      "json": "-0.0",
+      "indented": "-0.0"
+    },
+    {
+      "json": "0",
+      "indented": "0"
+    },
+    {
+      "json": "2.0",
+      "indented": "2.0"
+    },
+    {
+      "json": "1e21",
+      "indented": "1e+21"
+    },
+    {
+      "json": "1E21",
+      "indented": "1e+21"
+    },
+    {
+      "json": "1e-7",
+      "indented": "1e-7"
+    },
+    {
+      "json": "5e-324",
+      "indented": "5e-324"
+    },
+    {
+      "json": "1.7976931348623157e308",
+      "indented": "1.7976931348623157e+308"
+    },
+    {
+      "json": "12345678901234567890",
+      "indented": "12345678901234567000.0"
+    },
+    {
+      "json": "9223372036854775807",
+      "indented": "9223372036854775807"
+    },
+    {
+      "json": "-9223372036854775808",
+      "indented": "-9223372036854775808"
+    },
+    {
+      "json": "0.1e1",
+      "indented": "1.0"
+    },
+    {
+      "json": "10e-1",
+      "indented": "1.0"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "[1]",
+      "indented": "[\n  1\n]"
+    },
+    {
+      "json": "[[]]",
+      "indented": "[\n  []\n]"
+    },
+    {
+      "json": "[{}]",
+      "indented": "[\n  {}\n]"
+    },
+    {
+      "json": "{\"a\":{}}",
+      "indented": "{\n  \"a\": {}\n}"
+    },
+    {
+      "json": "{\"a\":[]}",
+      "indented": "{\n  \"a\": []\n}"
+    },
+    {
+      "json": "[[],{},[[]],[{}],{\"a\":[]}]",
+      "indented": "[\n  [],\n  {},\n  [\n    []\n  ],\n  [\n    {}\n  ],\n  {\n    \"a\": []\n  }\n]"
+    },
+    {
+      "json": "{\"a\":[],\"b\":{},\"c\":[[],{}],\"d\":[1,2.0,-0.0,1e21,1e-7,null,true],\"e\":{\"x\":{},\"y\":[{}]},\"z\":\"é😀\\u0001\\u007f /\\\"\\\\\\n\\t\",\"n\":null}",
+      "indented": "{\n  \"a\": [],\n  \"b\": {},\n  \"c\": [\n    [],\n    {}\n  ],\n  \"d\": [\n    1,\n    2.0,\n    -0.0,\n    1e+21,\n    1e-7,\n    null,\n    true\n  ],\n  \"e\": {\n    \"x\": {},\n    \"y\": [\n      {}\n    ]\n  },\n  \"z\": \"é😀\\u0001 /\\\"\\\\\\n\\t\",\n  \"n\": null\n}"
+    },
+    {
+      "json": "\"\\u0000\\u0001\\u0007\\b\\t\\n\\u000b\\f\\r\\u000e\\u001f \\u007f\\u0080 \"",
+      "indented": "\"\\u0000\\u0001\\u0007\\b\\t\\n\\u000b\\f\\r\\u000e\\u001f  \""
+    },
+    {
+      "json": "\"  ﻿￿\\/\\\\\\\"\"",
+      "indented": "\"  ﻿￿/\\\\\\\"\""
+    },
+    {
+      "json": "\"\\ud800\"",
+      "indented": "\"\\ud800\""
+    },
+    {
+      "json": "\"\\udc00x\"",
+      "indented": "\"\\udc00x\""
+    },
+    {
+      "json": "\"😀\"",
+      "indented": "\"😀\""
+    },
+    {
+      "json": "\"a\\ud83d\"",
+      "indented": "\"a\\ud83d\""
+    },
+    {
+      "json": "\"\\udc00\\ud800\"",
+      "indented": "\"\\udc00\\ud800\""
+    },
+    {
+      "json": "[\"\\ud800\",{\"\\udfff\":\"😀\\ud83d\"}]",
+      "indented": "[\n  \"\\ud800\",\n  {\n    \"\\udfff\": \"😀\\ud83d\"\n  }\n]"
+    },
+    {
+      "json": "{\"a\":1,\"a\":2}",
+      "indented": "{\n  \"a\": 2\n}"
+    },
+    {
+      "json": "{\"b\":1,\"a\":2,\"b\":{\"c\":[]}}",
+      "indented": "{\n  \"b\": {\n    \"c\": []\n  },\n  \"a\": 2\n}"
+    },
+    {
+      "json": "{\"Café\":1,\"Café\":2,\"é\":3}",
+      "indented": "{\n  \"Café\": 1,\n  \"Café\": 2,\n  \"é\": 3\n}"
+    },
+    {
+      "json": "[[[[[[[[[[{\"deep\":[1,[2,[3,{}]]]}]]]]]]]]]]",
+      "indented": "[\n  [\n    [\n      [\n        [\n          [\n            [\n              [\n                [\n                  [\n                    {\n                      \"deep\": [\n                        1,\n                        [\n                          2,\n                          [\n                            3,\n                            {}\n                          ]\n                        ]\n                      ]\n                    }\n                  ]\n                ]\n              ]\n            ]\n          ]\n        ]\n      ]\n    ]\n  ]\n]"
+    },
+    {
+      "json": "  {\"spaced\" : [ 1 , 2 ] }\n",
+      "indented": "{\n  \"spaced\": [\n    1,\n    2\n  ]\n}"
+    },
+    {
+      "json": "{\"transactions\":[{\"id\":\"t1\",\"amount\":12.5,\"tagIds\":[\"a\",\"b\"],\"recurringTemplateId\":null}],\"categoryBudgetLimits\":{}}",
+      "indented": "{\n  \"transactions\": [\n    {\n      \"id\": \"t1\",\n      \"amount\": 12.5,\n      \"tagIds\": [\n        \"a\",\n        \"b\"\n      ],\n      \"recurringTemplateId\": null\n    }\n  ],\n  \"categoryBudgetLimits\": {}\n}"
+    },
+    {
+      "json": "-0.0",
+      "indented": "-0.0"
+    },
+    {
+      "json": "{\"\\ud88f섲E\\bE😀\":true}",
+      "indented": "{\n  \"\\ud88f섲E\\bE😀\": true\n}"
+    },
+    {
+      "json": "[[null,\"\\ud997F\\u0015夕:\\u001c۾\"],[-1087399126,null,true]]",
+      "indented": "[\n  [\n    null,\n    \"\\ud997F\\u0015夕:\\u001c۾\"\n  ],\n  [\n    -1087399126,\n    null,\n    true\n  ]\n]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "0.0",
+      "indented": "0.0"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "[]",
+      "indented": "[]"
+    },
+    {
+      "json": "{\"\":false}",
+      "indented": "{\n  \"\": false\n}"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "[false]",
+      "indented": "[\n  false\n]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\" \\udd3e\"",
+      "indented": "\" \\udd3e\""
+    },
+    {
+      "json": "-2139207769",
+      "indented": "-2139207769"
+    },
+    {
+      "json": "{\"Τ😀b\\ud872\":\"틶g\",\"ċg😀ܯ\":\"\",\"ʣۺ\":[\"\\u001bΒ\\ud869Gȏ\",{},1804298396]}",
+      "indented": "{\n  \"Τ😀b\\ud872\": \"틶g\",\n  \"ċg😀ܯ\": \"\",\n  \"ʣۺ\": [\n    \"\\u001bΒ\\ud869Gȏ\",\n    {},\n    1804298396\n  ]\n}"
+    },
+    {
+      "json": "\"😀̢\"",
+      "indented": "\"😀̢\""
+    },
+    {
+      "json": "[-896039012,[]]",
+      "indented": "[\n  -896039012,\n  []\n]"
+    },
+    {
+      "json": "1073483504",
+      "indented": "1073483504"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "\"躝\"",
+      "indented": "\"躝\""
+    },
+    {
+      "json": "0.30000000000000004",
+      "indented": "0.30000000000000004"
+    },
+    {
+      "json": "\"\\udf98\"",
+      "indented": "\"\\udf98\""
+    },
+    {
+      "json": "1.5",
+      "indented": "1.5"
+    },
+    {
+      "json": "100.0",
+      "indented": "100.0"
+    },
+    {
+      "json": "[false]",
+      "indented": "[\n  false\n]"
+    },
+    {
+      "json": "5e-324",
+      "indented": "5e-324"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"😀ꚶd\"",
+      "indented": "\"😀ꚶd\""
+    },
+    {
+      "json": "\"烨Q\"",
+      "indented": "\"烨Q\""
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "990194603",
+      "indented": "990194603"
+    },
+    {
+      "json": "[\"😀\\u0017\\u0019\"]",
+      "indented": "[\n  \"😀\\u0017\\u0019\"\n]"
+    },
+    {
+      "json": "1e+21",
+      "indented": "1e+21"
+    },
+    {
+      "json": "\"😀숯ì\\u000b\\ude94\"",
+      "indented": "\"😀숯ì\\u000b\\ude94\""
+    },
+    {
+      "json": "[]",
+      "indented": "[]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"ΨG😀ּ😀\"",
+      "indented": "\"ΨG😀ּ😀\""
+    },
+    {
+      "json": "134729485",
+      "indented": "134729485"
+    },
+    {
+      "json": "0.30000000000000004",
+      "indented": "0.30000000000000004"
+    },
+    {
+      "json": "-1340407098",
+      "indented": "-1340407098"
+    },
+    {
+      "json": "[false,{\"\\u001e\\u0003😀驷\":[null],\"~\":\"😀😀\\u0002\\u0000׆֍\",\"\":\"⥟U\\u0001\\u000b\\ude2fm\"}]",
+      "indented": "[\n  false,\n  {\n    \"\\u001e\\u0003😀驷\": [\n      null\n    ],\n    \"~\": \"😀😀\\u0002\\u0000׆֍\",\n    \"\": \"⥟U\\u0001\\u000b\\ude2fm\"\n  }\n]"
+    },
+    {
+      "json": "\"؟\\u0017😀\\u0007癮\\u001d\\ud9ed\"",
+      "indented": "\"؟\\u0017😀\\u0007癮\\u001d\\ud9ed\""
+    },
+    {
+      "json": "{\"׋\\uda12⪉ꯝ\":false,\"😀😀\\u0013Ԣ\":[\"\\udfe2\",true],\"服f֢\\u0018😀\":\"ٟ\"}",
+      "indented": "{\n  \"׋\\uda12⪉ꯝ\": false,\n  \"😀😀\\u0013Ԣ\": [\n    \"\\udfe2\",\n    true\n  ],\n  \"服f֢\\u0018😀\": \"ٟ\"\n}"
+    },
+    {
+      "json": "{\"'\\udaf2\\udaa0\":[[null,\"\"],0.30000000000000004]}",
+      "indented": "{\n  \"'\\udaf2\\udaa0\": [\n    [\n      null,\n      \"\"\n    ],\n    0.30000000000000004\n  ]\n}"
+    },
+    {
+      "json": "\"\"",
+      "indented": "\"\""
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "\"ߥ夒쓚鐤\"",
+      "indented": "\"ߥ夒쓚鐤\""
+    },
+    {
+      "json": "[null]",
+      "indented": "[\n  null\n]"
+    },
+    {
+      "json": "{\"믵\":[{\"\":false,\"Ѣ\":[5e-324,false,\"😀ɜ😀\"]},1870925375,-774113074]}",
+      "indented": "{\n  \"믵\": [\n    {\n      \"\": false,\n      \"Ѣ\": [\n        5e-324,\n        false,\n        \"😀ɜ😀\"\n      ]\n    },\n    1870925375,\n    -774113074\n  ]\n}"
+    },
+    {
+      "json": "-992171704",
+      "indented": "-992171704"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "\"\"",
+      "indented": "\"\""
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "-300407342",
+      "indented": "-300407342"
+    },
+    {
+      "json": "{\"\\u0016޷4駎\\u000e😀\\u0016\":847840692,\"Џ\\udc96😀輛\":[-0.0,\"\",null],\"\\u001d߫\":1e+21}",
+      "indented": "{\n  \"\\u0016޷4駎\\u000e😀\\u0016\": 847840692,\n  \"Џ\\udc96😀輛\": [\n    -0.0,\n    \"\",\n    null\n  ],\n  \"\\u001d߫\": 1e+21\n}"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"؟😀E\\u0012😀Ѥ😀\"",
+      "indented": "\"؟😀E\\u0012😀Ѥ😀\""
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "\"😀&b.悺Ûm\"",
+      "indented": "\"😀&b.悺Ûm\""
+    },
+    {
+      "json": "\"䥵椐😀😀\"",
+      "indented": "\"䥵椐😀😀\""
+    },
+    {
+      "json": "166895974",
+      "indented": "166895974"
+    },
+    {
+      "json": "\"䷗\\u0005😀槗\\u001b\"",
+      "indented": "\"䷗\\u0005😀槗\\u001b\""
+    },
+    {
+      "json": "[\"Év\\u001e\",[{}]]",
+      "indented": "[\n  \"Év\\u001e\",\n  [\n    {}\n  ]\n]"
+    },
+    {
+      "json": "{\"꘢\\u001e\\u0017\":null,\"\\ud802⡤\\b\":[null,[\"😀\\ud92f\\u000e\",\"֝😀鉢\\u001a踚\",[]],[1e-7,[],[0.0,2110569853,false]]]}",
+      "indented": "{\n  \"꘢\\u001e\\u0017\": null,\n  \"\\ud802⡤\\b\": [\n    null,\n    [\n      \"😀\\ud92f\\u000e\",\n      \"֝😀鉢\\u001a踚\",\n      []\n    ],\n    [\n      1e-7,\n      [],\n      [\n        0.0,\n        2110569853,\n        false\n      ]\n    ]\n  ]\n}"
+    },
+    {
+      "json": "-1279830980",
+      "indented": "-1279830980"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "-1424294881",
+      "indented": "-1424294881"
+    },
+    {
+      "json": "1.5",
+      "indented": "1.5"
+    },
+    {
+      "json": "-1709732666",
+      "indented": "-1709732666"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "{\"ӟ😀⻻⎉\":\"lO😀😀튳\\ud954\",\"쀍臦펾؈䱘ڵH\":-818696683,\"C😀\\uda34\":-576072851}",
+      "indented": "{\n  \"ӟ😀⻻⎉\": \"lO😀😀튳\\ud954\",\n  \"쀍臦펾؈䱘ڵH\": -818696683,\n  \"C😀\\uda34\": -576072851\n}"
+    },
+    {
+      "json": "1351729411",
+      "indented": "1351729411"
+    },
+    {
+      "json": "\"😀\"",
+      "indented": "\"😀\""
+    },
+    {
+      "json": "0.30000000000000004",
+      "indented": "0.30000000000000004"
+    },
+    {
+      "json": "1e-7",
+      "indented": "1e-7"
+    },
+    {
+      "json": "\"\"",
+      "indented": "\"\""
+    },
+    {
+      "json": "1390915538",
+      "indented": "1390915538"
+    },
+    {
+      "json": "[\"\\uda3bȋ\"]",
+      "indented": "[\n  \"\\uda3bȋ\"\n]"
+    },
+    {
+      "json": "-793860338",
+      "indented": "-793860338"
+    },
+    {
+      "json": "\"琒\\u0000\\u0000#ۣ😀4\"",
+      "indented": "\"琒\\u0000\\u0000#ۣ😀4\""
+    },
+    {
+      "json": "\"\\udf0d😀\"",
+      "indented": "\"\\udf0d😀\""
+    },
+    {
+      "json": "-389731071",
+      "indented": "-389731071"
+    },
+    {
+      "json": "\"䄼'~^ˎ򔭀\"",
+      "indented": "\"䄼'~^ˎ򔭀\""
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"\\udeb3\\ude0c\"",
+      "indented": "\"\\udeb3\\ude0c\""
+    },
+    {
+      "json": "1.5",
+      "indented": "1.5"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "{\"\\rY\\udef6딉a\":{\"\\ude30߁n😀😀\\udfd9\":null,\"樏░😀\":\"绗C😀}\",\"󶓯(6\":[1667702783,-1369420938,[\"S糓\",null,-1065350215]]}}",
+      "indented": "{\n  \"\\rY\\udef6딉a\": {\n    \"\\ude30߁n😀😀\\udfd9\": null,\n    \"樏░😀\": \"绗C😀}\",\n    \"󶓯(6\": [\n      1667702783,\n      -1369420938,\n      [\n        \"S糓\",\n        null,\n        -1065350215\n      ]\n    ]\n  }\n}"
+    },
+    {
+      "json": "\"׵\\ud9c5\"",
+      "indented": "\"׵\\ud9c5\""
+    },
+    {
+      "json": "\"S򓬦\"",
+      "indented": "\"S򓬦\""
+    },
+    {
+      "json": "\"\\ude01\\uda36ϧ\\uda1c\"",
+      "indented": "\"\\ude01\\uda36ϧ\\uda1c\""
+    },
+    {
+      "json": "\"쇩\\ud9dd\\u0003_s袷槐\"",
+      "indented": "\"쇩\\ud9dd\\u0003_s袷槐\""
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "1.5",
+      "indented": "1.5"
+    },
+    {
+      "json": "[1234009685,[],{\"ˀ\\uddc7[\\udbba\":null,\"㼤😀4\\ud891m\":0.0,\"\":false}]",
+      "indented": "[\n  1234009685,\n  [],\n  {\n    \"ˀ\\uddc7[\\udbba\": null,\n    \"㼤😀4\\ud891m\": 0.0,\n    \"\": false\n  }\n]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "\"\\u0006p\\u0005\\udb29롔7\"",
+      "indented": "\"\\u0006p\\u0005\\udb29롔7\""
+    },
+    {
+      "json": "-887727962",
+      "indented": "-887727962"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "\"\\udaa3😀鿎N٩)^\"",
+      "indented": "\"\\udaa3😀鿎N٩)^\""
+    },
+    {
+      "json": "\"/鍈😀Ȕަ\"",
+      "indented": "\"/鍈😀Ȕަ\""
+    },
+    {
+      "json": "{\"\\udc5b\\udea8D캚₍\":[630887147,\"\\u0010\",{\"肠\\ud99a\\u0005\\u0015\\u0004😀\":0.0,\"\\udd87😀\":\"+😀😀\\uddbeɺ\\ud986\\uda09\",\"\\u0014~\":true}],\"\\uda2bׅ\\u000eܐ\":true,\"Ϥׁ\\u0014O\":[{\"\\u000f\":\"묻ؼ\",\"n\\u0018ꮒſ阭😀\":{\"⋐\\uddbf瘇h\":0.0},\"Ȑ\\u001f\":{\"\\rݝ😀ā\\udb6b8\":-291031254,\"\":true,\"😀\\u0012楜😀\\f)😀\":\"\\udd34ռ\\u0007ͱX⫳\\udcd7\"}},\"ꖂ譱\",[]]}",
+      "indented": "{\n  \"\\udc5b\\udea8D캚₍\": [\n    630887147,\n    \"\\u0010\",\n    {\n      \"肠\\ud99a\\u0005\\u0015\\u0004😀\": 0.0,\n      \"\\udd87😀\": \"+😀😀\\uddbeɺ\\ud986\\uda09\",\n      \"\\u0014~\": true\n    }\n  ],\n  \"\\uda2bׅ\\u000eܐ\": true,\n  \"Ϥׁ\\u0014O\": [\n    {\n      \"\\u000f\": \"묻ؼ\",\n      \"n\\u0018ꮒſ阭😀\": {\n        \"⋐\\uddbf瘇h\": 0.0\n      },\n      \"Ȑ\\u001f\": {\n        \"\\rݝ😀ā\\udb6b8\": -291031254,\n        \"\": true,\n        \"😀\\u0012楜😀\\f)😀\": \"\\udd34ռ\\u0007ͱX⫳\\udcd7\"\n      }\n    },\n    \"ꖂ譱\",\n    []\n  ]\n}"
+    },
+    {
+      "json": "{\"\\udbd49䑶\":\"\\u0000\\n\",\"😀暖😀ꏛ😀\":[],\"\\u0003😀\\uded5ԡ\":null}",
+      "indented": "{\n  \"\\udbd49䑶\": \"\\u0000\\n\",\n  \"😀暖😀ꏛ😀\": [],\n  \"\\u0003😀\\uded5ԡ\": null\n}"
+    },
+    {
+      "json": "1e+21",
+      "indented": "1e+21"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "217882125",
+      "indented": "217882125"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"\\u0012xw㼠\\udb7c\"",
+      "indented": "\"\\u0012xw㼠\\udb7c\""
+    },
+    {
+      "json": "-0.0",
+      "indented": "-0.0"
+    },
+    {
+      "json": "5e-324",
+      "indented": "5e-324"
+    },
+    {
+      "json": "0.0",
+      "indented": "0.0"
+    },
+    {
+      "json": "{\"\":true,\"쨊쪦\":{\"쏶\\u0001\":\"vc\\udcb4u칲\\udb95\"},\"N😀㧃\":null}",
+      "indented": "{\n  \"\": true,\n  \"쨊쪦\": {\n    \"쏶\\u0001\": \"vc\\udcb4u칲\\udb95\"\n  },\n  \"N😀㧃\": null\n}"
+    },
+    {
+      "json": "{\"䀟\\u0001\\rϪ\":-1176338148,\"\":-0.0,\"莲5Ԁ㓋\":\"颇\"}",
+      "indented": "{\n  \"䀟\\u0001\\rϪ\": -1176338148,\n  \"\": -0.0,\n  \"莲5Ԁ㓋\": \"颇\"\n}"
+    },
+    {
+      "json": "808412947",
+      "indented": "808412947"
+    },
+    {
+      "json": "\"2&x\"",
+      "indented": "\"2&x\""
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "-1962106286",
+      "indented": "-1962106286"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "1482354679",
+      "indented": "1482354679"
+    },
+    {
+      "json": "[{},{\"͵\\u0015䇪\\\"\\b\\udef3\":{\"ΦΘ\\u000b\\ud960↘tڨ\":{\"\":1e+21,\"񳑎\\ud9f5\":\"\"},\"̨\\u000fmu\":{\"\\u0004Ź\\u0010J😀\":false},\"\\udccf😀\\uddd8😀\":\"\\u001e\\udbd3😀󞌇J\"}}]",
+      "indented": "[\n  {},\n  {\n    \"͵\\u0015䇪\\\"\\b\\udef3\": {\n      \"ΦΘ\\u000b\\ud960↘tڨ\": {\n        \"\": 1e+21,\n        \"񳑎\\ud9f5\": \"\"\n      },\n      \"̨\\u000fmu\": {\n        \"\\u0004Ź\\u0010J😀\": false\n      },\n      \"\\udccf😀\\uddd8😀\": \"\\u001e\\udbd3😀󞌇J\"\n    }\n  }\n]"
+    },
+    {
+      "json": "\"\\u0014䥘\"",
+      "indented": "\"\\u0014䥘\""
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "0.30000000000000004",
+      "indented": "0.30000000000000004"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "[true,\"\\r\",0.0]",
+      "indented": "[\n  true,\n  \"\\r\",\n  0.0\n]"
+    },
+    {
+      "json": "\"廟󷡒\\ud937쌭㇐Ք\"",
+      "indented": "\"廟󷡒\\ud937쌭㇐Ք\""
+    },
+    {
+      "json": "\"\\u0012\\u000byl\"",
+      "indented": "\"\\u0012\\u000byl\""
+    },
+    {
+      "json": "-243692441",
+      "indented": "-243692441"
+    },
+    {
+      "json": "{\"뙴\\u001f\":null}",
+      "indented": "{\n  \"뙴\\u001f\": null\n}"
+    },
+    {
+      "json": "[\"😀😀\",{\")4\\ud965\\u0001\\u0006\":false},\"\\udec7˄ט\\ud9c6ퟖ\"]",
+      "indented": "[\n  \"😀😀\",\n  {\n    \")4\\ud965\\u0001\\u0006\": false\n  },\n  \"\\udec7˄ט\\ud9c6ퟖ\"\n]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "{\" \":[true,null],\"]😀\\udec3珥灤\":\"\\u0017\\udeb1%😀ޢ\",\"튲\":-350632522}",
+      "indented": "{\n  \" \": [\n    true,\n    null\n  ],\n  \"]😀\\udec3珥灤\": \"\\u0017\\udeb1%😀ޢ\",\n  \"튲\": -350632522\n}"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "\"\\u0015̬😀≽\\u0014\"",
+      "indented": "\"\\u0015̬😀≽\\u0014\""
+    },
+    {
+      "json": "[]",
+      "indented": "[]"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "{\"魝T쩩😀\":\"\\u000f͚\\ude92\\u001a隀😀\\u001f\",\">쏳😀仨😀7\\\\\":\"\\ude4c˻Q\\uda49\",\"\\udadf😀`\\u0019ܮ٭\\f\":\"\\udd7e😀\"}",
+      "indented": "{\n  \"魝T쩩😀\": \"\\u000f͚\\ude92\\u001a隀😀\\u001f\",\n  \">쏳😀仨😀7\\\\\": \"\\ude4c˻Q\\uda49\",\n  \"\\udadf😀`\\u0019ܮ٭\\f\": \"\\udd7e😀\"\n}"
+    },
+    {
+      "json": "\"😀\"",
+      "indented": "\"😀\""
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "\"ꌊx5\\ud9b5탗\\ude30\\u0017\"",
+      "indented": "\"ꌊx5\\ud9b5탗\\ude30\\u0017\""
+    },
+    {
+      "json": "\"Y쾯😀\\ud882嫲͙첆\"",
+      "indented": "\"Y쾯😀\\ud882嫲͙첆\""
+    },
+    {
+      "json": "414734139",
+      "indented": "414734139"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "[null,-1933384039]",
+      "indented": "[\n  null,\n  -1933384039\n]"
+    },
+    {
+      "json": "\"😀Ā\\u0016😀\\u001f😀\"",
+      "indented": "\"😀Ā\\u0016😀\\u001f😀\""
+    },
+    {
+      "json": "\"\\ud87a\\u0002\\udeea\\u0005㠁\"",
+      "indented": "\"\\ud87a\\u0002\\udeea\\u0005㠁\""
+    },
+    {
+      "json": "1246879018",
+      "indented": "1246879018"
+    },
+    {
+      "json": "{\"慥5\\udb0f\\udb80😀E\":\"\\ud9e2䠔\\u0015\",\"Ԅ\\u0014\\uda76\":\"聍\"}",
+      "indented": "{\n  \"慥5\\udb0f\\udb80😀E\": \"\\ud9e2䠔\\u0015\",\n  \"Ԅ\\u0014\\uda76\": \"聍\"\n}"
+    },
+    {
+      "json": "\"ܝ\"",
+      "indented": "\"ܝ\""
+    },
+    {
+      "json": "[]",
+      "indented": "[]"
+    },
+    {
+      "json": "\"α😀😀\"",
+      "indented": "\"α😀😀\""
+    },
+    {
+      "json": "{\"\\ud960😀😀꿄\":\"遰먑\\udb39\\u001b\",\"湫\\udae1꾦\\u0014Ͽ\\u0016̬\":1e-7,\"\":null}",
+      "indented": "{\n  \"\\ud960😀😀꿄\": \"遰먑\\udb39\\u001b\",\n  \"湫\\udae1꾦\\u0014Ͽ\\u0016̬\": 1e-7,\n  \"\": null\n}"
+    },
+    {
+      "json": "-2141528515",
+      "indented": "-2141528515"
+    },
+    {
+      "json": "[null,[5e-324,null,\"놮铰😀😀\"]]",
+      "indented": "[\n  null,\n  [\n    5e-324,\n    null,\n    \"놮铰😀😀\"\n  ]\n]"
+    },
+    {
+      "json": "-594758986",
+      "indented": "-594758986"
+    },
+    {
+      "json": "\"e\"",
+      "indented": "\"e\""
+    },
+    {
+      "json": "{\"'窊\":1e+21,\"\":true}",
+      "indented": "{\n  \"'窊\": 1e+21,\n  \"\": true\n}"
+    },
+    {
+      "json": "0.0",
+      "indented": "0.0"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "-1564716069",
+      "indented": "-1564716069"
+    },
+    {
+      "json": "1856505690",
+      "indented": "1856505690"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "{\"\\u001e\\u0014😀\\udc3c😀\\udb01\":[true,1180250911]}",
+      "indented": "{\n  \"\\u001e\\u0014😀\\udc3c😀\\udb01\": [\n    true,\n    1180250911\n  ]\n}"
+    },
+    {
+      "json": "1e-7",
+      "indented": "1e-7"
+    },
+    {
+      "json": "-1160688467",
+      "indented": "-1160688467"
+    },
+    {
+      "json": "\"\\f豫h\\u000ba\"",
+      "indented": "\"\\f豫h\\u000ba\""
+    },
+    {
+      "json": "-1736176903",
+      "indented": "-1736176903"
+    },
+    {
+      "json": "{\"😀ì😀\":1547052667,\"\\u001d†\\udc55\\uda8ë́\":[[true]]}",
+      "indented": "{\n  \"😀ì😀\": 1547052667,\n  \"\\u001d†\\udc55\\uda8ë́\": [\n    [\n      true\n    ]\n  ]\n}"
+    },
+    {
+      "json": "\"Z鰎\\u0014\\udb58ۻ\\u0004\\n\"",
+      "indented": "\"Z鰎\\u0014\\udb58ۻ\\u0004\\n\""
+    },
+    {
+      "json": "\"ꇻٮҭ\\udfa6\"",
+      "indented": "\"ꇻٮҭ\\udfa6\""
+    },
+    {
+      "json": "null",
+      "indented": "null"
+    },
+    {
+      "json": "-736932613",
+      "indented": "-736932613"
+    },
+    {
+      "json": "{\"݁Ȉ😀\\u001a\\udca5ꅝ\\udd96\":\"䛣\\u0000\\udd41ۣ\\ude96\",\"😀ꎟ\\u0000\":[false,\"\\u0018😀\\udf00ͼ\"],\"vր-\\ud809\":\"\\u0006😀J\\ud9bf\"}",
+      "indented": "{\n  \"݁Ȉ😀\\u001a\\udca5ꅝ\\udd96\": \"䛣\\u0000\\udd41ۣ\\ude96\",\n  \"😀ꎟ\\u0000\": [\n    false,\n    \"\\u0018😀\\udf00ͼ\"\n  ],\n  \"vր-\\ud809\": \"\\u0006😀J\\ud9bf\"\n}"
+    },
+    {
+      "json": "[[[\"\\u001b셴\\n逝u\"],1619697510,[]],true,\"\\u0005*\\u0018😀\"]",
+      "indented": "[\n  [\n    [\n      \"\\u001b셴\\n逝u\"\n    ],\n    1619697510,\n    []\n  ],\n  true,\n  \"\\u0005*\\u0018😀\"\n]"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "{}",
+      "indented": "{}"
+    },
+    {
+      "json": "true",
+      "indented": "true"
+    },
+    {
+      "json": "0.0",
+      "indented": "0.0"
+    },
+    {
+      "json": "\"😀\\udd8e\"",
+      "indented": "\"😀\\udd8e\""
+    },
+    {
+      "json": "-0.0",
+      "indented": "-0.0"
+    },
+    {
+      "json": "false",
+      "indented": "false"
+    }
+  ]
+}

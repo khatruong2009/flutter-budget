@@ -401,7 +401,7 @@ All go in `N:BudgieCore/Sources/BudgieCore/Domain/`. Every mutation is pure (a `
    - `TransactionTagRecord { id, name, colorToken }` (read-only for now).
    - `CategorizationRuleRecord` with lossless `parse`, default values as in `fromJson` (`matchType` defaults to contains, `category` to "General", `priority` 0, `isEnabled` true), and `matches(type:description:amount:)` exactly as `categorization_rule.dart:72-89`.
    - `FinancialData.tags` / `rules` read from the sections `transactionTags` / `categorizationRules` (the legacy bare keys are already migrated by `LegacyMigration.swift:60-61`).
-   - `CategorizationEngine.suggest(rules:type:description:amount:) -> Rule?`: priority-descending stable sort, first match wins. Dart's `List.sort` is not guaranteed stable, so for equal priorities with more than 32 rules the tie order can differ. This is a near-zero-impact edge case; note it in `PARITY_GAPS`.
+   - `CategorizationEngine.suggest(rules:type:description:amount:) -> Rule?`: priority descending with `DartSort` (Dart's `List.sort`: stable up to 33 elements, its quicksort's tie order from 34), first match wins.
 6. **Tag IDs on edits.**
    - `TransactionRecord.Edit` gains `tagIds: [String]?`. `applying` writes `raw["tagIds"]` only if it changed (order-preserving).
    - `FinancialData.addTransaction` already accepts `tagIds`; `AppModel.addTransaction` must forward it.

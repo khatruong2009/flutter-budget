@@ -104,6 +104,15 @@ public struct JSONString: Hashable, Sendable {
         return String(decoding: codeUnits, as: UTF16.self)
     }
 
+    /// Dart `==` against `other`: the decoded UTF-16 code units are equal.
+    func matches(_ other: String) -> Bool {
+        let bytes = lexeme.utf8
+        // Without escapes the lexeme is the value, and equal UTF-8 means
+        // equal code units.
+        if !bytes.contains(UInt8(ascii: "\\")) { return bytes.elementsEqual(other.utf8) }
+        return codeUnits.elementsEqual(other.utf16)
+    }
+
     /// How Dart re-encodes this string after `jsonDecode`.
     public var dartCanonicalLexeme: String {
         guard lexeme.utf8.contains(UInt8(ascii: "\\")) else { return lexeme }
@@ -181,24 +190,26 @@ public struct JSONObject: Hashable, Sendable {
         members = pairs.map { Member(key: JSONString($0.0), value: $0.1) }
     }
 
-    /// Keys in first-occurrence order, as Dart's map iterates them.
+    /// Keys in first-occurrence order, as Dart's map iterates them. Keys are
+    /// distinct as UTF-16 code units, as in Dart (Swift `==` would merge
+    /// "é" and "e\u{301}").
     public var keys: [String] {
-        var seen = Set<String>()
+        var seen = Set<[UInt16]>()
         var result: [String] = []
-        for member in members {
-            let key = member.key.value
-            if seen.insert(key).inserted { result.append(key) }
+        for member in members where seen.insert(member.key.codeUnits).inserted {
+            result.append(member.key.value)
         }
         return result
     }
 
-    /// Dart semantics: the last occurrence of a key wins.
+    /// Dart semantics: the last occurrence of a key wins. Keys compare as
+    /// UTF-16 code units.
     public subscript(key: String) -> JSONValue? {
         get {
-            members.last(where: { $0.key.value == key })?.value
+            members.last(where: { $0.key.matches(key) })?.value
         }
         set {
-            guard let first = members.firstIndex(where: { $0.key.value == key }) else {
+            guard let first = members.firstIndex(where: { $0.key.matches(key) }) else {
                 if let newValue { members.append(Member(key: JSONString(key), value: newValue)) }
                 return
             }
@@ -208,17 +219,17 @@ public struct JSONObject: Hashable, Sendable {
                 members[first].value = newValue
                 var index = members.count - 1
                 while index > first {
-                    if members[index].key.value == key { members.remove(at: index) }
+                    if members[index].key.matches(key) { members.remove(at: index) }
                     index -= 1
                 }
             } else {
-                members.removeAll { $0.key.value == key }
+                members.removeAll { $0.key.matches(key) }
             }
         }
     }
 
     public func contains(_ key: String) -> Bool {
-        members.contains { $0.key.value == key }
+        members.contains { $0.key.matches(key) }
     }
 }
 

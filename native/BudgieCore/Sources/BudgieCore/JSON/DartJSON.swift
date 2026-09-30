@@ -24,6 +24,75 @@ public enum DartJSON {
         String(decoding: encode(value, mode: mode), as: UTF8.self)
     }
 
+    /// Dart `JsonEncoder.withIndent('  ').convert`: two spaces per level,
+    /// LF line breaks, `"key": value`, one array element per line, `[]` and
+    /// `{}` for empty containers, no trailing newline. Scalars are written
+    /// exactly as `encode` writes them.
+    public static func encodeIndented(_ value: JSONValue, mode: Mode = .preserving) -> [UInt8] {
+        var out: [UInt8] = []
+        out.reserveCapacity(4096)
+        writeIndented(value, depth: 0, into: &out, mode: mode)
+        return out
+    }
+
+    public static func encodeIndentedString(_ value: JSONValue, mode: Mode = .preserving) -> String {
+        String(decoding: encodeIndented(value, mode: mode), as: UTF8.self)
+    }
+
+    /// `_JsonPrettyPrinter.writeList` / `writeMap`.
+    static func writeIndented(_ value: JSONValue, depth: Int, into out: inout [UInt8], mode: Mode) {
+        func newline(_ level: Int) {
+            out.append(0x0A)
+            for _ in 0..<(level * 2) { out.append(0x20) }
+        }
+        switch value {
+        case .array(let array):
+            guard !array.isEmpty else {
+                out.append(contentsOf: "[]".utf8)
+                return
+            }
+            out.append(UInt8(ascii: "["))
+            for (index, element) in array.enumerated() {
+                if index > 0 { out.append(UInt8(ascii: ",")) }
+                newline(depth + 1)
+                writeIndented(element, depth: depth + 1, into: &out, mode: mode)
+            }
+            newline(depth)
+            out.append(UInt8(ascii: "]"))
+        case .object(let object):
+            let members = mode == .dartCanonical ? canonicalMembers(object) : object.members.map { ($0.key, $0.value) }
+            guard !members.isEmpty else {
+                out.append(contentsOf: "{}".utf8)
+                return
+            }
+            out.append(UInt8(ascii: "{"))
+            for (index, (key, element)) in members.enumerated() {
+                if index > 0 { out.append(UInt8(ascii: ",")) }
+                newline(depth + 1)
+                writeString(key, into: &out, mode: mode)
+                out.append(contentsOf: ": ".utf8)
+                writeIndented(element, depth: depth + 1, into: &out, mode: mode)
+            }
+            newline(depth)
+            out.append(UInt8(ascii: "}"))
+        default:
+            write(value, into: &out, mode: mode)
+        }
+    }
+
+    /// Dart map semantics: a repeated key keeps its first position and
+    /// takes its last value. Keys compare by decoded code units.
+    static func canonicalMembers(_ object: JSONObject) -> [(JSONString, JSONValue)] {
+        var order: [[UInt16]] = []
+        var latest: [[UInt16]: (JSONString, JSONValue)] = [:]
+        for member in object.members {
+            let units = member.key.codeUnits
+            if latest[units] == nil { order.append(units) }
+            latest[units] = (member.key, member.value)
+        }
+        return order.map { latest[$0]! }
+    }
+
     static func write(_ value: JSONValue, into out: inout [UInt8], mode: Mode) {
         switch value {
         case .null:

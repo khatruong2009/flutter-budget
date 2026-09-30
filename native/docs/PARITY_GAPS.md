@@ -15,7 +15,7 @@ UPGRADE_TEST_RESULTS.md).
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags. BudgieCore and AppModel implement add and delete tag (the tag is stripped from rules) and add and delete rule (Fixtures/tags); no management page yet. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
-| Backup export/import (JSON envelope v3) | files chosen by the user | Not available. CSV export is. |
+| Backup export/import (JSON envelope v3) | files chosen by the user | BudgieCore export, decode, restore and pre-restore safety copy are done and match Flutter byte for byte (Fixtures/backup; differences below); the Settings rows still open the "upcoming" page until the UI lands. |
 | CSV import | ledger | Not available. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
@@ -37,23 +37,29 @@ UPGRADE_TEST_RESULTS.md).
   v1 backup envelope during legacy migration.
 - "Match device" formats money as en_US (the Flutter app never sets an intl
   locale); JPY/KRW show two decimals.
-- CSV rows with identical timestamps keep input order (Swift stable sort);
-  Dart's sort is not stable above 32 rows, so tie order can differ from a
-  Flutter export of the same data. Bytes are otherwise identical.
-- Categorization rules with equal priority are listed and tried in stored
-  order (Swift stable sort). Dart's `List.sort` is an insertion sort up to
-  33 elements and a dual-pivot quicksort from 34, so with 34 or more rules
-  Flutter's `rules` getter reorders ties in a fixed pattern (34 tied rules:
-  the 12th comes first and the 1st moves to 12th): the Tags & rules list and
-  the suggestion among equal-priority matches can differ (Fixtures/tags
-  `sort_*`; up to 33 rules they agree).
-- Spend tab: categories with equal month totals keep first-appearance order
-  (Swift stable sort); Dart's sort is not stable above 33 categories in a
-  month, so there the order of tied categories (their rows, colours and
-  which of them fall into "Other") can differ (Fixtures/spend `forty_ties`).
-- Worth: accounts with the same month value and the same lowercased name
-  keep stored order, and snapshots recorded at the same instant keep stored
-  order (Swift stable sorts); Dart's sort is not stable above 32 items.
+- Tie order of sorts. Dart's `List.sort` is an insertion sort (stable) for
+  lists of up to 33 elements and a dual-pivot quicksort (not stable) from
+  34 (dart:_internal `sort.dart`, threshold `right - left <= 32`; verified
+  on the VM, Fixtures/backup/dart_sort.json). BudgieCore's `DartSort` is a
+  faithful port; the rules order (`CategorizationEngine.ordered`: the Tags
+  & rules list, suggestions and the backup export) uses it and matches
+  Flutter at any size (Fixtures/tags `sort_*`). The sites below still use
+  Swift's stable sort, so from 34 elements the order of tied items can
+  differ until they switch to `DartSort`:
+  - CSV rows with identical timestamps keep input order, so tie order can
+    differ from a Flutter export of the same data. Bytes are otherwise
+    identical.
+  - Spend tab: categories with equal month totals keep first-appearance
+    order, so with 34 or more categories in a month the order of tied
+    categories (their rows, colours and which of them fall into "Other")
+    can differ (Fixtures/spend `forty_ties`).
+  - Worth: accounts with the same month value and the same lowercased name
+    keep stored order, and snapshots recorded at the same instant keep
+    stored order (34 or more items).
+  - Goals: goals with the same completion state and target date keep
+    stored order (34 or more goals).
+  - Category sort-order normalisation with duplicate `sortOrder` values
+    (34 or more categories of a type).
 - Category renames follow exact (UTF-16) names only. A case variant
   ("gift" when "Gift" is renamed) or the other Unicode normalisation keeps
   the old name, and gets a definition of its own at the next launch if it
@@ -63,11 +69,13 @@ UPGRADE_TEST_RESULTS.md).
   cascades; an icon or colour edit, or the same name with padding, does
   not. Transactions renamed get `updatedAt` = now, even when that is
   earlier than the stored value.
-- A legacy category whose stored name has leading or trailing spaces
-  ("  Padded Cat ") is added again at every launch: Dart's `_containsName`
-  trims only the candidate.
-- Goals: goals with the same completion state and target date keep stored
-  order (Swift stable sort); Dart's sort is not stable above 32 goals.
+- A category name with leading or trailing spaces (a transaction's,
+  template's or budget key's) is materialised again at every launch: the
+  launch pass compares the trimmed name with the stored, untrimmed one
+  (`_containsName`), so each launch adds another definition with a new id
+  (`type-<uuid>`, the slug being taken). Both apps do this; a restore adds
+  one as well (Swift runs the launch pass in the restore, Flutter at its
+  next launch). Fix in both apps later.
 - Goals: a goal is "Behind" on its target day unless fully funded (the
   deadline is 00:00 of that day), and a goal created today for today is
   "Behind" at once. Overdue goals show "bump to ... to catch up".
@@ -399,8 +407,8 @@ UPGRADE_TEST_RESULTS.md).
   cents" whatever the currency. Both read the date as yMMMMd.
 - Flow SEE ALL category options: names whose lower-case forms are equal
   ("Groceries" / "groceries") keep first-appearance order (Swift stable
-  sort); Dart's sort is not stable above 32 options, so their relative order
-  can differ.
+  sort); Dart's sort is not stable from 34 options, so their relative order
+  can differ (switch to `DartSort`, see the tie-order note above).
 - Flow SEE ALL rows (D7): a tap opens the edit form and a left swipe asks
   "Delete Transaction" before deleting; the delete is awaited and toasts
   "Transaction deleted" or the save-failed message (a row already gone just
@@ -630,7 +638,76 @@ UPGRADE_TEST_RESULTS.md).
   (backup), `arrow.counterclockwise.circle` (settings_backup_restore),
   `info.circle`, `moon` (dark_mode), `chevron.right`.
 
-## Known MVP limitations
+### Backup export and restore (D10)
+
+The file format is Flutter's: a Swift export equals Flutter's export of the
+same store byte for byte, and each app restores the other's files
+(Fixtures/backup; `verify_swift_output_test.dart` restores Swift exports
+through Flutter's own restore chain). Only two backup schemas ever
+existed, 1 (six `data` keys, July 2026) and 3; there is no "v2".
+
+- Restore is one store commit of all ten sections (Flutter makes about
+  nine, with no rollback). The app swaps memory only after the verified
+  commit; on failure nothing changes and nothing is flagged unsaved
+  (Flutter can leave a partial restore and still say "Backup restored").
+- A safety copy of the store files and preferences is written to
+  `Application Support/pre-restore/<stamp>/` first, and the restore does
+  not run if it cannot be made. The newest three are kept, pruned only
+  after a successful restore. Flutter has none (its `.backup.json` ends up
+  holding a mid-restore generation). The copy also keeps any stored rows
+  neither app can read, which the restore replaces (as Flutter).
+- A `data` key that is absent or null leaves its section or setting
+  unchanged: schema-1 files keep categories, tags, rules and the five
+  settings (and their preferences). Flutter resets them to the built-ins,
+  none, USD, Match device, lock off, 60 s and hide off, and empties any
+  list a hand-edited file leaves out. `localeOverride` is the exception:
+  present and null means Match device. `{"schemaVersion":3,"data":{}}` is
+  accepted as in Flutter, and so changes nothing but the recurring
+  generator and legacy categories.
+- The confirmation keeps Flutter's copy verbatim (no pluralisation; counts
+  are the decoded sizes, budgets <= 0 and duplicate-id rows included, 0 for
+  a key the file leaves out) and, when the file leaves something unchanged,
+  adds "Your categories, tags, rules and settings are kept." naming what is
+  actually kept.
+- The recurring generator runs on the restored data before the commit, so
+  its rows and cursors are in the same commit (Flutter runs it after the
+  restore, one commit per row). The launch pass that materialises legacy
+  categories also runs in the restore (Flutter runs it at the next launch).
+  The end state equals Flutter's after its next launch.
+- Two files Flutter fails on without a `FormatException` are reported as
+  "This backup file is corrupt or incomplete.": `autoLockTimeoutSeconds`
+  of `1e999` (Flutter: "Unsupported operation: Infinity or NaN toInt") and
+  a rule `minimumAmount`/`maximumAmount` of `±1e999` (Flutter shows the
+  dialog, then fails its first write with "Converting object to an
+  encodable object failed: Infinity"). Nothing changes in either app.
+- JSON nested more than 128 levels deep is "not a valid Budgie backup
+  file" (the parser's recursion cap); Flutter accepts such a file when the
+  deep part is under a key it ignores.
+- `appSettings` keeps unknown keys (the section is patched); Flutter
+  writes a fresh five-key object.
+- Export: `exportedAt` and the file name come from one clock read (Flutter
+  reads the clock twice). Rows the Swift store keeps but cannot read are
+  left out, as Flutter, which cannot load them either.
+- `selectedNetWorthMonth` is neither exported nor restored (as Flutter):
+  the current one is kept even if it points outside the restored data.
+- A lone UTF-16 surrogate in a category name that the launch pass creates
+  (from a transaction, template or budget key) is written as U+FFFD
+  (Swift strings cannot hold one); Flutter keeps it. Rows read from a
+  store or a backup keep theirs.
+
+Flutter behaviour kept on purpose (D6 candidates; fixing them would change
+what Flutter reads or shows):
+- The file's `app` and `appVersion` are never checked.
+- Duplicate category names, blank names, unknown category `type` strings
+  (read as expense) and rules naming a missing category are accepted;
+  orphan `tagIds` on transactions are kept.
+- `autoLockTimeoutSeconds` has no upper bound (1e30 becomes the largest
+  int, which never locks).
+- Goals without dates get the restore time (`DateTime.now()` at decode);
+  goals and tags without ids get fresh ones.
+- Restoring theme `system` over `system` writes no preference.
+- A setting equal to its current value is still mirrored to its preference.
+
 
 - A sheet open when the app goes to the background (e.g. the transaction
   form) is not covered by the App Lock privacy cover.

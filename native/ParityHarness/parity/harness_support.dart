@@ -5,15 +5,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:budget_app/app_settings_provider.dart';
+import 'package:budget_app/backup.dart';
 import 'package:budget_app/categorization_provider.dart';
 import 'package:budget_app/category_definition.dart';
 import 'package:budget_app/category_provider.dart';
 import 'package:budget_app/parity_clock.dart';
 import 'package:budget_app/recurring_transaction_model.dart';
 import 'package:budget_app/storage/atomic_financial_store.dart';
+import 'package:budget_app/theme_provider.dart';
 import 'package:budget_app/transaction.dart';
 import 'package:budget_app/transaction_generator.dart';
 import 'package:budget_app/transaction_model.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String fixturesRoot = Platform.environment['PARITY_FIXTURES'] ??
@@ -92,6 +95,27 @@ Future<Map<String, Object>> dumpPrefs() async {
   return typedPrefs(values);
 }
 
+/// Reads a typed preferences file (the `typedPrefs` form) back into values
+/// for `SharedPreferences.setMockInitialValues`. Missing file: none.
+Map<String, Object> prefsFrom(File file) {
+  if (!file.existsSync()) return {};
+  final typed = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+  final out = <String, Object>{};
+  typed.forEach((key, value) {
+    final entry = value as Map<String, dynamic>;
+    final raw = entry['value'];
+    out[key] = switch (entry['type']) {
+      'bool' => raw as bool,
+      'int' => raw as int,
+      'double' => (raw as num).toDouble(),
+      'string' => raw as String,
+      'stringList' => List<String>.from(raw as List),
+      _ => throw ArgumentError('bad pref type ${entry['type']}'),
+    };
+  });
+  return out;
+}
+
 /// Mirrors `_initializeApp` in lib/main.dart: the same providers, loaded in
 /// the same order, then recurring generation.
 class AppHarness {
@@ -152,3 +176,144 @@ Map<String, Object> listing(Directory dir) {
 }
 
 String iso(DateTime value) => value.toIso8601String();
+
+// MARK: - Backup
+
+/// What `_exportBackup` (settings_page.dart:295-326) reads from the models.
+BackupData exportData(AppHarness app, ThemeMode? themeMode) => BackupData(
+      transactions: app.transactionModel.transactions,
+      netWorthEntries: app.transactionModel.netWorthEntries,
+      categoryBudgetLimits: app.transactionModel.categoryBudgetLimits,
+      savingsGoals: app.transactionModel.savingsGoals,
+      recurringTransactions: app.recurringModel.recurringTransactions,
+      themeMode: themeMode,
+      categories: app.categoryProvider.categories,
+      transactionTags: app.categorizationProvider.tags,
+      categorizationRules: app.categorizationProvider.rules,
+      baseCurrencyCode: app.appSettings.baseCurrencyCode,
+      localeOverride: app.appSettings.localeOverride,
+      appLockEnabled: app.appSettings.appLockEnabled,
+      autoLockTimeoutSeconds: app.appSettings.autoLockTimeoutSeconds,
+      hideBalances: app.appSettings.hideBalances,
+    );
+
+ThemeMode? themeFrom(String? name) => switch (name) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      'system' => ThemeMode.system,
+      _ => null,
+    };
+
+/// `_importBackup` after its dialog (settings_page.dart:421-475), call for
+/// call, on [app]'s models.
+Future<void> restoreChain(
+    AppHarness app, ThemeProvider themeProvider, BackupData data) async {
+  final transactionModel = app.transactionModel;
+  final recurringModel = app.recurringModel;
+  await AtomicFinancialStore.instance.updateSections({
+    FinancialSections.transactions:
+        data.transactions.map((item) => item.toJson()).toList(),
+    FinancialSections.netWorthEntries:
+        data.netWorthEntries.map((item) => item.toJson()).toList(),
+    FinancialSections.selectedNetWorthMonth:
+        transactionModel.selectedNetWorthMonth.toIso8601String(),
+    FinancialSections.categoryBudgetLimits: data.categoryBudgetLimits,
+    FinancialSections.savingsGoals:
+        data.savingsGoals.map((item) => item.toJson()).toList(),
+    FinancialSections.recurringTransactions:
+        data.recurringTransactions.map((item) => item.toJson()).toList(),
+    FinancialSections.categories:
+        data.categories.map((item) => item.toJson()).toList(),
+    FinancialSections.transactionTags:
+        data.transactionTags.map((item) => item.toJson()).toList(),
+    FinancialSections.categorizationRules:
+        data.categorizationRules.map((item) => item.toJson()).toList(),
+    FinancialSections.appSettings: {
+      'baseCurrencyCode': data.baseCurrencyCode,
+      'localeOverride': data.localeOverride,
+      'appLockEnabled': data.appLockEnabled,
+      'autoLockTimeoutSeconds': data.autoLockTimeoutSeconds,
+      'hideBalances': data.hideBalances,
+    },
+  });
+  await transactionModel.restoreFromBackup(
+    transactions: data.transactions,
+    netWorthEntries: data.netWorthEntries,
+    categoryBudgetLimits: data.categoryBudgetLimits,
+    savingsGoals: data.savingsGoals,
+  );
+  await recurringModel.restoreFromBackup(data.recurringTransactions);
+  await app.categoryProvider.restoreFromBackup(data.categories);
+  await app.categorizationProvider.restoreFromBackup(
+    tags: data.transactionTags,
+    rules: data.categorizationRules,
+  );
+  await app.appSettings.restoreFromBackup(
+    baseCurrencyCode: data.baseCurrencyCode,
+    localeOverride: data.localeOverride,
+    appLockEnabled: data.appLockEnabled,
+    autoLockTimeoutSeconds: data.autoLockTimeoutSeconds,
+    hideBalances: data.hideBalances,
+  );
+  if (data.themeMode != null) {
+    await themeProvider.setThemeMode(data.themeMode!);
+  }
+  await TransactionGenerator(
+    transactionModel: transactionModel,
+    recurringModel: recurringModel,
+  ).generateDueTransactions();
+}
+
+void collectStrings(Object? value, Set<String> into) {
+  if (value is String) {
+    into.add(value);
+  } else if (value is List) {
+    for (final item in value) {
+      collectStrings(item, into);
+    }
+  } else if (value is Map) {
+    value.forEach((key, item) {
+      into.add(key as String);
+      collectStrings(item, into);
+    });
+  }
+}
+
+/// Row ids in [exported] (JSON text) that are not strings of [sections]
+/// (generated while loading or restoring), in document order. The Swift
+/// side generates its own, so it substitutes these for them in order
+/// before comparing bytes.
+List<String> generatedIds(String exported, Map<String, dynamic> sections) {
+  final known = <String>{};
+  collectStrings(sections, known);
+  final found = <String>[];
+  void walk(Object? value) {
+    if (value is List) {
+      for (final item in value) {
+        if (item is Map && item['id'] is String && !known.contains(item['id'])) {
+          found.add(item['id'] as String);
+        }
+        walk(item);
+      }
+    } else if (value is Map) {
+      value.values.forEach(walk);
+    }
+  }
+
+  walk(jsonDecode(exported));
+  return found;
+}
+
+/// [swift] (JSON text) with the ids it generated replaced, in order, by
+/// the ones [dart] generated; null when their counts differ.
+String? alignGeneratedIds(
+    String swift, String dart, Map<String, dynamic> sections) {
+  final mine = generatedIds(swift, sections);
+  final theirs = generatedIds(dart, sections);
+  if (mine.length != theirs.length) return null;
+  var text = swift;
+  for (var i = 0; i < mine.length; i++) {
+    text = text.replaceAll(jsonEncode(mine[i]), jsonEncode(theirs[i]));
+  }
+  return text;
+}

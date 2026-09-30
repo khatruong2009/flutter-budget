@@ -42,7 +42,7 @@ struct CategorizationTests {
         #expect(!nfc.matches(type: .expense, description: "Cafe\u{301}", amount: 1))
     }
 
-    @Test("suggest: priority descending, first match wins, ties keep stored order (also above 32 rules)")
+    @Test("suggest: priority descending, first match wins, ties in Dart's List.sort order")
     func suggest() {
         let rules = [
             rule(#"{"id":"low","merchantPattern":"shop","category":"a","priority":0}"#),
@@ -55,8 +55,17 @@ struct CategorizationTests {
         #expect(CategorizationEngine.suggest(rules: rules, type: .expense, description: "nothing", amount: 5) == nil)
         #expect(CategorizationEngine.suggest(rules: [], type: .expense, description: "shop", amount: 5) == nil)
 
-        let many = (0..<40).map { rule(#"{"id":"r\#($0)","merchantPattern":"x","category":"c","priority":1}"#) }
-        #expect(CategorizationEngine.suggest(rules: many, type: .expense, description: "x", amount: 1)?.id == "r0")
+        // Up to 33 tied rules Dart's sort keeps stored order; from 34 its
+        // quicksort reorders ties (Fixtures/backup/dart_sort.json,
+        // Fixtures/tags sort_*), and so does DartSort.
+        let tied = { (n: Int) in (0..<n).map { rule(#"{"id":"r\#($0)","merchantPattern":"x","category":"c","priority":1}"#) } }
+        #expect(CategorizationEngine.suggest(rules: tied(33), type: .expense, description: "x", amount: 1)?.id == "r0")
+        #expect(CategorizationEngine.ordered(tied(33)).map(\.id) == tied(33).map(\.id))
+        let many = tied(40)
+        let dartOrder = DartSort.sorted(many) { DartSort.compare($1.priority, $0.priority) }
+        #expect(CategorizationEngine.ordered(many).map(\.id) == dartOrder.map(\.id))
+        #expect(dartOrder.first?.id != "r0")
+        #expect(CategorizationEngine.suggest(rules: many, type: .expense, description: "x", amount: 1)?.id == dartOrder.first?.id)
     }
 
     @Test("double.tryParse: form inputs")

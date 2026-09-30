@@ -104,7 +104,7 @@ public struct FinancialData: Sendable {
                     continue
                 }
                 let persisted = record.raw["id"]?.stringValue
-                let hasIdentity = persisted.map { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? false
+                let hasIdentity = persisted.map { !DartString.trim($0).isEmpty } ?? false
                 var newIdentity: String? = nil
                 if !hasIdentity || !seen.insert(record.id).inserted {
                     newIdentity = newID()

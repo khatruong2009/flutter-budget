@@ -101,7 +101,7 @@ All four call `persistSections({savingsGoals: serializeSection})` (`:1466`), the
 **Sort (`:154-162`):**
 - Incomplete goals first, then completed.
 - Within each group, `targetDate` ascending.
-- Dart's `List.sort` is not stable above 32 elements. Swift should use a stable sort.
+- Dart's `List.sort` is stable only up to 33 elements (unstable quicksort from 34). Use `DartSort` to match its tie order.
 
 **Empty state (`:164-211`):**
 - Outer padding `(20, 48, 20, 0)`.

@@ -28,19 +28,24 @@ enum SwiftOutput {
     /// `tagsRules`, when given, is what Dart's `CategorizationProvider` must
     /// load (`tags`, and `rules` in its getter's order, bounds as
     /// `toString`); `newTagIDs` / `newRuleIDs` are rows Swift made, whose
-    /// stored JSON must be Dart's `toJson` byte for byte.
+    /// stored JSON must be Dart's `toJson` byte for byte. `backup`, when
+    /// given, is Swift's export of this store as the app would make it after
+    /// a launch (`backup.json`); the verifier compares it with Flutter's
+    /// export of the same store, decodes it, and restores it into an empty
+    /// store to export it again.
     static func emit(
         _ name: String, fileSystem: InMemoryFileSystem, preferences: InMemoryPreferences, snapshot: FinancialSnapshot,
         budgetLimits: [(String, Double)]? = nil, netWorth: FinancialData? = nil, goals: FinancialData? = nil,
         appSettings: AppSettings? = nil, themeMode: String? = nil, categories: FinancialData? = nil,
         categoriesAddedAtLaunch: [CategoryInfo] = [], tagsRules: FinancialData? = nil, newTagIDs: [String] = [],
-        newRuleIDs: [String] = []
+        newRuleIDs: [String] = [], backup: Backup? = nil
     ) throws {
         guard let root = directory else { return }
         let caseDir = root.appendingPathComponent(name)
         let storeDir = caseDir.appendingPathComponent("financial_store")
         try? FileManager.default.removeItem(at: caseDir)
         try FileManager.default.createDirectory(at: storeDir, withIntermediateDirectories: true)
+        if let backup { try Data(backup.bytes).write(to: caseDir.appendingPathComponent("backup.json")) }
         for (file, bytes) in fileSystem.snapshot {
             try Data(bytes).write(to: storeDir.appendingPathComponent(file))
         }
@@ -107,8 +112,32 @@ enum SwiftOutput {
             swift["newTagIds"] = newTagIDs
             swift["newRuleIds"] = newRuleIDs
         }
+        if let backup {
+            swift["backup"] = [
+                "appVersion": backup.appVersion, "exportedAt": backup.exportedAt.toIso8601String(),
+                "themeMode": backup.themeMode,
+            ]
+        }
         try JSONSerialization.data(withJSONObject: swift, options: [.prettyPrinted, .sortedKeys])
             .write(to: caseDir.appendingPathComponent("swift.json"))
+    }
+
+    struct Backup {
+        var bytes: [UInt8]
+        var appVersion = "4.0.0"
+        var exportedAt: DartDateTime
+        var themeMode = "dark"
+    }
+
+    /// Swift's export of `snapshot` after a launch (load, then the recurring
+    /// generator), as the verifier makes Flutter's.
+    static func backup(of snapshot: FinancialSnapshot, preferences: PreferencesStore, now: DartDateTime) throws -> Backup {
+        func newID() -> String { UUID().uuidString.lowercased() }
+        var data = FinancialData.load(
+            snapshot, preferences: preferences, calendar: DartCalendar(timeZone: Scenario.zone), now: { now }, newID: newID
+        ).data
+        _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: newID)
+        return Backup(bytes: try BackupEnvelope.encode(data: data, themeMode: "dark", appVersion: "4.0.0", now: now), exportedAt: now)
     }
 }
 
@@ -122,6 +151,39 @@ struct SwiftOutputForDartTests {
             guard var snapshot = try? await store.read() else { continue }
             snapshot = try await store.replace(sections: snapshot.sections)
             try SwiftOutput.emit("store-resave-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
+        }
+    }
+
+    @Test("backup: Swift exports of the store fixtures, and Swift restores of them into a fresh install")
+    func backups() async throws {
+        for name in ["typical", "old_schema", "unknown_data", "fresh_install", "large_10k"] {
+            let scenario = try Scenario(Fixtures.url("store/\(name)"))
+            let now = scenario.launchNow
+            let calendar = DartCalendar(timeZone: Scenario.zone)
+            func newID() -> String { UUID().uuidString.lowercased() }
+            let snapshot = try await scenario.makeStore().read()
+            let backup = try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now)
+            try SwiftOutput.emit(
+                "backup-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
+                backup: backup)
+
+            // The one commit a Swift restore makes, over a fresh install.
+            let fresh = try Scenario(Fixtures.url("store/fresh_install"))
+            let store = fresh.makeStore()
+            let current = FinancialData.load(
+                try await store.read(), preferences: fresh.preferences, calendar: calendar, now: { now }, newID: newID
+            ).data
+            let plan = try BackupEnvelope.decode(bytes: backup.bytes, calendar: calendar, now: now, newID: newID)
+            #expect(plan.keptItems.isEmpty, "\(name)")
+            let result = current.restoring(plan, now: now, newID: newID)
+            let written = try await store.updateSections(result.sections)
+            for write in result.preferenceWrites { fresh.preferences.set(write.value, forKey: write.key) }
+            if let theme = result.themeMode { fresh.preferences.set(.string(theme), forKey: PreferenceKey.themeMode) }
+            try SwiftOutput.emit(
+                "backup-restored-\(name)", fileSystem: fresh.fileSystem, preferences: fresh.preferences, snapshot: written,
+                budgetLimits: result.data.budgetLimits, netWorth: result.data, goals: result.data,
+                appSettings: result.data.appSettings, themeMode: result.themeMode,
+                backup: try SwiftOutput.backup(of: written, preferences: fresh.preferences, now: now))
         }
     }
 
@@ -375,7 +437,8 @@ struct SwiftOutputForDartTests {
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
                 budgetLimits: data.budgetLimits, netWorth: data, goals: data, categories: data,
                 categoriesAddedAtLaunch: Array(relaunched.categories.dropFirst(data.categories.count)), tagsRules: data,
-                newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } })
+                newTagIDs: newTagIDs, newRuleIDs: newRuleIDs.filter { id in data.rules.contains { $0.id == id } },
+                backup: try SwiftOutput.backup(of: snapshot, preferences: scenario.preferences, now: now))
         }
     }
 

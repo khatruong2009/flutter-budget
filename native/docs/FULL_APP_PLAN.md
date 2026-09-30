@@ -78,7 +78,7 @@ D2 notes:
 | D7 | Flow detail list: read-only (Flutter) or editable | Editable superset (tap to edit, swipe to delete). |
 | D8 | Search scope in transaction filters | Description only (Flutter), with category covered by the category filter. |
 | D9 | Delete tag: leave orphan `tagIds` on transactions (Flutter) or clean them | Leave them; keeps both apps identical. |
-| D10 | Backup restore: commit strategy, safety copy, v1/v2 backups | One commit, swapping memory only on success. Keep a pre-restore safety copy of the store. v1/v2 backups leave absent sections unchanged (Flutter resets them). |
+| D10 | Backup restore: commit strategy, safety copy, old-schema backups | One commit, swapping memory only on success. Keep a pre-restore safety copy of the store. Keys a backup leaves out or sets to null (schema-1 files; only schemas 1 and 3 ever existed) leave their sections unchanged (Flutter resets them). |
 | D11 | Voice entry | **Decided: OpenAI, with the key built into the app** (Flutter's approach). See section 6 for how the key is supplied without committing it, and the limits that contain misuse. |
 | D12 | Widget: honour Hide balances; restyle fonts | Honour it; keep the widget `kind` names; restyle later. |
 | D13 | Month selector patterns | Home: pill + wheel, plus a year stepper. Spend and Flow: pill + sheet. Worth and the SEE ALL list: chip strip. All as in Flutter, except the year stepper. |
@@ -111,7 +111,7 @@ These come from MIGRATION_SPEC and the specs. Any PR that breaks one is wrong.
 
 **Strings and ordering**
 - Compare strings as UTF-16 code units where Dart does (sorting, rule matching, id tie-breaks).
-- Use Dart-equivalent `trim` (includes U+FEFF) and stable sorts. Note tie-order differences above 32 elements in PARITY_GAPS.
+- Use Dart-equivalent `trim` (includes U+FEFF). Where Dart sorts a list whose ties are visible, use `DartSort` (a port of Dart's `List.sort`: stable up to 33 elements, an unstable quicksort from 34; verified). Note any remaining tie-order difference in PARITY_GAPS.
 
 **Accessibility and polish**
 - Every animation has a Reduce Motion path.

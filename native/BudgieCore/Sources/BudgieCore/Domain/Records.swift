@@ -84,7 +84,7 @@ public struct TransactionRecord: Identifiable, Hashable, Sendable {
         }
         let createdAt = optionalDate("createdAt") ?? date
         let updatedAt = optionalDate("updatedAt") ?? createdAt
-        let validID = id.map { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? false
+        let validID = id.map { !DartString.trim($0).isEmpty } ?? false
         return TransactionRecord(
             id: validID ? id! : newID(),
             type: object["type"]?.stringValue == "expense" ? .expense : .income,
