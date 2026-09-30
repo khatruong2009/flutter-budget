@@ -209,6 +209,7 @@ struct SettingsThemeRow: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Theme mode")
+            .accessibilityIdentifier("settings.theme")
     }
 }
 

@@ -106,7 +106,8 @@ struct SettingsView: View {
             AnyView(SettingsRow(
                 symbol: "sparkles", color: BudgieColor.info, title: "Tags & rules",
                 subtitle: "\(data.tags.count) tags · \(data.rules.count) rules",
-                action: { destination = .tagsAndRules })),
+                action: { destination = .tagsAndRules }
+            ).accessibilityIdentifier("settings.tagsRules")),
             AnyView(SettingsRow(
                 symbol: "banknote", color: BudgieColor.income, title: "Currency",
                 subtitle: SettingsOptions.currencyLabel(settings.baseCurrencyCode),
@@ -194,11 +195,13 @@ struct SettingsView: View {
             AnyView(SettingsRow(
                 symbol: "list.bullet.rectangle", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
                 title: "Data diagnostics", subtitle: "What this device loaded",
-                action: { destination = .diagnostics })),
+                action: { destination = .diagnostics }
+            ).accessibilityIdentifier("settings.diagnostics")),
             AnyView(SettingsRow(
                 symbol: "doc.text", color: BudgieColor.versionIcon, tile: BudgieColor.versionTile,
                 title: "Licences", subtitle: "Fonts (SIL Open Font License)",
-                action: { destination = .licences })),
+                action: { destination = .licences }
+            ).accessibilityIdentifier("settings.licences")),
         ]
         #if DEBUG
         rows.append(AnyView(SettingsRow(

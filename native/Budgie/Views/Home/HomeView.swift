@@ -79,6 +79,7 @@ struct HomeView: View {
                 // Explicit, so the sections below move with the panel.
                 withAnimation(reduceMotion ? nil : Motion.easeInOut(0.25)) { monthPanelOpen.toggle() }
             }
+            .accessibilityIdentifier("home.monthPill")
         } accessory: {
             NavigationLink {
                 SettingsView()
@@ -86,7 +87,9 @@ struct HomeView: View {
                 Image(systemName: "gearshape")
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .frame(width: 36, height: 36)
+                    // The glyph's 36pt slot is unchanged; the tap area is
+                    // the 44pt minimum, centred on it.
+                    .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
             .accessibilityLabel("Settings")
@@ -317,6 +320,7 @@ private struct SafeToSpendCard: View {
             .accessibilityElement(children: .ignore)
         }
         .accessibilityLabel("\(title) \(amount). \(subtitle). Double tap for breakdown.")
+        .accessibilityIdentifier("home.safeToSpend")
     }
 
     private func subtitle(isOver: Bool) -> String {

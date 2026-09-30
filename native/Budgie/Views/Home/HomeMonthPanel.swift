@@ -44,20 +44,21 @@ private struct YearStepper: View {
     var body: some View {
         let month = model.selectedMonth
         HStack(spacing: 0) {
-            button("chevron.left", label: "Previous year") { step(month, by: -1) }
+            button("chevron.left", label: "Previous year", identifier: "home.monthPanel.prevYear") { step(month, by: -1) }
             Text(DartDateFormat.y(month))
                 .textStyle(.rowTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)
                 .accessibilityLabel("Year \(DartDateFormat.y(month))")
-            button("chevron.right", label: "Next year") { step(month, by: 1) }
+                .accessibilityIdentifier("home.monthPanel.year")
+            button("chevron.right", label: "Next year", identifier: "home.monthPanel.nextYear") { step(month, by: 1) }
         }
         .padding(.horizontal, 8)
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
     }
 
-    private func button(_ symbol: String, label: String, action: @escaping () -> Void) -> some View {
+    private func button(_ symbol: String, label: String, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 16, weight: .semibold))
@@ -67,6 +68,7 @@ private struct YearStepper: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
+        .accessibilityIdentifier(identifier)
     }
 
     private func step(_ month: DartDateTime, by years: Int) {
@@ -162,6 +164,7 @@ private struct MonthWheel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Month")
         .accessibilityValue(Self.names[selected])
+        .accessibilityIdentifier("home.monthWheel")
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: if selected < 11 { select(selected + 1) }

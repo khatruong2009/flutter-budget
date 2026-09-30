@@ -109,6 +109,16 @@ tap was aimed at the card (e.g. its Add button) and is ignored.
   takes the same path, gate and one-voice-flow guard as the quick action,
   link and widget. The scroll content clears both buttons (130pt: 20 + 54 +
   12 + 44).
+- The settings gear keeps its 36pt glyph slot but its tap area is 44 x 44pt
+  (the label's frame and content shape, centred on the glyph).
+- UI-test identifiers: `home.monthPill`, `home.monthPanel.prevYear`,
+  `home.monthPanel.nextYear`, `home.monthPanel.year` (the year stepper),
+  `home.monthWheel` (the adjustable "Month" element, value = month name),
+  `home.safeToSpend` (the card), `home.budgets.row.<category>` (a budget row),
+  `home.budgets.add` (the card's "Add a budget" row),
+  `budgets.picker.<category>` (a tile in the Edit / Add pickers),
+  `budgets.limit.field`, `budgets.limit.save`, `budgets.limit.remove` (the
+  limit sheet).
 
 ## Transaction form (sheet, D5)
 
@@ -782,6 +792,9 @@ ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
 - Face ID lock toggle (`setAppLockEnabled`), shown with the device's
   biometry name; enabling requires a successful authentication first.
 - About: version, "Data diagnostics" (the existing `DiagnosticsView`).
+- UI-test identifiers added for the chunk-1 tests: `settings.theme` (the
+  Light | Dark | Auto pills container), `settings.tagsRules`,
+  `settings.diagnostics`, `settings.licences`.
 
 ### Settings > DATA (spec full-app/06 sections 1.7-1.8; Flutter `settings_page.dart`)
 

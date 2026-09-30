@@ -49,11 +49,13 @@ struct BudgetLimitSheet: View {
             field.padding(.top, 24)
             HStack(spacing: 16) {
                 if currentLimit != nil {
-                    LimitSheetButton(title: "Remove", symbol: "trash", primary: false, enabled: !saving, action: remove)
+                    LimitSheetButton(
+                        title: "Remove", symbol: "trash", primary: false, enabled: !saving, identifier: "budgets.limit.remove",
+                        action: remove)
                 }
                 LimitSheetButton(
                     title: "Save", symbol: "checkmark.circle.fill", primary: true, loading: saving, enabled: canSave,
-                    action: save)
+                    identifier: "budgets.limit.save", action: save)
             }
             .padding(.top, 24)
         }
@@ -141,6 +143,7 @@ struct BudgetLimitSheet: View {
                     // The prompt replaces the title as the field's label.
                     .accessibilityLabel("Limit")
                     .accessibilityHint(Self.helper)
+                    .accessibilityIdentifier("budgets.limit.field")
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -226,6 +229,7 @@ private struct LimitSheetButton: View {
     let primary: Bool
     var loading = false
     let enabled: Bool
+    let identifier: String
     let action: () -> Void
 
     var body: some View {
@@ -257,6 +261,7 @@ private struct LimitSheetButton: View {
         }
         .buttonStyle(LimitSheetButtonStyle())
         .disabled(!enabled)
+        .accessibilityIdentifier(identifier)
     }
 }
 

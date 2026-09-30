@@ -106,7 +106,7 @@ private struct BudgetCardRow: View {
     var body: some View {
         switch kind {
         case .budget(let item, let info): BudgetRow(item: item, info: info, formatter: formatter, action: action)
-        case .add(let subtitle): AddBudgetRow(subtitle: subtitle, action: action)
+        case .add(let subtitle): AddBudgetRow(subtitle: subtitle, action: action).accessibilityIdentifier("home.budgets.add")
         }
     }
 }
@@ -161,6 +161,7 @@ private struct BudgetRow: View {
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
         .accessibilityLabel("\(item.category), \(subtitle), \(chip)")
         .accessibilityHint("Opens the monthly limit")
+        .accessibilityIdentifier("home.budgets.row.\(item.category)")
     }
 
     /// `_statusColor`: over is danger, from 85% warning, else income green.
@@ -337,6 +338,7 @@ private struct BudgetCategoryTile: View {
         }
         .buttonStyle(PressScaleStyle(scale: 1))
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .accessibilityIdentifier("budgets.picker.\(info.name)")
     }
 }
 
