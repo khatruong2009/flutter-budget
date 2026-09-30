@@ -85,7 +85,9 @@ final class AppModel {
     private let protectedData: ProtectedDataMonitor
     private let preferences: UserDefaultsPreferences
     private let store: FinancialStore
-    private let tracker: PersistenceTracker
+    /// Replaced (all flags cleared) after a restore, whose one commit wrote
+    /// every section a flag can name.
+    private var tracker: PersistenceTracker
     private let storeDirectory: URL
     private let applicationSupport: URL
     /// False for a scratch directory (tests): the App Group widget values
@@ -265,8 +267,14 @@ final class AppModel {
 
     /// Writes the named sections (plus anything still unsaved) and waits for
     /// the verified result. The change is already visible in memory.
+    ///
+    /// While a restore runs nothing is written (its commit would overwrite
+    /// the write, and a write after it would put back the old memory):
+    /// returns false. The restore's confirmation keeps the UI inert
+    /// meanwhile, so no edit reaches this.
     @discardableResult
     private func persist(_ sections: [String]) async -> Bool {
+        guard !isRestoring else { return false }
         let payload = sections.map { ($0, serialize($0)) }
         let saved = await tracker.persist(payload, serialize: serialize)
         hasUnsavedChanges = tracker.hasUnsavedChanges
@@ -275,7 +283,10 @@ final class AppModel {
         return saved
     }
 
+    /// Writes every flagged section again. A no-op while a restore runs: a
+    /// retry serialising the old memory after its commit would undo it.
     func retrySaves() async {
+        guard !isRestoring else { return }
         _ = await tracker.retry(serialize: serialize)
         hasUnsavedChanges = tracker.hasUnsavedChanges
         lastSaveError = tracker.lastError.map { String(describing: $0) }
@@ -1004,14 +1015,191 @@ final class AppModel {
 
     // MARK: - CSV export
 
-    /// Writes the export to a temporary file for the share sheet.
+    /// Writes the export to a temporary file for the share sheet (deleted
+    /// once the sheet closes).
     func exportCSV() throws -> URL {
         let rows = (data?.transactions ?? []).map {
             CSVExport.Row(date: $0.date, isIncome: $0.type == .income, category: $0.category, description: $0.description, amount: $0.amount)
         }
+        Self.removeStaleExports()
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(CSVExport.fileName(now: now))
-        try Data(CSVExport.export(rows)).write(to: url, options: [.atomic])
+        try Data(CSVExport.export(rows)).write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         return url
+    }
+
+    // MARK: - CSV import
+
+    /// The first half of "Import from CSV" (`parseTransactionsCsv`):
+    /// decode, validate and dedupe against the readable transactions, off
+    /// the main thread. Writes nothing.
+    func previewCSVImport(_ bytes: [UInt8]) async throws(CSVImport.Failure) -> CSVImport.Summary {
+        let existing = data?.transactions ?? []
+        let calendar = self.calendar
+        let result = await Task.detached(priority: .userInitiated) {
+            Result { () throws(CSVImport.Failure) in try CSVImport.parse(bytes: bytes, existing: existing, calendar: calendar) }
+        }.value
+        return try result.get()
+    }
+
+    /// The second half (`importTransactions`): the summary's rows appended
+    /// in file order, with the new category names they bring, in one
+    /// awaited commit. True when it verified (or there was nothing to
+    /// import); false when the rows are only in memory (the unsaved banner).
+    @discardableResult
+    func importCSV(_ summary: CSVImport.Summary) async -> Bool {
+        guard !isRestoring, let current = data else { return false }
+        let result = current.importTransactions(summary, now: now, newID: newID)
+        guard !result.sections.isEmpty else { return true }
+        data = result.data
+        transactionsChanged()
+        return await persist(result.sections.map(\.0))
+    }
+
+    // MARK: - Backup export and restore (D10)
+
+    /// The marketing version (Flutter's `PackageInfo.version`, falling back
+    /// to 2.0.0), written into backups and safety copies.
+    static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.0.0"
+
+    /// Something `exportBackup` or `restoreBackup` could not do, in words
+    /// for "Could not export backup: …" / "Could not import backup: …".
+    struct DataTransferError: Error, Equatable {
+        let reason: String
+    }
+
+    /// `_exportBackup`: the envelope built and encoded off the main thread
+    /// from the current data and theme, written to a temporary file named
+    /// for one clock read (the same one as `exportedAt`). The caller shares
+    /// it and deletes it once the share sheet closes.
+    func exportBackup() async throws(DataTransferError) -> URL {
+        guard let data else { throw DataTransferError(reason: "Your data is not loaded yet.") }
+        let now = self.now
+        let theme = themeMode.rawValue
+        let version = Self.appVersion
+        Self.removeStaleExports()
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(BackupEnvelope.fileName(now: now))
+        let written = await Task.detached(priority: .userInitiated) { () -> DataTransferError? in
+            do {
+                let bytes = try BackupEnvelope.encode(data: data, themeMode: theme, appVersion: version, now: now)
+                try Data(bytes).write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+                return nil
+            } catch let error as BackupExportError {
+                return DataTransferError(reason: error.message)
+            } catch {
+                return DataTransferError(reason: error.localizedDescription)
+            }
+        }.value
+        if let written { throw written }
+        return url
+    }
+
+    /// `decodeBackup`, off the main thread: the restore plan, or Flutter's
+    /// message. Writes nothing.
+    func decodeBackup(_ bytes: [UInt8]) async throws(BackupError) -> RestorePlan {
+        let calendar = self.calendar
+        let now = self.now
+        let result = await Task.detached(priority: .userInitiated) {
+            Result { () throws(BackupError) in
+                try BackupEnvelope.decode(bytes: bytes, calendar: calendar, now: now, newID: { UUID().uuidString.lowercased() })
+            }
+        }.value
+        return try result.get()
+    }
+
+    /// A restore is running: nothing else writes (`persist`, `retrySaves`).
+    private(set) var isRestoring = false
+
+    enum RestoreOutcome: Equatable {
+        /// Committed and verified; memory swapped. `generated`: rows the
+        /// recurring generator added.
+        case restored(generated: Int)
+        /// Nothing changed, in memory or on disk.
+        case failed(DataTransferError)
+
+        /// "Backup restored", or "Could not import backup: <reason>".
+        var toast: Toast {
+            switch self {
+            case .restored: Toast(message: BackupEnvelope.restoredMessage)
+            case .failed(let error): Toast(message: BackupEnvelope.importFailedMessage(error.reason), style: .danger)
+            }
+        }
+    }
+
+    /// Replaces the data with `plan` (D10): a safety copy of the store and
+    /// preferences first (no restore without it), then ONE commit of all
+    /// ten sections, and only once it verified the swap of memory, the
+    /// cleared unsaved flags, the settings' preference mirrors and the
+    /// theme (its setter's no-op guard included). Sections the file leaves
+    /// out are rewritten unchanged. The session is not marked unlocked, so
+    /// App Lock turned on by the file locks at once, as in Flutter.
+    func restoreBackup(_ plan: RestorePlan) async -> RestoreOutcome {
+        guard phase == .ready, let current = data, !isRestoring else {
+            return .failed(DataTransferError(reason: "Your data is not loaded yet."))
+        }
+        isRestoring = true
+        defer { isRestoring = false }
+
+        let now = self.now
+        let result = await Task.detached(priority: .userInitiated) {
+            current.restoring(plan, now: now, newID: { UUID().uuidString.lowercased() })
+        }.value
+
+        let calendar = self.calendar
+        let safetyCopy = PreRestoreBackup(
+            applicationSupport: applicationSupport, store: DirectoryFileSystem(directory: storeDirectory),
+            exportPreferences: { [preferences] in try preferences.exportDomain() }, appVersion: Self.appVersion,
+            clock: { calendar.now() })
+        let copied = await Task.detached(priority: .userInitiated) { () -> Bool in
+            (try? safetyCopy.create()) != nil
+        }.value
+        guard copied else {
+            Self.dataLog.error("restore aborted: the pre-restore safety copy failed")
+            return .failed(DataTransferError(reason: "A safety copy of your current data could not be made."))
+        }
+
+        do {
+            try await store.updateSections(result.sections)
+        } catch {
+            Self.dataLog.error("restore commit failed: \(String(describing: error), privacy: .public)")
+            return .failed(DataTransferError(reason: Self.describe(error)))
+        }
+
+        // Committed: every section a flag can name was just written from
+        // the new data.
+        data = result.data
+        tracker = PersistenceTracker(store: store)
+        hasUnsavedChanges = false
+        lastSaveError = nil
+        for write in result.preferenceWrites { preferences.set(write.value, forKey: write.key) }
+        if let mode = result.themeMode.flatMap(ThemeMode.init(rawValue:)) { setThemeMode(mode) }
+        netWorthRevision &+= 1
+        transactionsChanged()
+        syncWidget()
+        _ = await Task.detached(priority: .utility) { try? safetyCopy.prune(keeping: PreRestoreBackup.retained) }.value
+        return .restored(generated: result.generatedTransactions)
+    }
+
+    private static let dataLog = Logger(subsystem: AppIdentifiers.bundleID, category: "data")
+
+    /// A store error in words.
+    private static func describe(_ error: FinancialStoreError) -> String {
+        switch error {
+        case .protectedDataUnavailable: "The device is locked."
+        case .readFailed(_, let reason), .writeFailed(_, let reason): reason
+        case .verificationFailed: "The saved data did not verify."
+        case .dataUnreadable: "The stored data could not be read."
+        }
+    }
+
+    /// Export files a crash (or a sheet that never reported back) left in
+    /// the temporary directory: they hold all financial data.
+    private static func removeStaleExports() {
+        let directory = FileManager.default.temporaryDirectory
+        guard let names = try? FileManager.default.contentsOfDirectory(atPath: directory.path) else { return }
+        for name in names
+        where (name.hasPrefix("budgie_backup_") && name.hasSuffix(".json")) || (name.hasPrefix("transactions_") && name.hasSuffix(".csv")) {
+            try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
+        }
     }
 
     // MARK: - Toasts

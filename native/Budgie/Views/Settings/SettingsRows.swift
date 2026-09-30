@@ -74,8 +74,8 @@ enum SettingsGlyph {
 /// `tile` overrides it), title and a one-line subtitle, then the trailing
 /// view; padding 14 x 12. With `action` the whole row is a button (light
 /// haptic, no visible press state, VoiceOver "title, subtitle"); without
-/// one it is plain. While `busy` VoiceOver hears "Exporting" for the
-/// subtitle.
+/// one it is plain. While `busy` VoiceOver hears `busyLabel` ("Exporting",
+/// "Importing", "Restoring") for the subtitle.
 struct SettingsRow<Trailing: View>: View {
     let symbol: String
     let color: Color
@@ -84,6 +84,7 @@ struct SettingsRow<Trailing: View>: View {
     let title: String
     let subtitle: String
     var busy = false
+    var busyLabel = "Exporting"
     var action: (() -> Void)? = nil
     @ViewBuilder var trailing: () -> Trailing
 
@@ -116,7 +117,7 @@ struct SettingsRow<Trailing: View>: View {
             row
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(title)
-                .accessibilityValue(busy ? "Exporting" : subtitle)
+                .accessibilityValue(busy ? busyLabel : subtitle)
         }
     }
 }
@@ -125,11 +126,11 @@ extension SettingsRow where Trailing == SettingsChevron {
     /// A row that opens something: the chevron, or the spinner while `busy`.
     init(
         symbol: String, color: Color, tile: Color? = nil, iconSize: CGFloat = SettingsGlyph.standard, title: String,
-        subtitle: String, busy: Bool = false, action: (() -> Void)?
+        subtitle: String, busy: Bool = false, busyLabel: String = "Exporting", action: (() -> Void)?
     ) {
         self.init(
             symbol: symbol, color: color, tile: tile, iconSize: iconSize, title: title, subtitle: subtitle, busy: busy,
-            action: action,
+            busyLabel: busyLabel, action: action,
             trailing: { SettingsChevron(busy: busy) })
     }
 }

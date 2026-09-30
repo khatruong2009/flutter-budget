@@ -15,8 +15,8 @@ UPGRADE_TEST_RESULTS.md).
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. As in Flutter there is no rule edit, enable switch, amount bounds or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Flag shared with Flutter (`OnboardingFlag`: a CFBoolean true under the same key; missing or another type shows the tour), read at launch after protected data is available, written when the tour is completed or skipped. Available: the three-page tour shows once, in place of the tabs and inside the lock gate (differences under "Deliberate differences"). |
-| Backup export/import (JSON envelope v3) | files chosen by the user | BudgieCore export, decode, restore and pre-restore safety copy are done and match Flutter byte for byte (Fixtures/backup; differences below); the Settings rows still open the "upcoming" page until the UI lands. |
-| CSV import | ledger | BudgieCore parser, decode, validation, dedupe, copy and the one-commit import match Flutter (Fixtures/csvimport; differences under "CSV import" below); the Settings row still opens the "upcoming" page until the UI lands. |
+| Backup export/import (JSON envelope v3) | files chosen by the user | Available: Settings > Export backup (share sheet) and Import backup (document picker, "Replace all data?", one-commit restore after a safety copy). Export, decode and restore match Flutter byte for byte (Fixtures/backup); differences under "Backup export and restore" below. |
+| CSV import | ledger | Available: Settings > Import from CSV (document picker, counts-only confirmation, one-commit import). Parser, decode, validation, dedupe, copy and the import match Flutter (Fixtures/csvimport); differences under "CSV import" below. |
 | Month picker limited to the selected year | UI state | Fixed (D13): Home's month panel has a year stepper above the wheel, and the wheel always shows the selected month. |
 
 ## Flutter behaviour reproduced on purpose (approved Q1; fix in both apps later)
@@ -814,9 +814,6 @@ UPGRADE_TEST_RESULTS.md).
   Tappable rows read "title, subtitle" once (label and value; Flutter
   merges its button label with the child texts), and the section eyebrows
   are headers.
-- Settings rows whose features land in Phase 3 (Import from CSV, Export
-  backup, Import backup) keep Flutter's icon and copy but open an
-  "upcoming update" page.
 - Settings > ABOUT also lists Data diagnostics and Licences (the SIL OFL
   texts the bundled fonts require), and Design gallery in debug builds;
   Flutter has only Version. The version is read from the bundle at once
@@ -824,7 +821,11 @@ UPGRADE_TEST_RESULTS.md).
 - Export as CSV shows "Transactions exported successfully!" only when the
   share sheet completed (Flutter shows it after any dismissal, a cancel
   included); the spinner shows while the share sheet is open, as in
-  Flutter.
+  Flutter. The share subject is Flutter's ("Budget Transactions Export",
+  the Mail subject and the sheet's title). The temporary file is written
+  with file protection and deleted once the sheet reports back (Flutter
+  leaves it in `tmp`); leftovers of an interrupted export are swept at
+  the next export.
 - The Theme pills slide one accent capsule between segments (the shared
   `SegmentedPills`); Flutter fades each segment's fill in place.
 - Settings SF Symbols stand in for Material Symbols: `square.on.circle`
@@ -898,6 +899,16 @@ real Settings page for the copy). Differences (D6; Dart cannot see them):
   another writer produced, e.g. a local time that does not exist in the
   current zone (typical's New York midnight read in Santiago), which
   Flutter writes back as the resolved time. Unreadable rows: see above.
+
+- The confirmation is the redesign's centred card (Cancel and an accent
+  "Import" pill; Flutter: a Material AlertDialog with text buttons); the
+  import is awaited with the card inert. The data rows stay disabled from
+  the tap until the message (Flutter's `_isImporting`), VoiceOver reading
+  "Importing" for the row. The picked file is read in place (Flutter's
+  picker copies it into the app cache and leaves it there).
+- The neutral messages ("All transactions in this file already exist",
+  "No transactions found in this file") use the neutral toast, Flutter's
+  default SnackBar look.
 
 Flutter behaviour kept on purpose (D6 candidates; fixing them would change
 what gets stored):
@@ -973,6 +984,23 @@ existed, 1 (six `data` keys, July 2026) and 3; there is no "v2".
   deep part is under a key it ignores.
 - `appSettings` keeps unknown keys (the section is patched); Flutter
   writes a fresh five-key object.
+- Settings rows: the four data rows are disabled from the tap until the
+  result message (through the share sheet, the picker and the dialog), the
+  running one with a spinner, as Flutter's `_dataBusy`; VoiceOver reads
+  "Exporting" or "Restoring" for it. "Backup exported" shows only when a
+  share activity completed (Flutter: after any dismissal, a cancel
+  included), with "Budgie Backup" as the Mail subject and the sheet's
+  title; the temporary file is written with file protection and deleted
+  once the sheet reports back (Flutter leaves it in `tmp`). The picked
+  file is read in place (Flutter copies it into `tmp` and leaves it); a
+  file that cannot be read shows "Could not import backup: The file could
+  not be read" (Flutter returns silently, like a cancel).
+- The confirmation is the redesign's centred card (Cancel and a danger
+  "Replace" pill; Flutter: a Material AlertDialog with text buttons). The
+  restore is awaited with the card inert and the rows disabled; saving
+  retries and other writes are held off until it ends (`isRestoring`).
+  A backup that turns App Lock on locks the session at once (Flutter's
+  false -> true; the session is never marked unlocked by a restore).
 - Export: `exportedAt` and the file name come from one clock read (Flutter
   reads the clock twice). Rows the Swift store keeps but cannot read are
   left out, as Flutter, which cannot load them either.

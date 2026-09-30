@@ -701,8 +701,55 @@ ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
   (USD CAD EUR GBP AUD JPY CNY INR KRW MXN BRL) (`setBaseCurrency`).
 - Face ID lock toggle (`setAppLockEnabled`), shown with the device's
   biometry name; enabling requires a successful authentication first.
-- Export CSV: `ShareLink` of `model.exportCSV()` ("Export transactions").
 - About: version, "Data diagnostics" (the existing `DiagnosticsView`).
+
+### Settings > DATA (spec full-app/06 sections 1.7-1.8; Flutter `settings_page.dart`)
+
+- Rows: Recurring transactions, Export as CSV ("All N transactions"),
+  Import from CSV, Export backup, Import backup (identifiers
+  `settings.exportCSV`, `settings.importCSV`, `settings.exportBackup`,
+  `settings.importBackup`). While one of the four data rows runs (from the
+  tap until its message, through the share sheet, the document picker and
+  the confirmation) all four are disabled and the running one shows the
+  20pt spinner; VoiceOver reads "Exporting", "Importing" or
+  "Restoring" for it.
+  Recurring is never disabled.
+- Share sheet (`ShareSheet`: `UIActivityViewController` with a
+  `UIActivityItemSource`): the subject ("Budgie Backup", "Budget
+  Transactions Export") is the Mail subject and the sheet's header title.
+  The success toast ("Backup exported", "Transactions exported
+  successfully!") shows only when an activity completed; the temporary
+  file is deleted when the sheet reports back. The backup file is built
+  off the main thread (`model.exportBackup()`).
+- Document picker: one `.fileImporter` on the page, typed by what it is
+  choosing (`.json` for a backup, `.commaSeparatedText` for CSV); the
+  file is read in place (security scope, `NSFileCoordinator`) off the
+  main thread. Cancel is silent; an unreadable file toasts "Could not
+  import backup: The file could not be read" / "Could not import: The file
+  could not be read".
+- Confirmation: `DataImportDialog`, the centred `budgieDialog` card
+  (goalTitle title, bodyMedium secondary message in a `DialogScroll`,
+  Cancel and the action as 44pt pills). The action is awaited with the
+  card inert (no Cancel, no scrim dismiss); a scrim tap is Cancel.
+  - Backup: "Replace all data?", `RestorePlan.confirmationMessage`
+    (Flutter's text, plus the kept-items sentence for a file that leaves
+    sections out), Cancel / Replace (danger fill). Identifiers
+    `backup.confirm.title|message|cancel|confirm`. Then "Backup restored"
+    (success) or "Could not import backup: <reason>" (danger).
+  - CSV: `Summary.confirmTitle` ("Import 2 transactions?"),
+    `confirmMessage` (counts only, "2 duplicates will be skipped\n1 row
+    could not be read"; no body when nothing was skipped), Cancel / Import
+    (accent fill). Identifiers `csvimport.confirm.*`. Then
+    `successMessage` (success) once the write verified, else the
+    save-failed toast.
+- A file the decoder refuses toasts "Could not import backup: <Flutter
+  message>" (danger), e.g. "This is not a valid Budgie backup file".
+- CSV: parsed off the main thread (`model.previewCSVImport`); nothing to
+  import shows `emptyResultMessage` in its tone (neutral for "All
+  transactions in this file already exist" and "No transactions found in
+  this file", danger when rows could not be read) and no dialog; a
+  refused file shows "Could not import: Not a valid transactions CSV
+  export" (danger).
 
 ## Onboarding (spec full-app/07 section B; Flutter `onboarding_tutorial.dart`)
 

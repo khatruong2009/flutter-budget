@@ -1,23 +1,32 @@
 import BudgieCore
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// Settings (Flutter's "More" tab, `settings_page.dart:579-911`), pushed
 /// from the Home gear (D2): the title sits in the navigation bar beside the
 /// back button, then the brand card and the APPEARANCE, PERSONALIZATION,
 /// PRIVACY, DATA and ABOUT cards.
 ///
-/// Differences from Flutter (PARITY_GAPS): Import from CSV and the backup
-/// rows open an "upcoming update" page until their phase lands; turning
-/// App lock on asks for Face ID / the passcode first (Flutter locks at
-/// once); ABOUT also lists Data diagnostics and Licences.
+/// Differences from Flutter (PARITY_GAPS): turning App lock on asks for
+/// Face ID / the passcode first (Flutter locks at once); ABOUT also lists
+/// Data diagnostics and Licences.
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
 
     @State private var destination: Destination?
     @State private var choice: Choice?
-    @State private var exportFile: ExportFile?
     @State private var notice: String?
+    /// The DATA row whose work is running (Flutter's `_isExporting`,
+    /// `_isImporting`, `_isBackingUp`, `_isRestoring`): from the tap until
+    /// its toast, through the share sheet, picker and confirmation.
+    @State private var dataTask: DataTask?
+    @State private var shareFile: ShareFile?
+    /// What the document picker is choosing a file for. One `.fileImporter`
+    /// serves both imports (a second one on the same view is ignored).
+    @State private var importKind: ImportKind?
+    @State private var showsImporter = false
+    @State private var confirmation: Confirmation?
 
     var body: some View {
         ScrollView {
@@ -51,11 +60,21 @@ struct SettingsView: View {
         }
         .navigationDestination(item: $destination) { $0.view }
         .sheet(item: $choice) { choiceSheet($0) }
-        .sheet(item: $exportFile) { file in
-            ActivityView(url: file.url) { completed in
-                if completed { model.showToast(Toast(message: "Transactions exported successfully!")) }
+        .sheet(item: $shareFile, onDismiss: finishDataTask) { file in
+            ShareSheet(url: file.url, subject: file.subject) { completed in
+                if completed { model.showToast(file.completedToast) }
+                // It holds financial data; Flutter leaves it in tmp.
+                try? FileManager.default.removeItem(at: file.url)
             }
             .ignoresSafeArea()
+        }
+        .fileImporter(
+            isPresented: $showsImporter, allowedContentTypes: (importKind ?? .backup).contentTypes, allowsMultipleSelection: false,
+            onCompletion: picked, onCancellation: finishDataTask
+        )
+        // A scrim tap closes it like Cancel.
+        .budgieDialog(item: Binding(get: { confirmation }, set: { if $0 == nil { closeConfirmation() } })) {
+            confirmationDialog($0)
         }
         .alert("App lock", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })) {
             Button("OK", role: .cancel) {}
@@ -126,14 +145,13 @@ struct SettingsView: View {
         return rows
     }
 
-    /// Recurring is never disabled; the other four are while an export runs
-    /// (Flutter's `_dataBusy`).
+    /// Recurring is never disabled; the other four are while any of them
+    /// runs (Flutter's `_dataBusy`), the running one with its spinner.
     private func dataRows(_ data: FinancialData) -> [AnyView] {
-        let busy = exportFile != nil
         // What the export writes (Flutter `transactions.length`), current
         // as soon as a row is added (the ledger index rebuilds later).
         let transactionCount = data.transactions.count
-        func unlessBusy(_ action: @escaping () -> Void) -> (() -> Void)? { busy ? nil : action }
+        func unlessBusy(_ action: @escaping () -> Void) -> (() -> Void)? { dataTask == nil ? action : nil }
         return [
             AnyView(SettingsRow(
                 symbol: "repeat", color: BudgieColor.accent, title: "Recurring transactions",
@@ -143,22 +161,29 @@ struct SettingsView: View {
             AnyView(SettingsRow(
                 symbol: "arrow.down.to.line", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
                 iconSize: SettingsGlyph.small,
-                title: "Export as CSV", subtitle: "All \(transactionCount) transactions", busy: busy,
-                action: unlessBusy(export)
+                title: "Export as CSV", subtitle: "All \(transactionCount) transactions",
+                busy: dataTask == .exportCSV, busyLabel: DataTask.exportCSV.busyLabel,
+                action: unlessBusy(exportCSV)
             ).accessibilityIdentifier("settings.exportCSV")),
             AnyView(SettingsRow(
                 symbol: "arrow.up.to.line", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
                 iconSize: SettingsGlyph.small,
                 title: "Import from CSV", subtitle: "Add transactions from a file",
-                action: unlessBusy { destination = .csvImport })),
+                busy: dataTask == .importCSV, busyLabel: DataTask.importCSV.busyLabel,
+                action: unlessBusy { pickFile(.csv) }
+            ).accessibilityIdentifier("settings.importCSV")),
             AnyView(SettingsRow(
                 symbol: "icloud.and.arrow.up", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
                 title: "Export backup", subtitle: "Everything, as a JSON file",
-                action: unlessBusy { destination = .backupExport })),
+                busy: dataTask == .exportBackup, busyLabel: DataTask.exportBackup.busyLabel,
+                action: unlessBusy(exportBackup)
+            ).accessibilityIdentifier("settings.exportBackup")),
             AnyView(SettingsRow(
                 symbol: "arrow.counterclockwise.circle", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
                 title: "Import backup", subtitle: "Restore everything (replaces current data)",
-                action: unlessBusy { destination = .backupImport })),
+                busy: dataTask == .importBackup, busyLabel: DataTask.importBackup.busyLabel,
+                action: unlessBusy { pickFile(.backup) }
+            ).accessibilityIdentifier("settings.importBackup")),
         ]
     }
 
@@ -277,20 +302,203 @@ struct SettingsView: View {
         }
     }
 
+    // MARK: - Data
+
+    private enum DataTask: Equatable {
+        case exportCSV, importCSV, exportBackup, importBackup
+
+        /// What VoiceOver reads for the running row.
+        var busyLabel: String {
+            switch self {
+            case .exportCSV, .exportBackup: "Exporting"
+            case .importCSV: "Importing"
+            case .importBackup: "Restoring"
+            }
+        }
+    }
+
+    private enum ImportKind {
+        case csv, backup
+
+        /// Flutter's `allowedExtensions: ['csv']` / `['json']`, as types.
+        var contentTypes: [UTType] {
+            switch self {
+            case .csv: [.commaSeparatedText]
+            case .backup: [.json]
+            }
+        }
+    }
+
+    /// The dialog once a file was read: the CSV rows to import, or the
+    /// backup to restore.
+    private struct Confirmation: Identifiable {
+        enum Kind {
+            case csv(CSVImport.Summary)
+            case restore(RestorePlan)
+        }
+
+        let id = UUID()
+        let kind: Kind
+    }
+
+    /// The DATA rows are enabled again (share sheet closed, picker
+    /// cancelled, dialog closed, or a message shown).
+    private func finishDataTask() {
+        dataTask = nil
+        importKind = nil
+    }
+
+    private func showToast(_ message: CSVImport.Message) {
+        let style: Toast.Style =
+            switch message.tone {
+            case .neutral: .neutral
+            case .success: .success
+            case .error: .danger
+            }
+        model.showToast(Toast(message: message.text, style: style))
+    }
+
     /// `_exportTransactions`: the share sheet, with the row's spinner while
     /// it is open and the success message once the file was shared.
-    private func export() {
+    private func exportCSV() {
+        dataTask = .exportCSV
         do {
-            exportFile = ExportFile(url: try model.exportCSV())
+            shareFile = ShareFile(
+                url: try model.exportCSV(), subject: "Budget Transactions Export",
+                completedToast: Toast(message: "Transactions exported successfully!"))
         } catch {
+            finishDataTask()
             model.showToast(Toast(message: "Error exporting transactions: \(error.localizedDescription)", style: .danger))
         }
+    }
+
+    /// `_exportBackup`: the file is built off the main thread, then shared;
+    /// "Backup exported" once an activity completed.
+    private func exportBackup() {
+        dataTask = .exportBackup
+        Task {
+            do throws(AppModel.DataTransferError) {
+                let url = try await model.exportBackup()
+                shareFile = ShareFile(
+                    url: url, subject: BackupEnvelope.shareSubject, completedToast: Toast(message: BackupEnvelope.exportedMessage))
+            } catch {
+                finishDataTask()
+                model.showToast(Toast(message: BackupEnvelope.exportFailedMessage(error.reason), style: .danger))
+            }
+        }
+    }
+
+    private func pickFile(_ kind: ImportKind) {
+        dataTask = kind == .csv ? .importCSV : .importBackup
+        importKind = kind
+        showsImporter = true
+    }
+
+    /// The picked file's bytes, read in place, then the CSV preview or the
+    /// backup decode. A file that cannot be read gets a message (Flutter
+    /// returns silently, as for a cancel).
+    private func picked(_ result: Result<[URL], any Error>) {
+        guard let kind = importKind else { return }
+        Task {
+            var bytes: [UInt8]? = nil
+            if case .success(let urls) = result, let url = urls.first { bytes = await Self.read(url) }
+            guard let bytes else {
+                finishDataTask()
+                switch kind {
+                case .csv: showToast(CSVImport.failureMessage(.unreadableFile))
+                case .backup:
+                    model.showToast(Toast(
+                        message: BackupEnvelope.importFailedMessage(CSVImport.Failure.unreadableFile.message), style: .danger))
+                }
+                return
+            }
+            switch kind {
+            case .csv: await previewCSV(bytes)
+            case .backup: await decodeBackup(bytes)
+            }
+        }
+    }
+
+    /// Off the main thread, inside the file's security scope, coordinated
+    /// (an iCloud file that is not downloaded yet is fetched first).
+    private static func read(_ url: URL) async -> [UInt8]? {
+        await Task.detached(priority: .userInitiated) { () -> [UInt8]? in
+            let scoped = url.startAccessingSecurityScopedResource()
+            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+            var bytes: [UInt8]? = nil
+            var error: NSError? = nil
+            NSFileCoordinator().coordinate(readingItemAt: url, options: [], error: &error) { readable in
+                bytes = (try? Data(contentsOf: readable)).map { [UInt8]($0) }
+            }
+            return bytes
+        }.value
+    }
+
+    /// `_importTransactions` up to the dialog: Flutter's message when there
+    /// is nothing to import, else the confirmation with the counts.
+    private func previewCSV(_ bytes: [UInt8]) async {
+        do {
+            let summary = try await model.previewCSVImport(bytes)
+            if let empty = summary.emptyResultMessage {
+                finishDataTask()
+                showToast(empty)
+            } else {
+                confirmation = Confirmation(kind: .csv(summary))
+            }
+        } catch {
+            finishDataTask()
+            showToast(CSVImport.failureMessage(error))
+        }
+    }
+
+    /// `_importBackup` up to the dialog: Flutter's message for a file it
+    /// refuses, else "Replace all data?".
+    private func decodeBackup(_ bytes: [UInt8]) async {
+        do {
+            let plan = try await model.decodeBackup(bytes)
+            confirmation = Confirmation(kind: .restore(plan))
+        } catch {
+            finishDataTask()
+            model.showToast(Toast(message: BackupEnvelope.importFailedMessage(error.message), style: .danger))
+        }
+    }
+
+    @ViewBuilder
+    private func confirmationDialog(_ confirmation: Confirmation) -> some View {
+        switch confirmation.kind {
+        case .csv(let summary):
+            DataImportDialog(
+                title: summary.confirmTitle, message: summary.confirmMessage, confirmTitle: CSVImport.importButtonTitle,
+                destructive: false, identifier: "csvimport.confirm", onCancel: closeConfirmation
+            ) {
+                let saved = await model.importCSV(summary)
+                closeConfirmation()
+                if saved { showToast(summary.successMessage) } else { model.showToast(.saveFailed) }
+            }
+        case .restore(let plan):
+            DataImportDialog(
+                title: RestorePlan.confirmationTitle, message: plan.confirmationMessage,
+                confirmTitle: RestorePlan.replaceButtonTitle, destructive: true, identifier: "backup.confirm",
+                onCancel: closeConfirmation
+            ) {
+                let outcome = await model.restoreBackup(plan)
+                closeConfirmation()
+                model.showToast(outcome.toast)
+            }
+        }
+    }
+
+    /// Cancel, a scrim tap, or the import done: the rows are enabled again.
+    /// A cancel writes nothing and shows nothing.
+    private func closeConfirmation() {
+        confirmation = nil
+        finishDataTask()
     }
 
     // MARK: - Destinations
 
     private enum Destination: Hashable {
-        case categories, tagsAndRules, recurring, csvImport, backupExport, backupImport, diagnostics, licences
+        case categories, tagsAndRules, recurring, diagnostics, licences
         #if DEBUG
         case designGallery
         #endif
@@ -300,9 +508,6 @@ struct SettingsView: View {
             case .categories: CategoriesView()
             case .tagsAndRules: TagsRulesView()
             case .recurring: RecurringView()
-            case .csvImport: UpcomingSettingsPage(title: "Import from CSV", symbol: "arrow.up.to.line")
-            case .backupExport: UpcomingSettingsPage(title: "Export backup", symbol: "icloud.and.arrow.up")
-            case .backupImport: UpcomingSettingsPage(title: "Import backup", symbol: "arrow.counterclockwise.circle")
             case .diagnostics: DiagnosticsView()
             case .licences: LicencesView()
             #if DEBUG
@@ -310,20 +515,6 @@ struct SettingsView: View {
             #endif
             }
         }
-    }
-}
-
-/// A Settings row whose feature lands in a later phase.
-private struct UpcomingSettingsPage: View {
-    let title: String
-    let symbol: String
-
-    var body: some View {
-        EmptyStateView(symbol: symbol, title: title, message: "This arrives in an upcoming update.")
-            .frame(maxHeight: .infinity)
-            .background(BudgieColor.background)
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -340,22 +531,4 @@ private struct SettingsBarTitle<Content: View>: ToolbarContent {
             ToolbarItem(placement: .topBarLeading, content: content)
         }
     }
-}
-
-private struct ExportFile: Identifiable {
-    let url: URL
-    var id: URL { url }
-}
-
-private struct ActivityView: UIViewControllerRepresentable {
-    let url: URL
-    let onComplete: (Bool) -> Void
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        controller.completionWithItemsHandler = { _, completed, _, _ in onComplete(completed) }
-        return controller
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
