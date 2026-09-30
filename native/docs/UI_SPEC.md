@@ -481,6 +481,68 @@ every mutation is an awaited `AppModel` call returning `CategoryOutcome`.
   `categories.editor.color.<token>`, `categories.editor.submit`,
   `categories.editor.cancel`; the field is the text field "Name".
 
+## Tags & rules (spec full-app/06 section 1.6; Flutter `categorization_settings_page.dart`)
+
+`Views/Settings/TagsRulesView.swift`, pushed from Settings >
+PERSONALIZATION > Tags & rules (system back; "Tags & rules" in cardTitle
+in the bar). Reads `model.tags` (stored order) and `model.rules` (Flutter's
+`rules`, priority descending); every mutation is an awaited `AppModel` call
+returning `TagRuleOutcome`. Scope is Flutter's: add / delete tag, add /
+delete rule (no rule edit, toggle, bounds or reorder).
+
+- Page: a scroll view padded 16 (Flutter's ListView). "Tags"
+  (headingMedium) with a trailing "ADD" text button (accent, M3 labelLarge
+  14 / w500, min 64 x 48; VoiceOver "Add tag"), 8, the tags card; 32;
+  "Merchant rules" with "ADD" ("Add merchant rule"), 8, the rules card.
+- Empty cards: `GlowCard` with bodyMedium in textSecondary: "Add tags to
+  group transactions across categories." / "Rules can automatically choose
+  a category and tags from a merchant name."
+- Rows (`GlowListCard`, padding 16 / 24, 16 gaps, trailing 48pt `trash`
+  button in textSecondary; no row tap): a tag is the `tag` IconTile in
+  accent and the name (rowTitle), 56 tall; a rule is the `sparkles`
+  IconTile in info, the merchant text (rowTitle) over Flutter's exact
+  subtitle (rowSubtitle, secondary): `"{matchType raw} · {category}"` plus
+  `" · {n} tags"` when it has tags ("contains · Groceries · 1 tags"), 72
+  tall.
+- Delete rule: instant (Flutter), the button inert while it saves. Delete
+  tag: the "Delete tag?" centred card ("This removes "{name}" from your
+  tags and from any merchant rule that uses it.", Cancel / Delete in
+  danger), awaited with the dialog inert, closing afterwards.
+  Transactions keep the id (D9); the form and SEE ALL chips no longer
+  show it.
+- "New tag" (`NewTagDialog`, `budgieDialog(item:)` centred card, goalTitle
+  title): the autofocused `BudgieField` "Tag name" (prompt "Travel
+  planning", words; Return adds), Cancel / Add pills (44). A blank name
+  closes silently (Flutter); `validateTagName`'s "A tag with this name
+  already exists" shows inline and then follows the text.
+- "New merchant rule" (`NewRuleDialog`): "Merchant text" (prompt "Whole
+  Foods", autofocus), then dropdowns in the field style (caption above,
+  chip-surface box radius 14, 52 tall, value in rowTitle, up-down
+  chevron, system menu with a check): "Type" (Income, Expense; default
+  Expense), "Match" (Contains, Starts with, Exact match; default
+  Contains), "Category" (`model.categories(for:)` names; default the
+  first; a type change keeps a name the new type has, else its first);
+  then, when tags exist, a "Tags" caption over the form's tag pills
+  (FlowLayout 8), selected in tap order. Add is disabled (38%) while the
+  trimmed text is empty. The draft sets only Flutter's fields. A refusal
+  shows in danger caption above the buttons.
+- Outcomes: `.saved` / `.unchanged` close silently; `.failed` closes with
+  `Toast.saveFailed`; `.rejected` shows `error.message` inline.
+- VoiceOver: a tag row's name and a rule row's text (label pattern, value
+  subtitle) are one element each with a "Delete" action, followed by the
+  "Delete {name}" / "Delete rule {pattern}" button; section titles and
+  dialog titles are headers; dropdowns read "Type, Expense"; tag pills
+  carry the selected trait.
+- UI-test identifiers: `tagsRules.list`, `tags.add`, `rules.add`,
+  `tags.empty`, `rules.empty`, `tags.row.<id>`, `tags.row.delete.<id>`,
+  `rules.row.<id>`, `rules.row.delete.<id>`, `tags.editor.name`,
+  `tags.editor.submit`, `tags.editor.cancel`, `tags.delete.confirm`,
+  `tags.delete.cancel`, `rules.editor.pattern`, `rules.editor.type`,
+  `rules.editor.match`, `rules.editor.category`,
+  `rules.editor.tag.<id>`, `rules.editor.submit`, `rules.editor.cancel`;
+  the Settings row is the button "Tags & rules"; the fields are the text
+  fields "Tag name" and "Merchant text".
+
 ## Toasts
 
 `Toast.Style`: `.success` (income), `.danger` (danger) and `.neutral`

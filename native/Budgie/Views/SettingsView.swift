@@ -7,10 +7,10 @@ import UIKit
 /// back button, then the brand card and the APPEARANCE, PERSONALIZATION,
 /// PRIVACY, DATA and ABOUT cards.
 ///
-/// Differences from Flutter (PARITY_GAPS): Tags & rules, Import from CSV
-/// and the backup rows open an "upcoming update" page until their
-/// phase lands; turning App lock on asks for Face ID / the passcode first
-/// (Flutter locks at once); ABOUT also lists Data diagnostics and Licences.
+/// Differences from Flutter (PARITY_GAPS): Import from CSV and the backup
+/// rows open an "upcoming update" page until their phase lands; turning
+/// App lock on asks for Face ID / the passcode first (Flutter locks at
+/// once); ABOUT also lists Data diagnostics and Licences.
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
 
@@ -298,7 +298,7 @@ struct SettingsView: View {
         @MainActor @ViewBuilder var view: some View {
             switch self {
             case .categories: CategoriesView()
-            case .tagsAndRules: UpcomingSettingsPage(title: "Tags & rules", symbol: "sparkles")
+            case .tagsAndRules: TagsRulesView()
             case .recurring: RecurringView()
             case .csvImport: UpcomingSettingsPage(title: "Import from CSV", symbol: "arrow.up.to.line")
             case .backupExport: UpcomingSettingsPage(title: "Export backup", symbol: "icloud.and.arrow.up")

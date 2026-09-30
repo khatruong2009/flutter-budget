@@ -12,7 +12,7 @@ UPGRADE_TEST_RESULTS.md).
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
 | Insights | `local_insights_*` prefs | Not shown; prefs untouched. |
-| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | The transaction form applies rules and toggles tags. BudgieCore and AppModel implement add and delete tag (the tag is stripped from rules) and add and delete rule (Fixtures/tags); no management page yet. |
+| Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. As in Flutter there is no rule edit, enable switch, amount bounds or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
 | Onboarding tour | `flutter.onboarding_completed` | Never shown; flag untouched. |
 | Backup export/import (JSON envelope v3) | files chosen by the user | BudgieCore export, decode, restore and pre-restore safety copy are done and match Flutter byte for byte (Fixtures/backup; differences below); the Settings rows still open the "upcoming" page until the UI lands. |
@@ -271,6 +271,37 @@ UPGRADE_TEST_RESULTS.md).
   provider accepts all three: its dialog never sends the first (Add does
   nothing), the second cannot be saved, and the third makes its backup
   import refuse the file.
+- Tags & rules page (D1 port of the Material page): padded 16 like
+  Flutter's ListView; the title is cardTitle in the navigation bar
+  (Flutter: M3 titleLarge AppBar); rows use the redesign's 40pt icon tiles
+  (`tag` in accent, `sparkles` in info, Settings' Tags & rules tint) and
+  rowTitle / rowSubtitle (Flutter: plain 24pt Material icons, M3 ListTile
+  bodyLarge / bodyMedium); the delete icon is `trash` at 20 in a 48pt
+  button. The "ADD" buttons, copy, order, empty cards and the rule
+  subtitle's raw tokens ("contains · Groceries · 1 tags") are Flutter's.
+- Deleting a tag asks first ("Delete tag?", Cancel / Delete), because it
+  also removes the tag from every merchant rule; Flutter deletes at once.
+  Deleting a rule is instant, as in Flutter.
+- New tag dialog: the redesign's centred card with a "Tag name" caption
+  above the field (Flutter: an AlertDialog with a hint only) and Cancel /
+  Add pills. A duplicate name shows "A tag with this name already exists"
+  under the field and keeps the dialog open with the typed name (Flutter
+  closes it and shows the message in a SnackBar); after the first Add the
+  message follows the text. A blank name closes silently, as in Flutter.
+- New merchant rule dialog: the redesign's centred card; Type, Match and
+  Category are field-style dropdowns with system menus, and Type and Match
+  read "Income" / "Expense" and "Contains" / "Starts with" / "Exact match"
+  (Flutter's dropdowns show the raw enum names); the tag chips are the
+  transaction form's pills, 8 apart, under a "Tags" caption (Flutter:
+  Material FilterChips 4 apart with no caption). Add is shown disabled
+  while the merchant text is blank (Flutter's Add is enabled and does
+  nothing). A type change resets the category to the new type's first
+  unless it has the same name, as in Flutter.
+- The tag and rule dialogs, and the tag delete, stay open and inert while
+  the change is written (Flutter closes first and writes afterwards).
+- VoiceOver reads each rule's delete button as "Delete rule {pattern}"
+  (Flutter's tooltip is "Delete rule" on every row) and offers Delete as
+  an action on each tag and rule row.
 - Category Move up / Move down with archived rows hidden moves the row past
   the previous or next shown row. Flutter moves by one in the full list
   (archived rows included), so a move over a hidden archived row seemed to
@@ -618,9 +649,9 @@ UPGRADE_TEST_RESULTS.md).
   Tappable rows read "title, subtitle" once (label and value; Flutter
   merges its button label with the child texts), and the section eyebrows
   are headers.
-- Settings rows whose features land in Phase 3 (Tags & rules, Import from
-  CSV, Export backup, Import backup) keep Flutter's icon and copy but open
-  an "upcoming update" page.
+- Settings rows whose features land in Phase 3 (Import from CSV, Export
+  backup, Import backup) keep Flutter's icon and copy but open an
+  "upcoming update" page.
 - Settings > ABOUT also lists Data diagnostics and Licences (the SIL OFL
   texts the bundled fonts require), and Design gallery in debug builds;
   Flutter has only Version. The version is read from the bundle at once
