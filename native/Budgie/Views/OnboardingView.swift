@@ -19,8 +19,10 @@ struct OnboardingView: View {
         let body: String
     }
 
-    /// Flutter's copy (`_pages`), except page 3, which names Settings (D2:
-    /// there is no More tab; Settings opens from the gear on Home).
+    /// Flutter's copy (`_pages`), except page 1, which adds that voice entries
+    /// are sent to OpenAI (owner-approved wording), and page 3, which names
+    /// Settings (D2: there is no More tab; Settings opens from the gear on
+    /// Home).
     static let pages: [Page] = [
         Page(
             // Material `account_balance_wallet_rounded`: the bifold wallet
@@ -28,7 +30,7 @@ struct OnboardingView: View {
             symbol: UIImage(systemName: "wallet.bifold.fill") != nil ? "wallet.bifold.fill" : "creditcard.fill",
             eyebrow: "WELCOME TO BUDGIE",
             title: "Your money, made clearer.",
-            body: "Budgie keeps your budget simple and private. Financial data and insights stay on this device unless you choose to export or share a backup."),
+            body: "Budgie keeps your budget simple and private. Financial data and insights stay on this device unless you choose to export or share a backup. Voice entries are the one exception: your recording is sent to OpenAI to be turned into an expense."),
         Page(
             symbol: "chart.bar.xaxis.ascending",  // `add_chart_rounded`
             eyebrow: "START HERE",

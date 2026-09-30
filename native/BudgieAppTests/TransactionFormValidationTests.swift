@@ -46,3 +46,30 @@ final class TransactionFormValidationTests: XCTestCase {
         XCTAssertEqual(validate("12.5", german), .success(12.5))
     }
 }
+
+/// The voice prefill's seeded values that do not need a view
+/// (transaction_form.dart:64-89). The rest (date kept exactly, the draft's
+/// category row, the rules run once, no recurring link, no swipe dismiss)
+/// is view state and is covered by the voice UI test.
+@MainActor
+final class TransactionFormPrefillTests: XCTestCase {
+    func testAmountTextIsTwoDecimalsOnlyForAPositiveAmount() {
+        XCTAssertEqual(TransactionFormView.prefillAmountText(12.5), "12.50")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(3), "3.00")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(1234567.891), "1234567.89", "no grouping")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(0), "")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(-0.0), "", "-0.0 is not > 0: an empty field, like Flutter")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(-4), "")
+        XCTAssertEqual(TransactionFormView.prefillAmountText(.nan), "")
+    }
+
+    func testAPrefilledAmountValidatesLikeTypedText() {
+        XCTAssertEqual(TransactionFormView.validateAmount(TransactionFormView.prefillAmountText(12.5)), .success(12.5))
+        XCTAssertEqual(TransactionFormView.validateAmount(TransactionFormView.prefillAmountText(0)), .failure(.required))
+    }
+
+    func testRuleTagsCollapseDuplicatesInOrder() {
+        XCTAssertEqual(TransactionFormView.distinctTagIds(["b", "a", "b", "c", "a"]), ["b", "a", "c"])
+        XCTAssertEqual(TransactionFormView.distinctTagIds([]), [])
+    }
+}

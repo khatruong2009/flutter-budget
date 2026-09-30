@@ -55,16 +55,24 @@ An `UnsavedChangesBanner` (danger strip, white content, "Some changes are
 not saved to this device yet." + "Retry" calling `model.retrySaves()`) sits
 above the tabs whenever `model.hasUnsavedChanges`; it never hides data.
 `model.pendingAdd` (from quick actions, widget, deep links) opens the add
-sheet preset to income or expense over the current tab, once the data is
+sheet preset to income or expense, or (`.voice`) the voice flow, over the
+current tab, once the data is
 ready, App Lock is passed and onboarding is done (`takePendingAdd()`); until
 then it stays queued. As Flutter pushes the form on the root navigator, it
 opens on top of whatever is presented (a Home sheet, an edit form or its
 date picker, a Goals or Worth dialog, an alert) and leaves that untouched
-underneath; a route arriving while a form is open stacks another. One
+underneath; a route arriving while a form is open stacks another, except a
+`.voice` route while a voice flow is up, which is taken and dropped (one
+voice flow at a time, as Flutter's `_voiceFlowActive`; the presenter tracks
+the latest voice host weakly, so a refused or finished one leaves nothing
+behind). One
 presenter, `AddFormPresenter`, handles every route: from the key window's
 topmost presented controller it presents, unanimated, a transparent
 `.overFullScreen` host whose SwiftUI root shows the form as a normal
-`.sheet` and dismisses itself when the sheet goes. A route is taken only
+`.sheet` and dismisses itself when the sheet goes. A voice route shows the
+recording sheet in that one sheet, whose content is then replaced in place
+by the prefilled form (never a second presentation, so the host is not torn
+down between the two). A route is taken only
 when there is a controller to present from; while one is mid-transition it
 stays queued and is retried every 150ms, so no route is lost or blocks the
 next. The screens beneath are hidden from VoiceOver while the host is up.
@@ -95,7 +103,12 @@ tap was aimed at the card (e.g. its Add button) and is ignored.
 - Recent activity: the 3 newest rows across all months (`ledger.recent`),
   "SEE ALL" pushes Transactions.
 - Expense / Income pills and the FAB open the form; a FAB long-press opens
-  the quick-expense category sheet.
+  the quick-expense category sheet. Above the FAB, centred on it and 12pt
+  clear of it, a 44pt mic FAB (`GlowFab`, `mic.fill`, VoiceOver "Add by
+  voice", identifier `home.voice`) sets `model.pendingAdd = .voice`, so it
+  takes the same path, gate and one-voice-flow guard as the quick action,
+  link and widget. The scroll content clears both buttons (130pt: 20 + 54 +
+  12 + 44).
 
 ## Transaction form (sheet, D5)
 
@@ -112,6 +125,23 @@ picked. Categorisation rules apply on every Amount/Description edit
 Retry toast, an add outside the selected month shows "Added to <Month>".
 Edit mode offers Delete (confirm). "Make this recurring" turns the sheet
 into the recurring form.
+
+Prefill mode (`.prefill(VoiceDraft)`, the confirmation after a voice entry;
+Flutter's `prefill`): an add seeded from the draft. Type, description and
+category come from the draft; Amount is `toStringAsFixed(2)` only when the
+draft's amount is above zero (a zero, negative or `-0.0` amount leaves the
+field empty, so Add says "Amount is required"); the date is the draft's
+exact value, time of day included, saved as is unless the user picks a day
+(then midnight of that day). A draft category that is not in the active
+picker list is kept as an extra wheel row and saved, as Flutter keeps and
+saves a prefill category. The categorisation rules run once as the form
+opens, on the draft's raw amount: the first matching rule whose category is
+active for the type sets the category and replaces the tags (duplicates
+collapse); a later type switch drops those tags, and switching back to the
+draft's type restores the draft's category (as an edit restores its
+record's). The title stays "Add Expense" / "Add Income", the type toggle
+stays, "Make this recurring" is hidden, and the sheet cannot be swiped away
+(Flutter: `barrierDismissible: false`); Cancel and Add still close it.
 
 ## Transactions (SEE ALL; Flutter `transaction_page.dart`)
 
@@ -836,7 +866,9 @@ then. Launch hook (DEBUG): `BUDGIE_SKIP_ONBOARDING=1` starts past the tour,
   390).
 - Copy: WELCOME TO BUDGIE / "Your money, made clearer." / "Budgie keeps
   your budget simple and private. Financial data and insights stay on this
-  device unless you choose to export or share a backup."; START HERE /
+  device unless you choose to export or share a backup. Voice entries are the
+  one exception: your recording is sent to OpenAI to be turned into an
+  expense."; START HERE /
   "Track what comes and goes." / "On Home, use the add button for income or
   expenses. Your balance and recent activity update as you go."; EXPLORE
   WHEN READY / "Plan ahead, then look back." / "Worth tracks accounts, Goals

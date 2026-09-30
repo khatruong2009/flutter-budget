@@ -11,8 +11,10 @@ enum AppIdentifiers {
 }
 
 /// What the Add sheet should open with (quick actions, deep links, widget).
+/// `.voice` opens the recording sheet, which continues into the add form
+/// with what was said (`VoiceDraft`).
 enum AddRoute: Equatable, Sendable {
-    case expense, income
+    case expense, income, voice
 }
 
 enum ThemeMode: String, CaseIterable, Sendable {
@@ -1479,9 +1481,8 @@ final class AppModel {
         let action = url.host?.isEmpty == false ? url.host! : (url.pathComponents.dropFirst().first ?? "")
         switch action {
         case "add-income", "add_income": pendingAdd = .income
-        // Voice entry is not in the MVP; its widget and quick action open
-        // the expense form so already-placed widgets keep working.
-        case "add-expense", "add_expense", "voice-add", "voice_add": pendingAdd = .expense
+        case "add-expense", "add_expense": pendingAdd = .expense
+        case "voice-add", "voice_add": pendingAdd = .voice
         default: break
         }
     }
@@ -1489,7 +1490,8 @@ final class AppModel {
     func handleShortcut(_ type: String) {
         switch type {
         case "action_add_income": pendingAdd = .income
-        case "action_add_expense", "action_voice_add": pendingAdd = .expense
+        case "action_add_expense": pendingAdd = .expense
+        case "action_voice_add": pendingAdd = .voice
         default: break
         }
     }
@@ -1502,6 +1504,9 @@ final class AppModel {
             UIApplicationShortcutItem(
                 type: "action_add_income", localizedTitle: "Add Income", localizedSubtitle: nil,
                 icon: UIApplicationShortcutIcon(systemImageName: "plus.circle.fill")),
+            UIApplicationShortcutItem(
+                type: "action_voice_add", localizedTitle: "Add by Voice", localizedSubtitle: nil,
+                icon: UIApplicationShortcutIcon(systemImageName: "mic.circle.fill")),
         ]
     }
 }

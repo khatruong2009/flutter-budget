@@ -448,18 +448,23 @@ by the app as the current calendar month's income minus expenses (Dart
 `WidgetCenter.shared.reloadAllTimelines()`.
 
 `BudgetVoiceAdd` stays registered (removing it would blank placed widgets);
-its `budgetapp://voice-add` opens the add-expense form in the MVP.
+its `budgetapp://voice-add` opens the voice recording sheet (Phase 4), so the
+gallery text "Speak a transaction and review it before saving." is true
+again.
 
 ### 11.2 Quick actions and deep links
 
-Types `action_add_expense`, `action_add_income` registered; `action_voice_add`
-is not re-registered, but if an old dynamic item is tapped before the first
-Swift launch replaces the list, it opens add-expense. Deep links `add-income`,
-`add-expense`, `voice-add` (+ `add_income`, `add_expense`, `voice_add`); all
-others ignored. Actions arriving before the gate opens are queued. Once it is
-open the form opens on top of whatever is presented, as Flutter's
-`showTransactionForm` on the root navigator does (UI_SPEC "Shell",
-`AddFormPresenter`).
+Types `action_add_expense`, `action_add_income`, `action_voice_add` registered
+in Flutter's order ("Add Expense" `minus.circle.fill`, "Add Income"
+`plus.circle.fill`, "Add by Voice" `mic.circle.fill`). `action_voice_add`,
+`voice-add` and `voice_add` open the voice flow (`AddRoute.voice`); deep
+links `add-income`, `add-expense` (+ `add_income`, `add_expense`) open the
+add form; all others ignored. Actions arriving before the gate opens are
+queued. Once it is open the route opens on top of whatever is presented, as
+Flutter's `showTransactionForm` / `startVoiceExpenseFlow` on the root
+navigator do (UI_SPEC "Shell", `AddFormPresenter`). A voice route arriving
+while a voice flow is up is dropped (Flutter's `_voiceFlowActive`). The Home
+mic button sets the same route.
 
 ### 11.3 Face ID lock
 
@@ -541,7 +546,7 @@ black screen.) The rehearsal records the persisted class after every step.
 | R9 | Date round trip loses microseconds or shifts zone | `DartDateTime`, lossless strings | `DartDateTimeTests` vectors under several `TZ` (incl. DST gap/overlap), snapshot delete by exact `recordedAt` |
 | R10 | Generator output differs (DST, day 31, 90-day cap) | 7.4 port | `GeneratorTests` against Dart expected outputs for fixed `now` values and zones |
 | R11 | Legacy removal destroys the only copy | pre-native backup first; remove only after verified commit | `PreMigrationBackupTests`; rehearsal checks folder contents vs originals by SHA-256 |
-| R12 | Placed widgets or quick actions break | identical kinds/IDs/types; voice routes to add-expense | rehearsal step (widget shows the right value after upgrade) |
+| R12 | Placed widgets or quick actions break | identical kinds/IDs/types; voice routes to the voice flow (`.voice`); the quick-action list matches Flutter's three | rehearsal step (widget shows the right value after upgrade) |
 | R13 | Preferences mis-typed (bool vs int) or lost | typed CFBoolean check; same `flutter.` keys and types | `PreferencesTests` read plists produced by the Flutter plugin on the simulator |
 | R14 | NaN/Infinity reaches the encoder | validation on every numeric input; encoder throws | `EncoderTests`; UI input tests |
 | R15 | Concurrent writes interleave | single actor queue | `ConcurrencyTests` (many concurrent edits -> sequential revisions, all present) |

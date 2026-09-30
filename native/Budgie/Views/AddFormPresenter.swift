@@ -7,6 +7,11 @@ import UIKit
 /// `showTransactionForm` on the root navigator over any sheet or dialog
 /// (D14); the user's own presentation stays underneath, untouched.
 ///
+/// A `.voice` route is the exception to stacking: while a voice host is up
+/// (the recording sheet and the prefilled form after it) another `.voice`
+/// route is dropped, as Flutter's `_voiceFlowActive` does. Add and income
+/// routes still open over it.
+///
 /// The one presenter for every route. From the topmost presented controller
 /// of the key window it presents, without animation, a transparent
 /// full-screen `AddFormHost` whose SwiftUI root shows the form as an
@@ -23,6 +28,13 @@ import UIKit
 @MainActor
 enum AddFormPresenter {
     private static var retry: Task<Void, Never>?
+
+    /// The host presented for the latest `.voice` route. Weak, so a refused
+    /// presentation (whose host is never kept) or a host that has gone
+    /// leaves nothing behind.
+    private static weak var voiceHost: UIViewController?
+
+    private static var voiceFlowIsUp: Bool { voiceHost?.presentingViewController != nil }
 
     static func openPendingAdd(_ model: AppModel) {
         guard retry == nil, model.canOpenRoutes, model.pendingAdd != nil else { return }
@@ -43,13 +55,16 @@ enum AddFormPresenter {
     /// Takes a route (`take`) once `root`'s window has a controller to
     /// present from, and presents `host(route)` over it. Returns a route
     /// that was taken but refused by UIKit, for the caller to queue again;
-    /// nil when it presented or took nothing.
+    /// nil when it presented, took nothing, or dropped a `.voice` route
+    /// because a voice host is already up.
     static func open(
         above root: UIViewController?, take: () -> AddRoute?, host: (AddRoute) -> UIViewController
     ) -> AddRoute? {
         guard let presenter = presenter(above: root), let route = take() else { return nil }
+        if route == .voice && voiceFlowIsUp { return nil }
         let controller = host(route)
         presenter.present(controller, animated: false)
+        if route == .voice { voiceHost = controller }
         return controller.presentingViewController == nil ? route : nil
     }
 
@@ -115,7 +130,7 @@ final class AddFormHost: UIHostingController<AddFormHostRoot> {
     }
 }
 
-/// Shows the add form as a sheet as soon as the host is on screen. The
+/// Shows the route's sheet as soon as the host is on screen. The
 /// host sits in the app's window, so the theme override, Dynamic Type and
 /// Reduce Motion reach it from there; the environment that `AppRoot` and
 /// `MainView` give the rest of the app is set on the form here.
@@ -130,11 +145,22 @@ struct AddFormHostRoot: View {
             .ignoresSafeArea()
             .accessibilityHidden(true)
             .sheet(item: $shown, onDismiss: close) { route in
-                TransactionFormView(mode: .add(route == .income ? .income : .expense))
+                content(for: route)
                     .font(TextSpec.bodyLarge.font())
                     .environment(model)
                     .tint(BudgieColor.accent)
             }
             .onAppear { shown = route }
+    }
+
+    @ViewBuilder
+    private func content(for route: AddRoute) -> some View {
+        switch route {
+        case .expense: TransactionFormView(mode: .add(.expense))
+        case .income: TransactionFormView(mode: .add(.income))
+        case .voice:
+            // Voice flow is wired at integration (VoiceEntryFlow).
+            TransactionFormView(mode: .add(.expense))
+        }
     }
 }

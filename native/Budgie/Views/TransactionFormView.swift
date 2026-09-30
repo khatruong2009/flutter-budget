@@ -10,6 +10,12 @@ import SwiftUI
 /// a day is picked. The `DatePicker` only ever carries a calendar day; stored
 /// values stay `DartDateTime`.
 ///
+/// `.prefill` is the voice entry's confirmation (Flutter's `prefill`): an
+/// add opened with what was said. Its date is kept exactly, time of day
+/// included, unless a day is picked; the rules run once on it as the form
+/// opens; there is no "Make this recurring", and the sheet cannot be swiped
+/// away (Flutter's dialog has `barrierDismissible: false`).
+///
 /// "Make this recurring" swaps this sheet's content for the recurring form
 /// in place (Flutter pops the dialog and opens the recurring one), so every
 /// presenter gets it without a second, stacked sheet.
@@ -17,6 +23,7 @@ struct TransactionFormView: View {
     enum Mode: Hashable {
         case add(TransactionType)
         case edit(TransactionRecord)
+        case prefill(VoiceDraft)
     }
 
     let mode: Mode
@@ -36,14 +43,16 @@ struct TransactionFormView: View {
     /// The ids the last rule suggestion put in `selectedTagIds` and the user
     /// has not toggled since; a type switch drops them.
     @State private var ruleTagIds: Set<String> = []
-    /// The picked day at midnight; nil keeps now (add) or the stored date.
+    /// The picked day at midnight, or a voice draft's exact date; nil keeps
+    /// now (add) or the stored date.
     @State private var pickedDate: DartDateTime?
     @State private var amountError: String?
     /// The picker lists. Rows are identified by index and names compared as
     /// UTF-16 (Dart), so canonically-equivalent spellings (NFC and NFD
     /// "Café") stay two rows with their own icons.
     @State private var options: [TransactionType: [CategoryInfo]] = [:]
-    /// The edited record's own category info when the list lacks its name.
+    /// The edited record's (or voice draft's) own category info when the list
+    /// lacks its name.
     @State private var recordInfo: CategoryInfo?
     @State private var loaded = false
     @State private var saving = false
@@ -69,11 +78,23 @@ struct TransactionFormView: View {
             _descriptionText = State(initialValue: record.description)
             _category = State(initialValue: record.category)
             _selectedTagIds = State(initialValue: record.tagIds)
+        case .prefill(let draft):
+            _type = State(initialValue: draft.type)
+            _amountText = State(initialValue: Self.prefillAmountText(draft.amount))
+            _descriptionText = State(initialValue: draft.description)
+            _category = State(initialValue: draft.category)
+            _selectedTagIds = State(initialValue: [])
+            _pickedDate = State(initialValue: draft.date)
         }
     }
 
     private var editing: TransactionRecord? {
         if case .edit(let record) = mode { return record }
+        return nil
+    }
+
+    private var prefill: VoiceDraft? {
+        if case .prefill(let draft) = mode { return draft }
         return nil
     }
 
@@ -94,11 +115,15 @@ struct TransactionFormView: View {
     // MARK: - Derived values
 
     /// The category rows for the current type; in edit mode the record's own
-    /// category is kept even if the catalog no longer lists it.
+    /// category, and for a voice draft the draft's, is kept even if the
+    /// catalog no longer lists it (Flutter keeps and saves a prefill's).
     private var categoryRows: [(name: String, info: CategoryInfo?)] {
         var rows: [(name: String, info: CategoryInfo?)] = (options[type] ?? []).map { ($0.name, $0) }
         if let record = editing, record.type == type, !rows.contains(where: { DartString.equal($0.name, record.category) }) {
             rows.append((record.category, recordInfo))
+        }
+        if let draft = prefill, draft.type == type, !rows.contains(where: { DartString.equal($0.name, draft.category) }) {
+            rows.append((draft.category, recordInfo))
         }
         return rows
     }
@@ -195,7 +220,7 @@ struct TransactionFormView: View {
             Text("Are you sure you want to delete this transaction?")
         }
         .sensoryFeedback(.impact(weight: .heavy), trigger: deleteConfirms)
-        .interactiveDismissDisabled(saving)
+        .interactiveDismissDisabled(saving || prefill != nil)
     }
 
     private var typeIndex: Binding<Int> {
@@ -289,30 +314,32 @@ struct TransactionFormView: View {
                 }
             }
             .disabled(saving)
-            Button {
-                showingRecurring = true
-            } label: {
-                HStack(spacing: Metrics.spacingS) {
-                    Image(systemName: "repeat")
-                        .font(.system(size: 17, weight: .medium))
-                        .accessibilityHidden(true)
-                    Text("Make this recurring").textStyle(.caption)
+            if prefill == nil {
+                Button {
+                    showingRecurring = true
+                } label: {
+                    HStack(spacing: Metrics.spacingS) {
+                        Image(systemName: "repeat")
+                            .font(.system(size: 17, weight: .medium))
+                            .accessibilityHidden(true)
+                        Text("Make this recurring").textStyle(.caption)
+                    }
+                    .foregroundStyle(BudgieColor.textSecondary)
+                    .padding(.horizontal, Metrics.spacingM)
+                    .padding(.vertical, Metrics.spacingS)
+                    .background(
+                        BudgieColor.card.opacity(0.5), in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+                            .strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium)
+                    )
+                    .contentShape(Rectangle())
                 }
-                .foregroundStyle(BudgieColor.textSecondary)
-                .padding(.horizontal, Metrics.spacingM)
-                .padding(.vertical, Metrics.spacingS)
-                .background(
-                    BudgieColor.card.opacity(0.5), in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-                        .strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium)
-                )
-                .contentShape(Rectangle())
+                .buttonStyle(.plain)
+                .disabled(saving)
+                .opacity(saving ? Metrics.opacityDisabled : 1)
             }
-            .buttonStyle(.plain)
-            .disabled(saving)
-            .opacity(saving ? Metrics.opacityDisabled : 1)
         }
         .padding(Metrics.spacingM)
     }
@@ -327,10 +354,21 @@ struct TransactionFormView: View {
         if let record = editing {
             recordInfo = model.categoryInfo(named: record.category, type: record.type)
         }
-        if editing == nil, let initialCategory, let row = categoryRows.first(where: { DartString.equal($0.name, initialCategory) }) {
+        if let draft = prefill {
+            recordInfo = model.categoryInfo(named: draft.category, type: draft.type)
+        }
+        if editing == nil, prefill == nil, let initialCategory, let row = categoryRows.first(where: { DartString.equal($0.name, initialCategory) }) {
             category = row.name
         }
         if !hasCategory(category) { category = categoryRows.first?.name ?? "" }
+        // The rules run once on the draft (Flutter: `onChanged` does not fire
+        // for programmatic text), on its raw amount rather than the rounded
+        // text; the same gate as `applySuggestion`.
+        if let draft = prefill, let rule = model.suggestion(type: draft.type, description: draft.description, amount: draft.amount) {
+            category = (options[draft.type] ?? []).first { DartString.equal($0.name, rule.category) }?.name ?? rule.category
+            selectedTagIds = Self.distinctTagIds(rule.tagIds)
+            ruleTagIds = Set(selectedTagIds)
+        }
         loaded = true
     }
 
@@ -342,6 +380,8 @@ struct TransactionFormView: View {
     private func typeChanged() {
         if let record = editing, record.type == type {
             category = record.category
+        } else if let draft = prefill, draft.type == type {
+            category = draft.category
         } else if !hasCategory(category) {
             category = categoryRows.first?.name ?? ""
         }
@@ -362,10 +402,23 @@ struct TransactionFormView: View {
             let name = (options[type] ?? []).first(where: { DartString.equal($0.name, rule.category) })?.name
         else { return }
         category = name
+        selectedTagIds = Self.distinctTagIds(rule.tagIds)
+        ruleTagIds = Set(selectedTagIds)
+    }
+
+    /// The rule's tag ids in order, each once (Flutter puts them in a Set).
+    nonisolated static func distinctTagIds(_ ids: [String]) -> [String] {
         var tags: [String] = []
-        for id in rule.tagIds where !tags.contains(id) { tags.append(id) }
-        selectedTagIds = tags
-        ruleTagIds = Set(tags)
+        for id in ids where !tags.contains(id) { tags.append(id) }
+        return tags
+    }
+
+    /// The prefilled Amount text (transaction_form.dart:68-70): two
+    /// decimals when the draft has an amount, empty otherwise (a zero,
+    /// negative or `-0.0` amount leaves the field empty for "Amount is
+    /// required").
+    nonisolated static func prefillAmountText(_ amount: Double) -> String {
+        amount > 0 ? DartFixed.toStringAsFixed(amount, 2) : ""
     }
 
     private func save() async {

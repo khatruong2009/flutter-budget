@@ -17,7 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     @MainActor static let model = AppModel()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // Replaces the Flutter build's dynamic items (which included voice).
+        // Replaces the Flutter build's dynamic items (same three, same order).
         AppModel.registerShortcuts()
         return true
     }

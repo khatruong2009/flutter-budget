@@ -10,7 +10,7 @@ UPGRADE_TEST_RESULTS.md).
 
 | Flutter feature | Stored in | MVP status |
 |---|---|---|
-| Voice entry (OpenAI) | nothing persisted | Removed; no API key in the binary. `budgetapp://voice-add`, the Voice Add widget and the old voice quick action open the expense form. The widget gallery text still says "Speak a transaction". |
+| Voice entry (OpenAI) | nothing persisted | Available: the mic button on Home, the "Add by Voice" quick action, `budgetapp://voice-add` / `voice_add` and the Voice Add widget open a recording sheet over whatever is showing; it records up to 30 seconds, sends the audio to OpenAI for transcription and the transcript to a chat model, and continues into the add form prefilled with what was said (nothing is stored until Add). Needs a key in `native/Config/Secrets.xcconfig`; Debug builds without one show the "not configured" message. The widget gallery text ("Speak a transaction") is true again. Differences under "Deliberate differences" below. |
 | Insights | `local_insights_*` prefs | Available: the Insights section on Flow (up to three cards, "Insight options" menu with Snooze for 30 days / Dismiss). The engine and the two preferences match Flutter (Fixtures/insights; Swift-written prefs verified in Dart), so a dismissal or snooze in either app hides the same card in the other. |
 | Categorization rules, tags | `categorizationRules`, `transactionTags`, `Transaction.tagIds` | Available: Settings > Tags & rules (add and delete tag, the tag stripped from rules; add and delete rule; Fixtures/tags). The transaction form applies rules and toggles tags. Swift also edits a rule in place, switches it on and off, and sets amount bounds and "Any type" (Swift superset, all within Flutter's schema and applied by Flutter's matcher; see "Deliberate differences"). As in Flutter there is no priority or reorder. |
 | Category management (add, rename, archive, reorder) | `categories` | Available: Settings > Categories (add, edit with the rename cascade, archive/restore, move up/down). Launch materialises legacy names (transactions, templates, budget keys) and normalises sort orders exactly like Flutter (Fixtures/categories). Differences are listed under "Deliberate differences". |
@@ -321,8 +321,10 @@ UPGRADE_TEST_RESULTS.md).
   has no option to turn that off (only a UIKit label could).
 - Onboarding page 3 copy (D2, no More tab): "...and Spend, Flow, and
   Settings (behind the gear on Home) help you understand and manage your
-  budget." (Flutter: "Spend, Flow, and More"). Page 1 keeps Flutter's
-  privacy sentence until voice ships (the OpenAI mention comes with it).
+  budget." (Flutter: "Spend, Flow, and More"). Page 1 adds a sentence to
+  Flutter's privacy text (owner-approved wording): "Voice entries are the
+  one exception: your recording is sent to OpenAI to be turned into an
+  expense." The page scrolls at large Dynamic Type sizes like the others.
 - Onboarding symbols (D3): `wallet.bifold.fill` (`creditcard.fill` before
   iOS 18), `chart.bar.xaxis.ascending` and `chart.xyaxis.line` stand in for
   Material's `account_balance_wallet`, `add_chart` and `insights` (no plus
@@ -638,9 +640,12 @@ UPGRADE_TEST_RESULTS.md).
   widget truncates the cents, so it can show 0.01 less than the halo and
   VoiceOver), is not re-rolled by a text-size change, and scales down to
   fit instead of overflowing a narrow screen.
-- Home: the page's bottom padding clears the add button (Flutter lets the
-  Expense/Income pills sit under it); there is no mic button until voice
-  entry returns.
+- Home: the page's bottom padding clears the add button and the mic button
+  above it (130pt; Flutter lets the Expense/Income pills sit under them).
+  The 44pt mic button (`mic.fill`, "Add by voice", `home.voice`) is centred
+  over the add button 12pt clear of it, as Flutter's Column; it opens the
+  voice flow through the same presenter as the quick action, so it is
+  gated, and dropped while a voice flow is already up, like them.
 - Home spend gauge: under Reduce Motion a changed value jumps (Flutter
   only skips the first fill and still animates changes).
 - Home accessibility: the gauge reads "Spent X of Y income" and the year
@@ -1148,6 +1153,35 @@ what Flutter reads or shows):
   form) is not covered by the App Lock privacy cover.
 - No iPad layout (the Flutter app is iPhone-only too).
 
+### Voice entry (Phase 4; owner brief 2026-09-30)
+
+- The category vocabulary offered to the model, and the names its answer
+  is checked against, are `model.categories(for:)` (the active categories
+  of each type, custom and renamed included, archived left out). Flutter
+  offers its built-in names only. So Swift can return a custom category
+  Flutter never would; a category outside the list still becomes
+  "General" (expense) / "Other" (income), as in Flutter, even when that
+  fallback is not itself in the list.
+- A draft category that is not in the picker (an archived or renamed
+  "General" / "Other") is kept as an extra wheel row in the prefilled form
+  and saved, as Flutter keeps and saves it. Switching the form's type and
+  back restores the draft's category (Flutter's form has no type toggle;
+  Swift's keeps it for the prefilled form too, so a wrong income/expense
+  guess can be fixed).
+- The prefilled form is a sheet that replaces the recording sheet's
+  content in place (one presentation, so the host survives the swap);
+  Flutter closes the recording sheet, then opens the form as a dialog.
+  Like the dialog it cannot be dismissed by swiping or tapping outside;
+  Cancel and Add close it.
+- A draft amount of `-0.0` (or zero) shows an empty Amount field and Add
+  says "Amount is required", as Flutter.
+- Not configured: the sheet says "Add OPENAI_API_KEY to
+  native/Config/Secrets.xcconfig" (Flutter: its `.env` copy). Only Debug
+  builds can reach it; Release builds fail to build without a key.
+- The system prompt, models, retry choices (401, 403, 429 and every other
+  failure read "Something went wrong. Try again.") and the microphone
+  message match Flutter. Only one voice flow can be up at a time in both.
+
 ## Deliberate differences (not yet approved)
 
 - Dialog scrims (every `budgieDialog`) ignore taps while the keyboard is
@@ -1161,4 +1195,5 @@ what Flutter reads or shows):
 - Minimum iOS 17 (Flutter: iOS 15). Users on iOS 15/16 stay on the last
   Flutter release.
 - Quick action icons use SF Symbols (the Flutter build referenced asset
-  names that did not exist, so its items had no icon).
+  names that did not exist, so its items had no icon): `minus.circle.fill`,
+  `plus.circle.fill` and, for "Add by Voice", `mic.circle.fill`.

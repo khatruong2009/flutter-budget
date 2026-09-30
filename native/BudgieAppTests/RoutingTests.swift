@@ -10,7 +10,8 @@ final class RoutingTests: XCTestCase {
         for (link, route) in [
             ("budgetapp://add-income", AddRoute.income), ("budgetapp://add_income", .income),
             ("budgetapp://add-expense", .expense), ("budgetapp://add_expense", .expense),
-            ("budgetapp://voice-add", .expense), ("budgetapp:///add-income", .income),
+            ("budgetapp://voice-add", .voice), ("budgetapp://voice_add", .voice),
+            ("budgetapp:///voice-add", .voice), ("budgetapp:///voice_add", .voice), ("budgetapp:///add-income", .income),
         ] {
             model.pendingAdd = nil
             model.open(URL(string: link)!)
@@ -19,7 +20,7 @@ final class RoutingTests: XCTestCase {
         model.pendingAdd = nil
         model.open(URL(string: "budgetapp://unknown")!)
         XCTAssertNil(model.pendingAdd)
-        for (type, route) in [("action_add_expense", AddRoute.expense), ("action_add_income", .income), ("action_voice_add", .expense)] {
+        for (type, route) in [("action_add_expense", AddRoute.expense), ("action_add_income", .income), ("action_voice_add", .voice)] {
             model.pendingAdd = nil
             model.handleShortcut(type)
             XCTAssertEqual(model.pendingAdd, route, type)
@@ -41,6 +42,19 @@ final class RouteGateTests: XCTestCase {
         model.markUnlocked()
         model.relock()
         XCTAssertEqual(model.pendingAdd, .income)
+    }
+
+    /// A voice link or quick action waits like any other route: no recording
+    /// sheet before the app is unlocked and past the tour.
+    func testVoiceRoutesWaitUntilTheyMayOpen() {
+        let model = AppModel()
+        XCTAssertFalse(model.canOpenRoutes)
+        model.open(URL(string: "budgetapp://voice-add")!)
+        XCTAssertNil(model.takePendingAdd())
+        XCTAssertEqual(model.pendingAdd, .voice, "the route is kept for later")
+        model.handleShortcut("action_voice_add")
+        XCTAssertNil(model.takePendingAdd())
+        XCTAssertEqual(model.pendingAdd, .voice)
     }
 }
 
@@ -168,5 +182,67 @@ final class AddFormPresenterTests: XCTestCase {
         XCTAssertIdentical(AddFormPresenter.presenter(above: root), root.shown)
         root.shown = AddFormHost(route: .income, model: AppModel())
         XCTAssertNil(AddFormPresenter.presenter(above: root))
+    }
+
+    /// One voice flow at a time (Flutter's `_voiceFlowActive`): a second
+    /// `.voice` route while a voice host is up is taken and dropped, not
+    /// queued and not stacked; add and income routes still open over it.
+    func testASecondVoiceRouteIsDroppedWhileAVoiceHostIsUp() {
+        let root = UIViewController()
+        show(root)
+        let voice = UIViewController()
+        settle { AddFormPresenter.presenter(above: root) != nil }
+        XCTAssertNil(AddFormPresenter.open(above: root, take: { .voice }) { _ in voice })
+        XCTAssertIdentical(voice.presentingViewController, root, "the first opens")
+        settle { AddFormPresenter.presenter(above: root) === voice }
+
+        var pending: AddRoute? = .voice
+        let take = { () -> AddRoute? in
+            defer { pending = nil }
+            return pending
+        }
+        var built = 0
+        XCTAssertNil(AddFormPresenter.open(above: root, take: take) { _ in built += 1; return UIViewController() })
+        XCTAssertNil(pending, "taken")
+        XCTAssertEqual(built, 0, "and nothing was presented for it")
+        XCTAssertNil(voice.presentedViewController, "no second voice flow stacked")
+
+        // Other routes still stack over the voice flow.
+        let form = UIViewController()
+        XCTAssertNil(AddFormPresenter.open(above: root, take: { .expense }) { _ in form })
+        XCTAssertIdentical(form.presentingViewController, voice)
+
+        // Once the voice host is gone a new voice route opens again.
+        form.dismiss(animated: false)
+        settle { voice.presentedViewController == nil }
+        voice.dismiss(animated: false)
+        settle { AddFormPresenter.presenter(above: root) === root }
+        let again = UIViewController()
+        XCTAssertNil(AddFormPresenter.open(above: root, take: { .voice }) { _ in again })
+        XCTAssertIdentical(again.presentingViewController, root)
+        endVoiceFlow(again)
+    }
+
+    /// The presenter remembers the last voice host, so a test that opened
+    /// one closes it before it ends.
+    private func endVoiceFlow(_ host: UIViewController) {
+        settle { host.transitionCoordinator == nil }
+        host.dismiss(animated: false)
+        settle { host.presentingViewController == nil }
+    }
+
+    /// A refused voice presentation leaves nothing behind: the route comes
+    /// back and the next voice route is not mistaken for a duplicate.
+    func testARefusedVoicePresentationDoesNotBlockTheNextOne() {
+        show(Refusing())
+        let refused = AddFormPresenter.open(above: window.rootViewController, take: { .voice }) { _ in UIViewController() }
+        XCTAssertEqual(refused, .voice)
+        let root = UIViewController()
+        show(root)
+        let host = UIViewController()
+        settle { AddFormPresenter.presenter(above: root) != nil }
+        XCTAssertNil(AddFormPresenter.open(above: root, take: { .voice }) { _ in host })
+        XCTAssertIdentical(host.presentingViewController, root)
+        endVoiceFlow(host)
     }
 }

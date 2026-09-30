@@ -4,7 +4,8 @@ import SwiftUI
 /// The Home tab (`SpendingPage`, spending_page.dart:448-686): header with
 /// the month pill and its wheel panel, the cash-flow hero, the spend gauge,
 /// the income/expense chips, safe to spend, budgets, recent activity and
-/// the Expense/Income pills, with the add button floating bottom-trailing.
+/// the Expense/Income pills, with the add button floating bottom-trailing
+/// under the smaller voice button.
 /// Everything is read from `model.ledger` except safe to spend, whose Core
 /// calculation takes the transactions.
 struct HomeView: View {
@@ -28,17 +29,24 @@ struct HomeView: View {
                     ProgressView().padding(.top, 48)
                 }
             }
-            // Clears the add button (20 + 54 above the tab bar).
-            .padding(.bottom, 96)
+            // Clears the buttons (20 + 54 + 12 + 44 above the tab bar).
+            .padding(.bottom, 130)
         }
         .background(BudgieColor.background)
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(item: $page) { _ in TransactionsView() }
         .overlay(alignment: .bottomTrailing) {
-            GlowFab(label: "Add transaction") {
-                sheet = .add(.expense)
-            } longPress: {
-                sheet = .quickExpense
+            // The mic over the add button, centred on it (Flutter's Column).
+            VStack(spacing: 12) {
+                GlowFab(symbol: "mic.fill", size: Metrics.micFabSize, label: "Add by voice") {
+                    model.pendingAdd = .voice
+                }
+                .accessibilityIdentifier("home.voice")
+                GlowFab(label: "Add transaction") {
+                    sheet = .add(.expense)
+                } longPress: {
+                    sheet = .quickExpense
+                }
             }
             .padding(.trailing, Metrics.fabInset)
             .padding(.bottom, Metrics.fabInset)
