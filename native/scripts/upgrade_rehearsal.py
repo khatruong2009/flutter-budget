@@ -10,6 +10,8 @@ No physical device, no real data.
 
 Usage: native/scripts/upgrade_rehearsal.py [--skip-build] [scenario ...]
 Writes native/docs/rehearsal/<timestamp>/ (report.json, screenshots, pulled state).
+       native/scripts/upgrade_rehearsal.py --compare-pulled DIR [DIR ...]
+Checks app containers pulled from a physical device (REAL_DEVICE_CHECKLISTS.md).
 """
 import argparse
 import datetime
@@ -504,12 +506,52 @@ class Rehearsal:
         return {"s5-restored": self.out / name / "1-restored"}
 
 
+def compare_pulled(dirs):
+    """Real-device mode (REAL_DEVICE_CHECKLISTS.md): each dir is a
+    `devicectl device copy from ... --source Library` destination. Runs the
+    Flutter models over its store and preferences, and compares them with
+    the Swift rehearsal summary when the Swift app wrote one."""
+    staged = {}
+    for raw in dirs:
+        library = Path(raw) / "Library"
+        store = library / "Application Support" / "financial_store"
+        if not store.exists():
+            raise SystemExit(f"{raw}: no Library/Application Support/financial_store")
+        case = SCRATCH / "device-pulls" / Path(raw).name
+        shutil.rmtree(case, ignore_errors=True)
+        case.mkdir(parents=True)
+        shutil.copytree(store, case / "financial_store")
+        prefs = library / "Preferences" / f"{BUNDLE}.plist"
+        if prefs.exists():
+            shutil.copy2(prefs, case / "preferences.plist")
+        else:
+            with open(case / "preferences.plist", "wb") as f:
+                plistlib.dump({}, f)
+        summary = library / "Caches" / "budgie-rehearsal.json"
+        if summary.exists():
+            shutil.copy2(summary, case / "swift-summary.json")
+        staged[Path(raw).name] = case
+    dart = dart_view(staged)
+    report = {}
+    for name, case in staged.items():
+        entry = {"dartProblems": dart[name]["problems"]}
+        if (case / "swift-summary.json").exists():
+            entry["swiftVsDart"] = compare(json.loads((case / "swift-summary.json").read_text()), dart[name])
+        report[name] = entry
+    print(json.dumps(report, indent=2, sort_keys=True, default=str))
+    return 1 if any(e["dartProblems"] or e.get("swiftVsDart") for e in report.values()) else 0
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--compare-pulled", nargs="+", metavar="DIR",
+                        help="check containers pulled from a device (REAL_DEVICE_CHECKLISTS.md); no simulator is used")
     parser.add_argument("scenarios", nargs="*", default=["s1", "s3", "s4", "s5"])
     args = parser.parse_args()
     SCRATCH.mkdir(parents=True, exist_ok=True)
+    if args.compare_pulled:
+        return compare_pulled(args.compare_pulled)
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     out = NATIVE / "docs" / "rehearsal" / stamp
     out.mkdir(parents=True)
