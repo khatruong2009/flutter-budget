@@ -29,12 +29,16 @@ private struct VoiceSheetBody: View {
 
     @State private var entry: VoiceEntryModel
     @State private var contentHeight: CGFloat = 0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(model: AppModel, onDraft: @escaping (VoiceDraft) -> Void, onCancel: @escaping () -> Void) {
         self.onCancel = onCancel
-        let (apiKey, session, maxSeconds) = Self.networking()
+        let (apiKey, makeSession, maxSeconds) = Self.networking()
+        // SwiftUI may run this init again and keep only the first `entry`,
+        // so nothing here may hold a resource: the session is made on the
+        // first request and released by `entry.cancel()`.
         let services = VoiceServices.openAI(
-            apiKey: apiKey, session: session,
+            apiKey: apiKey, session: makeSession(),
             today: { model.now },
             categoryNames: { type in model.categories(for: type).map(\.name) })
         _entry = State(
@@ -42,22 +46,23 @@ private struct VoiceSheetBody: View {
                 recorder: VoiceRecorder(), services: services, maxSeconds: maxSeconds, onDraft: onDraft))
     }
 
-    /// The key from the bundle (nil when not configured), an ephemeral
-    /// session and the recording cap; Debug launch hooks replace them.
-    private static func networking() -> (apiKey: String?, session: URLSession, maxSeconds: Int) {
+    /// The key from the bundle (nil when not configured), how to make an
+    /// ephemeral session and the recording cap; Debug launch hooks replace
+    /// them.
+    private static func networking() -> (apiKey: String?, makeSession: @MainActor () -> URLSession, maxSeconds: Int) {
         #if DEBUG
         let maxSeconds = VoiceTestHooks.maxSeconds ?? VoiceEntryModel.defaultMaxSeconds
-        if let stubbed = VoiceTestHooks.stubbedSession {
-            return (VoiceTestHooks.fakeKey, stubbed, maxSeconds)
+        if VoiceTestHooks.stubbing {
+            return (VoiceTestHooks.fakeKey, { VoiceTestHooks.stubbedSession ?? URLSession(configuration: .ephemeral) }, maxSeconds)
         }
         return (
             OpenAIVoiceClient.apiKey(fromInfoDictionary: Bundle.main.infoDictionary),
-            URLSession(configuration: .ephemeral), maxSeconds
+            { URLSession(configuration: .ephemeral) }, maxSeconds
         )
         #else
         return (
             OpenAIVoiceClient.apiKey(fromInfoDictionary: Bundle.main.infoDictionary),
-            URLSession(configuration: .ephemeral), VoiceEntryModel.defaultMaxSeconds
+            { URLSession(configuration: .ephemeral) }, VoiceEntryModel.defaultMaxSeconds
         )
         #endif
     }
@@ -65,7 +70,10 @@ private struct VoiceSheetBody: View {
     var body: some View {
         ScrollView {
             content
-                .padding(EdgeInsets(top: Self.topPadding, leading: 24, bottom: 24, trailing: 24))
+                .padding(
+                    EdgeInsets(
+                        top: Self.topPadding, leading: Metrics.spacingL, bottom: Self.bottomPadding,
+                        trailing: Metrics.spacingL))
                 .frame(maxWidth: .infinity)
                 .onGeometryChangeCompat { contentHeight = $0.height }
         }
@@ -98,6 +106,12 @@ private struct VoiceSheetBody: View {
     /// below the top (24 + the 4pt handle + 28).
     private static let topPadding: CGFloat = 36
 
+    /// Flutter leaves 24 under the buttons plus the safe area. The detent
+    /// already includes the system's own allowance under the content, which
+    /// measured 6pt more than Flutter's with a full 24 (QA, iPhone 17 Pro
+    /// class), so the padding gives that much back.
+    private static let bottomPadding = Metrics.spacingL - 6
+
     @ViewBuilder
     private var content: some View {
         switch entry.stage {
@@ -114,11 +128,12 @@ private struct VoiceSheetBody: View {
             Text(entry.countdownText)
                 .textStyle(.numericMedium)
                 .foregroundStyle(BudgieColor.textSecondary)
-                .accessibilityLabel("\(entry.remainingSeconds) seconds remaining")
+                .accessibilityLabel(
+                    entry.remainingSeconds == 1 ? "1 second remaining" : "\(entry.remainingSeconds) seconds remaining")
                 .accessibilityAddTraits(.updatesFrequently)
                 .accessibilityIdentifier("voice.countdown")
             PillButton(
-                title: "Stop", symbol: "stop.fill", filled: true, minHeight: Metrics.pillButtonCompactHeight
+                title: "Stop", symbol: "stop", filled: true, minHeight: Metrics.pillButtonCompactHeight
             ) { entry.stop() }
             .accessibilityIdentifier("voice.stop")
         }
@@ -138,8 +153,11 @@ private struct VoiceSheetBody: View {
 
     private func error(kind: VoiceEntryModel.ErrorKind, message: String) -> some View {
         VStack(spacing: 0) {
+            // Flutter's 48pt `error_rounded` draws about 40pt inside its box;
+            // an SF symbol at 48 fills the box, so draw it smaller.
             Image(systemName: "exclamationmark.circle")
-                .font(.system(size: Metrics.iconXL, weight: .medium))
+                .font(.system(size: 40, weight: .regular))
+                .frame(width: Metrics.iconXL, height: Metrics.iconXL)
                 .foregroundStyle(BudgieColor.danger)
                 .accessibilityHidden(true)
             Text(message)
@@ -158,18 +176,36 @@ private struct VoiceSheetBody: View {
                     .padding(.top, 12)
                     .accessibilityIdentifier("voice.transcript")
             }
-            HStack(spacing: 12) {
-                PillButton(
-                    title: "Cancel", color: BudgieColor.textSecondary, minHeight: Metrics.pillButtonCompactHeight
-                ) { onCancel() }
-                .accessibilityIdentifier("voice.cancel")
-                PillButton(
-                    title: "Try again", filled: true, minHeight: Metrics.pillButtonCompactHeight
-                ) { entry.tryAgain() }
-                .accessibilityIdentifier("voice.tryAgain")
+            // At accessibility sizes the labels fill a half-width pill edge
+            // to edge, so the pills stack, the main action on top.
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: 12) {
+                    tryAgainPill
+                    cancelPill
+                }
+                .padding(.top, Metrics.sectionGap)
+            } else {
+                HStack(spacing: 12) {
+                    cancelPill
+                    tryAgainPill
+                }
+                .padding(.top, Metrics.sectionGap)
             }
-            .padding(.top, Metrics.sectionGap)
         }
+    }
+
+    private var cancelPill: some View {
+        PillButton(
+            title: "Cancel", color: BudgieColor.textSecondary, minHeight: Metrics.pillButtonCompactHeight
+        ) { onCancel() }
+        .accessibilityIdentifier("voice.cancel")
+    }
+
+    private var tryAgainPill: some View {
+        PillButton(
+            title: "Try again", filled: true, minHeight: Metrics.pillButtonCompactHeight
+        ) { entry.tryAgain() }
+        .accessibilityIdentifier("voice.tryAgain")
     }
 
     private func eyebrow(_ title: String) -> some View {
@@ -185,13 +221,14 @@ private struct VoiceSheetBody: View {
     /// its final height instead of resizing once measured. Every line is
     /// `round(size * height)` (`textStyle`): eyebrow 13, countdown 29, note
     /// 15, message 21 a line. Recording: 36, 13, 28, the 120 mic, 28, 29,
-    /// 28, Stop 44, 24. Thinking: 36, 13, 28, 120, 28, 15, 24. Error: 36,
-    /// the 48 icon, 20, the message, 28, the 44 buttons, 24.
+    /// 28, Stop 44, the bottom padding. Thinking: 36, 13, 28, 120, 28, 15,
+    /// bottom. Error: 36, the 48 icon, 20, the message, 28, the 44 buttons,
+    /// bottom.
     private var estimatedHeight: CGFloat {
         switch entry.stage {
-        case .recording: 36 + 13 + 28 + 120 + 28 + 29 + 28 + 44 + 24
-        case .processing: 36 + 13 + 28 + 120 + 28 + 15 + 24
-        case .error(_, let message): 36 + 48 + 20 + (message.count > 32 ? 42 : 21) + 28 + 44 + 24
+        case .recording: 36 + 13 + 28 + 120 + 28 + 29 + 28 + 44 + Self.bottomPadding
+        case .processing: 36 + 13 + 28 + 120 + 28 + 15 + Self.bottomPadding
+        case .error(_, let message): 36 + 48 + 20 + (message.count > 32 ? 42 : 21) + 28 + 44 + Self.bottomPadding
         }
     }
 

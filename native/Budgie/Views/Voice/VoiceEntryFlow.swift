@@ -22,5 +22,10 @@ struct VoiceEntryFlow: View {
             }
         }
         .motion(Motion.easeOut(Motion.fast), value: draft)
+        // The control VoiceOver was on (Stop, Try again) goes with the
+        // recording sheet; move it to the form.
+        .onChange(of: draft) { _, draft in
+            if draft != nil { AccessibilityNotification.ScreenChanged().post() }
+        }
     }
 }

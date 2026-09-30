@@ -8,13 +8,21 @@ import Foundation
 /// machine's timer; this only records.
 ///
 /// The file outlives `stop()` so a failed transcription can be retried on
-/// it; the previous file goes when the next recording starts, and
+/// it; the previous file goes when the next recording starts (along with any
+/// left in the temporary directory by a process that was killed), and
 /// `discardFile()` deletes the last one when the sheet goes away.
 @MainActor
 final class VoiceRecorder: VoiceCapturing {
     private var recorder: AVAudioRecorder?
     private var fileURL: URL?
     private var sessionActive = false
+    private var interruptionObserver: (any NSObjectProtocol)?
+
+    /// Set by the stage machine: the system took the audio session away
+    /// (`AVAudioSession.interruptionNotification`, type `.began`).
+    var onInterruption: (@MainActor () -> Void)?
+
+    private static let filePrefix = "voice_expense_"
 
     /// `hasPermission()` with the request: shows the system prompt when the
     /// choice is still open. Denied and restricted both read as denied.
@@ -24,6 +32,7 @@ final class VoiceRecorder: VoiceCapturing {
         #endif
         stop()
         discardFile()
+        Self.sweepStaleFiles()
 
         #if DEBUG
         if let fixture = VoiceTestHooks.audioFile {
@@ -69,6 +78,7 @@ final class VoiceRecorder: VoiceCapturing {
                 throw VoiceEntryError.failed
             }
             self.recorder = recorder
+            observeInterruptions()
         } catch let error as VoiceEntryError {
             throw error
         } catch {
@@ -90,17 +100,46 @@ final class VoiceRecorder: VoiceCapturing {
         try? FileManager.default.removeItem(at: fileURL)
     }
 
+    /// A call, Siri or an alarm taking the session ends the recording; the
+    /// stage machine stops and goes on with what there is.
+    private func observeInterruptions() {
+        removeInterruptionObserver()
+        interruptionObserver = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance(), queue: .main
+        ) { [weak self] notification in
+            let raw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
+            guard let raw, AVAudioSession.InterruptionType(rawValue: raw) == .began else { return }
+            MainActor.assumeIsolated { self?.onInterruption?() }
+        }
+    }
+
+    private func removeInterruptionObserver() {
+        guard let interruptionObserver else { return }
+        self.interruptionObserver = nil
+        NotificationCenter.default.removeObserver(interruptionObserver)
+    }
+
     /// Lets other audio (music, a call) come back once the mic is done.
     private func releaseSession() {
+        removeInterruptionObserver()
         guard sessionActive else { return }
         sessionActive = false
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    /// Recordings a killed process left in the temporary directory.
+    private static func sweepStaleFiles() {
+        let directory = URL(fileURLWithPath: NSTemporaryDirectory())
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
+        for name in names where name.hasPrefix(filePrefix) && name.hasSuffix(".m4a") {
+            try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
+        }
     }
 
     /// `voice_expense_<epoch ms>.m4a` in the temporary directory. The clock
     /// read only names a scratch file; nothing stored derives from it.
     private static func newFileURL() -> URL {
         let millis = Int64((Date().timeIntervalSince1970 * 1000).rounded(.down))
-        return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("voice_expense_\(millis).m4a")
+        return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(filePrefix)\(millis).m4a")
     }
 }

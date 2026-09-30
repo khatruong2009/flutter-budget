@@ -1189,6 +1189,21 @@ what Flutter reads or shows):
   slowly under Reduce Motion; pills have a 44pt minimum height so large
   Dynamic Type can grow them. The audio session is `.record` with haptics
   allowed while recording (Flutter's plugin uses `playAndRecord`).
+- The recording sheet uses the system detent, as the other native sheets
+  do. On iOS 26+ that floats it: inset 8pt from the sides and bottom, all
+  four corners rounded, its content at 0.96 scale (mic 84.5pt not 88, Stop
+  pill 42pt not 44), and the system dims what is behind by about 20%
+  (Flutter's barrier is about 54%). The drag handle sits about 15pt higher
+  than Flutter's, from the shared sheet chrome. The mic-denied message
+  wraps as "...Enable it in Settings / > Budgie." (Flutter breaks after
+  "in"); the copy is unchanged and the wrap is accepted.
+- Going to the background while listening stops the recording and goes on
+  to transcribe it, as Flutter does; the app may be suspended before the
+  request finishes, in which case the sheet is at "Something went wrong.
+  Try again." when the user returns and Try again re-sends the kept file.
+  An audio interruption (a phone call, Siri) while listening is treated
+  the same way; Flutter has no handling for it and keeps counting over the
+  paused recorder.
 - A recorder that fails to start shows "Something went wrong. Try again."
   and Try again records again (Flutter leaves the sheet listening with no
   timer). Stop pressed while the recorder is still starting stops it and

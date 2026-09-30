@@ -12,6 +12,7 @@ private final class FakeRecorder: VoiceCapturing {
     private(set) var stopCount = 0
     private(set) var discardCount = 0
     private(set) var files: [URL] = []
+    var onInterruption: (@MainActor () -> Void)?
 
     func start() async throws(VoiceEntryError) -> URL {
         startCount += 1
@@ -189,6 +190,36 @@ final class VoiceEntryModelTests: XCTestCase {
         model.appDidEnterBackground()
         XCTAssertEqual(model.stage, stage)
         XCTAssertEqual(model.stops, 1)
+    }
+
+    func testAudioInterruptionWhileRecordingStopsAndGoesOn() async {
+        let model = await recording()
+        XCTAssertNotNil(recorder.onInterruption, "the model listens for the recorder's interruption")
+        recorder.onInterruption?()
+        XCTAssertEqual(model.stage, .processing)
+        XCTAssertEqual(model.stops, 1)
+        await model.settle()
+        XCTAssertEqual(delivered.count, 1)
+    }
+
+    func testAudioInterruptionOutsideRecordingDoesNothing() async {
+        fake.transcripts = [.failure(.failed)]
+        let model = await recording()
+        await stopped(model)
+        let stage = model.stage
+        recorder.onInterruption?()
+        XCTAssertEqual(model.stage, stage)
+        XCTAssertEqual(model.stops, 1)
+    }
+
+    func testCancelReleasesTheServices() async {
+        var finished = 0
+        var services = fake.services
+        services.finish = { finished += 1 }
+        let model = await recording(services: services)
+        XCTAssertEqual(finished, 0)
+        model.cancel()
+        XCTAssertEqual(finished, 1)
     }
 
     // MARK: Error kinds

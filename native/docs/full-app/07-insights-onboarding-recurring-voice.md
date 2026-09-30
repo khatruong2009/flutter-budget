@@ -364,6 +364,8 @@ Gaps to close (not approved differences):
 - Info.plist strings: `NSMicrophoneUsageDescription` "Budgie uses the microphone so you can add transactions by speaking." (`ios/Runner/Info.plist:83-84`). No `NSSpeechRecognitionUsageDescription`.
 
 ### D2. Swift state
+
+Status (2026-09-30): implemented as option C1 (Phase 4): three shortcuts, `AddRoute.voice`, the recording sheet and the prefilled form exist. The analysis below is the state before Phase 4 and is kept as written; see PARITY_GAPS "Voice entry".
 - Quick actions and deep links: `AppModel.swift:325-355`, `BudgieApp.swift:46-73`, `MainView.swift:35-43`. The mapping (`budgetapp://add-income` and so on, underscore variants, `voice-add` → expense form) is unit-tested in `BudgieAppTests/RoutingTests.swift`.
 - Only two shortcuts are registered (voice dropped); an old leftover `action_voice_add` opens the expense form (verified in `BudgieUITests/SystemIntegrationUITests.swift:52-58`). `MIGRATION_SPEC` §11.2 fixes the types and links.
 - Swift always switches to the Spending tab; Flutter opens the form over the current tab (minor).
@@ -376,6 +378,8 @@ Gaps to close (not approved differences):
 - Cash-flow sync is done (`AppModel.syncWidget`).
 
 ### D3. Options for voice entry (user must decide)
+
+Status (2026-09-30): implemented as option C1 (D11 in FULL_APP_PLAN), see PARITY_GAPS "Voice entry". The table and recommendation below are the analysis that preceded the decision.
 
 | | A. Remove voice (status quo) | B. On-device Speech + local parser | C. Keep OpenAI (C1 key in binary; C2 user's own key in Keychain; C3 proxy) | D. Hybrid: B by default, optional OpenAI parse |
 |---|---|---|---|---|

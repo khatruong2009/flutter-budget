@@ -34,6 +34,8 @@ enum VoiceTestHooks {
         return seconds
     }
 
+    static var stubbing: Bool { environment["BUDGIE_VOICE_STUB"] != nil }
+
     /// The stubbed session when `BUDGIE_VOICE_STUB` is set. The plan is
     /// installed once per process, so its response lists keep being consumed
     /// across sheets. A stub that is not valid JSON answers everything 599.

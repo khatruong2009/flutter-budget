@@ -131,6 +131,7 @@ Effort: S is up to a day, M a few days, L a week or more. Phases 2 and 3 split i
 - D1-D3 and D11 are decided. Answer D4-D17 as their phases come up.
 - Security items in section 7.
 - Widget copy fix: "Voice Add" currently promises speech. Retitle it unless voice returns.
+  Status (2026-09-30): voice returned (option C1, Phase 4); the widget copy is true again. See PARITY_GAPS "Voice entry".
 
 ### Phase 1: Foundations (L; everything else depends on this)
 
@@ -192,6 +193,8 @@ Suggested order if not fully parallel: Home, then Flow + Spend (they share `Ledg
 | **Recurring parity** | Pushed page under Settings > DATA with a summary subtitle. Card redesign, Flutter copy, manual "Generate due" button. Form: amount first, "Next 3 Occurrences" preview (`previewOccurrences`), validation copy, start-date time-of-day fix. RecurrenceGlyph on all transaction rows. | 07 section C | M |
 
 ### Phase 4: Voice entry via OpenAI (M-L; spec 07 section D)
+
+Status (2026-09-30): implemented as option C1, including the Onboarding page 1 sentence and the quick action, link and widget routes below; see PARITY_GAPS "Voice entry" for what differs from Flutter.
 
 1. **Key plumbing** (section 6).
 2. **`OpenAIVoiceClient`**, plain `URLSession`, no dependency:

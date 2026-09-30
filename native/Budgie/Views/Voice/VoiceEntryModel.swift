@@ -13,6 +13,10 @@ protocol VoiceCapturing: AnyObject {
     func stop()
     /// Deletes the current recording's file, if any.
     func discardFile()
+    /// Called when the system takes the audio session away mid-recording (a
+    /// phone call, Siri, an alarm). The recording is over; the file so far
+    /// is kept.
+    var onInterruption: (@MainActor () -> Void)? { get set }
 }
 
 /// The two network stages, injected so the stage machine never sees a
@@ -20,15 +24,20 @@ protocol VoiceCapturing: AnyObject {
 struct VoiceServices {
     var transcribe: @MainActor (URL) async throws(VoiceEntryError) -> String
     var draft: @MainActor (String) async throws(VoiceEntryError) -> VoiceDraft
+    /// Releases what the stages hold (the URL session) once the flow is over.
+    var finish: @MainActor () -> Void = {}
 
     /// A missing key (`apiKey` nil: empty, the example placeholder, or an
     /// unexpanded build setting) fails both stages with `.notConfigured`,
     /// which the sheet shows after recording, as Flutter does.
     ///
     /// `today` and `categoryNames` are read when the draft request starts
-    /// (Flutter parses with `DateTime.now()` at that moment).
+    /// (Flutter parses with `DateTime.now()` at that moment). `session` is
+    /// built on the first request and `finish` invalidates it, so the sheet
+    /// re-initialising leaves no session behind.
+    @MainActor
     static func openAI(
-        apiKey: String?, session: URLSession,
+        apiKey: String?, session: @autoclosure @escaping @MainActor () -> URLSession,
         today: @escaping @MainActor () -> DartDateTime,
         categoryNames: @escaping @MainActor (TransactionType) -> [String]
     ) -> VoiceServices {
@@ -37,10 +46,11 @@ struct VoiceServices {
                 transcribe: { _ throws(VoiceEntryError) in throw .notConfigured },
                 draft: { _ throws(VoiceEntryError) in throw .notConfigured })
         }
-        let client = OpenAIVoiceClient(apiKey: apiKey, session: session)
+        let connection = OpenAIConnection(apiKey: apiKey, makeSession: session)
         return VoiceServices(
-            transcribe: { file throws(VoiceEntryError) in try await client.transcribe(audioFile: file) },
+            transcribe: { file throws(VoiceEntryError) in try await connection.client.transcribe(audioFile: file) },
             draft: { transcript throws(VoiceEntryError) in
+                let client = connection.client
                 let now = today()
                 let expense = categoryNames(.expense)
                 let income = categoryNames(.income)
@@ -49,7 +59,38 @@ struct VoiceServices {
                 return try VoiceDraftParser.parse(
                     modelOutput: output, transcript: transcript, today: now,
                     expenseCategories: expense, incomeCategories: income)
-            })
+            },
+            finish: { connection.invalidate() })
+    }
+}
+
+/// The OpenAI client and its URL session, made on first use.
+@MainActor
+private final class OpenAIConnection {
+    private let apiKey: String
+    private let makeSession: @MainActor () -> URLSession
+    private var session: URLSession?
+    private var made: OpenAIVoiceClient?
+
+    init(apiKey: String, makeSession: @escaping @MainActor () -> URLSession) {
+        self.apiKey = apiKey
+        self.makeSession = makeSession
+    }
+
+    var client: OpenAIVoiceClient {
+        if let made { return made }
+        let session = makeSession()
+        self.session = session
+        let client = OpenAIVoiceClient(apiKey: apiKey, session: session)
+        made = client
+        return client
+    }
+
+    /// Lets a request still in flight finish, then frees the session.
+    func invalidate() {
+        session?.finishTasksAndInvalidate()
+        session = nil
+        made = nil
     }
 }
 
@@ -117,6 +158,7 @@ final class VoiceEntryModel {
         self.maxSeconds = maxSeconds
         self.tickInterval = tickInterval
         self.onDraft = onDraft
+        recorder.onInterruption = { [weak self] in self?.audioInterruptionBegan() }
     }
 
     var isProcessing: Bool { stage == .processing }
@@ -145,11 +187,19 @@ final class VoiceEntryModel {
         recorder.stop()
         recorder.discardFile()
         audioFile = nil
+        services.finish()
     }
 
     /// The app went to the background (`AppLifecycleState.paused`): stop and
     /// go on with what was recorded.
     func appDidEnterBackground() {
+        if stage == .recording { stop() }
+    }
+
+    /// The system interrupted the audio session (a call, Siri): the same as
+    /// going to the background. Flutter has no handling; the timer would
+    /// keep counting over a paused recorder.
+    func audioInterruptionBegan() {
         if stage == .recording { stop() }
     }
 
