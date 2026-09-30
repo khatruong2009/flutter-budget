@@ -27,9 +27,9 @@ public enum VoiceEntryError: Error, Equatable, Sendable {
         case .noSpeech: "Didn't catch anything — try again"
         case .unreadable: "Couldn't read that as a transaction — try again"
         case .notATransaction: "That didn't sound like a transaction — try again"
-        case .unauthorized: "Voice entry isn't available right now. Add it by hand instead."
-        case .rateLimited: "Voice entry is busy right now. Wait a minute, then try again."
-        case .failed: "Something went wrong. Try again."
+        // Flutter's generic copy: the owner decided (2026-09-30) that users
+        // need not know which failure it was.
+        case .unauthorized, .rateLimited, .failed: "Something went wrong. Try again."
         }
     }
 
