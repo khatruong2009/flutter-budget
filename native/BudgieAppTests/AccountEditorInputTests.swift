@@ -5,6 +5,7 @@ import XCTest
 /// The Worth editor's balance field: typing goes through Flutter's
 /// `_CurrencyInputFormatter`; the text a month pick assigns (the stored
 /// balance, which may be negative) is kept as set.
+@MainActor
 final class AccountEditorInputTests: XCTestCase {
     func testTypingIsSanitized() {
         XCTAssertEqual(AccountEditorDialog.sanitizedAmount(old: "123", new: "1234", prefill: ""), "1,234")
