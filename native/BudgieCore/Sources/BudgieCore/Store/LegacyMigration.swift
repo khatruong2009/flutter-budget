@@ -108,6 +108,37 @@ public enum LegacyMigration {
             source: source)
     }
 
+    /// A present but unreadable financial key must never be treated as a
+    /// fresh install or removed by an unrelated settings migration. A valid
+    /// envelope can recover the same section without using a damaged mirror.
+    static func unrecoverableKeys(_ preferences: PreferencesStore, result: Result?) -> [String] {
+        let lists = [
+            (PreferenceKey.transactions, Section.transactions),
+            (PreferenceKey.netWorthEntries, Section.netWorthEntries),
+            (PreferenceKey.savingsGoals, Section.savingsGoals),
+            (PreferenceKey.recurringTransactions, Section.recurringTransactions),
+            (PreferenceKey.categories, Section.categories),
+            (PreferenceKey.transactionTags, Section.transactionTags),
+            (PreferenceKey.categorizationRules, Section.categorizationRules),
+        ]
+        var invalid = lists.compactMap { key, section -> String? in
+            guard preferences.allKeys().contains(key) else { return nil }
+            return result?.snapshot.sections[section]?.arrayValue == nil ? key : nil
+        }
+        if preferences.allKeys().contains(PreferenceKey.categoryBudgetLimits),
+            result?.snapshot.sections[Section.categoryBudgetLimits]?.objectValue == nil
+        {
+            invalid.append(PreferenceKey.categoryBudgetLimits)
+        }
+        if decodeEnvelope(preferences.string(PreferenceKey.legacyEnvelope)) == nil
+            && decodeEnvelope(preferences.string(PreferenceKey.legacyEnvelopeBackup)) == nil
+        {
+            invalid += [PreferenceKey.legacyEnvelope, PreferenceKey.legacyEnvelopeBackup]
+                .filter { preferences.allKeys().contains($0) }
+        }
+        return invalid
+    }
+
     /// Dart `_removeMigratedPreferenceKeys`. Call only after a verified commit.
     public static func removeMigratedKeys(_ preferences: PreferencesStore) {
         for key in PreferenceKey.migratedKeys where preferences.contains(key) {

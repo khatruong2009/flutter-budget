@@ -497,13 +497,46 @@ class Rehearsal:
         self.fresh()
         self.sim.install(self.flutter_app)
         inject_store(self.sim, FIXTURES / "store" / "both_corrupt" / "input")
+        # Real installs commonly retain these settings. They must not be
+        # mistaken for recovery data and produce an empty financial store.
+        inject_prefs(self.sim, {**ONBOARDED, "flutter.base_currency_code": {"type": "string", "value": "GBP"}})
         self.sim.install(self.swift_app)
         self.swift_launch(name, "2-both-corrupt")
         self.sim.terminate()
         blocked = pull(self.sim, self.out / name / "2-blocked")
         self.record(name, bothCorrupt=blocked,
                     blockedSummaryWritten=(self.out / name / "2-blocked" / "swift-summary.json").exists())
+        files = self.out / name / "2-blocked" / "financial_store"
+        assert not (files / "financial_store_v2.json").exists(), "Damaged files opened an empty budget"
+        assert not (self.out / name / "2-blocked" / "swift-summary.json").exists(), "Damaged files reached ready state"
         return {"s5-restored": self.out / name / "1-restored"}
+
+    def s6_malformed_legacy(self):
+        """Malformed preference data must block before any migration write."""
+        name = "s6_malformed_legacy"
+        for label, key in [("ledger", "flutter.transactions"), ("envelope", "flutter.financial_store_v1")]:
+            self.fresh()
+            self.sim.install(self.flutter_app)
+            injected = {
+                **ONBOARDED,
+                key: {"type": "string", "value": "truncated JSON"},
+                "flutter.base_currency_code": {"type": "string", "value": "GBP"},
+            }
+            inject_prefs(self.sim, injected)
+            self.sim.install(self.swift_app)
+            (self.out / name / label).mkdir(parents=True, exist_ok=True)
+            self.swift_launch(name, label)
+            self.sim.terminate()
+            dest = self.out / name / label
+            state = pull(self.sim, dest)
+            with open(dest / "preferences.plist", "rb") as file:
+                prefs = plistlib.load(file)
+            assert prefs.get(key) == injected[key]["value"], "Malformed legacy data was removed"
+            assert not (dest / "financial_store/financial_store_v2.json").exists(), "Partial migration was committed"
+            assert not (dest / "swift-summary.json").exists(), "Malformed legacy data reached ready state"
+            assert state["preNativeSnapshots"], "Original legacy data received no safety copy"
+            self.record(name, **{label: state})
+        return {}
 
 
 def compare_pulled(dirs):
@@ -547,7 +580,7 @@ def main():
     parser.add_argument("--skip-build", action="store_true")
     parser.add_argument("--compare-pulled", nargs="+", metavar="DIR",
                         help="check containers pulled from a device (REAL_DEVICE_CHECKLISTS.md); no simulator is used")
-    parser.add_argument("scenarios", nargs="*", default=["s1", "s3", "s4", "s5"])
+    parser.add_argument("scenarios", nargs="*", default=["s1", "s3", "s4", "s5", "s6"])
     args = parser.parse_args()
     SCRATCH.mkdir(parents=True, exist_ok=True)
     if args.compare_pulled:
@@ -566,14 +599,16 @@ def main():
     rehearsal = Rehearsal(out, flutter_app, swift_app)
     pulled = {}
     runners = {"s1": rehearsal.s1_typical_roundtrip, "s3": rehearsal.s3_legacy_only,
-               "s4": rehearsal.s4_locked_launch, "s5": rehearsal.s5_corruption}
+               "s4": rehearsal.s4_locked_launch, "s5": rehearsal.s5_corruption,
+               "s6": rehearsal.s6_malformed_legacy}
     for key in args.scenarios:
         try:
             pulled.update(runners[key]())
         except Exception as error:  # record and continue; the report says so
             rehearsal.record(key, error=str(error)[-4000:])
 
-    dart = dart_view({k: v for k, v in pulled.items() if (v / "financial_store").exists()})
+    readable_pulls = {k: v for k, v in pulled.items() if (v / "financial_store").exists()}
+    dart = dart_view(readable_pulls) if readable_pulls else {}
     comparisons = {}
     for case, pulled_dir in pulled.items():
         swift_summary = pulled_dir / "swift-summary.json"
@@ -595,6 +630,9 @@ def main():
     (out / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True, default=str))
     rehearsal.sim.shutdown()
     print(out / "report.json")
+    return 1 if any("error" in result for result in rehearsal.results.values()) or any(
+        result for result in comparisons.values()
+    ) or any(result["problems"] for result in dart.values()) else 0
 
 
 if __name__ == "__main__":

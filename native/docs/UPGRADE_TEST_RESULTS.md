@@ -5,6 +5,20 @@ screenshots, pulled container state) is under `native/docs/rehearsal/<run>/`.
 Simulator: dedicated `Budgie-Rehearsal` (iPhone 17 Pro, iOS 27.0).
 Synthetic fixture data only.
 
+## Migration safety audit — 2026-09-30
+
+See [MIGRATION_SAFETY_AUDIT.md](MIGRATION_SAFETY_AUDIT.md) for the new
+regressions, fixes, evidence and remaining release requirements. Fresh run
+`20260930-142713` on the separate `Budgie-Migration-Audit` simulator:
+S1/S3/S4/S5 passed, no Dart problems or Swift/Dart differences; 52 full-data
+and safety-copy hash checks passed. Automated suites: 379 Swift tests,
+67 Swift-written Flutter compatibility cases, 390 Flutter tests, clean
+Flutter analysis. Physical-device and signed-release verification remain
+outstanding.
+Follow-up run `20260930-144200`: S5 with real currency preferences and the
+new S6 malformed ledger/envelope cases passed inside the installed app;
+original legacy values and their safety copies remained intact.
+
 "Numbers" below means: per-month income, expenses and transaction count,
 net worth (assets, liabilities) per month, recurring cursors and pause
 state, and the five app settings. "Flutter's numbers" are computed by the

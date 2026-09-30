@@ -84,6 +84,14 @@ struct DomainParityTests {
         let expected = try loadExpected(url)
         let dart = expected["appAfterGenerate"]
         guard dart.value != nil else { return }  // Dart could not launch either (read error)
+        if blockedLegacyScenarioNames.contains(url.lastPathComponent), path.hasPrefix("legacy/") {
+            // Swift deliberately refuses the partial migration Dart performs.
+            let before = scenario.preferences.all
+            await #expect(throws: FinancialStoreError.self) { try await scenario.makeStore().read() }
+            #expect(scenario.fileSystem.snapshot.isEmpty)
+            #expect(scenario.preferences.all == before)
+            return
+        }
         let known = inputIDs(scenario)
         guard let data = try await launch(scenario) else {
             Issue.record("\(path): Swift could not launch but Dart could")

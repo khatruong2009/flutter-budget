@@ -684,6 +684,16 @@ builds without XcodeGen. Confirm.
 
 ## 16. Before shipping to real users (not part of the MVP build)
 
+Migration safety audit, 2026-09-30: see `MIGRATION_SAFETY_AUDIT.md`.
+Safety takes precedence over reproducing Flutter's destructive corruption
+fallback. Unacknowledged corrupt files always block, even with settings or
+stale legacy keys. Unrecoverable legacy sections and envelopes also block
+before a migration commit or preference removal. A valid v1 backup may still
+recover a damaged primary envelope. Safety-copy reuse verifies all manifest
+hashes and, for externally written/legacy-only data, all source files and
+preference domains. Commits verify the complete intended bytes in addition
+to revision and checksum. The empty-budget action requires confirmation.
+
 1. Real-device prewarm/locked-launch test on a spare device with synthetic
    data (the simulator cannot do it).
 2. Real-device upgrade rehearsal: Flutter TestFlight build -> Swift build over

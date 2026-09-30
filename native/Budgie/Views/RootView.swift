@@ -67,6 +67,7 @@ struct StatusScreen: View {
 
 struct BlockedView: View {
     @Environment(AppModel.self) private var model
+    @State private var confirmsEmptyBudget = false
     let blocker: AppModel.Blocker
 
     var body: some View {
@@ -91,10 +92,19 @@ struct BlockedView: View {
             VStack(spacing: 16) {
                 StatusScreen(
                     symbol: "exclamationmark.octagon", title: "Your data couldn't be read",
-                    message: "Both copies of your budget data are damaged. They have been kept on this iPhone, along with a safety copy made before this version first opened.")
+                    message: "Your saved budget data could not be read. The original files and a safety copy have been kept on this iPhone.")
+                Button("Try Again") { Task { await model.retryStart() } }.buttonStyle(.borderedProminent)
+                Button("Start with an Empty Budget", role: .destructive) {
+                    confirmsEmptyBudget = true
+                }
+            }
+            .confirmationDialog("Start with an Empty Budget?", isPresented: $confirmsEmptyBudget, titleVisibility: .visible) {
                 Button("Start with an Empty Budget", role: .destructive) {
                     Task { await model.startFresh(acknowledging: files) }
                 }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will open a budget without recovering your saved data. Your original files and safety copy will remain on this iPhone.")
             }
         }
     }

@@ -254,6 +254,13 @@ struct SwiftOutputForDartTests {
         for name in legacyScenarioNames {
             let scenario = try Scenario(Fixtures.url("legacy/\(name)"))
             let store = scenario.makeStore()
+            if blockedLegacyScenarioNames.contains(name) {
+                let original = scenario.preferences.all
+                await #expect(throws: FinancialStoreError.self) { try await store.read() }
+                #expect(scenario.fileSystem.snapshot.isEmpty)
+                #expect(scenario.preferences.all == original)
+                continue
+            }
             let snapshot = try await store.read()
             guard snapshot.revision > 0 || !scenario.fileSystem.snapshot.isEmpty else { continue }
             try SwiftOutput.emit("legacy-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
@@ -747,7 +754,15 @@ struct SwiftOutputForDartTests {
         for name in ["primary_truncated", "primary_stale", "primary_missing", "backup_corrupt", "tmp_leftover_valid_newer", "both_corrupt_with_legacy"] {
             let scenario = try Scenario(Fixtures.url("store/\(name)"))
             let store = scenario.makeStore()
-            _ = try await store.read()
+            do {
+                _ = try await store.read()
+            } catch .dataUnreadable(let names) {
+                #expect(name == "both_corrupt_with_legacy")
+                #expect(scenario.fileSystem.snapshot[StoreFile.primaryName] == nil)
+                // Only an explicit recovery choice permits stale legacy fallback.
+                try await store.acknowledgeUnreadableData(names)
+                _ = try await store.read()
+            }
             let snapshot = try await store.updateSections([(Section.selectedNetWorthMonth, .string("2026-06-01T00:00:00.000"))])
             try SwiftOutput.emit("recovered-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot)
         }

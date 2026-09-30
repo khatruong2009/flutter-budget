@@ -160,8 +160,9 @@ public actor FinancialStore {
             // Primary missing, unreadable or older: restore it from the
             // backup (same revision, fresh header); the backup is untouched.
             let restored = backup!
-            try writeAtomically(StoreFile.primaryName, StoreFile.encode(restored, writtenAt: now()))
-            try verifyOnDisk(restored.revision)
+            let encoded = StoreFile.encode(restored, writtenAt: now())
+            try writeAtomically(StoreFile.primaryName, encoded)
+            try verifyOnDisk(restored.revision, expectedBytes: encoded)
             report.restoredFromBackup = true
             return restored
         }
@@ -182,15 +183,18 @@ public actor FinancialStore {
             }
         }
 
-        guard let migrated = LegacyMigration.migrate(preferences) else {
-            let unacknowledged = try unacknowledgedCorruptFiles()
-            if !unacknowledged.isEmpty {
-                // Swift divergence (approved): do not open an empty ledger
-                // over data that exists but cannot be read.
-                throw .dataUnreadable(corruptFiles: unacknowledged)
-            }
-            return .empty
+        // Settings and stale legacy keys cannot prove recovery of damaged
+        // financial files. Block before considering any preference fallback,
+        // including on a relaunch after the files were set aside.
+        let unacknowledged = try unacknowledgedCorruptFiles()
+        if !unacknowledged.isEmpty {
+            throw .dataUnreadable(corruptFiles: unacknowledged)
         }
+        let migrated = LegacyMigration.migrate(preferences)
+        if let key = LegacyMigration.unrecoverableKeys(preferences, result: migrated).first {
+            throw .readFailed(name: key, reason: "Existing legacy data could not be migrated. The original preferences have been kept.")
+        }
+        guard let migrated else { return .empty }
         try commit(migrated.snapshot)
         report.migratedFrom = migrated.source
         report.removedPreferenceKeys = PreferenceKey.migratedKeys.filter { preferences.contains($0) }
@@ -230,17 +234,17 @@ public actor FinancialStore {
             try writeAtomically(StoreFile.backupName, current)
         }
         try writeAtomically(StoreFile.primaryName, encoded)
-        try verifyOnDisk(next.revision)
+        try verifyOnDisk(next.revision, expectedBytes: encoded)
 
         if let header = StoreFile.verify(encoded) {
             preferences.set(.string(header.payloadChecksum), forKey: PreferenceKey.lastCommittedChecksum)
         }
     }
 
-    private func verifyOnDisk(_ expectedRevision: Int64) throws(FinancialStoreError) {
+    private func verifyOnDisk(_ expectedRevision: Int64, expectedBytes: [UInt8]) throws(FinancialStoreError) {
         let written = try readIfPresent(StoreFile.primaryName)
         let header = written.flatMap(StoreFile.verify)
-        guard let header, header.revision == expectedRevision else {
+        guard let header, header.revision == expectedRevision, written == expectedBytes else {
             throw .verificationFailed(expected: expectedRevision, found: header?.revision)
         }
     }

@@ -53,7 +53,13 @@ public struct PreNativeMigrationBackup: Sendable {
         let current = try currentPrimaryChecksum()
         if let latest = try latestComplete() {
             let recorded = try recordedPrimaryChecksum(latest)
-            if current == recorded || (current != nil && current == lastCommittedChecksum) {
+            // A matching primary says nothing about a backup-only recovery
+            // or legacy preferences written since the previous snapshot.
+            // Also verify the safety copy itself before relying on it.
+            if try isIntact(latest),
+                try (current != nil && current == lastCommittedChecksum
+                    || current == recorded && matchesSources(latest))
+            {
                 return .alreadyCurrent(latest)
             }
         }
@@ -85,6 +91,40 @@ public struct PreNativeMigrationBackup: Sendable {
         return manifest?["primaryChecksum"] as? String
     }
 
+    private func isIntact(_ snapshot: URL) throws -> Bool {
+        let manifestData = try Data(contentsOf: snapshot.appendingPathComponent(Self.manifestName))
+        guard let manifest = try JSONSerialization.jsonObject(with: manifestData) as? [String: Any],
+            let files = manifest["files"] as? [[String: Any]],
+            let preferencesHash = manifest["preferencesSha256"] as? String,
+            let appGroupHash = manifest["appGroupSha256"] as? String
+        else { return false }
+        for file in files {
+            guard let name = file["name"] as? String, let hash = file["sha256"] as? String,
+                let data = try? Data(contentsOf: snapshot.appendingPathComponent(StoreFile.directoryName).appendingPathComponent(name)),
+                sha256(data) == hash
+            else { return false }
+        }
+        guard let prefs = try? Data(contentsOf: snapshot.appendingPathComponent("preferences.plist")),
+            let group = try? Data(contentsOf: snapshot.appendingPathComponent("app-group.plist"))
+        else { return false }
+        return sha256(prefs) == preferencesHash && sha256(group) == appGroupHash
+    }
+
+    private func matchesSources(_ snapshot: URL) throws -> Bool {
+        let fm = FileManager.default
+        let copy = snapshot.appendingPathComponent(StoreFile.directoryName)
+        let names = fm.fileExists(atPath: sources.storeDirectory.path)
+            ? try fm.contentsOfDirectory(atPath: sources.storeDirectory.path).sorted() : []
+        guard names == (try fm.contentsOfDirectory(atPath: copy.path).sorted()) else { return false }
+        for name in names {
+            guard try Data(contentsOf: sources.storeDirectory.appendingPathComponent(name))
+                == Data(contentsOf: copy.appendingPathComponent(name))
+            else { return false }
+        }
+        return try sources.exportPreferences() == Data(contentsOf: snapshot.appendingPathComponent("preferences.plist"))
+            && sources.exportAppGroupPreferences() == Data(contentsOf: snapshot.appendingPathComponent("app-group.plist"))
+    }
+
     private func create() throws -> URL {
         let fm = FileManager.default
         let formatter = DateFormatter()
@@ -108,6 +148,7 @@ public struct PreNativeMigrationBackup: Sendable {
                 let original = try Data(contentsOf: item)
                 let copy = try Data(contentsOf: destination)
                 guard original == copy else { throw BackupError.copyMismatch(item.lastPathComponent) }
+                try flush(destination)
                 files.append(["name": item.lastPathComponent, "size": original.count, "sha256": sha256(original)])
             }
         }
@@ -138,10 +179,18 @@ public struct PreNativeMigrationBackup: Sendable {
 
     private func write(_ data: Data, to url: URL) throws {
         try data.write(to: url, options: [.atomic])
+        guard try Data(contentsOf: url) == data else { throw BackupError.copyMismatch(url.lastPathComponent) }
+        try flush(url)
+    }
+
+    private func flush(_ url: URL) throws {
         let fd = open(url.path, O_RDONLY)
-        if fd >= 0 {
-            _ = fcntl(fd, F_FULLFSYNC)
-            close(fd)
+        guard fd >= 0 else {
+            throw StoreFileSystemError.posix(operation: "open", name: url.lastPathComponent, errno: errno)
+        }
+        defer { close(fd) }
+        if fcntl(fd, F_FULLFSYNC) != 0 && fsync(fd) != 0 {
+            throw StoreFileSystemError.posix(operation: "fsync", name: url.lastPathComponent, errno: errno)
         }
     }
 

@@ -5,6 +5,7 @@ import Testing
 
 let storeScenarioNames = (try? Fixtures.scenarios("store").map(\.lastPathComponent)) ?? []
 let legacyScenarioNames = (try? Fixtures.scenarios("legacy").map(\.lastPathComponent)) ?? []
+let blockedLegacyScenarioNames = ["bare_malformed", "v1_schema2_rejected"]
 
 @Suite("Store: load, restore, migrate and commit exactly like the Dart store")
 struct StoreParityTests {
@@ -36,18 +37,32 @@ struct StoreParityTests {
         let store = scenario.makeStore()
 
         var snapshot: FinancialSnapshot
+        let originalPrefs = scenario.preferences.all
         do {
             snapshot = try await store.read()
         } catch .readFailed {
+            if blockedLegacyScenarioNames.contains(scenario.name) {
+                // Safety divergence: Flutter discards these damaged keys.
+                // Swift blocks before writing or removing any preference.
+                #expect(scenario.fileSystem.snapshot.isEmpty)
+                #expect(scenario.preferences.all == originalPrefs)
+                return
+            }
             #expect(load["error"] as? String == "FinancialStoreException", "\(scenario.name): Swift failed to read")
             #expect(scenario.listing() == Scenario.listing(expected["filesAfterLoad"]), "\(scenario.name) files")
             return
         } catch .dataUnreadable(let corrupt) {
             // Approved divergence: Dart opens an empty store here. Swift
             // stops until the user acknowledges, then behaves like Dart.
-            #expect(load["revision"] as? Int == 0, "\(scenario.name): only for an empty Dart result")
+            #expect(load["revision"] as? Int == 0 || scenario.name == "both_corrupt_with_legacy",
+                    "\(scenario.name): damaged files require explicit acknowledgement before fallback")
             #expect(!corrupt.isEmpty)
-            #expect(scenario.listing() == Scenario.listing(expected["filesAfterLoad"]), "\(scenario.name) files")
+            if scenario.name != "both_corrupt_with_legacy" {
+                #expect(scenario.listing() == Scenario.listing(expected["filesAfterLoad"]), "\(scenario.name) files")
+            } else {
+                #expect(scenario.fileSystem.snapshot[StoreFile.primaryName] == nil)
+                #expect(scenario.preferences.all == originalPrefs)
+            }
             try await store.acknowledgeUnreadableData(corrupt)
             snapshot = try await store.read()
         }

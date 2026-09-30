@@ -1,0 +1,11 @@
+{
+  "appGroupSha256" : "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1",
+  "appVersion" : "4.0.0",
+  "createdAt" : "2026-09-30T18:48:07Z",
+  "files" : [
+
+  ],
+  "osVersion" : "Version 27.0 (Build 24A434)",
+  "preferencesSha256" : "adac45526785682a4196a0d204eab0d79599b6b11fef19bcb85d6424ca498268",
+  "primaryChecksum" : null
+}

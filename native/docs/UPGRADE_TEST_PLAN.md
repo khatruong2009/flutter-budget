@@ -8,8 +8,9 @@ device.
 ## How to run
 
 ```bash
-native/scripts/upgrade_rehearsal.py            # builds both apps, runs s1 s3 s4 s5
+native/scripts/upgrade_rehearsal.py            # builds both apps, runs s1 s3 s4 s5 s6
 native/scripts/upgrade_rehearsal.py --skip-build s1
+python3 native/scripts/verify_upgrade_preservation.py native/docs/rehearsal/<run>
 ```
 
 Output: `native/docs/rehearsal/<timestamp>/` with `report.json`, screenshots
@@ -96,8 +97,25 @@ test is on the pre-ship list.
    restores the primary from the backup
    (same revision Dart restores), shows the data.
 2. `store/both_corrupt`: Swift sets both files aside as `.corrupt-<ms>`,
-   shows "Your data couldn't be read", writes nothing else (approved
-   divergence Q3).
+   shows "Your data couldn't be read", writes nothing else. Currency settings
+   are present: these must never bypass the corruption gate. Starting without
+   recovery requires a second explicit confirmation.
+
+### S6: malformed legacy-only preferences
+
+Run once with a truncated transaction preference, once with a truncated v1
+envelope, both with valid currency and onboarding preferences. The app must
+block, retain the original preference, make a complete pre-native copy, and
+write no financial store or ready-state summary.
+
+### Full preservation verification
+
+`verify_upgrade_preservation.py` additionally checks every original financial
+section and value after S1, original category rows (launch may append a
+definition), byte-identical safety copies, the Swift file retained by the
+Flutter rollback, and every safety-copy manifest hash. It exits nonzero for
+missing evidence or preservation failures. The rehearsal itself now exits
+nonzero for scenario errors or Dart/Swift mismatches.
 
 ## Re-run at the end
 
