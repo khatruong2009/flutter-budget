@@ -1181,6 +1181,18 @@ what Flutter reads or shows):
 - The system prompt, models, retry choices (401, 403, 429 and every other
   failure read "Something went wrong. Try again.") and the microphone
   message match Flutter. Only one voice flow can be up at a time in both.
+- Recording sheet details: the mic is `mic.fill` (Flutter's outlined
+  `mic_rounded`) and the error icon `exclamationmark.circle`; the error
+  haptic is `.sensoryFeedback(.error)` (Flutter's system vibrate); the drag
+  handle uses the shared sheet chrome's 0.6 alpha (Flutter's voice sheet
+  0.35); the 56pt spinner is a custom arc (no Material spinner), turning
+  slowly under Reduce Motion; pills have a 44pt minimum height so large
+  Dynamic Type can grow them. The audio session is `.record` with haptics
+  allowed while recording (Flutter's plugin uses `playAndRecord`).
+- A recorder that fails to start shows "Something went wrong. Try again."
+  and Try again records again (Flutter leaves the sheet listening with no
+  timer). Stop pressed while the recorder is still starting stops it and
+  deletes the file.
 
 ## Deliberate differences (not yet approved)
 

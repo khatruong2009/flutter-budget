@@ -158,9 +158,7 @@ struct AddFormHostRoot: View {
         switch route {
         case .expense: TransactionFormView(mode: .add(.expense))
         case .income: TransactionFormView(mode: .add(.income))
-        case .voice:
-            // Voice flow is wired at integration (VoiceEntryFlow).
-            TransactionFormView(mode: .add(.expense))
+        case .voice: VoiceEntryFlow()
         }
     }
 }
