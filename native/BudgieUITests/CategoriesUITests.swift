@@ -6,13 +6,35 @@ import XCTest
 /// an existing transaction's row on Home; and the last active category of
 /// a type refusing to be archived. Names carry a per-run suffix so a rerun
 /// without an erase starts clean.
+///
+/// Each test leaves the store as it found it, failed or not: `tearDown`
+/// relaunches the app and runs the test's `cleanUp` (delete the added
+/// expense and archive the added category, which Flutter cannot delete;
+/// restore the archived built-in income categories).
 @MainActor
 final class CategoriesUITests: XCTestCase {
     let app = XCUIApplication()
+    private var cleanUp: (() -> Void)?
 
     override func setUp() async throws {
         continueAfterFailure = false
         app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "1"
+        launch()
+    }
+
+    override func tearDown() async throws {
+        if let cleanUp {
+            self.cleanUp = nil
+            // From a known state: the failure may have left a dialog, a
+            // menu or the form open.
+            app.terminate()
+            launch()
+            cleanUp()
+        }
+        try await super.tearDown()
+    }
+
+    private func launch() {
         app.launch()
         XCTAssertTrue(app.tabBars.buttons["Home"].waitForExistence(timeout: 20))
     }
@@ -67,14 +89,17 @@ final class CategoriesUITests: XCTestCase {
         XCTAssertTrue(element("categories.list").waitForExistence(timeout: 10))
     }
 
-    /// Scrolls the list until the row is on screen.
-    private func reveal(_ row: XCUIElement) {
+    /// Scrolls the list until the row is on screen; `required` fails the
+    /// test when it never shows up.
+    @discardableResult
+    private func reveal(_ row: XCUIElement, required: Bool = true) -> Bool {
         let list = element("categories.list")
         for _ in 0..<10 {
-            if row.exists && row.isHittable { return }
+            if row.exists && row.isHittable { return true }
             list.swipeUp()
         }
-        XCTAssertTrue(row.isHittable, "\(row) on screen")
+        if required { XCTAssertTrue(row.isHittable, "\(row) on screen") }
+        return row.isHittable
     }
 
     private func value(of element: XCUIElement) -> String { element.value as? String ?? "" }
@@ -107,6 +132,23 @@ final class CategoriesUITests: XCTestCase {
         let renamed = "UI Brew \(suffix)"
         let id = "expense-ui-coffee-\(suffix)"
         let description = "UI latte \(suffix)"
+        cleanUp = {
+            // The expense, if it was added (SEE ALL's swipe to delete).
+            self.homeRoot()
+            self.tapStable(self.app.buttons["See all transactions"].firstMatch)
+            let expense = self.app.buttons.containing(NSPredicate(format: "label CONTAINS %@", description)).firstMatch
+            if expense.waitForExistence(timeout: 5) {
+                expense.swipeLeft()
+                self.tapStable(self.app.alerts["Delete Transaction"].buttons["Delete"])
+                XCTAssertTrue(expense.waitForNonExistence(timeout: 10), "expense deleted")
+            }
+            // The category, if it was added and is active.
+            self.openCategories()
+            if self.reveal(self.row(id), required: false), self.value(of: self.row(id)) == "" {
+                self.choose("Archive", forRow: id)
+                XCTAssertTrue(self.row(id).waitForNonExistence(timeout: 5), "category archived")
+            }
+        }
 
         openCategories()
 
@@ -199,12 +241,24 @@ final class CategoriesUITests: XCTestCase {
     }
 
     func testLastActiveCategoryCannotBeArchived() throws {
+        let others = ["income-salary", "income-investment", "income-gift"]
+        cleanUp = {
+            // Every built-in income category the test archived.
+            self.openCategories()
+            self.tapStable(self.element("categories.type").buttons["Income"])
+            self.tapStable(self.app.switches["categories.showArchived"])
+            for id in others where self.reveal(self.row(id), required: false) {
+                guard self.value(of: self.row(id)).contains("Archived") else { continue }
+                self.choose("Restore", forRow: id)
+                XCTAssertTrue(self.waitUntil { self.value(of: self.row(id)) == "Built in" }, "\(id) restored")
+            }
+        }
+
         openCategories()
         let income = element("categories.type").buttons["Income"]
         tapStable(income)
         XCTAssertTrue(row("income-salary").waitForExistence(timeout: 5))
 
-        let others = ["income-salary", "income-investment", "income-gift"]
         for id in others {
             choose("Archive", forRow: id)
             XCTAssertTrue(row(id).waitForNonExistence(timeout: 5), "\(id) archived")
@@ -216,7 +270,8 @@ final class CategoriesUITests: XCTestCase {
                 .waitForExistence(timeout: 5))
         XCTAssertTrue(row("income-other").exists, "still active")
 
-        // Restore the others (keeps a rerun's starting state).
+        // Restore the others from the page (tearDown's cleanUp then finds
+        // nothing left to restore).
         tapStable(app.switches["categories.showArchived"])
         for id in others {
             choose("Restore", forRow: id)

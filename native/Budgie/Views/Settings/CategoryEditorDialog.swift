@@ -77,7 +77,11 @@ struct CategoryEditorDialog: View {
 
     private var fields: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Flutter's single-line field shows Done on iOS and only
+            // dismisses the keyboard (no onFieldSubmitted): SwiftUI's
+            // default on return.
             BudgieField(title: "Name", text: $name, capitalization: .words, error: error, autofocus: true)
+                .submitLabel(.done)
                 .accessibilityIdentifier("categories.editor.name")
             caption("Icon")
                 .padding(.top, Metrics.spacingM)
@@ -89,12 +93,14 @@ struct CategoryEditorDialog: View {
                     ) {
                         iconIdentifier = identifier
                     } content: {
+                        // Flutter's plain `Icon`: the Cupertino glyphs' weight.
                         Image(systemName: CategoryCatalog.symbol(for: identifier))
-                            .font(.system(size: Metrics.iconS, weight: .medium))
+                            .font(.system(size: Metrics.categoryGlyph, weight: .regular))
                             .foregroundStyle(BudgieColor.textPrimary)
                     }
                 }
             }
+            .frame(maxWidth: Self.gridWidth, alignment: .leading)
             .padding(.top, Metrics.spacingS)
             caption("Color")
                 .padding(.top, Metrics.spacingM)
@@ -114,10 +120,16 @@ struct CategoryEditorDialog: View {
                     }
                 }
             }
+            .frame(maxWidth: Self.gridWidth, alignment: .leading)
             .padding(.top, Metrics.spacingS)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
+
+    /// Five choice buttons a row, as Flutter's narrower `AlertDialog`
+    /// wraps them (icons 5/5/5/3, colours 5+3): the redesign card would
+    /// fit six.
+    private static let gridWidth = Metrics.touchTarget * 5 + Metrics.spacingS * 4
 
     /// "Icon" / "Color" (`AppTypography.caption` in the dialog's
     /// onSurfaceVariant).

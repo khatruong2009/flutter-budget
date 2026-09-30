@@ -4,7 +4,7 @@ import XCTest
 @testable import Runner
 
 /// The Categories page's row menu and subtitle (category_settings_page.dart
-/// :104-139) and the neutral toast style.
+/// :104-139), and the toast a refused row action shows.
 @MainActor
 final class CategoryRowMenuTests: XCTestCase {
     private func titles(index: Int, count: Int, archived: Bool) -> [String] {
@@ -31,9 +31,13 @@ final class CategoryRowMenuTests: XCTestCase {
         XCTAssertEqual(CategoryRowAction.subtitle(for: info(builtIn: false, archived: false)), "")
     }
 
-    func testNeutralToastStyle() {
-        let toast = Toast(message: "No rows", style: .neutral)
+    /// A refused row action shows Flutter's copy in its default SnackBar
+    /// look (the neutral toast), for the SnackBar's 4 seconds.
+    func testRefusedActionUsesTheNeutralToast() {
+        let toast = CategoryRowAction.refusedToast(.lastActive)
+        XCTAssertEqual(toast.message, "At least one category must remain active")
         XCTAssertEqual(toast.style, .neutral)
+        XCTAssertNil(toast.action)
         XCTAssertEqual(toast.duration, 4)
     }
 }

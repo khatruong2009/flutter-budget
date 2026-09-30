@@ -33,10 +33,15 @@ public enum DartString {
     /// U+037F, ...) is not applied. The only unconditional full mapping that
     /// differs is U+0130, which Dart maps to plain "i" (Swift's
     /// `lowercased()` gives "i" + U+0307). Verified for every scalar against
-    /// Fixtures/logic/lower.json.
+    /// Fixtures/logic/lower.json. ASCII takes a fast path (A-Z plus 32, the
+    /// rest unchanged): same output, without the per-scalar table lookups.
     public static func lowercase(_ text: String) -> String {
         var result = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {
+            if scalar.value < 0x80 {
+                result.append(0x41...0x5A ~= scalar.value ? Unicode.Scalar(UInt8(scalar.value + 32)) : scalar)
+                continue
+            }
             if scalar.value == 0x130 {
                 result.append("i")
                 continue

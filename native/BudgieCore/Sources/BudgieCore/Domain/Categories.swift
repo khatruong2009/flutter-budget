@@ -172,7 +172,8 @@ public enum CategoryCatalog {
     public static let colorTokens = ["accent", "green", "blue", "orange", "red", "purple", "pink", "cyan"]
 
     /// SF Symbol for a Flutter icon identifier (CupertinoIcons registry,
-    /// common.dart; the Cupertino glyph's SF counterpart where one exists).
+    /// common.dart; the Cupertino glyph's SF counterpart where one exists,
+    /// filled where the Cupertino glyph is: `car_detailed` and `paw`).
     /// Unknown identifiers fall back like Flutter does.
     public static func symbol(for iconIdentifier: String) -> String {
         switch iconIdentifier {
@@ -180,13 +181,13 @@ public enum CategoryCatalog {
         case "asterisk_circle": "asterisk.circle"
         case "cart": "cart"
         case "house": "house"
-        case "car": "car"
+        case "car": "car.fill"
         case "airplane": "airplane"
         case "bag": "bag"
         case "gift": "gift"
         case "heart": "heart"
         case "film": "film"
-        case "paw": "pawprint"
+        case "paw": "pawprint.fill"
         case "people": "person.2"
         case "money": "dollarsign"
         case "chart": "chart.bar"

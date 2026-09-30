@@ -68,7 +68,9 @@ UPGRADE_TEST_RESULTS.md).
   category's limit is dropped (Dart `putIfAbsent`). A case-only rename
   cascades; an icon or colour edit, or the same name with padding, does
   not. Transactions renamed get `updatedAt` = now, even when that is
-  earlier than the stored value.
+  earlier than the stored value, and one instant for the whole rename
+  (Dart calls `DateTime.now()` once per renamed row, so its rows get
+  distinct, increasing microseconds; nothing reads that order).
 - A category name with leading or trailing spaces (a transaction's,
   template's or budget key's) is materialised again at every launch: the
   launch pass compares the trimmed name with the stored, untrimmed one
@@ -318,7 +320,10 @@ UPGRADE_TEST_RESULTS.md).
   goalTitle (Flutter: headlineSmall, left), "Name" is a caption above the
   field (Flutter: a floating label), and Cancel / Add | Save are pills
   (Flutter: a text and a filled button). The icon and colour choice
-  buttons, their sizes, colours and order are Flutter's.
+  buttons, their sizes, colours and order are Flutter's, and so is the
+  wrap: the grid is capped at five buttons a row (icons 5/5/5/3, colours
+  5+3), though the wider card would fit six. The Name field's return key
+  is Done and only dismisses the keyboard, as Flutter's.
 - Category editor errors show inline under the Name field and keep the
   dialog open with the typed name: "Enter a category name" (Flutter's
   validator) and, before saving, the provider's "A category with this
@@ -331,8 +336,26 @@ UPGRADE_TEST_RESULTS.md).
 - The category editor's colour rows are 8pt apart, like the icon rows
   (Flutter's colour `Wrap` sets no run spacing, so its two rows touch).
 - Refused category row actions ("At least one category must remain
-  active") show the danger toast; Flutter shows the default SnackBar
-  (inverse-surface fill, fixed to the bottom edge).
+  active") show the neutral toast (below), Flutter's default SnackBar
+  look; the editor's errors stay inline (above).
+- Category icons (D3: SF Symbols tinted with Flutter's colours):
+  `car.fill` and `pawprint.fill` stand in for the filled Cupertino
+  `car_detailed` and `paw`, the other 16 are the outline SF counterparts
+  (`money_dollar` is `dollarsign`, clearly taller than Cupertino's small
+  dollar; `person_2` is thinner in Cupertino). The Categories page draws
+  them at 17pt (row tiles, the editor grid) and the row menu's bold
+  `ellipsis` at 17pt, where they measure within a pixel or two (at 3x) of
+  Flutter's 20pt Cupertino glyphs and 24pt `more_horiz` (SF Symbols draw
+  about 18% larger at the same size); the editor grid uses the regular
+  weight, closer to Cupertino's strokes. The row tiles keep the shared
+  `IconTile`'s medium weight, and every other screen's category tile
+  (Home, Spend, Flow, the form) still draws the symbol at the shared
+  `IconTile` 20pt, about 18% larger than Flutter's.
+- Categories page, platform look: "Show archived" is the system switch
+  (the iOS 26 track is about 62 x 28 against CupertinoSwitch's 51 x 31;
+  its right edge lines up with Flutter's), and the row cards are the
+  shared `GlowCard` (continuous corners and a fainter border than
+  Flutter's circular radius-26 arcs).
 - `Toast.Style.neutral` stands in for Flutter's default SnackBar with the
   primary text colour as the fill and the page background as the text
   (M3 inverseSurface / onInverseSurface from the seed are close but not

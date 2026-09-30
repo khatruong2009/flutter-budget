@@ -41,7 +41,7 @@ private struct ToastHost: ViewModifier {
 /// keeps it legible on the bright dark-mode green and rose. The neutral
 /// style stands in for M3 `inverseSurface` / `onInverseSurface` with the
 /// primary text colour as the fill and the page background as the text
-/// (#111827 on #F9FAFB light, #F2F2FA on #0A0A12 dark).
+/// (text on fill: #F9FAFB on #111827 light, #0A0A12 on #F2F2FA dark).
 private struct ToastView: View {
     @Environment(AppModel.self) private var model
     let toast: Toast

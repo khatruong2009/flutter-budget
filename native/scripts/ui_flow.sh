@@ -14,9 +14,12 @@ xcrun simctl shutdown "$UDID" 2>/dev/null || true
 xcrun simctl erase "$UDID"
 cd "$NATIVE" && xcodegen generate >/dev/null
 # SystemIntegrationUITests needs the Flutter-prepared simulator of
-# system_flow.sh, so only the app tests and the MVP flow run here.
+# system_flow.sh, so only the app tests, the Categories flow (its moves,
+# archive / restore and rename cascade; it deletes its expense and archives
+# its category) and the MVP flow run here.
 xcodebuild test -project Budgie.xcodeproj -scheme Budgie -destination "id=$UDID" \
-  -only-testing:BudgieAppTests -only-testing:BudgieUITests/MVPFlowUITests \
+  -only-testing:BudgieAppTests -only-testing:BudgieUITests/CategoriesUITests \
+  -only-testing:BudgieUITests/MVPFlowUITests \
   -derivedDataPath "$WORK/derived" CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual | grep -E "Test Case|\*\* TEST"
 xcrun simctl boot "$UDID" 2>/dev/null || true
 xcrun simctl bootstatus "$UDID" -b >/dev/null

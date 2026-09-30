@@ -13,8 +13,9 @@ import SwiftUI
 /// down step over hidden archived rows (`categoryMoveOffset`); the editor is
 /// the redesign's centred card with inline errors; the row menu is the
 /// system menu. Refused row actions (archiving the last active category)
-/// show the danger toast with Flutter's copy, a failed write the save-failed
-/// toast. Neither the type nor the switch is persisted (as Flutter).
+/// show Flutter's copy in the neutral toast (its default SnackBar), a
+/// failed write the save-failed toast. Neither the type nor the switch is
+/// persisted (as Flutter).
 struct CategoriesView: View {
     @Environment(AppModel.self) private var model
 
@@ -50,6 +51,10 @@ struct CategoriesView: View {
                 }
                 .padding(EdgeInsets(top: 0, leading: Metrics.spacingM, bottom: Metrics.spacingXL, trailing: Metrics.spacingM))
             }
+            // A new list per type, starting at the top: the kept offset of a
+            // scrolled Expenses list left the shorter Income list above the
+            // viewport (Flutter's list shows the other type from the top).
+            .id(typeIndex)
             .accessibilityIdentifier("categories.list")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -85,6 +90,9 @@ struct CategoriesView: View {
     /// `SwitchListTile.adaptive` (padding 24 horizontal, 56 tall): the
     /// systemGreen switch, and the title also toggles it (the whole tile
     /// is Flutter's tap target). VoiceOver reads the switch by the title.
+    /// The title's tap and the switch do not overlap: a zero-length
+    /// synthetic tap (Simulator tooling) misses every system switch in the
+    /// app, Settings' included, while a real touch toggles it once.
     private var archivedSwitch: some View {
         HStack(spacing: Metrics.spacingM) {
             Text("Show archived")
@@ -99,7 +107,10 @@ struct CategoriesView: View {
                 .tint(.green)
                 .accessibilityIdentifier("categories.showArchived")
         }
-        .padding(.horizontal, Metrics.spacingL)
+        .padding(.leading, Metrics.spacingL)
+        // CupertinoSwitch keeps its own margin inside the tile: its track
+        // ends about 30pt from the edge.
+        .padding(.trailing, Metrics.spacingL + Metrics.spacingS)
         .frame(minHeight: 56)
     }
 
@@ -124,13 +135,13 @@ struct CategoriesView: View {
 
     /// Awaits the edit; silent when saved or a no-op (as Flutter), the
     /// save-failed toast when only memory changed, Flutter's message in the
-    /// danger toast when refused.
+    /// neutral toast when refused.
     private func run(_ edit: @escaping () async -> AppModel.CategoryOutcome) {
         Task {
             switch await edit() {
             case .saved, .unchanged: break
             case .failed: model.showToast(.saveFailed)
-            case .rejected(let error): model.showToast(Toast(message: error.message, style: .danger))
+            case .rejected(let error): model.showToast(CategoryRowAction.refusedToast(error))
             }
         }
     }
@@ -179,32 +190,57 @@ enum CategoryRowAction: Hashable {
             .compactMap { $0 }
             .joined(separator: " \u{00B7} ")
     }
+
+    /// A refused row action: Flutter's message in its default SnackBar
+    /// (`_handleAction`'s plain `SnackBar`), the neutral toast.
+    static func refusedToast(_ error: CategoryEditError) -> Toast {
+        Toast(message: error.message, style: .neutral)
+    }
+}
+
+extension Metrics {
+    /// Categories' glyphs (row tiles, the editor's icon grid, the row
+    /// menu): SF Symbols draw about 18% larger than Flutter's Cupertino and
+    /// Material glyphs at the same size, so 17 renders like Flutter's 20
+    /// (tile and grid, measured) and its 24pt `more_horiz`.
+    static let categoryGlyph: CGFloat = 17
 }
 
 /// One definition (`GlowCard(padding: 8)` around a two-line M3 `ListTile`,
 /// :90-141): content padding 16 / 24, the 40pt tile in the category colour,
-/// 16 apart, the name in rowTitle over the subtitle in rowSubtitle (an empty
-/// subtitle still takes its line, as Flutter's empty `Text`), the 48pt
-/// "Category actions" menu; 72 tall. No row tap (as Flutter).
+/// 16 apart, the name over the subtitle 4 apart as the M3 two-line layout
+/// places them (an empty subtitle still takes its line, as Flutter's empty
+/// `Text`), the 48pt "Category actions" menu; 72 tall. No row tap (as
+/// Flutter).
 ///
 /// VoiceOver: the text is one element ("Groceries", "Built in") offering
-/// the menu's items as actions; the menu button follows it.
+/// the menu's items as actions; the menu button follows it, valued with the
+/// category's name.
 private struct CategoryRow: View {
     let category: CategoryInfo
     let actions: [CategoryRowAction]
     let onAction: (CategoryRowAction) -> Void
 
+    /// `rowTitle` / `rowSubtitle` as `ListTile` renders them: they set no
+    /// letter spacing, so M3's `bodyLarge` (0.5) and `bodyMedium` (0.25)
+    /// tracking carries over.
+    private static let title = TextSpec(face: .gabaritoSemiBold, size: 15, tracking: 0.5, height: 1.25, relativeTo: .body)
+    private static let subtitle = TextSpec(
+        face: .gabaritoRegular, size: 12, tracking: 0.25, height: 1.25, relativeTo: .caption)
+
     var body: some View {
         let subtitle = CategoryRowAction.subtitle(for: category)
         GlowCard(padding: Metrics.spacingS) {
             HStack(spacing: Metrics.spacingM) {
-                IconTile(category: category)
-                VStack(alignment: .leading, spacing: 0) {
+                IconTile(
+                    symbol: CategoryCatalog.symbol(for: category.iconIdentifier),
+                    color: BudgieColor.category(category.colorToken), iconSize: Metrics.categoryGlyph)
+                VStack(alignment: .leading, spacing: Metrics.spacingXS) {
                     Text(category.name)
-                        .textStyle(.rowTitle)
+                        .textStyle(Self.title)
                         .foregroundStyle(BudgieColor.textPrimary)
                     Text(subtitle.isEmpty ? " " : subtitle)
-                        .textStyle(.rowSubtitle)
+                        .textStyle(Self.subtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -222,15 +258,17 @@ private struct CategoryRow: View {
                         Button(action.title) { onAction(action) }
                     }
                 } label: {
-                    // Material `more_horiz` (24) in a 48pt IconButton.
+                    // Material `more_horiz` (24) in a 48pt IconButton; bold
+                    // gives its larger dots.
                     Image(systemName: "ellipsis")
-                        .font(.system(size: Metrics.iconS, weight: .medium))
+                        .font(.system(size: Metrics.categoryGlyph, weight: .bold))
                         .foregroundStyle(BudgieColor.textSecondary)
                         .frame(width: 48, height: 48)
                         .contentShape(Rectangle())
                 }
                 .menuOrder(.fixed)
                 .accessibilityLabel("Category actions")
+                .accessibilityValue(category.name)
                 .accessibilityIdentifier("categories.row.menu.\(category.id)")
             }
             .padding(.leading, Metrics.spacingM)

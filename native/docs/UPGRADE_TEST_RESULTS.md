@@ -85,6 +85,13 @@ wrote was loaded by the real Flutter models with no problems: amounts are
 Dart doubles (`20.0`, `900.0`), the template is `isActive: false`, the
 deleted row is gone, `flutter.themeMode` is `dark`.
 
+The script now also runs `CategoriesUITests` before the MVP flow (add,
+move up / down, archive / restore, rename cascade, the last active
+category refusing Archive; its tearDown deletes the added expense and
+archives the added category). 2026-09-29: all PASS, and the Dart
+verification loaded the store (the archived "UI Brew" category, the
+restored built-in income categories) with no problems.
+
 ## Home screen integration (`native/scripts/system_flow.sh`, SpringBoard via XCUITest)
 
 Run on a fresh `Budgie-System` simulator: the Flutter build installed and

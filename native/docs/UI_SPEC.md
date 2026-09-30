@@ -442,26 +442,34 @@ every mutation is an awaited `AppModel` call returning `CategoryOutcome`.
 
 - Top: the centred `SegmentedPills` "Expenses" | "Income" (padding 16, 8,
   16, 0), then "Show archived" (M3 bodyLarge 16 / 1.5, systemGreen switch,
-  padding 24, 56 tall; the title also toggles it). Neither is persisted.
+  padding 24 leading and 32 trailing so the track ends where
+  CupertinoSwitch's does, 56 tall; the title also toggles it). Neither is
+  persisted.
 - List (padding 16, 0, 16, 32; 8 apart, lazy): one `GlowCard(padding: 8)`
   per definition in sort order, archived rows interleaved only while the
-  switch is on. Row: 72 tall, content padding 16 / 24, 16 gaps, the 40pt
-  `IconTile(category:)`, the name (rowTitle) over "Built in" / "Archived"
-  joined with " · " (rowSubtitle; an empty subtitle keeps its line), and
-  the 48pt `ellipsis` system `Menu` "Category actions". No row tap.
+  switch is on. A new list per type (`.id(typeIndex)`), so switching type
+  starts at the top. Row: 72 tall, content padding 16 / 24, 16 gaps, the
+  40pt `IconTile` with its symbol at `Metrics.categoryGlyph` (17), the name
+  (rowTitle, tracking 0.5) over "Built in" / "Archived" joined with " · "
+  (rowSubtitle, tracking 0.25; 4 apart; an empty subtitle keeps its line),
+  and the 48pt `ellipsis` (17, bold) system `Menu` "Category actions". No row
+  tap.
 - Menu (`CategoryRowAction.menu`): Edit; Move up unless archived or first
   shown; Move down unless archived or last shown; Restore (archived) or
   Archive. Moves pass `model.categoryMoveOffset` (relative to the rows
   shown). Saved and no-op outcomes are silent; `.failed` shows
-  `Toast.saveFailed`; `.rejected` shows `error.message` in the danger toast
-  ("At least one category must remain active").
+  `Toast.saveFailed`; `.rejected` shows `error.message` in the neutral
+  toast (`CategoryRowAction.refusedToast`: "At least one category must
+  remain active").
 - Editor (`CategoryEditorDialog`, `budgieDialog(item:)` centred card):
   "New category" / "Edit category" (goalTitle), the autofocused
-  `BudgieField` "Name" (words), "Icon" and "Color" captions over
-  `FlowLayout`s (8 / 8) of 44pt choice buttons (radius 12; selected accent
-  18% + accent border, else surface + border): the 18
-  `CategoryCatalog.iconIdentifiers` symbols in textPrimary, then the 8
-  `colorTokens` as 20pt circles; Cancel / Add | Save pills (44). A new
+  `BudgieField` "Name" (words, Done return key that dismisses the
+  keyboard), "Icon" and "Color" captions over `FlowLayout`s (8 / 8,
+  capped at five buttons a row: 5 x 44 + 4 x 8) of 44pt choice buttons
+  (radius 12; selected accent 18% + accent border, else surface + border):
+  the 18 `CategoryCatalog.iconIdentifiers` symbols in textPrimary (17,
+  regular), then the 8 `colorTokens` as 20pt circles; Cancel / Add | Save
+  pills (44). A new
   category's type is the selected segment. Save validates inline:
   "Enter a category name" (empty after trim), else
   `validateCategoryName`'s message; after the first Save the error follows
@@ -472,7 +480,7 @@ every mutation is an awaited `AppModel` call returning `CategoryOutcome`.
   shows the new name.
 - VoiceOver: each row's text is one element (name, value = subtitle) with
   the menu items as custom actions, followed by the "Category actions"
-  menu; choice buttons are named ("Cart", "Green", ...) with the selected
+  menu, valued with the category's name; choice buttons are named ("Cart", "Green", ...) with the selected
   trait; the "Icon" / "Color" captions are headers.
 - UI-test identifiers: `settings.categories`, `categories.add`,
   `categories.type`, `categories.showArchived`, `categories.list`,
