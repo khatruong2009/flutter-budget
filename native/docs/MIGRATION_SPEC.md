@@ -296,6 +296,14 @@ through `TimeZone.current` exactly where Dart does.
 Untouched date strings are never re-formatted (lossless model). Only dates
 Swift creates or changes are formatted.
 
+Consequence in a DST gap (pinned by `BackupParityTests`, `shiftingGapDates`):
+a stored string such as `2026-09-06T00:00:00.000`, which does not exist in
+America/Santiago, stays byte-identical in a Swift-written store. Dart
+re-encodes every row whenever it rewrites the section (restore, most
+mutations), so the same row comes out as `T01:00:00.000`. Both parse to the
+same instant, so no value differs and either app reads the other's file.
+Only the section bytes differ.
+
 ### 7.2 Format and parse (Dart `toIso8601String` / `DateTime.parse`)
 
 - Format local: `yyyy-MM-ddTHH:mm:ss.mmm` when microsecond-of-second is 0,

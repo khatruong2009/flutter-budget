@@ -271,6 +271,106 @@ List<CustomStore> customStores() {
         },
       ],
     }),
+    // Midnight DST: America/Santiago has no 2026-09-06 00:00-00:59 (Dart moves
+    // it to 01:xx) and repeats 2026-04-04 23:00-23:59; Asia/Beirut has no
+    // 2026-03-29 00:00-00:59 and repeats 2026-10-24 23:00-23:59. Elsewhere
+    // these are ordinary times, so a restore then export is the identity.
+    CustomStore('dst_dates', {
+      'transactions': [
+        tx('x1', 'santiago before gap', 1.0, date: '2026-09-05T23:59:59.999'),
+        tx('x2', 'santiago gap midnight', 2.0, date: '2026-09-06T00:00:00'),
+        tx('x3', 'santiago gap half past', 3.0, date: '2026-09-06T00:30:00.000'),
+        tx('x4', 'santiago gap last ms', 4.0, date: '2026-09-06T00:59:59.999'),
+        tx('x5', 'santiago after gap', 5.0, date: '2026-09-06T01:00:00.000'),
+        tx('x6', 'santiago fold', 6.0, date: '2026-04-04T23:30:00'),
+        tx('x7', 'santiago fold start', 7.0, date: '2026-04-04T23:00:00.000'),
+        tx('x8', 'santiago fold end', 8.0, date: '2026-04-04T23:59:59.999'),
+        tx('x9', 'santiago after fold', 9.0, date: '2026-04-05T00:00:00.000'),
+        tx('x10', 'beirut gap', 10.0, date: '2026-03-29T00:30:00'),
+        tx('x11', 'beirut gap midnight', 11.0, date: '2026-03-29T00:00:00.000'),
+        tx('x12', 'beirut fold', 12.0, date: '2026-10-24T23:30:00.000'),
+        tx('x13', 'beirut after fold', 13.0, date: '2026-10-25T00:00:00.000'),
+        tx('x14', 'micros in gap', 14.0, date: '2026-09-06T00:30:00.123456'),
+      ],
+      'netWorthEntries': [
+        {
+          'id': 'xnw1',
+          'name': 'Fold account',
+          'type': 'asset',
+          'createdAt': '2026-04-04T23:30:00.000',
+          'snapshots': [
+            {
+              'monthKey': '2026-04',
+              'recordedAt': '2026-04-04T23:30:00.000',
+              'updatedAt': '2026-04-04T23:30:00.000',
+              'amount': 100.5,
+            },
+            {
+              'monthKey': '2026-09',
+              'recordedAt': '2026-09-06T00:15:00.000',
+              'updatedAt': '2026-09-06T00:15:00.000',
+              'amount': 120.25,
+            },
+            {'recordedAt': '2026-03-29T00:30:00.000', 'amount': 90},
+          ],
+        },
+      ],
+      'savingsGoals': [
+        {
+          'id': 'xg1',
+          'name': 'Gap target',
+          'targetAmount': 500.0,
+          'currentAmount': 50.0,
+          'targetDate': '2026-09-06T00:00:00.000',
+          'createdAt': '2026-04-04T23:30:00.000',
+        },
+        {
+          'id': 'xg2',
+          'name': 'Fold completed',
+          'targetAmount': 100.0,
+          'currentAmount': 100.0,
+          'targetDate': '2026-10-24T23:30:00.000',
+          'createdAt': '2026-03-29T00:00:00.000',
+          'completedAt': '2026-04-04T23:45:00.000',
+        },
+      ],
+      'recurringTransactions': [
+        {
+          'id': 'xrt1',
+          'type': 'expense',
+          'description': 'Weekly over the Santiago gap',
+          'amount': 12.5,
+          'category': 'General',
+          'pattern': 'weekly',
+          'startDate': '2026-08-30T00:00:00.000',
+          'nextOccurrence': '2026-09-06T00:00:00.000',
+          'dayOfWeek': 7,
+        },
+        {
+          'id': 'xrt2',
+          'type': 'income',
+          'description': 'Monthly in the Beirut gap',
+          'amount': 99.0,
+          'category': 'Salary',
+          'pattern': 'monthly',
+          'startDate': '2026-01-29T00:00:00.000',
+          'nextOccurrence': '2026-03-29T00:30:00.000',
+          'dayOfMonth': 29,
+        },
+        {
+          'id': 'xrt3',
+          'type': 'expense',
+          'description': 'Fold hour cursor',
+          'amount': 3.0,
+          'category': 'General',
+          'pattern': 'weekly',
+          'startDate': '2026-03-28T23:30:00.000',
+          'nextOccurrence': '2026-04-04T23:30:00.000',
+          'dayOfWeek': 6,
+          'isActive': false,
+        },
+      ],
+    }),
     CustomStore('numbers', {
       'transactions': [
         tx('n1', 'int', 12),
@@ -674,6 +774,12 @@ void main() {
         await loadStore(
             sections: customStores().firstWhere((c) => c.name == 'dates').sections),
         'system');
+    final dstDates = await exportOf(
+        await loadStore(
+            sections: customStores()
+                .firstWhere((c) => c.name == 'dst_dates')
+                .sections),
+        'system');
     final strings = await exportOf(
         await loadStore(
             sections:
@@ -688,6 +794,7 @@ void main() {
     files['typical export'] = utf8.encode(typical);
     files['fresh export'] = utf8.encode(fresh);
     files['dates export'] = utf8.encode(dates);
+    files['dst dates export'] = utf8.encode(dstDates);
     files['strings export'] = utf8.encode(strings);
     files['rules ties export'] = utf8.encode(ties);
     // Schema 1: the six keys of the first backup format (commit 427de7e).
@@ -1064,6 +1171,8 @@ List<RestoreSpec> restoreSpecs() => const [
       RestoreSpec('typical over typical', 'typical', 'typical export'),
       RestoreSpec('fresh over typical', 'typical', 'fresh export'),
       RestoreSpec('dates over typical', 'typical', 'dates export'),
+      RestoreSpec('dst dates over typical', 'typical', 'dst dates export'),
+      RestoreSpec('dst dates over fresh', 'fresh_install', 'dst dates export'),
       RestoreSpec('strings over fresh', 'fresh_install', 'strings export'),
       RestoreSpec('rules ties over typical', 'typical', 'rules ties export'),
       RestoreSpec('v1 over typical', 'typical', 'v1 dates'),

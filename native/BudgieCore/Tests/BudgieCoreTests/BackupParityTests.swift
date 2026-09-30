@@ -10,7 +10,7 @@ func fixtureBytes(_ value: J) -> [UInt8] {
 }
 
 /// The zones the backup fixtures are generated in.
-let backupZones = ["America/New_York", "Australia/Lord_Howe", "UTC"]
+let backupZones = ["America/New_York", "Australia/Lord_Howe", "UTC", "America/Santiago"]
 
 func backupFixture(_ zone: String, _ file: String) throws -> J {
     J(try JSONParser.parse([UInt8](Fixtures.data("backup/tz/\(zone.replacingOccurrences(of: "/", with: "_"))/\(file)"))))
@@ -87,7 +87,7 @@ func substitutingGeneratedIDs(_ bytes: [UInt8], dart: [String], known: Set<[UInt
 
 @Suite("Backup: export matches Flutter's encodeBackup byte for byte (Fixtures/backup)")
 struct BackupEncodeParityTests {
-    @Test("every store and hand-made case, three zones", arguments: backupZones)
+    @Test("every store and hand-made case, every backup zone", arguments: backupZones)
     func encode(_ zone: String) async throws {
         let timeZone = TimeZone(identifier: zone)!
         let calendar = DartCalendar(timeZone: timeZone)
@@ -408,14 +408,25 @@ struct BackupRestoreParityTests {
             #expect(result.sections.map(\.0) == Section.all, "\(label) section order")
             for (key, value) in result.sections {
                 let dartIDs = after["generatedIds"][key].array.map { $0.string! }
-                let raw = DartJSON.encode(value, mode: .dartCanonical)
-                let swift = try substitutingGeneratedIDs(
-                    DartJSON.encode(.array([try JSONParser.parse(raw)])), dart: dartIDs, known: known)
-                let text = String(decoding: swift.dropFirst().dropLast(), as: UTF8.self)
+                func render(_ value: JSONValue) throws -> String {
+                    let raw = DartJSON.encode(value, mode: .dartCanonical)
+                    let swift = try substitutingGeneratedIDs(
+                        DartJSON.encode(.array([try JSONParser.parse(raw)])), dart: dartIDs, known: known)
+                    return String(decoding: swift.dropFirst().dropLast(), as: UTF8.self)
+                }
+                let text = try render(value)
                 if let dart = after["sections"][key].string {
                     #expect(text == dart, "\(label) \(key)")
-                } else {
-                    #expect(StoreFile.checksum(Array(text.utf8)) == after["sections"][key]["fnv"].string, "\(label) \(key) fnv")
+                } else if StoreFile.checksum(Array(text.utf8)) != after["sections"][key]["fnv"].string {
+                    // One deliberate difference (MIGRATION_SPEC section 7: untouched
+                    // date strings are never re-formatted): a row the file leaves
+                    // out stays as stored, so a wall time in a DST gap (Santiago
+                    // 2026-09-06 00:00) keeps its text where Flutter's export and
+                    // restore writes the shifted one (01:00). Everything else must
+                    // match, so the section has to agree once those texts are shifted.
+                    let shifted = try render(Self.shiftingGapDates(value, calendar: calendar))
+                    #expect(shifted != text, "\(label) \(key) fnv: no gap date to shift, a real mismatch")
+                    #expect(StoreFile.checksum(Array(shifted.utf8)) == after["sections"][key]["fnv"].string, "\(label) \(key) fnv")
                 }
             }
 
@@ -438,6 +449,21 @@ struct BackupRestoreParityTests {
             #expect((result.themeMode ?? currentTheme) == flutter["themeAfterRestore"].string, "\(label) theme")
             if name == "due templates over fresh" { #expect(result.generatedTransactions > 0, "\(label) generated") }
         }
+    }
+
+    /// The section with each row's `date`, `createdAt` and `updatedAt` text
+    /// re-formatted from its parsed value, as a Dart rewrite of the row does.
+    static func shiftingGapDates(_ section: JSONValue, calendar: DartCalendar) -> JSONValue {
+        guard case .array(let rows) = section else { return section }
+        return .array(rows.map { row in
+            guard case .object(var object) = row else { return row }
+            for key in ["date", "createdAt", "updatedAt"] {
+                if let text = object[key]?.stringValue, let parsed = calendar.tryParse(text) {
+                    object[key] = .string(JSONString(parsed.toIso8601String()))
+                }
+            }
+            return .object(object)
+        })
     }
 
     static let settingsMirrors: Set<String> = [

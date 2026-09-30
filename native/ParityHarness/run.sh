@@ -66,7 +66,9 @@ case "$MODE" in
     wants() { [ -z "${PARITY_ONLY:-}" ] || [[ " $PARITY_ONLY " == *" $1 "* ]]; }
     # Each generator runs under the zones it needs; see the test files.
     if wants logic_fixtures_test.dart; then
-      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do
+      # Santiago and Beirut have a DST change at midnight (a missing and a
+      # repeated hour at the start/end of a day).
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago Asia/Beirut; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/logic_fixtures_test.dart "$@"
       done
     fi
@@ -87,13 +89,13 @@ case "$MODE" in
     fi
     if wants worth_fixtures_test.dart; then
       rm -rf "$FIXTURES/worth"
-      for tz in America/New_York America/Santiago; do
+      for tz in America/New_York America/Santiago Australia/Lord_Howe Asia/Kolkata UTC; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/worth_fixtures_test.dart "$@"
       done
     fi
     if wants goals_fixtures_test.dart; then
       rm -rf "$FIXTURES/goals"
-      for tz in America/New_York America/Santiago; do
+      for tz in America/New_York America/Santiago Australia/Lord_Howe Asia/Kolkata UTC; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/goals_fixtures_test.dart "$@"
       done
     fi
@@ -114,14 +116,14 @@ case "$MODE" in
     fi
     if wants flow_fixtures_test.dart; then
       rm -rf "$FIXTURES/flow"
-      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata; do
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/flow_fixtures_test.dart "$@"
       done
     fi
     if wants backup_fixtures_test.dart; then
       rm -rf "$FIXTURES/backup"
       # New York first: it also writes the zone-independent files.
-      for tz in America/New_York Australia/Lord_Howe UTC; do
+      for tz in America/New_York Australia/Lord_Howe UTC America/Santiago; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/backup_fixtures_test.dart "$@"
       done
     fi
@@ -142,6 +144,46 @@ case "$MODE" in
       rm -rf "$FIXTURES/voice"
       for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago Asia/Beirut; do
         TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/voice_fixtures_test.dart "$@"
+      done
+    fi
+    # Generators owned by later Phase 5.1 chunks. A missing file is skipped so
+    # the script works on a branch that does not have it yet.
+    has() { [ -f "$HARNESS/parity/$1" ]; }
+    if has launch_fixtures_test.dart && wants launch_fixtures_test.dart; then
+      rm -rf "$FIXTURES/launch"
+      for tz in America/New_York UTC Australia/Lord_Howe Asia/Kolkata America/Santiago Asia/Beirut; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/launch_fixtures_test.dart "$@"
+      done
+    fi
+    if has transactions_fixtures_test.dart && wants transactions_fixtures_test.dart; then
+      rm -rf "$FIXTURES/transactions"
+      for tz in America/New_York America/Santiago Australia/Lord_Howe; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/transactions_fixtures_test.dart "$@"
+      done
+    fi
+    if has recurring_form_fixtures_test.dart && wants recurring_form_fixtures_test.dart; then
+      rm -rf "$FIXTURES/recurring_form"
+      for tz in America/New_York America/Santiago Australia/Lord_Howe; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/recurring_form_fixtures_test.dart "$@"
+      done
+    fi
+    if has home_page_fixtures_test.dart && wants home_page_fixtures_test.dart; then
+      # Writes home/tz/<zone>/page.json; home_fixtures_test.dart keeps home/tz.
+      rm -rf "$FIXTURES/home/tz"
+      for tz in America/New_York America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/home_page_fixtures_test.dart "$@"
+      done
+    fi
+    if has month_list_fixtures_test.dart && wants month_list_fixtures_test.dart; then
+      rm -rf "$FIXTURES/monthlist"
+      for tz in America/New_York America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/month_list_fixtures_test.dart "$@"
+      done
+    fi
+    if has voice_request_fixtures_test.dart && wants voice_request_fixtures_test.dart; then
+      rm -rf "$FIXTURES/voicerequest"
+      for tz in America/New_York America/Santiago; do
+        TZ="$tz" PARITY_TZ="$tz" flutter test test/parity/voice_request_fixtures_test.dart "$@"
       done
     fi
     ;;

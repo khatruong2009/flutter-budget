@@ -4,7 +4,22 @@ import Testing
 @testable import BudgieCore
 
 /// Zones the parity harness ran Dart under (native/ParityHarness/run.sh).
-let fixtureZones = ["America/New_York", "UTC", "Australia/Lord_Howe", "Asia/Kolkata"]
+/// America/Santiago changes DST at midnight: 2026-09-06 00:00-00:59 does not
+/// exist and 2026-04-04 23:00-23:59 happens twice.
+let fixtureZones = ["America/New_York", "UTC", "Australia/Lord_Howe", "Asia/Kolkata", "America/Santiago"]
+
+/// Asia/Beirut (2026-03-29 00:00-00:59 missing, 2026-10-24 23:00-23:59
+/// twice): only the logic generator (dates, generator, safe-to-spend) runs
+/// under it. Flow, spend, recurring, insights and the rest do not.
+let beirutZones = ["Asia/Beirut"]
+
+/// The zones of Fixtures/logic/tz.
+let logicZones = fixtureZones + beirutZones
+
+/// Zones of Fixtures/worth and Fixtures/goals: a DST change at 02:00 (New
+/// York), at midnight (Santiago), of 30 minutes (Lord Howe), and two zones
+/// without one (Kolkata with a half-hour offset, UTC).
+let dstFixtureZones = ["America/New_York", "America/Santiago", "Australia/Lord_Howe", "Asia/Kolkata", "UTC"]
 
 func zoneDirectory(_ zone: String) -> String {
     "logic/tz/" + zone.replacingOccurrences(of: "/", with: "_")
@@ -19,7 +34,7 @@ func expectDart(_ actual: DartDateTime, _ expected: [String: Any], _ context: St
 
 @Suite("Dates: DartDateTime matches the Dart VM")
 struct DateTests {
-    @Test("DateTime.parse vectors", arguments: fixtureZones)
+    @Test("DateTime.parse vectors", arguments: logicZones)
     func parse(zone: String) throws {
         let tz = TimeZone(identifier: zone)!
         let fixture = try Fixtures.json(zoneDirectory(zone) + "/dates.json") as! [String: Any]
@@ -34,7 +49,7 @@ struct DateTests {
         }
     }
 
-    @Test("constructor normalisation, end of month/day", arguments: fixtureZones)
+    @Test("constructor normalisation, end of month/day", arguments: logicZones)
     func constructed(zone: String) throws {
         let tz = TimeZone(identifier: zone)!
         let cal = DartCalendar(timeZone: tz)
@@ -57,7 +72,7 @@ struct DateTests {
         }
     }
 
-    @Test("Duration(days:) arithmetic, inDays, isSameDay", arguments: fixtureZones)
+    @Test("Duration(days:) arithmetic, inDays, isSameDay", arguments: logicZones)
     func arithmetic(zone: String) throws {
         let tz = TimeZone(identifier: zone)!
         let cal = DartCalendar(timeZone: tz)
@@ -81,7 +96,7 @@ struct DateTests {
         }
     }
 
-    @Test("net worth month/day keys", arguments: fixtureZones)
+    @Test("net worth month/day keys", arguments: logicZones)
     func keys(zone: String) throws {
         let tz = TimeZone(identifier: zone)!
         let cal = DartCalendar(timeZone: tz)

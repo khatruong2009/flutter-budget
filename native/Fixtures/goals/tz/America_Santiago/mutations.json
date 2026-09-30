@@ -2841,6 +2841,131 @@
             }
           ],
           "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-11-01T01:30:00.000",
+          "name": "Spring LH",
+          "targetAmount": "404e000000000000",
+          "targetDate": "2026-10-04T02:15:00.000",
+          "newId": "savings_goal_hnqtxayyo0_c",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm1370j9c0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm1370j9c0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm1370j9c0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hnqtxayyo0_b\",\"name\":\"Repeated hour\",\"targetAmount\":50.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqtxayyo0_c\",\"name\":\"Spring LH\",\"targetAmount\":60.0,\"currentAmount\":0.0,\"targetDate\":\"2026-10-04T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm1370j9c0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm1370j9c0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm1370j9c0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hnqtxayyo0_b",
+              "name": "Repeated hour",
+              "targetAmount": "4049000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqtxayyo0_c",
+              "name": "Spring LH",
+              "targetAmount": "404e000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-10-04T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-11-01T01:30:00.000",
+          "name": "Fall LH",
+          "targetAmount": "4051800000000000",
+          "targetDate": "2026-04-05T01:45:00.000",
+          "newId": "savings_goal_hnqtxayyo0_d",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm1370j9c0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm1370j9c0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm1370j9c0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T01:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hnqtxayyo0_b\",\"name\":\"Repeated hour\",\"targetAmount\":50.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqtxayyo0_c\",\"name\":\"Spring LH\",\"targetAmount\":60.0,\"currentAmount\":0.0,\"targetDate\":\"2026-10-04T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqtxayyo0_d\",\"name\":\"Fall LH\",\"targetAmount\":70.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-05T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm1370j9c0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm1370j9c0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm1370j9c0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T01:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hnqtxayyo0_b",
+              "name": "Repeated hour",
+              "targetAmount": "4049000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqtxayyo0_c",
+              "name": "Spring LH",
+              "targetAmount": "404e000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-10-04T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqtxayyo0_d",
+              "name": "Fall LH",
+              "targetAmount": "4051800000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-05T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
         }
       ]
     }

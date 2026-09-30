@@ -738,8 +738,9 @@ final scenarios = <Map<String, Object?>>[
   {
     // DST: America/New_York skips 02:00-03:00 on 2026-03-08 and repeats
     // 01:00-02:00 on 2026-11-01; America/Santiago skips 00:00-01:00 on
-    // 2026-09-06 and repeats 23:00-24:00 on 2026-04-04. Elsewhere these are
-    // ordinary times.
+    // 2026-09-06 and repeats 23:00-24:00 on 2026-04-04; Australia/Lord_Howe
+    // skips 02:00-02:30 on 2026-10-04 and repeats 01:30-02:00 on 2026-04-05.
+    // Elsewhere (Asia/Kolkata, UTC) these are ordinary times.
     'name': 'dst',
     'byteComparable': true,
     'seed': 13,
@@ -764,6 +765,10 @@ final scenarios = <Map<String, Object?>>[
       ['clock', [2026, 11, 1, 1, 30]],
       ['carry', [2026, 11]],
       ['update', 0, 'Gap now', 'asset', 101.0, [2026, 11], null],
+      ['add', 'Spring LH', 'asset', 30.0, null, [2026, 10, 4, 2, 15]],
+      ['update', 5, 'Spring LH', 'asset', 31.0, null, [2026, 10, 4, 2, 45]],
+      ['add', 'Fall LH', 'liability', 8.0, null, [2026, 4, 5, 1, 45]],
+      ['update', 6, 'Fall LH', 'liability', 9.0, null, [2026, 4, 5, 1, 15]],
       ['select', [2026, 11, 1, 1, 30]],
     ],
   },

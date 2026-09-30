@@ -556,6 +556,27 @@ List<Map<String, Object?>> typicalRows() => [
           description: 'Lord Howe start'),
       tx('dst-lh-end', 'expense', 7.5, 'Travel', '2026-04-05T01:45:00.000',
           description: 'Lord Howe end'),
+      // Midnight DST, America/Santiago: 2026-09-06 00:00-00:59 does not exist
+      // (Dart moves these to 01:xx) and 2026-04-04 23:00-23:59 happens twice.
+      // Elsewhere they are ordinary times.
+      tx('dst-scl-edge', 'expense', 8.25, 'Groceries', '2026-09-05T23:59:59.999',
+          description: 'Santiago before the gap'),
+      tx('dst-scl-gap0', 'expense', 6.5, 'Eating Out', '2026-09-06T00:00:00.000',
+          description: 'Santiago gap midnight'),
+      tx('dst-scl-gap', 'income', 55.5, 'Salary', '2026-09-06T00:30:00.000',
+          description: 'Santiago gap 00:30'),
+      tx('dst-scl-gap1', 'expense', 9.75, 'Groceries', '2026-09-06T01:00:00.000',
+          description: 'Santiago after the gap'),
+      tx('dst-scl-fold0', 'expense', 4.0, 'Travel', '2026-04-04T22:59:59.999',
+          description: 'Santiago before the fold'),
+      tx('dst-scl-fold', 'expense', 11.0, 'Groceries', '2026-04-04T23:30:00.000',
+          description: 'Santiago fold 23:30'),
+      tx('dst-scl-fold2', 'expense', 12.0, 'Eating Out', '2026-04-04T23:45:00.000',
+          description: 'Santiago fold 23:45'),
+      tx('dst-scl-fold3', 'income', 13.0, 'Salary', '2026-04-04T23:59:59.999',
+          description: 'Santiago end of the fold day'),
+      tx('dst-scl-after', 'expense', 14.0, 'Groceries', '2026-04-05T00:00:00.000',
+          description: 'Santiago after the fold'),
       tx('utc-z', 'expense', 20.0, 'Eating Out', '2026-02-28T23:30:00.000Z',
           description: 'UTC dinner'),
       tx('utc-z2', 'income', 1.25, 'Salary', '2026-03-01T03:30:00.000Z',
@@ -654,6 +675,7 @@ List<Dataset> datasets() => [
       Dataset('typical', typicalRows(), [
         DateTime(2026, 9, 28, 9, 15), // the model's default: now
         DateTime(2026, 3),
+        DateTime(2026, 4), // the Santiago fold month
         DateTime(2025, 6), // in the gap
         DateTime(2025, 1),
         DateTime(2023, 12), // before any data
@@ -800,6 +822,24 @@ const pickSets = <List<(bool, int, int, int)>>[
   [(true, 2025, 10, 5), (false, 2026, 4, 5)],
   [(true, 2025, 12, 31), (false, 2026, 1, 1)],
 ];
+const dstPickSets = <List<(bool, int, int, int)>>[
+  [(true, 2026, 9, 6), (false, 2026, 9, 6)], // the gap day
+  [(true, 2026, 9, 5), (false, 2026, 9, 5)], // the day before
+  [(true, 2026, 9, 5), (false, 2026, 9, 6)],
+  [(true, 2026, 9, 6)],
+  [(false, 2026, 9, 5)],
+  [(false, 2026, 9, 6)],
+  [(true, 2026, 9, 7)],
+  [(true, 2026, 4, 4), (false, 2026, 4, 4)], // the fold day
+  [(true, 2026, 4, 3), (false, 2026, 4, 4)],
+  [(true, 2026, 4, 4), (false, 2026, 4, 5)],
+  [(true, 2026, 4, 5), (false, 2026, 4, 5)], // the day after
+  [(false, 2026, 4, 4)],
+  [(true, 2026, 4, 4)],
+  [(true, 2026, 3, 29), (false, 2026, 3, 29)], // Beirut gap day
+  [(true, 2026, 10, 24), (false, 2026, 10, 24)], // Beirut fold day
+  [(true, 2026, 9, 6), (false, 2026, 9, 5)], // end before start moves start
+];
 const amountTexts = [
   '',
   '0',
@@ -837,6 +877,12 @@ List<FilterSpec> filterMatrix() {
   for (final a in amountTexts) {
     specs.add(FilterSpec(minText: a));
     specs.add(FilterSpec(maxText: a));
+  }
+  // Date ranges that start or end on the Santiago and Beirut gap and fold
+  // days (ordinary days in the other zones).
+  for (final p in dstPickSets) {
+    specs.add(FilterSpec(picks: p));
+    specs.add(FilterSpec(picks: p, type: TypeFilter.expense));
   }
   final r = Lcg(4242);
   for (var i = 0; i < 100; i++) {

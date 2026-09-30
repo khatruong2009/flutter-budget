@@ -3,9 +3,9 @@ import Testing
 
 @testable import BudgieCore
 
-/// Zones of Fixtures/recurring: the four logic zones plus America/Santiago,
-/// whose DST change happens at midnight.
-let recurringZones = fixtureZones + ["America/Santiago"]
+/// Zones of Fixtures/recurring: the harness zones (America/Santiago is the
+/// one whose DST change happens at midnight).
+let recurringZones = fixtureZones
 
 private func recurringFixture(_ zone: String, _ file: String) throws -> J {
     J(try JSONParser.parse([UInt8](Fixtures.data("recurring/tz/\(zone.replacingOccurrences(of: "/", with: "_"))/\(file)"))))

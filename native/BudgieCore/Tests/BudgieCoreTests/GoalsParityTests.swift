@@ -51,7 +51,7 @@ struct GoalsParityTests {
     /// for data Dart wrote itself the stored `savingsGoals` bytes are
     /// identical. Whatever Swift wrote loads back to the same memory. New
     /// ids follow Dart's format and counter.
-    @Test("mutation scenarios", arguments: ["America/New_York", "America/Santiago"])
+    @Test("mutation scenarios", arguments: dstFixtureZones)
     func mutations(zone: String) throws {
         let f = try fixture("tz/\(zone.replacingOccurrences(of: "/", with: "_"))/mutations.json")
         #expect(f["tz"].string == zone)
@@ -125,7 +125,7 @@ struct GoalsParityTests {
     /// page's `_statusFor`), suggested contribution and pace copy under
     /// three formatter configurations; per goal the completion copy and the
     /// allocation dialog's `willComplete`; the page's sort and summary.
-    @Test("derived values", arguments: ["America/New_York", "America/Santiago"])
+    @Test("derived values", arguments: dstFixtureZones)
     func derived(zone: String) throws {
         let f = try fixture("tz/\(zone.replacingOccurrences(of: "/", with: "_"))/derived.json")
         #expect(f["tz"].string == zone)

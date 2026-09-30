@@ -1,0 +1,2973 @@
+{
+  "tz": "Asia/Kolkata",
+  "scenarios": [
+    {
+      "name": "canonical",
+      "launch": "2026-03-10T09:15:30.250007",
+      "byteComparable": true,
+      "initial": null,
+      "loaded": [],
+      "loadedSection": null,
+      "steps": [
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Vacation",
+          "targetAmount": "40b3880000000000",
+          "targetDate": "2026-12-01T00:00:00.000",
+          "newId": "savings_goal_hgilh7rx1z_0",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":0.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:30.250007",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "amount": "4093880000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":1250.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "4093880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:30.250007",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "amount": "40ad4c0000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "  Emergency fund  ",
+          "targetAmount": "3fd3333333333334",
+          "targetDate": "2026-09-15T18:45:12.005009",
+          "newId": "savings_goal_hgilh7rx1z_1",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "   ",
+          "targetAmount": "4059000000000000",
+          "targetDate": "2026-05-01T00:00:00.000",
+          "newId": null,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "﻿",
+          "targetAmount": "4059000000000000",
+          "targetDate": "2026-05-01T00:00:00.000",
+          "newId": null,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Zero",
+          "targetAmount": "0000000000000000",
+          "targetDate": "2026-05-01T00:00:00.000",
+          "newId": null,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Negative",
+          "targetAmount": "c014000000000000",
+          "targetDate": "2026-05-01T00:00:00.000",
+          "newId": null,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Big",
+          "targetAmount": "444b1ae4d6e2ef50",
+          "targetDate": "2030-01-01T00:00:00.000",
+          "newId": "savings_goal_hgilh7rx1z_2",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Tiny",
+          "targetAmount": "3e7ad7f29abcaf48",
+          "targetDate": "2026-03-10T23:59:00.000",
+          "newId": "savings_goal_hgilh7rx1z_3",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-10T09:15:30.250007",
+          "name": "Café ☕️ \"quoted\"",
+          "targetAmount": "4092c00000000000",
+          "targetDate": "2025-12-31T00:00:00.000",
+          "newId": "savings_goal_hgilh7rx1z_4",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.0,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "clock",
+          "now": "2026-03-10T09:15:31.000001"
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "amount": "3fb999999999999a",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.1,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fb999999999999a",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "amount": "3fc999999999999a",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.30000000000000004,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd3333333333334",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "amount": "bfa999999999999a",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "amount": "0000000000000000",
+          "willComplete": false,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "amount": "8000000000000000",
+          "willComplete": false,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "missing-id",
+          "amount": "4014000000000000",
+          "willComplete": null,
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":0.0,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_3",
+          "amount": "3e7ad7f29abcaf48",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_4",
+          "amount": "c049000000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation\",\"targetAmount\":5000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:30.250007\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation",
+              "targetAmount": "40b3880000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:30.250007"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "name": "Vacation 2027",
+          "targetAmount": "40b7700000000000",
+          "currentAmount": "40b3880000000000",
+          "targetDate": "2026-12-01T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6000.0,\"currentAmount\":5000.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b7700000000000",
+              "currentAmount": "40b3880000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-10T09:15:31.000001",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "name": " Vacation 2027 ",
+          "targetAmount": "40b7700000000000",
+          "currentAmount": "40b7700000000000",
+          "targetDate": "2027-06-15T14:30:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6000.0,\"currentAmount\":6000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b7700000000000",
+              "currentAmount": "40b7700000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "clock",
+          "now": "2026-03-11T08:00:00.000"
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "name": "Vacation 2027",
+          "targetAmount": "40b9640000000000",
+          "currentAmount": "40bb580000000000",
+          "targetDate": "2027-06-15T14:30:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "name": "  ",
+          "targetAmount": "40b9640000000000",
+          "currentAmount": "40bb580000000000",
+          "targetDate": "2027-06-15T14:30:00.000",
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "name": "X",
+          "targetAmount": "0000000000000000",
+          "currentAmount": "3ff0000000000000",
+          "targetDate": "2027-06-15T14:30:00.000",
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "missing-id",
+          "name": "Ghost",
+          "targetAmount": "4024000000000000",
+          "currentAmount": "3ff0000000000000",
+          "targetDate": "2026-06-01T00:00:00.000",
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_2",
+          "name": "Big",
+          "targetAmount": "444b1ae4d6e2ef50",
+          "currentAmount": "8000000000000000",
+          "targetDate": "2030-01-01T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_2",
+          "name": "Big",
+          "targetAmount": "444b1ae4d6e2ef50",
+          "currentAmount": "c039000000000000",
+          "targetDate": "2030-01-01T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":0.0,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_2",
+          "name": "Big",
+          "targetAmount": "444b1ae4d6e2ef50",
+          "currentAmount": "4040aa9fbe76c8b4",
+          "targetDate": "2030-01-01T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "missing-id",
+          "wrote": false,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_3\",\"name\":\"Tiny\",\"targetAmount\":1e-7,\"currentAmount\":1e-7,\"targetDate\":\"2026-03-10T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_3",
+              "name": "Tiny",
+              "targetAmount": "3e7ad7f29abcaf48",
+              "currentAmount": "3e7ad7f29abcaf48",
+              "targetDate": "2026-03-10T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_3",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-11T08:00:00.000",
+          "name": "After delete",
+          "targetAmount": "406f500000000000",
+          "targetDate": "2026-04-30T00:00:00.000",
+          "newId": "savings_goal_hgjn36wsg0_5",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgjn36wsg0_5",
+          "amount": "408f400000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":1000.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":\"2026-03-11T08:00:00.000\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "408f400000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": "2026-03-11T08:00:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgjn36wsg0_5",
+          "amount": "408f400000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":2000.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":\"2026-03-11T08:00:00.000\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "409f400000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": "2026-03-11T08:00:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgjn36wsg0_5",
+          "name": "After delete",
+          "targetAmount": "406f500000000000",
+          "currentAmount": "0000000000000000",
+          "targetDate": "2026-04-30T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_0\",\"name\":\"Vacation 2027\",\"targetAmount\":6500.0,\"currentAmount\":7000.0,\"targetDate\":\"2027-06-15T14:30:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":\"2026-03-10T09:15:31.000001\"},{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_0",
+              "name": "Vacation 2027",
+              "targetAmount": "40b9640000000000",
+              "currentAmount": "40bb580000000000",
+              "targetDate": "2027-06-15T14:30:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": "2026-03-10T09:15:31.000001"
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_0",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_1\",\"name\":\"Emergency fund\",\"targetAmount\":0.30000000000000004,\"currentAmount\":0.25000000000000006,\"targetDate\":\"2026-09-15T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_1",
+              "name": "Emergency fund",
+              "targetAmount": "3fd3333333333334",
+              "currentAmount": "3fd0000000000001",
+              "targetDate": "2026-09-15T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_1",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_2\",\"name\":\"Big\",\"targetAmount\":1e+21,\"currentAmount\":33.333,\"targetDate\":\"2030-01-01T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_2",
+              "name": "Big",
+              "targetAmount": "444b1ae4d6e2ef50",
+              "currentAmount": "4040aa9fbe76c8b4",
+              "targetDate": "2030-01-01T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_2",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgilh7rx1z_4\",\"name\":\"Café ☕️ \\\"quoted\\\"\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2025-12-31T00:00:00.000\",\"createdAt\":\"2026-03-10T09:15:30.250007\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgilh7rx1z_4",
+              "name": "Café ☕️ \"quoted\"",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2025-12-31T00:00:00.000",
+              "createdAt": "2026-03-10T09:15:30.250007",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-03-11T08:00:00.000",
+          "id": "savings_goal_hgilh7rx1z_4",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-03-11T08:00:00.000",
+          "name": "Fresh start",
+          "targetAmount": "4024000000000000",
+          "targetDate": "2026-03-11T00:00:00.000",
+          "newId": "savings_goal_hgjn36wsg0_6",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hgjn36wsg0_5\",\"name\":\"After delete\",\"targetAmount\":250.5,\"currentAmount\":0.0,\"targetDate\":\"2026-04-30T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hgjn36wsg0_6\",\"name\":\"Fresh start\",\"targetAmount\":10.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-11T00:00:00.000\",\"createdAt\":\"2026-03-11T08:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hgjn36wsg0_5",
+              "name": "After delete",
+              "targetAmount": "406f500000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-30T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hgjn36wsg0_6",
+              "name": "Fresh start",
+              "targetAmount": "4024000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-11T00:00:00.000",
+              "createdAt": "2026-03-11T08:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    },
+    {
+      "name": "foreign",
+      "launch": "2026-06-15T12:00:00.000",
+      "byteComparable": false,
+      "initial": "{\"savingsGoals\":[{\"id\":\"g-int\",\"name\":\" Trip \",\"targetAmount\":1200,\"currentAmount\":300,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":null,\"color\":\"teal\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":\"8000.50\",\"currentAmount\":\"abc\",\"targetDate\":\"2027-01-01\",\"createdAt\":\"2026-02-01T09:00:00Z\",\"note\":{\"x\":[1,2.5]}},{\"extra\":true,\"completedAt\":\"2026-05-01T08:00:00.000\",\"currentAmount\":900.0,\"targetAmount\":800.0,\"name\":\"\",\"id\":\"g-reordered\",\"targetDate\":\"2026-05-31T00:00:00.000Z\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":-10,\"currentAmount\":-5.5,\"targetDate\":\"garbage\",\"createdAt\":\"\"},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]}",
+      "loaded": [
+        {
+          "id": "g-int",
+          "name": "Trip",
+          "targetAmount": "4092c00000000000",
+          "currentAmount": "4072c00000000000",
+          "targetDate": "2026-12-01T00:00:00.000",
+          "createdAt": "2026-01-05T10:00:00.000",
+          "completedAt": null
+        },
+        {
+          "id": "g-str",
+          "name": "Car",
+          "targetAmount": "40bf408000000000",
+          "currentAmount": "0000000000000000",
+          "targetDate": "2027-01-01T00:00:00.000",
+          "createdAt": "2026-02-01T09:00:00.000Z",
+          "completedAt": null
+        },
+        {
+          "id": "g-reordered",
+          "name": "Savings Goal",
+          "targetAmount": "4089000000000000",
+          "currentAmount": "408c200000000000",
+          "targetDate": "2026-05-31T00:00:00.000Z",
+          "createdAt": "2026-06-15T12:00:00.000",
+          "completedAt": "2026-05-01T08:00:00.000"
+        },
+        {
+          "id": "g-neg",
+          "name": "Neg",
+          "targetAmount": "0000000000000000",
+          "currentAmount": "0000000000000000",
+          "targetDate": "2026-06-15T12:00:00.000",
+          "createdAt": "2026-06-15T12:00:00.000",
+          "completedAt": null
+        },
+        {
+          "id": "g-dup",
+          "name": "Dup A",
+          "targetAmount": "4059000000000000",
+          "currentAmount": "4024000000000000",
+          "targetDate": "2026-08-01T00:00:00.000",
+          "createdAt": "2026-01-01T00:00:00.000",
+          "completedAt": null
+        },
+        {
+          "id": "g-dup",
+          "name": "Dup B",
+          "targetAmount": "4069000000000000",
+          "currentAmount": "4034000000000000",
+          "targetDate": "2026-09-01T00:00:00.000",
+          "createdAt": "2026-01-02T00:00:00.000",
+          "completedAt": null
+        }
+      ],
+      "loadedSection": "[{\"id\":\"g-int\",\"name\":\" Trip \",\"targetAmount\":1200,\"currentAmount\":300,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":null,\"color\":\"teal\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":\"8000.50\",\"currentAmount\":\"abc\",\"targetDate\":\"2027-01-01\",\"createdAt\":\"2026-02-01T09:00:00Z\",\"note\":{\"x\":[1,2.5]}},{\"extra\":true,\"completedAt\":\"2026-05-01T08:00:00.000\",\"currentAmount\":900.0,\"targetAmount\":800.0,\"name\":\"\",\"id\":\"g-reordered\",\"targetDate\":\"2026-05-31T00:00:00.000Z\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":-10,\"currentAmount\":-5.5,\"targetDate\":\"garbage\",\"createdAt\":\"\"},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+      "steps": [
+        {
+          "op": "allocate",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-int",
+          "amount": "408c200000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":0.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Savings Goal\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":0.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Savings Goal",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup A",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4024000000000000",
+              "targetDate": "2026-08-01T00:00:00.000",
+              "createdAt": "2026-01-01T00:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup B",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4034000000000000",
+              "targetDate": "2026-09-01T00:00:00.000",
+              "createdAt": "2026-01-02T00:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-str",
+          "amount": "4059000000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":100.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Savings Goal\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":0.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Savings Goal",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup A",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4024000000000000",
+              "targetDate": "2026-08-01T00:00:00.000",
+              "createdAt": "2026-01-01T00:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup B",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4034000000000000",
+              "targetDate": "2026-09-01T00:00:00.000",
+              "createdAt": "2026-01-02T00:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-reordered",
+          "name": "Reordered",
+          "targetAmount": "4089000000000000",
+          "currentAmount": "408c200000000000",
+          "targetDate": "2026-05-31T00:00:00.000Z",
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":100.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":0.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup A",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4024000000000000",
+              "targetDate": "2026-08-01T00:00:00.000",
+              "createdAt": "2026-01-01T00:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup B",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4034000000000000",
+              "targetDate": "2026-09-01T00:00:00.000",
+              "createdAt": "2026-01-02T00:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-neg",
+          "amount": "4014000000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":100.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":5.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":10.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":20.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "4014000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup A",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4024000000000000",
+              "targetDate": "2026-08-01T00:00:00.000",
+              "createdAt": "2026-01-01T00:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup B",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4034000000000000",
+              "targetDate": "2026-09-01T00:00:00.000",
+              "createdAt": "2026-01-02T00:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-dup",
+          "amount": "4049000000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":100.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":5.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-dup\",\"name\":\"Dup A\",\"targetAmount\":100.0,\"currentAmount\":60.0,\"targetDate\":\"2026-08-01T00:00:00.000\",\"createdAt\":\"2026-01-01T00:00:00.000\",\"completedAt\":null},{\"id\":\"g-dup\",\"name\":\"Dup B\",\"targetAmount\":200.0,\"currentAmount\":70.0,\"targetDate\":\"2026-09-01T00:00:00.000\",\"createdAt\":\"2026-01-02T00:00:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "4014000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup A",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "404e000000000000",
+              "targetDate": "2026-08-01T00:00:00.000",
+              "createdAt": "2026-01-01T00:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-dup",
+              "name": "Dup B",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4051800000000000",
+              "targetDate": "2026-09-01T00:00:00.000",
+              "createdAt": "2026-01-02T00:00:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-dup",
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":100.0,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":null},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":5.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": null
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "4014000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-str",
+          "name": "Car",
+          "targetAmount": "40bf408000000000",
+          "currentAmount": "40bf408000000000",
+          "targetDate": "2027-01-01T00:00:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":1200.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":8000.5,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":5.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "4092c00000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "40bf408000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "4014000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-06-15T12:00:00.000",
+          "id": "g-int",
+          "amount": "c092c00000000000",
+          "willComplete": false,
+          "wrote": true,
+          "section": "[{\"id\":\"g-int\",\"name\":\"Trip\",\"targetAmount\":1200.0,\"currentAmount\":0.0,\"targetDate\":\"2026-12-01T00:00:00.000\",\"createdAt\":\"2026-01-05T10:00:00.000\",\"completedAt\":null},{\"id\":\"g-str\",\"name\":\"Car\",\"targetAmount\":8000.5,\"currentAmount\":8000.5,\"targetDate\":\"2027-01-01T00:00:00.000\",\"createdAt\":\"2026-02-01T09:00:00.000Z\",\"completedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"g-reordered\",\"name\":\"Reordered\",\"targetAmount\":800.0,\"currentAmount\":900.0,\"targetDate\":\"2026-05-31T00:00:00.000Z\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"g-neg\",\"name\":\"Neg\",\"targetAmount\":0.0,\"currentAmount\":5.0,\"targetDate\":\"2026-06-15T12:00:00.000\",\"createdAt\":\"2026-06-15T12:00:00.000\",\"completedAt\":\"2026-06-15T12:00:00.000\"}]",
+          "memory": [
+            {
+              "id": "g-int",
+              "name": "Trip",
+              "targetAmount": "4092c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-12-01T00:00:00.000",
+              "createdAt": "2026-01-05T10:00:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "g-str",
+              "name": "Car",
+              "targetAmount": "40bf408000000000",
+              "currentAmount": "40bf408000000000",
+              "targetDate": "2027-01-01T00:00:00.000",
+              "createdAt": "2026-02-01T09:00:00.000Z",
+              "completedAt": "2026-06-15T12:00:00.000"
+            },
+            {
+              "id": "g-reordered",
+              "name": "Reordered",
+              "targetAmount": "4089000000000000",
+              "currentAmount": "408c200000000000",
+              "targetDate": "2026-05-31T00:00:00.000Z",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-05-01T08:00:00.000"
+            },
+            {
+              "id": "g-neg",
+              "name": "Neg",
+              "targetAmount": "0000000000000000",
+              "currentAmount": "4014000000000000",
+              "targetDate": "2026-06-15T12:00:00.000",
+              "createdAt": "2026-06-15T12:00:00.000",
+              "completedAt": "2026-06-15T12:00:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    },
+    {
+      "name": "dst",
+      "launch": "2026-09-06T00:30:00.000",
+      "byteComparable": true,
+      "initial": null,
+      "loaded": [],
+      "loadedSection": null,
+      "steps": [
+        {
+          "op": "add",
+          "now": "2026-09-06T00:30:00.000",
+          "name": "Gap day",
+          "targetAmount": "4059000000000000",
+          "targetDate": "2026-09-06T00:00:00.000",
+          "newId": "savings_goal_hm0nheqkg0_7",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":0.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-09-06T00:30:00.000",
+          "name": "Fall back",
+          "targetAmount": "4069000000000000",
+          "targetDate": "2026-04-04T23:30:00.000",
+          "newId": "savings_goal_hm0nheqkg0_8",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":0.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-04T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-04T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-09-06T00:30:00.000",
+          "name": "Spring NY",
+          "targetAmount": "4072c00000000000",
+          "targetDate": "2026-03-08T02:30:00.000",
+          "newId": "savings_goal_hm0nheqkg0_9",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":0.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-04T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-08T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-04T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-08T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-09-06T00:30:00.000",
+          "name": "Fall NY",
+          "targetAmount": "4079000000000000",
+          "targetDate": "2026-11-01T01:30:00.000",
+          "newId": "savings_goal_hm0nheqkg0_a",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":0.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-04T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-08T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-04T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-08T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "allocate",
+          "now": "2026-09-06T00:30:00.000",
+          "id": "savings_goal_hm0nheqkg0_7",
+          "amount": "4059000000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":100.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-09-06T00:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-04T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-08T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-09-06T00:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-04T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-08T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-09-06T00:30:00.000",
+          "id": "savings_goal_hm0nheqkg0_8",
+          "name": "Fall back",
+          "targetAmount": "4069000000000000",
+          "currentAmount": "4049000000000000",
+          "targetDate": "2027-04-03T23:30:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":100.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-09-06T00:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-08T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-09-06T00:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-08T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "clock",
+          "now": "2026-11-01T01:30:00.000"
+        },
+        {
+          "op": "allocate",
+          "now": "2026-11-01T01:30:00.000",
+          "id": "savings_goal_hm0nheqkg0_a",
+          "amount": "4079000000000000",
+          "willComplete": true,
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":100.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-09-06T00:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":0.0,\"targetDate\":\"2026-03-08T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-09-06T00:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-03-08T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "edit",
+          "now": "2026-11-01T01:30:00.000",
+          "id": "savings_goal_hm0nheqkg0_9",
+          "name": "Spring NY",
+          "targetAmount": "4072c00000000000",
+          "currentAmount": "4072c00000000000",
+          "targetDate": "2027-03-14T02:30:00.000",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_7\",\"name\":\"Gap day\",\"targetAmount\":100.0,\"currentAmount\":100.0,\"targetDate\":\"2026-09-06T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-09-06T00:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_7",
+              "name": "Gap day",
+              "targetAmount": "4059000000000000",
+              "currentAmount": "4059000000000000",
+              "targetDate": "2026-09-06T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-09-06T00:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "delete",
+          "now": "2026-11-01T01:30:00.000",
+          "id": "savings_goal_hm0nheqkg0_7",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-11-01T01:30:00.000",
+          "name": "Repeated hour",
+          "targetAmount": "4049000000000000",
+          "targetDate": "2026-11-01T01:59:00.000",
+          "newId": "savings_goal_hnqfv8irk0_b",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hnqfv8irk0_b\",\"name\":\"Repeated hour\",\"targetAmount\":50.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_b",
+              "name": "Repeated hour",
+              "targetAmount": "4049000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-11-01T01:30:00.000",
+          "name": "Spring LH",
+          "targetAmount": "404e000000000000",
+          "targetDate": "2026-10-04T02:15:00.000",
+          "newId": "savings_goal_hnqfv8irk0_c",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hnqfv8irk0_b\",\"name\":\"Repeated hour\",\"targetAmount\":50.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqfv8irk0_c\",\"name\":\"Spring LH\",\"targetAmount\":60.0,\"currentAmount\":0.0,\"targetDate\":\"2026-10-04T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_b",
+              "name": "Repeated hour",
+              "targetAmount": "4049000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_c",
+              "name": "Spring LH",
+              "targetAmount": "404e000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-10-04T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "add",
+          "now": "2026-11-01T01:30:00.000",
+          "name": "Fall LH",
+          "targetAmount": "4051800000000000",
+          "targetDate": "2026-04-05T01:45:00.000",
+          "newId": "savings_goal_hnqfv8irk0_d",
+          "wrote": true,
+          "section": "[{\"id\":\"savings_goal_hm0nheqkg0_8\",\"name\":\"Fall back\",\"targetAmount\":200.0,\"currentAmount\":50.0,\"targetDate\":\"2027-04-03T23:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hm0nheqkg0_9\",\"name\":\"Spring NY\",\"targetAmount\":300.0,\"currentAmount\":300.0,\"targetDate\":\"2027-03-14T02:30:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hm0nheqkg0_a\",\"name\":\"Fall NY\",\"targetAmount\":400.0,\"currentAmount\":400.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-09-06T00:30:00.000\",\"completedAt\":\"2026-11-01T01:30:00.000\"},{\"id\":\"savings_goal_hnqfv8irk0_b\",\"name\":\"Repeated hour\",\"targetAmount\":50.0,\"currentAmount\":0.0,\"targetDate\":\"2026-11-01T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqfv8irk0_c\",\"name\":\"Spring LH\",\"targetAmount\":60.0,\"currentAmount\":0.0,\"targetDate\":\"2026-10-04T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null},{\"id\":\"savings_goal_hnqfv8irk0_d\",\"name\":\"Fall LH\",\"targetAmount\":70.0,\"currentAmount\":0.0,\"targetDate\":\"2026-04-05T00:00:00.000\",\"createdAt\":\"2026-11-01T01:30:00.000\",\"completedAt\":null}]",
+          "memory": [
+            {
+              "id": "savings_goal_hm0nheqkg0_8",
+              "name": "Fall back",
+              "targetAmount": "4069000000000000",
+              "currentAmount": "4049000000000000",
+              "targetDate": "2027-04-03T23:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_9",
+              "name": "Spring NY",
+              "targetAmount": "4072c00000000000",
+              "currentAmount": "4072c00000000000",
+              "targetDate": "2027-03-14T02:30:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hm0nheqkg0_a",
+              "name": "Fall NY",
+              "targetAmount": "4079000000000000",
+              "currentAmount": "4079000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-09-06T00:30:00.000",
+              "completedAt": "2026-11-01T01:30:00.000"
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_b",
+              "name": "Repeated hour",
+              "targetAmount": "4049000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-11-01T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_c",
+              "name": "Spring LH",
+              "targetAmount": "404e000000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-10-04T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            },
+            {
+              "id": "savings_goal_hnqfv8irk0_d",
+              "name": "Fall LH",
+              "targetAmount": "4051800000000000",
+              "currentAmount": "0000000000000000",
+              "targetDate": "2026-04-05T00:00:00.000",
+              "createdAt": "2026-11-01T01:30:00.000",
+              "completedAt": null
+            }
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    }
+  ]
+}

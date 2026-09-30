@@ -3,9 +3,9 @@ import Testing
 
 @testable import BudgieCore
 
-/// Zones the insight fixtures were generated in: the harness zones plus a
-/// zone whose midnight is skipped by DST.
-let insightZones = fixtureZones + ["America/Santiago"]
+/// Zones the insight fixtures were generated in: the harness zones (one of
+/// them, America/Santiago, has a midnight skipped by DST).
+let insightZones = fixtureZones
 
 /// budget_app/test/insight_engine_test.dart, in every insight zone.
 @Suite("Insights: the Dart engine tests")

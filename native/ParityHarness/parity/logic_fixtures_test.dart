@@ -109,6 +109,29 @@ void main() {
       '2026-10-04T02:15:00.000',
       '2026-04-05T02:15:00.000',
       '2026-04-05T01:45:00.000',
+      // Midnight DST: America/Santiago has no 2026-09-06 00:00-00:59 and
+      // repeats 2026-04-04 23:00-23:59; Asia/Beirut has no 2026-03-29
+      // 00:00-00:59 and repeats 2026-10-24 23:00-23:59.
+      '2026-09-05T23:59:59.999',
+      '2026-09-06T00:00:00.000',
+      '2026-09-06T00:30:00.000',
+      '2026-09-06T00:59:59.999',
+      '2026-09-06T01:00:00.000',
+      '2026-04-04T22:59:59.999',
+      '2026-04-04T23:00:00.000',
+      '2026-04-04T23:30:00.000',
+      '2026-04-04T23:59:59.999',
+      '2026-04-05T00:00:00.000',
+      '2026-03-28T23:59:59.999',
+      '2026-03-29T00:00:00.000',
+      '2026-03-29T00:30:00.000',
+      '2026-03-29T01:00:00.000',
+      '2026-10-24T22:59:59.999',
+      '2026-10-24T23:30:00.000',
+      '2026-10-24T23:59:59.999',
+      '2026-10-25T00:00:00.000',
+      '2026-09-06',
+      '2026-03-29',
       '2024-02-29T12:00:00.000',
       '1999-12-31T23:59:59.999',
       '0099-01-01T00:00:00.000',
@@ -135,6 +158,20 @@ void main() {
     make('2026,10,4,2,15', DateTime(2026, 10, 4, 2, 15));
     make('2026,4,5,1,45', DateTime(2026, 4, 5, 1, 45));
     make('2026,4,5,2,15', DateTime(2026, 4, 5, 2, 15));
+    make('2026,9,5,23,59', DateTime(2026, 9, 5, 23, 59));
+    make('2026,9,6', DateTime(2026, 9, 6));
+    make('2026,9,6,0,30', DateTime(2026, 9, 6, 0, 30));
+    make('2026,9,6,1', DateTime(2026, 9, 6, 1));
+    make('2026,9,5,24', DateTime(2026, 9, 5, 24));
+    make('2026,9,7,-1', DateTime(2026, 9, 7, -1));
+    make('2026,4,4,23,30', DateTime(2026, 4, 4, 23, 30));
+    make('2026,4,4,23,59', DateTime(2026, 4, 4, 23, 59));
+    make('2026,4,5', DateTime(2026, 4, 5));
+    make('2026,3,29', DateTime(2026, 3, 29));
+    make('2026,3,29,0,30', DateTime(2026, 3, 29, 0, 30));
+    make('2026,3,28,24', DateTime(2026, 3, 28, 24));
+    make('2026,10,24,23,30', DateTime(2026, 10, 24, 23, 30));
+    make('2026,10,25', DateTime(2026, 10, 25));
     make('99,1,1', DateTime(99, 1, 1));
     for (var m = 1; m <= 12; m++) {
       make('eom 2026,$m', endOfNetWorthMonth(DateTime(2026, m)));
@@ -143,6 +180,12 @@ void main() {
     }
     make('eod 2026,3,8', endOfNetWorthDay(DateTime(2026, 3, 8)));
     make('eod 2026,11,1', endOfNetWorthDay(DateTime(2026, 11, 1)));
+    make('eod 2026,9,5', endOfNetWorthDay(DateTime(2026, 9, 5)));
+    make('eod 2026,9,6', endOfNetWorthDay(DateTime(2026, 9, 6)));
+    make('eod 2026,4,4', endOfNetWorthDay(DateTime(2026, 4, 4)));
+    make('eod 2026,3,28', endOfNetWorthDay(DateTime(2026, 3, 28)));
+    make('eod 2026,3,29', endOfNetWorthDay(DateTime(2026, 3, 29)));
+    make('eod 2026,10,24', endOfNetWorthDay(DateTime(2026, 10, 24)));
 
     final arithmetic = <Map<String, Object?>>[];
     for (final start in [
@@ -154,6 +197,16 @@ void main() {
       DateTime(2026, 3, 29),
       DateTime(2026, 10, 4),
       DateTime(2026, 4, 5),
+      DateTime(2026, 9, 5),
+      DateTime(2026, 9, 5, 23, 59, 59, 999),
+      DateTime(2026, 9, 6),
+      DateTime(2026, 9, 6, 0, 30),
+      DateTime(2026, 4, 3, 23, 30),
+      DateTime(2026, 4, 4),
+      DateTime(2026, 4, 4, 23, 30),
+      DateTime(2026, 3, 28, 23, 30),
+      DateTime(2026, 10, 24, 23, 30),
+      DateTime(2026, 10, 17, 23, 30),
       DateTime(2026, 6, 1, 14, 32, 11, 123, 456),
     ]) {
       for (final days in [-90, -1, 1, 7, 14, 90]) {
@@ -176,6 +229,20 @@ void main() {
       (DateTime(2026, 10, 10), DateTime(2026, 9, 26)),
       (DateTime(2026, 4, 12), DateTime(2026, 3, 29)),
       (DateTime(2026, 1, 1), DateTime(2026, 1, 2)),
+      // Across the midnight gaps and folds (23h and 25h days).
+      (DateTime(2026, 9, 7), DateTime(2026, 9, 5)),
+      (DateTime(2026, 9, 6, 1), DateTime(2026, 9, 5, 23, 59)),
+      (DateTime(2026, 9, 10), DateTime(2026, 9, 1)),
+      (DateTime(2026, 9, 6), DateTime(2026, 9, 5)),
+      (DateTime(2026, 9, 7), DateTime(2026, 9, 6)),
+      (DateTime(2026, 4, 5), DateTime(2026, 4, 4)),
+      (DateTime(2026, 4, 6), DateTime(2026, 4, 3)),
+      (DateTime(2026, 4, 5, 0, 30), DateTime(2026, 4, 4, 23, 30)),
+      (DateTime(2026, 3, 30), DateTime(2026, 3, 28)),
+      (DateTime(2026, 3, 29, 1), DateTime(2026, 3, 28, 23, 59)),
+      (DateTime(2026, 10, 26), DateTime(2026, 10, 24)),
+      (DateTime(2026, 10, 25), DateTime(2026, 10, 24)),
+      (DateTime(2026, 10, 25, 0, 30), DateTime(2026, 10, 24, 23, 30)),
     ]) {
       inDays.add({'a': dt(a), 'b': dt(b), 'inDays': a.difference(b).inDays});
     }
@@ -186,6 +253,10 @@ void main() {
         DateTime(2026, 12, 31, 23, 59),
         DateTime(2027, 1, 1),
         DateTime(99, 7, 4),
+        DateTime(2026, 9, 6, 0, 30),
+        DateTime(2026, 4, 4, 23, 30),
+        DateTime(2026, 3, 29, 0, 30),
+        DateTime(2026, 10, 24, 23, 30),
       ])
         {
           'date': dt(d),
@@ -207,6 +278,9 @@ void main() {
 
   test('recurring generator', () async {
     final cases = <Map<String, Object?>>[];
+    // The midnight-DST cases (below) also carry epoch microseconds, because
+    // a fold-hour wall time names two instants.
+    var withUs = false;
     Future<void> run(String label, RecurringTransaction template,
         List<DateTime> nows) async {
       for (final now in nows) {
@@ -228,6 +302,7 @@ void main() {
           'generated': transactions.transactions
               .map((t) => {
                     'date': t.date.toIso8601String(),
+                    if (withUs) 'dateUs': t.date.microsecondsSinceEpoch,
                     'recurringTemplateId': t.recurringTemplateId,
                     'createdAt': t.createdAt.toIso8601String(),
                     'amount': t.amount,
@@ -235,6 +310,7 @@ void main() {
                   })
               .toList(),
           'nextOccurrence': after.nextOccurrence.toIso8601String(),
+          if (withUs) 'nextOccurrenceUs': after.nextOccurrence.microsecondsSinceEpoch,
           'isActive': after.isActive,
         });
         pinClock(DateTime(2026, 1, 1, 12));
@@ -292,6 +368,86 @@ void main() {
     await run('due later today', t('today', RecurrencePattern.monthly, DateTime(2026, 6, 15, 23), dom: 15), [DateTime(2026, 6, 15, 10, 30)]);
 
     writeJson('$fixturesRoot/$zoneDir/generator.json', {'tz': parityTz, 'cases': cases});
+
+    // Midnight DST. Every template and clock is built from local components,
+    // so each zone resolves them itself: America/Santiago (gap 2026-09-06
+    // 00:00-00:59, fold 2026-04-04 23:00-23:59), Asia/Beirut (gap 2026-03-29
+    // 00:00-00:59, fold 2026-10-24 23:00-23:59); everywhere else they are
+    // ordinary times.
+    withUs = true;
+    cases.clear();
+    final sclGapNows = [
+      DateTime(2026, 9, 5, 23, 59, 59, 999),
+      DateTime(2026, 9, 6, 0, 30),
+      DateTime(2026, 9, 6, 1),
+      DateTime(2026, 9, 6, 12),
+      DateTime(2026, 9, 13, 0, 30),
+      DateTime(2026, 9, 28, 9, 15),
+    ];
+    final sclFoldNows = [
+      DateTime(2026, 4, 4, 22, 59),
+      DateTime(2026, 4, 4, 23),
+      DateTime(2026, 4, 4, 23, 30),
+      DateTime(2026, 4, 5),
+      DateTime(2026, 4, 11, 22, 30),
+      DateTime(2026, 4, 11, 23, 30),
+    ];
+    final beiGapNows = [
+      DateTime(2026, 3, 28, 23, 59, 59, 999),
+      DateTime(2026, 3, 29, 0, 30),
+      DateTime(2026, 3, 29, 1),
+      DateTime(2026, 3, 29, 12),
+      DateTime(2026, 4, 5, 0, 30),
+      DateTime(2026, 4, 20, 9, 15),
+    ];
+    final beiFoldNows = [
+      DateTime(2026, 10, 24, 22, 59),
+      DateTime(2026, 10, 24, 23),
+      DateTime(2026, 10, 24, 23, 30),
+      DateTime(2026, 10, 25),
+      DateTime(2026, 10, 31, 22, 30),
+      DateTime(2026, 10, 31, 23, 30),
+    ];
+    // The same wall time twice: every instant of the fold hour a clock can name.
+    List<DateTime> bothOf(DateTime wall) => [
+          for (final d in [
+            wall.subtract(const Duration(hours: 1)),
+            wall,
+            wall.add(const Duration(hours: 1)),
+          ])
+            if (d.year == wall.year &&
+                d.month == wall.month &&
+                d.day == wall.day &&
+                d.hour == wall.hour &&
+                d.minute == wall.minute)
+              d
+        ];
+    final sclFoldBoth = bothOf(DateTime(2026, 4, 4, 23, 30));
+    final beiFoldBoth = bothOf(DateTime(2026, 10, 24, 23, 30));
+    await run('dst weekly across the spring gap (Sunday start)', t('dw1', RecurrencePattern.weekly, DateTime(2026, 8, 30)), sclGapNows);
+    await run('dst biweekly across the spring gap', t('dw2', RecurrencePattern.biweekly, DateTime(2026, 8, 23)), sclGapNows);
+    await run('dst weekly starting on the gap day', t('dw3', RecurrencePattern.weekly, DateTime(2026, 9, 6)), sclGapNows);
+    await run('dst weekly starting 00:30 on the gap day', t('dw4', RecurrencePattern.weekly, DateTime(2026, 9, 6, 0, 30)), sclGapNows);
+    await run('dst monthly dom 6 through the gap', t('dm1', RecurrencePattern.monthly, DateTime(2026, 7, 6), dom: 6), sclGapNows);
+    await run('dst monthly dom 6 cursor on the gap', t('dm2', RecurrencePattern.monthly, DateTime(2026, 7, 6), dom: 6, next: DateTime(2026, 9, 6)), sclGapNows);
+    await run('dst weekly day before gap with time', t('dw5', RecurrencePattern.weekly, DateTime(2026, 8, 30, 23, 30)), sclGapNows);
+    await run('dst weekly across the fall fold', t('df1', RecurrencePattern.weekly, DateTime(2026, 3, 28, 23, 30)), sclFoldNows);
+    await run('dst weekly midnight across the fold day', t('df2', RecurrencePattern.weekly, DateTime(2026, 3, 28)), sclFoldNows);
+    await run('dst biweekly across the fold', t('df3', RecurrencePattern.biweekly, DateTime(2026, 3, 21, 23, 30)), sclFoldNows);
+    await run('dst monthly dom 4 with fold time', t('df4', RecurrencePattern.monthly, DateTime(2026, 1, 4, 23, 30), dom: 4), sclFoldNows);
+    await run('dst weekly cursor in the fold hour', t('df5', RecurrencePattern.weekly, DateTime(2026, 3, 28, 23, 30), next: DateTime(2026, 4, 4, 23, 30)), sclFoldNows);
+    await run('dst weekly fold hour, clock at either 23:30', t('df6', RecurrencePattern.weekly, DateTime(2026, 3, 28, 23, 30)), sclFoldBoth);
+    await run('dst weekly across the Beirut spring gap', t('bw1', RecurrencePattern.weekly, DateTime(2026, 3, 22)), beiGapNows);
+    await run('dst biweekly across the Beirut gap', t('bw2', RecurrencePattern.biweekly, DateTime(2026, 3, 15)), beiGapNows);
+    await run('dst monthly dom 29 through the Beirut gap', t('bm1', RecurrencePattern.monthly, DateTime(2026, 1, 29), dom: 29), beiGapNows);
+    await run('dst weekly starting on the Beirut gap day', t('bw3', RecurrencePattern.weekly, DateTime(2026, 3, 29, 0, 30)), beiGapNows);
+    await run('dst weekly across the Beirut fold', t('bf1', RecurrencePattern.weekly, DateTime(2026, 10, 17, 23, 30)), beiFoldNows);
+    await run('dst monthly dom 24 with fold time', t('bf2', RecurrencePattern.monthly, DateTime(2026, 8, 24, 23, 30), dom: 24), beiFoldNows);
+    await run('dst weekly Beirut fold hour, clock at either 23:30', t('bf3', RecurrencePattern.weekly, DateTime(2026, 10, 17, 23, 30)), beiFoldBoth);
+    await run('dst weekly midnight across Beirut fold day', t('bf4', RecurrencePattern.weekly, DateTime(2026, 10, 17)), beiFoldNows);
+    writeJson('$fixturesRoot/$zoneDir/generator_dst.json', {'tz': parityTz, 'cases': List.of(cases)});
+    cases.clear();
+    withUs = false;
   });
 
   test('safe to spend', () async {
@@ -351,6 +507,213 @@ void main() {
       'goals': goals.map((g) => g.toJson()).toList(),
       'goalClockNote': 'suggestedMonthlyContribution uses the clock; the clock was pinned to asOf for each result',
       'results': results,
+    });
+
+    // Midnight DST (America/Santiago, Asia/Beirut; ordinary times elsewhere):
+    // rows, templates and as-of clocks on, just before and just after each
+    // gap and fold. Each date carries epoch microseconds (a fold-hour wall
+    // time names two instants); the fold cases run at both.
+    final dstTransactions = [
+      Transaction(id: 'd1', type: TransactionTyp.income, description: 'Pay', amount: 3000.0, category: 'Salary', date: DateTime(2026, 9, 1)),
+      Transaction(id: 'd2', type: TransactionTyp.expense, description: 'Before gap', amount: 11.0, category: 'Groceries', date: DateTime(2026, 9, 5, 23, 59, 59, 999)),
+      Transaction(id: 'd3', type: TransactionTyp.expense, description: 'Gap midnight', amount: 12.0, category: 'Groceries', date: DateTime(2026, 9, 6)),
+      Transaction(id: 'd4', type: TransactionTyp.expense, description: 'Gap 00:30', amount: 13.0, category: 'Eating Out', date: DateTime(2026, 9, 6, 0, 30)),
+      Transaction(id: 'd5', type: TransactionTyp.expense, description: 'After gap', amount: 14.0, category: 'Groceries', date: DateTime(2026, 9, 6, 1)),
+      Transaction(id: 'd6', type: TransactionTyp.expense, description: 'Fold 23:15', amount: 21.0, category: 'Groceries', date: DateTime(2026, 4, 4, 23, 15)),
+      Transaction(id: 'd7', type: TransactionTyp.expense, description: 'Fold 23:30', amount: 22.0, category: 'Groceries', date: DateTime(2026, 4, 4, 23, 30)),
+      Transaction(id: 'd8', type: TransactionTyp.expense, description: 'Fold 23:45', amount: 23.0, category: 'Eating Out', date: DateTime(2026, 4, 4, 23, 45)),
+      Transaction(id: 'd9', type: TransactionTyp.expense, description: 'After fold', amount: 24.0, category: 'Groceries', date: DateTime(2026, 4, 5)),
+      Transaction(id: 'd10', type: TransactionTyp.income, description: 'Fold pay', amount: 500.0, category: 'Salary', date: DateTime(2026, 4, 4, 23, 30)),
+      Transaction(id: 'd11', type: TransactionTyp.expense, description: 'Beirut gap 00:30', amount: 31.0, category: 'Groceries', date: DateTime(2026, 3, 29, 0, 30)),
+      Transaction(id: 'd12', type: TransactionTyp.expense, description: 'Beirut before gap', amount: 32.0, category: 'Groceries', date: DateTime(2026, 3, 28, 23, 59, 59, 999)),
+      Transaction(id: 'd13', type: TransactionTyp.expense, description: 'Beirut fold 23:15', amount: 41.0, category: 'Groceries', date: DateTime(2026, 10, 24, 23, 15)),
+      Transaction(id: 'd14', type: TransactionTyp.expense, description: 'Beirut fold 23:45', amount: 42.0, category: 'Eating Out', date: DateTime(2026, 10, 24, 23, 45)),
+      Transaction(id: 'd15', type: TransactionTyp.expense, description: 'Beirut after fold', amount: 43.0, category: 'Groceries', date: DateTime(2026, 10, 25)),
+    ];
+    final dstRecurring = [
+      RecurringTransaction(id: 'dr1', type: TransactionTyp.expense, description: 'Weekly over gap', amount: 45.0, category: 'Health', pattern: RecurrencePattern.weekly, startDate: DateTime(2026, 8, 30), dayOfWeek: 7),
+      RecurringTransaction(id: 'dr2', type: TransactionTyp.income, description: 'Biweekly over gap', amount: 850.0, category: 'Salary', pattern: RecurrencePattern.biweekly, startDate: DateTime(2026, 8, 23), dayOfWeek: 7),
+      RecurringTransaction(id: 'dr3', type: TransactionTyp.expense, description: 'Monthly dom 6', amount: 60.0, category: 'Housing', pattern: RecurrencePattern.monthly, startDate: DateTime(2026, 7, 6), dayOfMonth: 6),
+      RecurringTransaction(id: 'dr4', type: TransactionTyp.expense, description: 'Weekly fold time', amount: 15.0, category: 'Groceries', pattern: RecurrencePattern.weekly, startDate: DateTime(2026, 3, 28, 23, 30), dayOfWeek: 6),
+      RecurringTransaction(id: 'dr5', type: TransactionTyp.expense, description: 'Weekly over Beirut gap', amount: 25.0, category: 'Health', pattern: RecurrencePattern.weekly, startDate: DateTime(2026, 3, 22), dayOfWeek: 7),
+      RecurringTransaction(id: 'dr6', type: TransactionTyp.expense, description: 'Monthly dom 29', amount: 70.0, category: 'Housing', pattern: RecurrencePattern.monthly, startDate: DateTime(2026, 1, 29), dayOfMonth: 29),
+      RecurringTransaction(id: 'dr7', type: TransactionTyp.expense, description: 'Weekly Beirut fold time', amount: 16.0, category: 'Groceries', pattern: RecurrencePattern.weekly, startDate: DateTime(2026, 10, 17, 23, 30), dayOfWeek: 6),
+      RecurringTransaction(id: 'dr8', type: TransactionTyp.income, description: 'Cursor on gap', amount: 100.0, category: 'Salary', pattern: RecurrencePattern.monthly, startDate: DateTime(2026, 7, 6), dayOfMonth: 6, nextOccurrence: DateTime(2026, 9, 6)),
+    ];
+    final dstLimits = <String, double>{'Groceries': 300.0, 'Eating Out': 80.0, 'Health': 100.0};
+    final dstGoals = [
+      SavingsGoal(id: 'dg1', name: 'Gap goal', targetAmount: 1000.0, currentAmount: 100.0, targetDate: DateTime(2026, 9, 6), createdAt: DateTime(2026, 4, 4, 23, 30)),
+      SavingsGoal(id: 'dg2', name: 'Later', targetAmount: 2000.0, currentAmount: 300.0, targetDate: DateTime(2026, 12, 6), createdAt: DateTime(2026, 3, 29, 0, 30)),
+    ];
+    final dstCases = <Map<String, Object?>>[];
+    void dstCase(DateTime month, DateTime asOf) {
+      pinClock(asOf);
+      final b = const SafeToSpendCalculator().calculate(
+        transactions: dstTransactions,
+        recurringTransactions: dstRecurring,
+        categoryBudgetLimits: dstLimits,
+        savingsGoals: dstGoals,
+        month: month,
+        asOf: asOf,
+      );
+      dstCases.add({
+        'month': dt(month),
+        'asOf': dt(asOf),
+        'result': breakdownJson(b),
+      });
+      pinClock(DateTime(2026, 1, 1, 12));
+    }
+
+    // Every instant whose local wall time is the given one (two in a fold).
+    List<DateTime> sameWall(int y, int m, int d, int h, int mi) {
+      final wall = DateTime(y, m, d, h, mi);
+      return [
+        for (final x in [
+          wall.subtract(const Duration(hours: 1)),
+          wall,
+          wall.add(const Duration(hours: 1)),
+        ])
+          if (x.year == y && x.month == m && x.day == d && x.hour == h && x.minute == mi) x
+      ];
+    }
+
+    for (final asOf in [
+      DateTime(2026, 9, 5, 23, 59, 59, 999),
+      DateTime(2026, 9, 6),
+      DateTime(2026, 9, 6, 0, 30),
+      DateTime(2026, 9, 6, 1),
+      DateTime(2026, 9, 6, 12),
+      DateTime(2026, 9, 7),
+      DateTime(2026, 9, 30, 23, 59),
+      DateTime(2026, 10, 1),
+    ]) {
+      dstCase(DateTime(2026, 9), asOf);
+    }
+    for (final asOf in [
+      DateTime(2026, 4, 4, 22, 59),
+      DateTime(2026, 4, 4, 23),
+      ...sameWall(2026, 4, 4, 23, 15),
+      ...sameWall(2026, 4, 4, 23, 30),
+      ...sameWall(2026, 4, 4, 23, 45),
+      DateTime(2026, 4, 4, 23, 59, 59, 999),
+      DateTime(2026, 4, 5),
+      DateTime(2026, 4, 30, 12),
+    ]) {
+      dstCase(DateTime(2026, 4), asOf);
+    }
+    for (final asOf in [
+      DateTime(2026, 3, 28, 23, 59),
+      DateTime(2026, 3, 29),
+      DateTime(2026, 3, 29, 0, 30),
+      DateTime(2026, 3, 29, 1),
+      DateTime(2026, 3, 31, 23, 59),
+    ]) {
+      dstCase(DateTime(2026, 3), asOf);
+    }
+    for (final asOf in [
+      DateTime(2026, 10, 24, 22, 59),
+      ...sameWall(2026, 10, 24, 23, 15),
+      ...sameWall(2026, 10, 24, 23, 30),
+      ...sameWall(2026, 10, 24, 23, 45),
+      DateTime(2026, 10, 25),
+      DateTime(2026, 10, 31, 23, 59),
+    ]) {
+      dstCase(DateTime(2026, 10), asOf);
+    }
+    // A month that is not the as-of month (closed past, open future).
+    dstCase(DateTime(2026, 9), DateTime(2026, 10, 24, 23, 30));
+    dstCase(DateTime(2026, 4), DateTime(2026, 3, 29, 0, 30));
+
+    // Randomised cases whose dates sit on the transition days.
+    final dstRandom = Random(909090 + parityTz.codeUnits.fold(0, (a, b) => a + b));
+    const dstDays = [(2026, 9, 6), (2026, 4, 4), (2026, 3, 29), (2026, 10, 24), (2026, 10, 25), (2026, 9, 5), (2026, 4, 5), (2026, 3, 28)];
+    DateTime dstTime() {
+      final (y, m, d) = dstDays[dstRandom.nextInt(dstDays.length)];
+      final hour = const [0, 0, 1, 23, 23, 22, 12][dstRandom.nextInt(7)];
+      return DateTime(y, m, d, hour, dstRandom.nextInt(60), dstRandom.nextInt(3) == 0 ? 59 : 0,
+          dstRandom.nextInt(3) == 0 ? 999 : 0);
+    }
+
+    double dstMoney() => (dstRandom.nextInt(20000) + 1) / 100.0;
+    final dstRandomCases = <Map<String, Object?>>[];
+    for (var i = 0; i < 120; i++) {
+      final asOf = dstTime();
+      final month = DateTime(asOf.year, asOf.month);
+      final transactions = [
+        for (var n = 0; n < dstRandom.nextInt(12) + 2; n++)
+          Transaction(
+            id: 'x$i-t$n',
+            type: dstRandom.nextInt(3) == 0 ? TransactionTyp.income : TransactionTyp.expense,
+            description: 'x',
+            amount: dstMoney(),
+            category: const ['Groceries', 'Eating Out', 'Health'][dstRandom.nextInt(3)],
+            date: dstTime(),
+            createdAt: DateTime(2024),
+            updatedAt: DateTime(2024),
+          ),
+      ];
+      final recurring = <RecurringTransaction>[];
+      for (var r = 0; r < dstRandom.nextInt(4); r++) {
+        final pattern = RecurrencePattern.values[dstRandom.nextInt(3)];
+        final start = dstTime();
+        recurring.add(RecurringTransaction(
+          id: 'x$i-rt$r',
+          type: dstRandom.nextInt(3) == 0 ? TransactionTyp.income : TransactionTyp.expense,
+          description: 'rt',
+          amount: dstMoney(),
+          category: 'Groceries',
+          pattern: pattern,
+          startDate: start,
+          nextOccurrence: dstTime(),
+          dayOfMonth: pattern == RecurrencePattern.monthly ? dstRandom.nextInt(31) + 1 : null,
+          dayOfWeek: pattern == RecurrencePattern.monthly ? null : start.weekday,
+          isActive: dstRandom.nextInt(5) != 0,
+        ));
+      }
+      final limits = <String, double>{
+        if (dstRandom.nextBool()) 'Groceries': dstMoney(),
+        if (dstRandom.nextBool()) 'Eating Out': dstMoney(),
+      };
+      pinClock(asOf);
+      final goals = [
+        for (var g = 0; g < dstRandom.nextInt(3); g++)
+          SavingsGoal(
+            id: 'x$i-g$g',
+            name: 'g',
+            targetAmount: 1000.0 + dstMoney(),
+            currentAmount: dstMoney(),
+            targetDate: dstTime(),
+            createdAt: dstTime(),
+          ),
+      ];
+      final b = const SafeToSpendCalculator().calculate(
+        transactions: transactions,
+        recurringTransactions: recurring,
+        categoryBudgetLimits: limits,
+        savingsGoals: goals,
+        month: month,
+        asOf: asOf,
+      );
+      dstRandomCases.add({
+        'month': dt(month),
+        'asOf': dt(asOf),
+        'transactions': transactions.map((t) => t.toJson()).toList(),
+        'recurring': recurring.map((r) => r.toJson()).toList(),
+        'limits': limits,
+        'goals': goals.map((g) => g.toJson()).toList(),
+        'result': breakdownJson(b),
+      });
+      pinClock(DateTime(2026, 1, 1, 12));
+    }
+    writeJson('$fixturesRoot/$zoneDir/safe_to_spend_dst.json', {
+      'tz': parityTz,
+      'transactions': dstTransactions.map((t) => t.toJson()).toList(),
+      'recurring': dstRecurring.map((r) => r.toJson()).toList(),
+      'limits': dstLimits,
+      'goals': dstGoals.map((g) => g.toJson()).toList(),
+      'goalClockNote': 'suggestedMonthlyContribution uses the clock; the clock was pinned to asOf for each result',
+      'results': dstCases,
+      'randomCases': dstRandomCases,
     });
   });
 

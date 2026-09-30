@@ -215,6 +215,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "405e8e38e38e38e4",
+          "paces": [
+            "Dec 1 · bump to $122/mo to catch up",
+            "Dec 1 · bump to 122 €/mo to catch up",
+            "Dec 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "405e8e38e38e38e4",
+          "paces": [
+            "Dec 1 · bump to $122/mo to catch up",
+            "Dec 1 · bump to 122 €/mo to catch up",
+            "Dec 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4076eaaaaaaaaaab",
+          "paces": [
+            "Dec 1 · bump to $367/mo to catch up",
+            "Dec 1 · bump to 367 €/mo to catch up",
+            "Dec 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": false,
           "status": "behind",
@@ -453,6 +486,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "407f400000000000",
+          "paces": [
+            "Mar 31 · bump to $500/mo to catch up",
+            "Mar 31 · bump to 500 €/mo to catch up",
+            "Mar 31 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "407f400000000000",
+          "paces": [
+            "Mar 31 · bump to $500/mo to catch up",
+            "Mar 31 · bump to 500 €/mo to catch up",
+            "Mar 31 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "407f400000000000",
+          "paces": [
+            "Mar 31 · bump to $500/mo to catch up",
+            "Mar 31 · bump to 500 €/mo to catch up",
+            "Mar 31 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "407f400000000000",
@@ -711,6 +777,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3f847ae147ae2000",
+          "paces": [
+            "Mar 15 · bump to $0/mo to catch up",
+            "Mar 15 · bump to 0 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3f847ae147ae2000",
+          "paces": [
+            "Mar 15 · bump to $0/mo to catch up",
+            "Mar 15 · bump to 0 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3f847ae147ae2000",
+          "paces": [
+            "Mar 15 · bump to $0/mo to catch up",
+            "Mar 15 · bump to 0 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -949,6 +1048,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 15 · bump to $50/mo to catch up",
+            "Mar 15 · bump to 50 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 15 · bump to $50/mo to catch up",
+            "Mar 15 · bump to 50 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 15 · bump to $50/mo to catch up",
+            "Mar 15 · bump to 50 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "4049000000000000",
@@ -1207,6 +1339,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4056800000000000",
+          "paces": [
+            "Mar 1 · bump to $90/mo to catch up",
+            "Mar 1 · bump to 90 €/mo to catch up",
+            "Mar 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4056800000000000",
+          "paces": [
+            "Mar 1 · bump to $90/mo to catch up",
+            "Mar 1 · bump to 90 €/mo to catch up",
+            "Mar 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4056800000000000",
+          "paces": [
+            "Mar 1 · bump to $90/mo to catch up",
+            "Mar 1 · bump to 90 €/mo to catch up",
+            "Mar 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -1445,6 +1610,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · $0/mo keeps you on pace",
+            "Jun 1 · 0 €/mo keeps you on pace",
+            "Jun 1 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · $0/mo keeps you on pace",
+            "Jun 1 · 0 €/mo keeps you on pace",
+            "Jun 1 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · $0/mo keeps you on pace",
+            "Jun 1 · 0 €/mo keeps you on pace",
+            "Jun 1 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": false,
           "status": "complete",
           "suggested": "0000000000000000",
@@ -1703,6 +1901,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · bump to $0/mo to catch up",
+            "Jun 1 · bump to 0 €/mo to catch up",
+            "Jun 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · bump to $0/mo to catch up",
+            "Jun 1 · bump to 0 €/mo to catch up",
+            "Jun 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jun 1 · bump to $0/mo to catch up",
+            "Jun 1 · bump to 0 €/mo to catch up",
+            "Jun 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -1941,6 +2172,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "406c100000000000",
+          "paces": [
+            "Jul 4 · bump to $225/mo to catch up",
+            "Jul 4 · bump to 225 €/mo to catch up",
+            "Jul 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "404c100000000000",
+          "paces": [
+            "Jul 4 · bump to $56/mo to catch up",
+            "Jul 4 · bump to 56 €/mo to catch up",
+            "Jul 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "404c100000000000",
+          "paces": [
+            "Jul 4 · bump to $56/mo to catch up",
+            "Jul 4 · bump to 56 €/mo to catch up",
+            "Jul 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "406c100000000000",
@@ -2199,6 +2463,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Sep 6 · $50/mo keeps you on pace",
+            "Sep 6 · 50 €/mo keeps you on pace",
+            "Sep 6 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Sep 6 · $50/mo keeps you on pace",
+            "Sep 6 · 50 €/mo keeps you on pace",
+            "Sep 6 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4072c00000000000",
+          "paces": [
+            "Sep 6 · bump to $300/mo to catch up",
+            "Sep 6 · bump to 300 €/mo to catch up",
+            "Sep 6 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -2437,6 +2734,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4067c00000000000",
+          "paces": [
+            "Mar 15 · bump to $190/mo to catch up",
+            "Mar 15 · bump to 190 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4067c00000000000",
+          "paces": [
+            "Mar 15 · bump to $190/mo to catch up",
+            "Mar 15 · bump to 190 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4067c00000000000",
+          "paces": [
+            "Mar 15 · bump to $190/mo to catch up",
+            "Mar 15 · bump to 190 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "4067c00000000000",
@@ -2695,6 +3025,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020aaaaaaaaaaab",
+          "paces": [
+            "Sep 6 · $8/mo keeps you on pace",
+            "Sep 6 · 8 €/mo keeps you on pace",
+            "Sep 6 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020aaaaaaaaaaab",
+          "paces": [
+            "Sep 6 · $8/mo keeps you on pace",
+            "Sep 6 · 8 €/mo keeps you on pace",
+            "Sep 6 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Sep 6 · bump to $50/mo to catch up",
+            "Sep 6 · bump to 50 €/mo to catch up",
+            "Sep 6 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -2933,6 +3296,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 9 · bump to $50/mo to catch up",
+            "Mar 9 · bump to 50 €/mo to catch up",
+            "Mar 9 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 9 · bump to $50/mo to catch up",
+            "Mar 9 · bump to 50 €/mo to catch up",
+            "Mar 9 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Mar 9 · bump to $50/mo to catch up",
+            "Mar 9 · bump to 50 €/mo to catch up",
+            "Mar 9 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "4049000000000000",
@@ -3191,6 +3587,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "404bc71c71c71c72",
+          "paces": [
+            "Dec 1 · $56/mo keeps you on pace",
+            "Dec 1 · 56 €/mo keeps you on pace",
+            "Dec 1 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "404bc71c71c71c72",
+          "paces": [
+            "Dec 1 · $56/mo keeps you on pace",
+            "Dec 1 · 56 €/mo keeps you on pace",
+            "Dec 1 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4064d55555555555",
+          "paces": [
+            "Dec 1 · bump to $167/mo to catch up",
+            "Dec 1 · bump to 167 €/mo to catch up",
+            "Dec 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": false,
           "status": "behind",
@@ -3429,6 +3858,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3fc999999999999b",
+          "paces": [
+            "Apr 1 · bump to $0/mo to catch up",
+            "Apr 1 · bump to 0 €/mo to catch up",
+            "Apr 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3fc999999999999b",
+          "paces": [
+            "Apr 1 · bump to $0/mo to catch up",
+            "Apr 1 · bump to 0 €/mo to catch up",
+            "Apr 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "3fc999999999999b",
+          "paces": [
+            "Apr 1 · bump to $0/mo to catch up",
+            "Apr 1 · bump to 0 €/mo to catch up",
+            "Apr 1 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "3fc999999999999b",
@@ -3687,6 +4149,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 15 · $0/mo keeps you on pace",
+            "Mar 15 · 0 €/mo keeps you on pace",
+            "Mar 15 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 15 · $0/mo keeps you on pace",
+            "Mar 15 · 0 €/mo keeps you on pace",
+            "Mar 15 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 15 · $0/mo keeps you on pace",
+            "Mar 15 · 0 €/mo keeps you on pace",
+            "Mar 15 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": false,
           "status": "complete",
@@ -3935,6 +4430,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4030955555555555",
+          "paces": [
+            "Mar 15 · bump to $17/mo to catch up",
+            "Mar 15 · bump to 17 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4030955555555555",
+          "paces": [
+            "Mar 15 · bump to $17/mo to catch up",
+            "Mar 15 · bump to 17 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4040955555555555",
+          "paces": [
+            "Mar 15 · bump to $33/mo to catch up",
+            "Mar 15 · bump to 33 €/mo to catch up",
+            "Mar 15 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": false,
           "status": "behind",
@@ -4173,6 +4701,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 16 · bump to $0/mo to catch up",
+            "Mar 16 · bump to 0 €/mo to catch up",
+            "Mar 16 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 16 · bump to $0/mo to catch up",
+            "Mar 16 · bump to 0 €/mo to catch up",
+            "Mar 16 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Mar 16 · bump to $0/mo to catch up",
+            "Mar 16 · bump to 0 €/mo to catch up",
+            "Mar 16 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "0000000000000000",
@@ -4431,6 +4992,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jan 20 · $0/mo keeps you on pace",
+            "Jan 20 · 0 €/mo keeps you on pace",
+            "Jan 20 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jan 20 · $0/mo keeps you on pace",
+            "Jan 20 · 0 €/mo keeps you on pace",
+            "Jan 20 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "complete",
+          "suggested": "0000000000000000",
+          "paces": [
+            "Jan 20 · $0/mo keeps you on pace",
+            "Jan 20 · 0 €/mo keeps you on pace",
+            "Jan 20 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": false,
           "status": "complete",
@@ -4669,6 +5263,39 @@
         },
         {
           "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4049000000000000",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
           "isOverdue": true,
           "status": "behind",
           "suggested": "4049000000000000",
@@ -4927,6 +5554,39 @@
           ]
         },
         {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "40490000006b5fca",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "40490000006b5fca",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "40490000006b5fca",
+          "paces": [
+            "Jan 11 · bump to $50/mo to catch up",
+            "Jan 11 · bump to 50 €/mo to catch up",
+            "Jan 11 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
           "now": "2026-12-01T00:00:00.000",
           "isOverdue": true,
           "status": "behind",
@@ -4960,6 +5620,849 @@
           ]
         }
       ]
+    },
+    {
+      "row": "{\"id\":\"u\",\"name\":\"Lord Howe gap\",\"targetAmount\":100.0,\"currentAmount\":20.0,\"targetDate\":\"2026-10-04T02:15:00.000\",\"createdAt\":\"2026-04-05T01:45:00.000\"}",
+      "memory": {
+        "id": "u",
+        "name": "Lord Howe gap",
+        "targetAmount": "4059000000000000",
+        "currentAmount": "4034000000000000",
+        "targetDate": "2026-10-04T02:15:00.000",
+        "createdAt": "2026-04-05T01:45:00.000",
+        "completedAt": null
+      },
+      "progress": "3fc999999999999a",
+      "progressPercent": 20,
+      "percentLabel": "20%",
+      "remaining": "4054000000000000",
+      "isCompleted": false,
+      "fullyFunded": "Fully funded on Oct 4 — nice work",
+      "willComplete": [
+        [
+          "4054000000000000",
+          true
+        ],
+        [
+          "4053ff5c28f5c28f",
+          false
+        ],
+        [
+          "405400a3d70a3d71",
+          true
+        ],
+        [
+          "4039000000000000",
+          false
+        ],
+        [
+          "4059000000000000",
+          true
+        ],
+        [
+          "3fb999999999999a",
+          false
+        ],
+        [
+          "3e7ad7f29abcaf48",
+          false
+        ]
+      ],
+      "atNows": [
+        {
+          "now": "2026-01-01T09:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020000000000000",
+          "paces": [
+            "Oct 4 · $8/mo keeps you on pace",
+            "Oct 4 · 8 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020000000000000",
+          "paces": [
+            "Oct 4 · $8/mo keeps you on pace",
+            "Oct 4 · 8 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000500",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020000000000000",
+          "paces": [
+            "Oct 4 · $8/mo keeps you on pace",
+            "Oct 4 · 8 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.001",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4020000000000000",
+          "paces": [
+            "Oct 4 · $8/mo keeps you on pace",
+            "Oct 4 · 8 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-01T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-08T03:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-14T23:59:59.999",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T10:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T23:59:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-16T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4024000000000000",
+          "paces": [
+            "Oct 4 · $10/mo keeps you on pace",
+            "Oct 4 · 10 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-06-15T12:00:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4030000000000000",
+          "paces": [
+            "Oct 4 · bump to $16/mo to catch up",
+            "Oct 4 · bump to 16 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-05T23:59:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Oct 4 · bump to $40/mo to catch up",
+            "Oct 4 · bump to 40 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T00:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Oct 4 · bump to $40/mo to catch up",
+            "Oct 4 · bump to 40 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T12:00:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Oct 4 · bump to $40/mo to catch up",
+            "Oct 4 · bump to 40 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4026db6db6db6db7",
+          "paces": [
+            "Oct 4 · $11/mo keeps you on pace",
+            "Oct 4 · 11 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4026db6db6db6db7",
+          "paces": [
+            "Oct 4 · $11/mo keeps you on pace",
+            "Oct 4 · 11 €/mo keeps you on pace",
+            "Oct 4 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Oct 4 · bump to $80/mo to catch up",
+            "Oct 4 · bump to 80 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Oct 4 · bump to $80/mo to catch up",
+            "Oct 4 · bump to 80 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-02T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Oct 4 · bump to $80/mo to catch up",
+            "Oct 4 · bump to 80 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2027-02-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Oct 4 · bump to $80/mo to catch up",
+            "Oct 4 · bump to 80 €/mo to catch up",
+            "Oct 4 · bump to ••••/mo to catch up"
+          ]
+        }
+      ]
+    },
+    {
+      "row": "{\"id\":\"v\",\"name\":\"Lord Howe fold\",\"targetAmount\":100.0,\"currentAmount\":20.0,\"targetDate\":\"2026-04-05T01:45:00.000\",\"createdAt\":\"2026-04-04T12:00:00.000\"}",
+      "memory": {
+        "id": "v",
+        "name": "Lord Howe fold",
+        "targetAmount": "4059000000000000",
+        "currentAmount": "4034000000000000",
+        "targetDate": "2026-04-05T01:45:00.000",
+        "createdAt": "2026-04-04T12:00:00.000",
+        "completedAt": null
+      },
+      "progress": "3fc999999999999a",
+      "progressPercent": 20,
+      "percentLabel": "20%",
+      "remaining": "4054000000000000",
+      "isCompleted": false,
+      "fullyFunded": "Fully funded on Apr 5 — nice work",
+      "willComplete": [
+        [
+          "4054000000000000",
+          true
+        ],
+        [
+          "4053ff5c28f5c28f",
+          false
+        ],
+        [
+          "405400a3d70a3d71",
+          true
+        ],
+        [
+          "4039000000000000",
+          false
+        ],
+        [
+          "4059000000000000",
+          true
+        ],
+        [
+          "3fb999999999999a",
+          false
+        ],
+        [
+          "3e7ad7f29abcaf48",
+          false
+        ]
+      ],
+      "atNows": [
+        {
+          "now": "2026-01-01T09:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000500",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.001",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-01T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-08T03:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-14T23:59:59.999",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T10:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T23:59:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-16T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-06-15T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-05T23:59:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T00:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-02T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2027-02-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        }
+      ]
+    },
+    {
+      "row": "{\"id\":\"w\",\"name\":\"Santiago fold\",\"targetAmount\":100.0,\"currentAmount\":20.0,\"targetDate\":\"2026-04-05T00:00:00.000\",\"createdAt\":\"2026-04-04T23:30:00.000\"}",
+      "memory": {
+        "id": "w",
+        "name": "Santiago fold",
+        "targetAmount": "4059000000000000",
+        "currentAmount": "4034000000000000",
+        "targetDate": "2026-04-05T00:00:00.000",
+        "createdAt": "2026-04-04T23:30:00.000",
+        "completedAt": null
+      },
+      "progress": "3fc999999999999a",
+      "progressPercent": 20,
+      "percentLabel": "20%",
+      "remaining": "4054000000000000",
+      "isCompleted": false,
+      "fullyFunded": "Fully funded on Apr 5 — nice work",
+      "willComplete": [
+        [
+          "4054000000000000",
+          true
+        ],
+        [
+          "4053ff5c28f5c28f",
+          false
+        ],
+        [
+          "405400a3d70a3d71",
+          true
+        ],
+        [
+          "4039000000000000",
+          false
+        ],
+        [
+          "4059000000000000",
+          true
+        ],
+        [
+          "3fb999999999999a",
+          false
+        ],
+        [
+          "3e7ad7f29abcaf48",
+          false
+        ]
+      ],
+      "atNows": [
+        {
+          "now": "2026-01-01T09:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.000500",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-01-06T00:00:00.001",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4034000000000000",
+          "paces": [
+            "Apr 5 · $20/mo keeps you on pace",
+            "Apr 5 · 20 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-01T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-08T03:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-14T23:59:59.999",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T10:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-15T23:59:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-03-16T00:00:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4044000000000000",
+          "paces": [
+            "Apr 5 · $40/mo keeps you on pace",
+            "Apr 5 · 40 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-06-15T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-05T23:59:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T00:30:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-09-06T12:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-04-04T23:30:00.000",
+          "isOverdue": false,
+          "status": "onTrack",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · $80/mo keeps you on pace",
+            "Apr 5 · 80 €/mo keeps you on pace",
+            "Apr 5 · ••••/mo keeps you on pace"
+          ]
+        },
+        {
+          "now": "2026-04-05T01:45:00.000",
+          "isOverdue": false,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-10-04T02:15:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2026-12-02T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        },
+        {
+          "now": "2027-02-01T00:00:00.000",
+          "isOverdue": true,
+          "status": "behind",
+          "suggested": "4054000000000000",
+          "paces": [
+            "Apr 5 · bump to $80/mo to catch up",
+            "Apr 5 · bump to 80 €/mo to catch up",
+            "Apr 5 · bump to ••••/mo to catch up"
+          ]
+        }
+      ]
     }
   ],
   "lists": [
@@ -4984,7 +6487,10 @@
         "q",
         "r",
         "s",
-        "t"
+        "t",
+        "u",
+        "v",
+        "w"
       ],
       "summary": {
         "order": [
@@ -4998,10 +6504,13 @@
           "q",
           "b",
           "n",
+          "w",
+          "v",
           "g",
           "h",
           "i",
           "k",
+          "u",
           "a",
           "m",
           "p",
@@ -5009,21 +6518,24 @@
           "o",
           "f"
         ],
-        "totalSaved": "4096c25c28f26792",
-        "totalTarget": "40b2664ccccccccd",
+        "totalSaved": "4097b25c28f26792",
+        "totalTarget": "40b3924ccccccccd",
         "completedCount": 3,
-        "count": 20,
-        "progress": "3fd3ca81ef714e28",
-        "percent": "31%",
+        "count": 23,
+        "progress": "3fd35f588a3d496a",
+        "percent": "30%",
         "captions": [
-          "of $4,710 · 3 of 20 complete",
-          "of 4.710 € · 3 of 20 complete",
-          "of •••• · 3 of 20 complete"
+          "of $5,010 · 3 of 23 complete",
+          "of 5.010 € · 3 of 23 complete",
+          "of •••• · 3 of 23 complete"
         ]
       }
     },
     {
       "ids": [
+        "w",
+        "v",
+        "u",
         "t",
         "s",
         "r",
@@ -5057,10 +6569,13 @@
           "q",
           "b",
           "n",
+          "w",
+          "v",
           "g",
           "h",
           "k",
           "i",
+          "u",
           "m",
           "a",
           "p",
@@ -5068,16 +6583,16 @@
           "o",
           "f"
         ],
-        "totalSaved": "4096c25c28f26792",
-        "totalTarget": "40b2664ccccccccd",
+        "totalSaved": "4097b25c28f26792",
+        "totalTarget": "40b3924ccccccccd",
         "completedCount": 3,
-        "count": 20,
-        "progress": "3fd3ca81ef714e28",
-        "percent": "31%",
+        "count": 23,
+        "progress": "3fd35f588a3d496a",
+        "percent": "30%",
         "captions": [
-          "of $4,710 · 3 of 20 complete",
-          "of 4.710 € · 3 of 20 complete",
-          "of •••• · 3 of 20 complete"
+          "of $5,010 · 3 of 23 complete",
+          "of 5.010 € · 3 of 23 complete",
+          "of •••• · 3 of 23 complete"
         ]
       }
     },

@@ -49,7 +49,7 @@ struct WorthParityTests {
     /// due and on the model's memory; for data Dart wrote itself the stored
     /// `netWorthEntries` bytes are identical; `selectedNetWorthMonth` always
     /// is. Whatever Swift wrote loads back to the same memory.
-    @Test("mutation scenarios", arguments: ["America/New_York", "America/Santiago"])
+    @Test("mutation scenarios", arguments: dstFixtureZones)
     func mutations(zone: String) throws {
         let f = try fixture("tz/\(zone.replacingOccurrences(of: "/", with: "_"))/mutations.json")
         #expect(f["tz"].string == zone)

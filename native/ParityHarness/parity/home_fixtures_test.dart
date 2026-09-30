@@ -9,6 +9,7 @@
 // each citing its source lines; they call the real model getters.
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:budget_app/categorization_provider.dart';
@@ -123,9 +124,23 @@ Map<String, Object?> tx(String id, String type, double amount, String category,
       'updatedAt': '2026-09-01T08:00:00.000',
     };
 
+/// Empties `home/` except `home/tz/`, which home_page_fixtures_test.dart
+/// writes (`fixtureDir` would delete it).
+String homeDir() {
+  final dir = Directory('$fixturesRoot/home');
+  dir.createSync(recursive: true);
+  for (final entry in dir.listSync()) {
+    if (entry.uri.pathSegments.where((segment) => segment.isNotEmpty).last == 'tz') {
+      continue;
+    }
+    entry.deleteSync(recursive: true);
+  }
+  return dir.path;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final dir = fixtureDir('home').path;
+  final dir = homeDir();
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});

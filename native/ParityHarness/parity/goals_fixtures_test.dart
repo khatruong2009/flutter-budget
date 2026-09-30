@@ -427,8 +427,10 @@ final scenarios = <Map<String, Object?>>[
   {
     // DST: America/New_York skips 02:00-03:00 on 2026-03-08 and 2027-03-14
     // and repeats 01:00-02:00 on 2026-11-01; America/Santiago skips
-    // 00:00-01:00 on 2026-09-06 and repeats 23:00-24:00 on 2026-04-04.
-    // Elsewhere these are ordinary times.
+    // 00:00-01:00 on 2026-09-06 and repeats 23:00-24:00 on 2026-04-04;
+    // Australia/Lord_Howe skips 02:00-02:30 on 2026-10-04 and repeats
+    // 01:30-02:00 on 2026-04-05. Elsewhere (Asia/Kolkata, UTC) these are
+    // ordinary times.
     'name': 'dst',
     'byteComparable': true,
     'launch': [2026, 9, 6, 0, 30],
@@ -445,6 +447,8 @@ final scenarios = <Map<String, Object?>>[
       ['edit', 2, 'Spring NY', 300.0, 300.0, [2027, 3, 14, 2, 30]],
       ['delete', 0],
       ['add', 'Repeated hour', 50.0, [2026, 11, 1, 1, 59]],
+      ['add', 'Spring LH', 60.0, [2026, 10, 4, 2, 15]],
+      ['add', 'Fall LH', 70.0, [2026, 4, 5, 1, 45]],
     ],
   },
 ];
@@ -498,6 +502,14 @@ final derivedGoals = <Map<String, Object?>>[
   {'id': 't', 'name': 'Epsilon', 'targetAmount': 100.0,
    'currentAmount': 49.99999995, 'targetDate': [2026, 1, 11],
    'createdAt': [2026, 1, 1]},
+  // Lord Howe's 30-minute changes (ordinary times elsewhere).
+  {'id': 'u', 'name': 'Lord Howe gap', 'targetAmount': 100.0, 'currentAmount': 20.0,
+   'targetDate': [2026, 10, 4, 2, 15], 'createdAt': [2026, 4, 5, 1, 45]},
+  {'id': 'v', 'name': 'Lord Howe fold', 'targetAmount': 100.0, 'currentAmount': 20.0,
+   'targetDate': [2026, 4, 5, 1, 45], 'createdAt': [2026, 4, 4, 12]},
+  // Santiago's repeated hour (ordinary times elsewhere).
+  {'id': 'w', 'name': 'Santiago fold', 'targetAmount': 100.0, 'currentAmount': 20.0,
+   'targetDate': [2026, 4, 5], 'createdAt': [2026, 4, 4, 23, 30]},
 ];
 
 final derivedNows = <List<int>>[
@@ -516,6 +528,9 @@ final derivedNows = <List<int>>[
   [2026, 9, 5, 23, 59],
   [2026, 9, 6, 0, 30],
   [2026, 9, 6, 12],
+  [2026, 4, 4, 23, 30],
+  [2026, 4, 5, 1, 45],
+  [2026, 10, 4, 2, 15],
   [2026, 12, 1],
   [2026, 12, 2],
   [2027, 2, 1],
