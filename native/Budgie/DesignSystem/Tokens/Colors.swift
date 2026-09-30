@@ -38,6 +38,11 @@ enum BudgieColor {
     static let primary = Color(hex: 0x6366F1)
     static let primaryDark = Color(hex: 0x4F46E5)
     static let primaryLight = Color(hex: 0x818CF8)
+    /// `AppColors.expense` / `AppColors.income`: the same red and green in
+    /// both modes (unlike `danger` / `income`), as the forms' category
+    /// wheel tiles use them.
+    static let expenseFixed = Color(hex: 0xEF4444)
+    static let incomeFixed = Color(hex: 0x10B981)
     /// The Home spend gauge's fill start (spending_page.dart:1388-1461):
     /// `accent @ 55%` alpha-blended over `background`, unrounded.
     static let gaugeFillStart = Color(UIColor { traits in

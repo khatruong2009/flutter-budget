@@ -41,6 +41,16 @@ struct RecurringParityTests {
         }
     }
 
+    private func load(_ template: RecurringTemplate, _ calendar: DartCalendar) -> FinancialData {
+        FinancialData.load(
+            FinancialSnapshot(revision: 0, sections: JSONObject(ordered: [(Section.recurringTransactions, .array([.object(template.raw)]))])),
+            preferences: InMemoryPreferences(), calendar: calendar, now: { calendar.date(2026, 1, 1, 12) }, newID: { "id" }
+        ).data
+    }
+
+    /// Every case, the old-cursor one included: an active template whose
+    /// cursor fell behind (the app was not opened for weeks) back-fills
+    /// within the 90-day lookback exactly as Dart does.
     @Test("generate due on form-written templates", arguments: recurringZones)
     func generate(zone: String) throws {
         let tz = TimeZone(identifier: zone)!
@@ -48,10 +58,7 @@ struct RecurringParityTests {
         let fixture = try recurringFixture(zone, "generate.json")
         for c in fixture["cases"].array {
             let template = RecurringTemplate.parse(c["template"].value!, calendar: calendar, newID: { "x" })!
-            var data = FinancialData.load(
-                FinancialSnapshot(revision: 0, sections: JSONObject(ordered: [(Section.recurringTransactions, .array([.object(template.raw)]))])),
-                preferences: InMemoryPreferences(), calendar: calendar, now: { calendar.date(2026, 1, 1, 12) }, newID: { "id" }
-            ).data
+            var data = load(template, calendar)
             let now = instant(c["now"], tz)
             _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: { UUID().uuidString })
             let label = "\(zone) \(c["label"].string!)"
@@ -64,5 +71,33 @@ struct RecurringParityTests {
             #expect(data.templates[0].nextOccurrence.microsecondsSinceEpoch == Int64(c["nextOccurrence"]["us"].int!), "\(label) cursor us")
             #expect(data.templates[0].isActive == c["isActive"].bool, "\(label) active")
         }
+    }
+
+    /// Deliberate difference (PARITY_GAPS; Flutter has no pause): the
+    /// oracle's "resumed weekly with an old cursor" records Flutter's
+    /// generator on that cursor, every missed occurrence in the lookback.
+    /// Resuming the paused template in Swift at the same clock skips the
+    /// ones before that day, so only Dart's rows on or after it are
+    /// generated, and the cursor ends where Dart's does.
+    @Test("resume: the old-cursor case paused, then resumed, generates only from that day on", arguments: recurringZones)
+    func resumed(zone: String) throws {
+        let tz = TimeZone(identifier: zone)!
+        let calendar = DartCalendar(timeZone: tz)
+        let fixture = try recurringFixture(zone, "generate.json")
+        let c = try #require(fixture["cases"].array.first { $0["label"].string == "resumed weekly with an old cursor" })
+        let template = RecurringTemplate.parse(c["template"].value!, calendar: calendar, newID: { "x" })!
+        var data = load(template, calendar)
+        let now = instant(c["now"], tz)
+        let paused = data.setTemplateActive(id: template.id, false, now: now)
+        let resumed = data.setTemplateActive(id: template.id, true, now: now)
+        #expect(paused && resumed)
+        _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: { UUID().uuidString })
+
+        let dart = c["generated"].array.map { instant($0["date"], tz) }
+        let expected = dart.filter { !$0.isBefore(now) || calendar.isSameDay($0, now) }
+        #expect(!expected.isEmpty && expected.count < dart.count, "\(zone): the case must have paused and due rows")
+        #expect(data.transactions.map(\.date.microsecondsSinceEpoch) == expected.map(\.microsecondsSinceEpoch), "\(zone) rows")
+        #expect(data.templates[0].nextOccurrence.microsecondsSinceEpoch == Int64(c["nextOccurrence"]["us"].int!), "\(zone) cursor")
+        #expect(data.templates[0].isActive)
     }
 }

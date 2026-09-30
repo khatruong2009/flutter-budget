@@ -51,6 +51,9 @@ struct PillButton: View {
     var color: Color = BudgieColor.accent
     var filled = false
     var height: CGFloat? = nil
+    /// Instead of a fixed height: at least this tall, growing with the
+    /// label at large Dynamic Type sizes.
+    var minHeight: CGFloat? = nil
     let action: () -> Void
 
     @State private var taps = 0
@@ -71,8 +74,10 @@ struct PillButton: View {
                     .font(.custom(BudgieFont.gabaritoBold.postScriptName, size: filled ? 14 : 15, relativeTo: .body))
             }
             .foregroundStyle(foreground)
+            .padding(.vertical, minHeight == nil ? 0 : Metrics.spacingS)
             .frame(maxWidth: .infinity)
-            .frame(height: height ?? (filled ? Metrics.pillButtonCompactHeight : Metrics.pillButtonHeight))
+            .frame(height: minHeight == nil ? height ?? (filled ? Metrics.pillButtonCompactHeight : Metrics.pillButtonHeight) : nil)
+            .frame(minHeight: minHeight)
             .background(filled ? color : color.opacity(0.1), in: Capsule())
             .overlay { if !filled { Capsule().strokeBorder(color.opacity(0.35), lineWidth: 1) } }
             .modifier(OptionalGlow(color: color, enabled: filled))

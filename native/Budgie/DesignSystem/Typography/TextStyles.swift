@@ -60,9 +60,14 @@ extension TextSpec {
     static let buttonMedium = TextSpec(face: .gabaritoSemiBold, size: 15, tracking: -0.2, relativeTo: .subheadline)
     static let buttonSmall = TextSpec(face: .gabaritoSemiBold, size: 13, tracking: -0.1, relativeTo: .footnote)
     static let caption = TextSpec(face: .gabaritoRegular, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
+    /// `caption` at w600: form field labels (`ModernTextField`, the forms'
+    /// wheel captions) and the recurring card's detail labels.
+    static let captionStrong = TextSpec(face: .gabaritoSemiBold, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
     static let captionSmall = TextSpec(face: .gabaritoRegular, size: 11, height: 1.3, relativeTo: .caption2)
     static let numericLarge = TextSpec(face: .gabaritoBold, size: 34, tracking: -0.5, tabular: true, relativeTo: .largeTitle)
     static let numericMedium = TextSpec(face: .gabaritoSemiBold, size: 22, tracking: -0.2, height: 1.3, tabular: true, relativeTo: .title2)
+    /// `headingMedium` at bold with tabular figures: the recurring card's amount.
+    static let numericMediumBold = TextSpec(face: .gabaritoBold, size: 22, tracking: -0.2, height: 1.3, tabular: true, relativeTo: .title2)
     static let numericSmall = TextSpec(face: .gabaritoSemiBold, size: 17, tracking: -0.4, height: 1.3, tabular: true, relativeTo: .body)
 
     /// The font alone (for places that take a `Font`, e.g. `Text` concatenation).

@@ -299,7 +299,16 @@ struct SwiftOutputForDartTests {
             data.updateTemplate(id: monthly.id, .init(type: .expense, description: "Swift rent (edited)", amount: 1550,
                                                       category: "Housing", pattern: .monthly, startDate: calendar.date(2026, 1, 15),
                                                       dayOfMonth: 15, dayOfWeek: nil))
-            data.setTemplateActive(id: weekly.id, false)
+            data.setTemplateActive(id: weekly.id, false, now: now)
+            // Paused with an old cursor, then resumed: the cursor skips to
+            // the first occurrence on or after today (Swift only; the
+            // manual generate below writes today's row if one is due).
+            let resumed = RecurringTemplate.make(
+                id: id(), type: .expense, description: "Swift paused gym", amount: 20, category: "Health", pattern: .weekly,
+                startDate: calendar.date(2026, 6, 1, 7, 45), dayOfMonth: nil, dayOfWeek: calendar.date(2026, 6, 1).weekday,
+                isActive: false)
+            data.addTemplate(resumed)
+            data.setTemplateActive(id: resumed.id, true, now: now)
 
             // Templates as the recurring form writes them (AppModel.addTemplate:
             // add, then generate), then edits, then the page's "Generate Due
@@ -342,6 +351,8 @@ struct SwiftOutputForDartTests {
             // The manual generate after every template edit above: Dart's
             // launch generator must then find nothing due.
             _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: id)
+            #expect(data.transactions.filter { $0.recurringTemplateId == resumed.id }
+                .allSatisfy { !$0.date.isBefore(now) || calendar.isSameDay($0.date, now) }, "resume back-filled")
             data.appSettings.baseCurrencyCode = "EUR"
             data.appSettings.appLockEnabled.toggle()
 

@@ -57,6 +57,9 @@ private struct AppLockModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            // While locked VoiceOver reaches only the lock screen, not the
+            // tabs or the tour beneath it (Flutter's `ExcludeSemantics`).
+            .accessibilityHidden(model.isLocked)
             .overlay {
                 if model.isLocked {
                     LockScreen { model.markUnlocked() }
@@ -157,6 +160,8 @@ struct LockScreen: View {
             .frame(maxWidth: 360)
             .padding(Metrics.spacingXL)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isModal)
         // Evaluating while the scene is inactive fails, so wait for active.
         // Auto-attempt once; the Unlock button retries.
         .onChange(of: scenePhase, initial: true) { _, phase in

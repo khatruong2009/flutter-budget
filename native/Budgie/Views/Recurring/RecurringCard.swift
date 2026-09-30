@@ -15,9 +15,7 @@ struct RecurringCard: View {
     let onDelete: () -> Void
 
     @Environment(AppModel.self) private var model
-
-    /// Flutter's detail label: `caption` at w600.
-    private static let detailLabel = TextSpec(face: .gabaritoSemiBold, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         let amount = model.moneyFormatter.format(template.amount)
@@ -28,7 +26,13 @@ struct RecurringCard: View {
                 VStack(alignment: .leading, spacing: 0) {
                     header(amount: amount)
                     Hairline().padding(.vertical, Metrics.spacingM)
-                    HStack(alignment: .top, spacing: Metrics.spacingM) {
+                    // Two columns; one above the other at accessibility text
+                    // sizes, where half the width splits the words.
+                    let columns =
+                        dynamicTypeSize.isAccessibilitySize
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: Metrics.spacingS))
+                        : AnyLayout(HStackLayout(alignment: .top, spacing: Metrics.spacingM))
+                    columns {
                         detail(symbol: "repeat", label: "Pattern", value: pattern)
                         detail(symbol: "calendar", label: "Next Occurrence", value: next)
                     }
@@ -49,44 +53,52 @@ struct RecurringCard: View {
 
     // MARK: - Pieces
 
+    /// Tile, description over category, amount (Flutter's `headingMedium`
+    /// bold). At accessibility text sizes the description keeps the row's
+    /// width: it wraps freely, and the Paused chip and the amount move
+    /// under it.
     private func header(amount: String) -> some View {
         let isIncome = template.type == .income
-        return HStack(spacing: 12) {
+        let stacked = dynamicTypeSize.isAccessibilitySize
+        let amountText = Text(amount)
+            .textStyle(.numericMediumBold)
+            .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+        let pausedChip = PillChip(label: "Paused", color: BudgieColor.warning, style: .badgeSmall, horizontalPadding: 8, verticalPadding: 3)
+            .fixedSize()
+        return HStack(alignment: stacked ? .top : .center, spacing: 12) {
             IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent, size: 44)
             VStack(alignment: .leading, spacing: Metrics.spacingXS) {
                 HStack(spacing: 6) {
                     Text(template.description)
                         .textStyle(.cardTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(2)
+                        .lineLimit(stacked ? nil : 2)
                     RecurrenceGlyph(size: 16).fixedSize()
-                    if !template.isActive {
-                        PillChip(label: "Paused", color: BudgieColor.warning, style: .badgeSmall, horizontalPadding: 8, verticalPadding: 3)
-                            .fixedSize()
-                    }
+                    if !template.isActive && !stacked { pausedChip }
                 }
+                if !template.isActive && stacked { pausedChip }
                 Text(template.category)
-                    .textStyle(.rowSubtitle)
+                    .textStyle(.caption)
                     .foregroundStyle(BudgieColor.textTertiary)
-                    .lineLimit(1)
+                    .lineLimit(stacked ? nil : 1)
+                if stacked { amountText }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Text(amount)
-                .textStyle(.amount)
-                .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .layoutPriority(1)
+            if !stacked { amountText.layoutPriority(1) }
         }
     }
 
+    /// Flutter's detail item: a 20pt (`iconS`) icon, the `caption` w600
+    /// label, the `bodySmall` value.
     private func detail(symbol: String, label: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: Metrics.spacingXXS) {
             HStack(spacing: Metrics.spacingXS) {
                 Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 18, weight: .medium))
                     .frame(width: 20)
-                Text(label).textStyle(Self.detailLabel)
+                Text(label).textStyle(.captionStrong)
             }
             .foregroundStyle(BudgieColor.textSecondary)
             Text(value)
@@ -96,7 +108,8 @@ struct RecurringCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// One row of three pills, stacked when they do not fit (large text).
+    /// One row of three pills, stacked when they do not fit (large text);
+    /// at least 44pt tall, taller when the text needs it.
     private var actions: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: Metrics.spacingS) { buttons }
@@ -106,16 +119,18 @@ struct RecurringCard: View {
 
     @ViewBuilder
     private var buttons: some View {
-        PillButton(title: "Edit", symbol: "pencil", height: Metrics.pillButtonCompactHeight, action: onEdit)
+        PillButton(title: "Edit", symbol: "pencil", minHeight: Metrics.pillButtonCompactHeight, action: onEdit)
             .accessibilityIdentifier("recurring.edit")
         PillButton(
             title: template.isActive ? "Pause" : "Resume", symbol: template.isActive ? "pause.fill" : "play.fill",
-            color: template.isActive ? BudgieColor.warning : BudgieColor.income, height: Metrics.pillButtonCompactHeight,
+            color: template.isActive ? BudgieColor.warning : BudgieColor.income, minHeight: Metrics.pillButtonCompactHeight,
             action: onToggleActive
         )
         .accessibilityIdentifier("recurring.pause")
-        PillButton(title: "Delete", symbol: "trash", color: BudgieColor.danger, height: Metrics.pillButtonCompactHeight, action: onDelete)
-            .accessibilityIdentifier("recurring.delete")
+        PillButton(
+            title: "Delete", symbol: "trash", color: BudgieColor.danger, minHeight: Metrics.pillButtonCompactHeight, action: onDelete
+        )
+        .accessibilityIdentifier("recurring.delete")
     }
 
     /// The category's icon (found case-insensitively, archived included);

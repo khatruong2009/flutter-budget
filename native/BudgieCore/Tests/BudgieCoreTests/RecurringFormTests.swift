@@ -98,6 +98,55 @@ struct RecurringFormTests {
         #expect(RecurringForm.resolvedStart(picked: picked, stored: stored, openedAt: opened, calendar: calendar) == picked)
     }
 
+    func monthly(start: DartDateTime, day: Int?, pattern: RecurrencePattern = .monthly) -> RecurringTemplate {
+        RecurringTemplate.make(
+            id: "m", type: .expense, description: "Rent", amount: 900, category: "Housing", pattern: pattern, startDate: start,
+            dayOfMonth: day, dayOfWeek: day == nil ? start.weekday : nil)
+    }
+
+    @Test("Day of Month: today's day when adding, else the stored day; it follows a picked start only while it is the start's day")
+    func initialDayOfMonth() {
+        #expect(RecurringForm.initialDayOfMonth(template: nil, openedAt: now) == (28, true))
+        #expect(RecurringForm.initialDayOfMonth(template: monthly(start: calendar.date(2026, 1, 15), day: 15), openedAt: now) == (15, true))
+        #expect(RecurringForm.initialDayOfMonth(template: monthly(start: calendar.date(2026, 1, 15), day: 20), openedAt: now) == (20, false))
+        // A weekly template has no stored day: the start's, following.
+        let weekly = monthly(start: calendar.date(2026, 9, 1, 7, 45), day: nil, pattern: .weekly)
+        #expect(RecurringForm.initialDayOfMonth(template: weekly, openedAt: now) == (1, true))
+    }
+
+    @Test("editing a template that started over a year ago: the picker opens on its day, and OK keeps the start, the day and the cursor")
+    func oldTemplateEdit() {
+        let stored = calendar.date(2024, 3, 15, 8, 30)
+        let template = monthly(start: stored, day: 15).with(nextOccurrence: calendar.date(2026, 10, 15))
+        let range = RecurringForm.startDateRange(now: now, calendar: calendar, storedStart: stored)
+        #expect(range.lowerBound == calendar.date(2024, 3, 15))
+        #expect(range.upperBound == calendar.date(2027, 9, 28))
+        // OK on the untouched wheel picks the stored day's midnight.
+        let start = RecurringForm.resolvedStart(picked: range.lowerBound, stored: stored, openedAt: now, calendar: calendar)
+        #expect(start == stored)
+        #expect(RecurringForm.startDateError(start: start, storedStart: stored, now: now) == nil)
+        let day = RecurringForm.initialDayOfMonth(template: template, openedAt: now)
+        #expect(day == (15, true) && start.day == 15)
+        let edit = RecurringForm.edit(
+            type: .expense, description: "Rent", amount: 900, category: "Housing", pattern: .monthly, start: start, dayOfMonth: start.day)
+        #expect(RecurringTemplate.editedCursor(previous: template, edit: edit, lastGenerated: nil, calendar: calendar) == template.nextOccurrence)
+        // The older days in between are offered but fail the rule; a valid
+        // day clears the error again.
+        let older = calendar.date(2024, 6, 1)
+        #expect(range.contains(older))
+        let olderStart = RecurringForm.resolvedStart(picked: older, stored: stored, openedAt: now, calendar: calendar)
+        #expect(RecurringForm.startDateError(start: olderStart, storedStart: stored, now: now) == RecurringForm.startDateTooOld)
+        let valid = RecurringForm.resolvedStart(picked: calendar.date(2026, 1, 10), stored: stored, openedAt: now, calendar: calendar)
+        #expect(RecurringForm.startDateError(start: valid, storedStart: stored, now: now) == nil)
+        // A stored start past the range stays offered too; one inside it
+        // changes nothing.
+        let far = RecurringForm.startDateRange(now: now, calendar: calendar, storedStart: calendar.date(2028, 1, 1, 9))
+        #expect(far.upperBound == calendar.date(2028, 1, 1) && far.lowerBound == calendar.date(2025, 9, 29))
+        #expect(
+            RecurringForm.startDateRange(now: now, calendar: calendar, storedStart: calendar.date(2026, 3, 5, 14))
+                == RecurringForm.startDateRange(now: now, calendar: calendar))
+    }
+
     @Test("saved fields: day of month for monthly, the start weekday for weekly/biweekly")
     func editFields() {
         let sunday = calendar.date(2026, 9, 27, 18)
@@ -157,6 +206,51 @@ struct RecurringEditCursorTests {
         return (data, data.templates[0])
     }
 
+    @Test("resume skips the occurrences missed while paused; one due today is still generated")
+    func resume() {
+        var data = data()
+        let now = self.now
+        // Weekly from Monday Jun 1 07:45, paused with its cursor at Aug 3.
+        let weekly = RecurringTemplate.make(
+            id: "p", type: .expense, description: "Gym", amount: 12.5, category: "Health", pattern: .weekly,
+            startDate: calendar.date(2026, 6, 1, 7, 45), dayOfMonth: nil, dayOfWeek: 1, isActive: false
+        ).with(nextOccurrence: calendar.date(2026, 8, 3, 7, 45))
+        data.addTemplate(weekly)
+        let paused = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: { "x" })
+        #expect(paused.generated.isEmpty)
+        let resumed = data.setTemplateActive(id: "p", true, now: now)
+        #expect(resumed)
+        #expect(data.templates[0].isActive)
+        #expect(data.templates[0].nextOccurrence.toIso8601String() == "2026-09-28T07:45:00.000")
+        #expect(data.templates[0].raw["nextOccurrence"] == .string("2026-09-28T07:45:00.000"))
+        let result = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: { "x" })
+        #expect(result.generated.map { $0.date.toIso8601String() } == ["2026-09-28T07:45:00.000"])
+        #expect(data.templates[0].nextOccurrence.toIso8601String() == "2026-10-05T07:45:00.000")
+        // A cursor already in the future stays put.
+        data.setTemplateActive(id: "p", false, now: now)
+        data.setTemplateActive(id: "p", true, now: now)
+        #expect(data.templates[0].nextOccurrence.toIso8601String() == "2026-10-05T07:45:00.000")
+
+        // Monthly on the 31st, cursor Jul 31: Aug 31 is past, Sep 30 (clamped) is next.
+        let rent = RecurringTemplate.make(
+            id: "m", type: .expense, description: "Rent", amount: 900, category: "Housing", pattern: .monthly,
+            startDate: calendar.date(2026, 1, 31), dayOfMonth: 31, dayOfWeek: nil, isActive: false
+        ).with(nextOccurrence: calendar.date(2026, 7, 31))
+        data.addTemplate(rent)
+        data.setTemplateActive(id: "m", true, now: now)
+        #expect(data.templates[1].nextOccurrence.toIso8601String() == "2026-09-30T00:00:00.000")
+
+        // Resuming a template that is already active never moves its cursor.
+        let active = RecurringTemplate.make(
+            id: "a", type: .expense, description: "Due", amount: 1, category: "Health", pattern: .weekly,
+            startDate: calendar.date(2026, 9, 21), dayOfMonth: nil, dayOfWeek: 1)
+        data.addTemplate(active)
+        data.setTemplateActive(id: "a", true, now: now)
+        #expect(data.templates[2].nextOccurrence == calendar.date(2026, 9, 21))
+        let missing = data.setTemplateActive(id: "missing", true, now: now)
+        #expect(!missing)
+    }
+
     @Test("last generated date: the latest row of this template only")
     func lastGenerated() {
         var (data, template) = generatedWeekly()
@@ -171,7 +265,7 @@ struct RecurringEditCursorTests {
     func unchanged() {
         var (data, template) = generatedWeekly()
         #expect(template.nextOccurrence.toIso8601String() == "2026-09-29T07:45:00.000")
-        data.setTemplateActive(id: template.id, false)
+        data.setTemplateActive(id: template.id, false, now: now)
         let e = edit(template, description: "Gym (edited)")
         #expect(RecurringTemplate.editedCursor(previous: template, edit: e, lastGenerated: nil, calendar: calendar) == template.nextOccurrence)
         data.updateTemplate(id: template.id, e)

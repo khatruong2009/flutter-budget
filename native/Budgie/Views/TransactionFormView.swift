@@ -116,8 +116,6 @@ struct TransactionFormView: View {
         (editing == nil ? "Add " : "Edit ") + (type == .income ? "Income" : "Expense")
     }
 
-    private var typeColor: Color { type == .income ? BudgieColor.income : BudgieColor.danger }
-
     /// The prefix glyph for the base currency (Flutter always shows `$`).
     private var currencySymbol: String { AmountInput.currencySymbolName(model.moneyFormatter) }
 
@@ -204,9 +202,10 @@ struct TransactionFormView: View {
         Binding(get: { type == .income ? 1 : 0 }, set: { type = $0 == 1 ? .income : .expense })
     }
 
+    /// Flutter's `caption` w600 ("Category", "Tags").
     private func fieldLabel(_ text: String) -> some View {
         Text(text)
-            .textStyle(.caption)
+            .textStyle(.captionStrong)
             .foregroundStyle(BudgieColor.textSecondary)
             .padding(.leading, 4)
             .padding(.bottom, 6)
@@ -221,7 +220,7 @@ struct TransactionFormView: View {
                 let rows = categoryRows
                 Picker("Category", selection: wheelSelection) {
                     ForEach(rows.indices, id: \.self) { index in
-                        CategoryWheelRow(name: rows[index].name, info: rows[index].info, color: typeColor).tag(index)
+                        CategoryWheelRow(name: rows[index].name, info: rows[index].info, type: type).tag(index)
                     }
                 }
                 .pickerStyle(.wheel)
@@ -478,12 +477,14 @@ struct TransactionFormView: View {
 
 // MARK: - Pieces
 
-/// A wheel row (transaction_form.dart:300-335): a 28pt radius-8 tile in the
-/// type colour with a white category symbol, gap 16, the name.
+/// A wheel row (transaction_form.dart:300-335, recurring_transaction_form.dart
+/// :240-250): a 28pt radius-8 tile in the type's fixed red or green
+/// (`AppColors.expense` / `income`, the same in dark mode) with a white
+/// category symbol, gap 16, the name.
 struct CategoryWheelRow: View {
     let name: String
     let info: CategoryInfo?
-    let color: Color
+    let type: TransactionType
 
     var body: some View {
         HStack(spacing: Metrics.spacingM) {
@@ -491,7 +492,9 @@ struct CategoryWheelRow: View {
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(.white)
                 .frame(width: 28, height: 28)
-                .background(color, in: RoundedRectangle(cornerRadius: Metrics.radiusS, style: .continuous))
+                .background(
+                    type == .income ? BudgieColor.incomeFixed : BudgieColor.expenseFixed,
+                    in: RoundedRectangle(cornerRadius: Metrics.radiusS, style: .continuous))
                 .accessibilityHidden(true)
             Text(name)
                 .textStyle(.bodyMedium)

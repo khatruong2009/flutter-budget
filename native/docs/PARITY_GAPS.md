@@ -222,6 +222,17 @@ UPGRADE_TEST_RESULTS.md).
   (Flutter resets both and re-creates up to 90 days of duplicates). A
   schedule change restarts the cursor from the new start date but never on
   or before the last generated occurrence. Pause/resume is available.
+- Resuming a paused template (Swift only; Flutter has no pause) moves its
+  cursor to the first occurrence on or after today
+  (`RecurringGenerator.resumedCursor`, the generator's own steps): the
+  occurrences missed while it was paused are skipped, not back-filled. One
+  that falls today is still due and is written by the next "Generate Due
+  Transactions" or launch. Only `nextOccurrence` changes, so Dart reads
+  nothing unusual. `RecurringParityTests.resumed` checks this against the
+  Dart oracle's old-cursor case, which records Flutter's generator (every
+  missed occurrence in the 90-day lookback). An active template whose
+  cursor fell behind, because the app was not opened, still back-fills as
+  in Flutter.
 - Generated recurring transactions and the advanced cursor are saved in
   one write (Flutter saves them separately; a crash in between duplicates).
 - Recurring form "Next 3 Occurrences" while editing starts at the cursor the
@@ -241,16 +252,22 @@ UPGRADE_TEST_RESULTS.md).
   refuses to save any edit of a template that started over a year ago). The
   picker offers only days that pass the rule (`RecurringForm.startDateRange`):
   Flutter also offers the day of `now - 365 days`, whose midnight always
-  fails unless it is exactly midnight. Re-picking the stored start's own
-  day keeps the stored value and its time, so the schedule and cursor stay
-  (Flutter stores that day's midnight).
+  fails unless it is exactly midnight. An edit's stored start day is always
+  offered too: for a template that started over a year ago the picker
+  reaches down to it and opens on it, so OK without moving the wheel keeps
+  the start and the day of month (the days in between fail the rule).
+  Re-picking the stored start's own day keeps the stored value and its
+  time, so the schedule and cursor stay (Flutter stores that day's
+  midnight).
 - Recurring form amount: NaN and Infinity are refused with "Please enter a
   valid number" (Flutter's `double.tryParse` lets NaN through `<= 0` and
   saves it); the locale's decimal separator is accepted.
 - Recurring "Generate Due Transactions": one awaited write of rows and
   cursors; "Due transactions generated and next occurrences updated" is
   shown verbatim, also when nothing was due (Flutter), but a failed write
-  shows the save-failed toast instead (Flutter ignores the result).
+  shows the save-failed toast instead (Flutter ignores the result). With
+  nothing due and an earlier write still unsaved, it retries that write
+  first and shows the success toast only if everything is then on disk.
   Deleting a template is awaited too: "Recurring transaction deleted" only
   after a verified write.
 - Recurring page look (D1, D15): the system navigation bar with the
@@ -260,12 +277,28 @@ UPGRADE_TEST_RESULTS.md).
   tile, amount in the type colour); the Edit/Delete buttons are redesign
   pills, with Delete in danger (Flutter: both secondary). A third
   "Pause"/"Resume" pill and a "Paused" chip carry the approved pause
-  (the MVP's swipe action; a ScrollView of cards has none). The empty state
+  (the MVP's swipe action; a ScrollView of cards has none). Active
+  templates are listed first, then paused ones, each in stored order
+  (Flutter: stored order). The list scrolls under the opaque system bar
+  with no shadow line, as on the other pushed pages. The empty state
   adds an "Add Recurring" pill (Flutter has no add action on this page;
-  the "+" in the bar is the approved one).
+  the "+" in the bar is the approved one), and its glyph is SF `repeat` at
+  52pt, as tall as Material's 60pt `repeat` (about 49pt) but wider, with
+  rounded corners.
+- Recurring card at accessibility text sizes: the description wraps
+  freely with the Paused chip and the amount under it, "Pattern" and
+  "Next Occurrence" stack, and the buttons grow with their text (at
+  least 44pt). Flutter keeps both rows side by side.
 - Recurring form: a sheet with the redesign fields instead of Flutter's
   centred dialog, with the Expense/Income toggle when adding (Flutter's
   type is fixed by the caller); an edit keeps the type fixed as Flutter.
+  The fields are the transaction form's redesign `BudgieField` and
+  `DateTile` (D1, D5): chip-surface fill, 52pt, and a two-line Start Date
+  tile with its caption inside, a calendar glyph and a chevron. Flutter's
+  are card-coloured with a 1.5pt border, about 44pt tall, with "Start
+  Date" as a label above a one-line tile. The wheels are filled the same
+  way, and their selection band is the system capsule (Flutter: a
+  radius-8 rectangle).
 - Recurrence glyph on every transaction row with a template id (Home
   Recent activity, Flow preview and Flow SEE ALL too; Flutter shows it only
   on the Recurring card, the Home SEE ALL month list and the category
@@ -277,7 +310,15 @@ UPGRADE_TEST_RESULTS.md).
   queued and opens when the tour is completed or skipped (Flutter opens the
   form over the tour). Completing sets the flag and closes the tour at once
   (`UserDefaults` writes cannot fail; Flutter closes it in a `finally`), so
-  the button never shows Flutter's spinner.
+  the button never shows Flutter's spinner. Completing also replaces a
+  number 1 stored under the flag (e.g. by `defaults write -int 1`) with a
+  real bool: the key is removed before the set, which `NSUserDefaults`
+  would otherwise skip as unchanged. Flutter's `setBool` leaves the number,
+  so its tour shows on every launch.
+- Onboarding page 2 title wraps "Track what comes / and goes." on a phone;
+  Flutter's wraps "Track what comes and / goes.". SwiftUI's text layout
+  moves a word down so the last line is not a single word, and `Text`
+  has no option to turn that off (only a UIKit label could).
 - Onboarding page 3 copy (D2, no More tab): "...and Spend, Flow, and
   Settings (behind the gear on Home) help you understand and manage your
   budget." (Flutter: "Spend, Flow, and More"). Page 1 keeps Flutter's
@@ -414,8 +455,8 @@ UPGRADE_TEST_RESULTS.md).
   Material popup menu), with the same items and order.
 - Category editor: the redesign's centred card (`budgieDialog`, as the
   Goals form) instead of Material's AlertDialog: the title is centred in
-  goalTitle (Flutter: headlineSmall, left), "Name" is a caption above the
-  field (Flutter: a floating label), and Cancel / Add | Save are pills
+  goalTitle (Flutter: headlineSmall, left), "Name" is a caption w600 above
+  the field (Flutter: a floating label), and Cancel / Add | Save are pills
   (Flutter: a text and a filled button). The icon and colour choice
   buttons, their sizes, colours and order are Flutter's, and so is the
   wrap: the grid is capped at five buttons a row (icons 5/5/5/3, colours
@@ -686,10 +727,14 @@ UPGRADE_TEST_RESULTS.md).
   Material's `account_balance_wallet_rounded`.
 - Worth growth chart hover card: its text stops growing at the xxxLarge
   Dynamic Type size so the card fits the 180pt chart (Flutter's overflows).
-- Worth editor fields are the shared `BudgieField` and `DateTile` (caption
-  labels, 1.5pt focus stroke, chevron) instead of the editor's own chrome
-  (w600 labels, 2pt accent focus border, accent calendar icon); the close
-  button has a VoiceOver label.
+- Worth editor fields are the shared `BudgieField` and `DateTile` (1.5pt
+  focus stroke, chevron) instead of the editor's own chrome (2pt accent
+  focus border, accent calendar icon); both label their fields in
+  `caption` w600. The close button has a VoiceOver label.
+- `BudgieField` labels everywhere are `ModernTextField`'s (the transaction
+  and recurring forms'): `caption` w600 above the field. The Goals form's
+  and the Settings dialogs' Flutter fields use a regular-weight Material
+  floating label instead.
 - Worth: "Delete account?" (from a row or the history page) and "Delete
   balance update?" are system alerts with Flutter's copy instead of
   Material dialogs; Delete keeps a plain (not destructive, not red) role,

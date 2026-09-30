@@ -188,7 +188,7 @@ Suggested order if not fully parallel: Home, then Flow + Spend (they share `Ledg
 | **CSV import** | Faithful csv 6.0.0 parser port, header and row validation with exact error copy, multiset dedupe, confirm dialog, `importTransactions`. Adversarial-corpus parity tests. | 06 section 1.7 | M+S |
 | **Backup** | `DartJSON.encodeIndented`, canonical `toJson` for every record type, envelope encode, ordered-validation decode with exact messages, restore per D10, generator run afterwards, preference mirroring. Encode/decode parity fixtures. | 06 section 1.8 | L+M |
 | **Insights** | `InsightEngine` port (9 rules, ids byte-identical so dismissals carry over), `InsightPreferences` (dismiss/snooze prefs with Dart load quirks), section and cards on Flow, 7 ported tests plus differential fixtures. | 07 section A | L+M |
-| **Onboarding** | Flag, `completeOnboarding`, 3-page tour with Flutter copy, shown inside the lock gate. Two copy changes: page 3 names Settings instead of "More", and page 1 mentions that voice uses OpenAI. | 07 section B | S+M |
+| **Onboarding** | Flag, `completeOnboarding`, 3-page tour with Flutter copy, shown inside the lock gate. One copy change: page 3 names Settings instead of "More". Page 1 keeps Flutter's privacy sentence; its OpenAI mention ships with voice (Phase 4, bead budgie-uia.56). | 07 section B | S+M |
 | **Recurring parity** | Pushed page under Settings > DATA with a summary subtitle. Card redesign, Flutter copy, manual "Generate due" button. Form: amount first, "Next 3 Occurrences" preview (`previewOccurrences`), validation copy, start-date time-of-day fix. RecurrenceGlyph on all transaction rows. | 07 section C | M |
 
 ### Phase 4: Voice entry via OpenAI (M-L; spec 07 section D)
@@ -214,6 +214,7 @@ Suggested order if not fully parallel: Home, then Flow + Spend (they share `Ledg
    - Add `NSMicrophoneUsageDescription` (Flutter's string).
    - Privacy manifest and App Store privacy label: audio and transcript are sent to OpenAI.
    - Update MIGRATION_SPEC section 11, PARITY_GAPS and `RoutingTests`/`SystemIntegrationUITests`.
+   - Onboarding page 1: add the OpenAI sentence (section 6, "Copy and disclosure"; bead budgie-uia.56). The Onboarding stream shipped Flutter's sentence unchanged because voice did not exist yet.
 
 ### Phase 5: Verification and release
 
@@ -267,7 +268,7 @@ The key ships inside the app bundle, as it does in Flutter. Anyone with the IPA 
 - Show a user-facing message on 401/429 instead of retry loops.
 
 **Copy and disclosure.**
-- Onboarding page 1 claims data stays on the device "unless you choose to export or share a backup". Flutter ships that claim alongside voice. Amend it to mention that voice entries are sent to OpenAI for transcription (a copy change; the flag format is unaffected).
+- Onboarding page 1 claims data stays on the device "unless you choose to export or share a backup". Flutter ships that claim alongside voice. Amend it to mention that voice entries are sent to OpenAI for transcription (a copy change; the flag format is unaffected). This lands with voice in Phase 4 (bead budgie-uia.56), not with the Onboarding stream: the tour ships Flutter's sentence until then.
 - Declare the data flow in the privacy label.
 
 This contradicts AGENTS.md's offline-first rule by explicit decision. Record it there when the feature lands.

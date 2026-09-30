@@ -147,15 +147,24 @@ final class RecurringModelTests: XCTestCase {
         XCTAssertNil(model.lastGeneratedDate(forTemplate: "t"))
     }
 
-    /// A paused template the launch skipped, resumed, then "Generate Due
-    /// Transactions": every missed occurrence and the advanced cursor are
-    /// on disk after the one call; a second call finds nothing due.
-    func testGenerateDueNowWritesRowsAndCursorInOneCall() async throws {
+    /// A weekly template the launch skipped while paused, two weeks behind
+    /// (its cursor is its start, today's time of day 14 days ago).
+    private func seedPausedWeekly() async throws -> DartDateTime {
         let start = calendar.now().adding(days: -14)
         let template = RecurringTemplate.make(
             id: "tpl", type: .expense, description: "Gym", amount: 12.5, category: "Health", pattern: .weekly,
             startDate: start, dayOfMonth: nil, dayOfWeek: start.weekday, isActive: false)
         try await scratch.seed(JSONObject(ordered: [(Section.recurringTransactions, .array([.object(template.raw)]))]))
+        return start
+    }
+
+    /// Resume skips the two occurrences missed while paused (the cursor is
+    /// saved at today's); "Generate Due Transactions" then writes today's
+    /// row and the advanced cursor in the one call; a second call finds
+    /// nothing due and writes nothing.
+    func testResumeSkipsPausedOccurrencesThenGenerateDueWritesToday() async throws {
+        let start = try await seedPausedWeekly()
+        let today = start.adding(days: 14)
 
         let model = scratch.makeModel()
         await model.start()
@@ -164,26 +173,91 @@ final class RecurringModelTests: XCTestCase {
         XCTAssertNil(model.lastGeneratedDate(forTemplate: "tpl"))
         let resumed = await model.setTemplateActive(id: "tpl", true)
         XCTAssertTrue(resumed)
+        XCTAssertEqual(model.data?.templates.first?.nextOccurrence, today, "the cursor skips to today's occurrence")
+        let afterResume = try await scratch.stored()
+        let resumedTemplate = afterResume.sections[Section.recurringTransactions]?.arrayValue?.first?.objectValue
+        XCTAssertEqual(resumedTemplate?["nextOccurrence"]?.stringValue, today.toIso8601String())
+        XCTAssertEqual(resumedTemplate?["isActive"]?.boolValue, true)
 
         let result = await model.generateDueNow()
-        XCTAssertEqual(result, AppModel.DueGeneration(generated: 3, saved: true))
-        XCTAssertEqual(model.data?.transactions.map(\.date), [start, start.adding(days: 7), start.adding(days: 14)])
+        XCTAssertEqual(result, AppModel.DueGeneration(generated: 1, saved: true))
+        XCTAssertEqual(model.data?.transactions.map(\.date), [today])
         XCTAssertEqual(model.data?.templates.first?.nextOccurrence, start.adding(days: 21))
-        XCTAssertEqual(model.lastGeneratedDate(forTemplate: "tpl"), start.adding(days: 14))
+        XCTAssertEqual(model.lastGeneratedDate(forTemplate: "tpl"), today)
         XCTAssertFalse(model.hasUnsavedChanges)
 
         let disk = try await scratch.stored()
         let rows = disk.sections[Section.transactions]?.arrayValue ?? []
-        XCTAssertEqual(rows.count, 3)
+        XCTAssertEqual(rows.count, 1)
         XCTAssertTrue(rows.allSatisfy { $0.objectValue?["recurringTemplateId"]?.stringValue == "tpl" })
         let storedTemplate = disk.sections[Section.recurringTransactions]?.arrayValue?.first?.objectValue
         XCTAssertEqual(storedTemplate?["nextOccurrence"]?.stringValue, start.adding(days: 21).toIso8601String())
-        XCTAssertEqual(storedTemplate?["isActive"]?.boolValue, true)
 
         let again = await model.generateDueNow()
         XCTAssertEqual(again, AppModel.DueGeneration(generated: 0, saved: true))
         let unchanged = try await scratch.stored()
         XCTAssertEqual(unchanged.revision, disk.revision, "nothing due, nothing written")
+    }
+
+    /// A failed write stays unsaved: a later "Generate Due Transactions"
+    /// with nothing due retries it and reports success only once it is on
+    /// disk (it used to show the success toast under the unsaved banner).
+    func testGenerateDueWithNothingDueRetriesAnUnsavedWrite() async throws {
+        _ = try await seedPausedWeekly()
+        let model = scratch.makeModel()
+        await model.start()
+        let resumed = await model.setTemplateActive(id: "tpl", true)
+        XCTAssertTrue(resumed)
+
+        // The store directory refuses new files: every write fails.
+        let directory = scratch.storeDirectory.path
+        try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: directory)
+        var restored = false
+        defer { if !restored { try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: directory) } }
+
+        let failed = await model.generateDueNow()
+        XCTAssertEqual(failed, AppModel.DueGeneration(generated: 1, saved: false))
+        XCTAssertEqual(failed.toast.message, Toast.saveFailed.message)
+        XCTAssertTrue(model.hasUnsavedChanges)
+
+        let stillFailing = await model.generateDueNow()
+        XCTAssertEqual(stillFailing, AppModel.DueGeneration(generated: 0, saved: false), "nothing due, the retry failed too")
+        XCTAssertEqual(stillFailing.toast.message, Toast.saveFailed.message)
+        XCTAssertTrue(model.hasUnsavedChanges)
+
+        try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: directory)
+        restored = true
+        let healed = await model.generateDueNow()
+        XCTAssertEqual(healed, AppModel.DueGeneration(generated: 0, saved: true))
+        XCTAssertEqual(healed.toast.message, Toast.dueGenerated.message)
+        XCTAssertFalse(model.hasUnsavedChanges)
+        let disk = try await scratch.stored()
+        XCTAssertEqual(disk.sections[Section.transactions]?.arrayValue?.count, 1, "the retried row is on disk")
+    }
+
+    /// A scratch model never writes the installed app's widget values.
+    func testScratchModelLeavesTheWidgetValuesAlone() async throws {
+        // The host app's own model writes the real values as it starts;
+        // wait for it, so only the scratch model could touch them below.
+        for _ in 0..<100 where AppDelegate.model.phase != .ready {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        let group = try XCTUnwrap(UserDefaults(suiteName: "group.com.khatruong.budgetbuddy"))
+        let keys = ["cashFlow", "cashFlowMonth", "budgieHideBalances"]
+        let original = keys.map { group.object(forKey: $0) }
+        defer { for (key, value) in zip(keys, original) { group.set(value, forKey: key) } }
+        group.set(-12_345.5, forKey: "cashFlow")
+        group.set("sentinel", forKey: "cashFlowMonth")
+        group.set("sentinel", forKey: "budgieHideBalances")
+
+        let model = scratch.makeModel()
+        await model.start()
+        let added = await model.addTransaction(
+            type: .income, description: "Pay", amount: 100, category: "Salary", date: model.now)
+        XCTAssertTrue(added)
+        XCTAssertEqual(group.double(forKey: "cashFlow"), -12_345.5)
+        XCTAssertEqual(group.string(forKey: "cashFlowMonth"), "sentinel")
+        XCTAssertEqual(group.string(forKey: "budgieHideBalances"), "sentinel")
     }
 
     /// The form's add path: a template whose start is the moment the form

@@ -88,11 +88,15 @@ final class AppModel {
     private let tracker: PersistenceTracker
     private let storeDirectory: URL
     private let applicationSupport: URL
+    /// False for a scratch directory (tests): the App Group widget values
+    /// and timelines belong to the installed app.
+    private let syncsWidget: Bool
 
     /// The app passes nothing. Tests pass a scratch Application Support
     /// directory and a preferences suite, so a full bootstrap runs without
-    /// touching the host app's data.
+    /// touching the host app's data (widget values included).
     init(applicationSupport: URL? = nil, preferences: UserDefaultsPreferences? = nil) {
+        syncsWidget = applicationSupport == nil
         protectedData = ProtectedDataMonitor()
         let preferences = preferences ?? UserDefaultsPreferences(domainName: AppIdentifiers.bundleID)
         let applicationSupport =
@@ -301,7 +305,7 @@ final class AppModel {
     /// `_syncWidgetCashFlow`: current month's cash flow into the App Group,
     /// with the Hide balances flag the widget masks it by.
     private func syncWidget() {
-        guard let data, protectedData.isProtectedDataAvailable else { return }
+        guard syncsWidget, let data, protectedData.isProtectedDataAvailable else { return }
         let value = data.widgetCashFlow(now: now)
         let defaults = UserDefaults(suiteName: AppIdentifiers.appGroup)
         defaults?.set(value.amount, forKey: "cashFlow")
@@ -314,7 +318,7 @@ final class AppModel {
     /// changed (launch, and every Hide balances change, saved or not: the
     /// widget follows what the app shows).
     private func syncWidgetPrivacy() {
-        guard let data, protectedData.isProtectedDataAvailable,
+        guard syncsWidget, let data, protectedData.isProtectedDataAvailable,
             let defaults = UserDefaults(suiteName: AppIdentifiers.appGroup)
         else { return }
         let hidden = data.appSettings.hideBalances
@@ -380,7 +384,7 @@ final class AppModel {
 
     @discardableResult
     func setTemplateActive(id: String, _ active: Bool) async -> Bool {
-        guard data != nil, data!.setTemplateActive(id: id, active) else { return false }
+        guard data != nil, data!.setTemplateActive(id: id, active, now: now) else { return false }
         return await persist([Section.recurringTransactions])
     }
 
@@ -394,8 +398,10 @@ final class AppModel {
     struct DueGeneration: Equatable, Sendable {
         /// Rows written from due templates (Flutter shows no count).
         var generated: Int
-        /// The rows and advanced cursors were written and verified, or
-        /// nothing was due. False: they are in memory only (unsaved banner).
+        /// Everything is on disk: the rows and advanced cursors were written
+        /// and verified, or nothing was due and no earlier change is still
+        /// unsaved (a retry ran first). False: changes are in memory only
+        /// (unsaved banner).
         var saved: Bool
 
         /// Flutter's message, also when nothing was due; the save-failed
@@ -410,7 +416,12 @@ final class AppModel {
     func generateDueNow() async -> DueGeneration {
         guard data != nil else { return DueGeneration(generated: 0, saved: true) }
         let result = RecurringGenerator.generateDue(in: &data!, now: now, clock: { [calendar] in calendar.now() }, newID: newID)
-        guard result.changed else { return DueGeneration(generated: 0, saved: true) }
+        guard result.changed else {
+            // Nothing due, but an earlier failed write may still be in
+            // memory only: retry it, and report success only once it is saved.
+            if hasUnsavedChanges { await retrySaves() }
+            return DueGeneration(generated: 0, saved: !hasUnsavedChanges)
+        }
         if !result.generated.isEmpty { transactionsChanged() }
         let saved = await persist([Section.transactions, Section.recurringTransactions])
         return DueGeneration(generated: result.generated.count, saved: saved)

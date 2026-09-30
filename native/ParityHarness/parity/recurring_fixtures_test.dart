@@ -192,7 +192,11 @@ void main() {
         now);
     await run('add monthly picked 6 months back (lookback cap)',
         template('a8', monthly, DateTime(2026, 3, 31), dom: 31), now);
-    // "Generate Due Transactions" after a pause: an old cursor.
+    // "Generate Due Transactions" after a pause: an old cursor. This records
+    // Flutter's generator on that cursor (every missed occurrence in the
+    // lookback). Swift's resume skips the paused occurrences instead, a
+    // deliberate difference checked against these rows by
+    // RecurringParityTests.resumed.
     await run('resumed weekly with an old cursor',
         template('g1', weekly, DateTime(2026, 6, 1, 7, 45),
             next: DateTime(2026, 8, 3, 7, 45)),

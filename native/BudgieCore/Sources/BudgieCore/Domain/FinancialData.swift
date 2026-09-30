@@ -388,12 +388,23 @@ public struct FinancialData: Sendable {
         transactions.filter { $0.recurringTemplateId == id }.map(\.date).max()
     }
 
+    /// Pause or resume (Swift only; Flutter has no pause). Resuming a paused
+    /// template moves its cursor to the first occurrence on or after `now`'s
+    /// day (`RecurringGenerator.resumedCursor`), so the occurrences missed
+    /// while it was paused are skipped rather than back-filled; one due
+    /// today stays due. Pausing, or resuming an active template, keeps the
+    /// cursor.
     @discardableResult
-    public mutating func setTemplateActive(id: String, _ active: Bool) -> Bool {
+    public mutating func setTemplateActive(id: String, _ active: Bool, now: DartDateTime) -> Bool {
         guard let index = templateRows.firstIndex(where: { $0.record?.id == id }), let template = templateRows[index].record else {
             return false
         }
-        templateRows[index] = .record(template.with(isActive: active))
+        var next = template.with(isActive: active)
+        if active && !template.isActive {
+            let cursor = RecurringGenerator.resumedCursor(of: template, now: now, calendar: calendar)
+            if cursor != template.nextOccurrence { next = next.with(nextOccurrence: cursor) }
+        }
+        templateRows[index] = .record(next)
         return true
     }
 

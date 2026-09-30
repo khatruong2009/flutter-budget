@@ -83,13 +83,36 @@ public enum RecurringForm {
     /// offers `now - 365 days` .. `now + 365 days` by calendar day, but a
     /// picked day is midnight, so its first day always fails the rule
     /// (unless `now` is exactly midnight); here the first day is the
-    /// earliest one whose midnight passes it.
-    public static func startDateRange(now: DartDateTime, calendar: DartCalendar) -> ClosedRange<DartDateTime> {
+    /// earliest one whose midnight passes it. An edit's stored start
+    /// (`storedStart`) is always offered: for a template that started over
+    /// a year ago the range reaches down to its day, so the picker opens on
+    /// it and OK keeps it (the days in between still fail the rule).
+    public static func startDateRange(
+        now: DartDateTime, calendar: DartCalendar, storedStart: DartDateTime? = nil
+    ) -> ClosedRange<DartDateTime> {
         let floor = now.adding(days: -365)
         var earliest = calendar.date(floor.year, floor.month, floor.day)
         if earliest.isBefore(floor) { earliest = calendar.date(floor.year, floor.month, floor.day + 1) }
         let top = now.adding(days: 365)
-        return earliest...calendar.date(top.year, top.month, top.day)
+        var latest = calendar.date(top.year, top.month, top.day)
+        if let storedStart {
+            let day = calendar.date(storedStart.year, storedStart.month, storedStart.day)
+            if day.isBefore(earliest) { earliest = day }
+            if day.isAfter(latest) { latest = day }
+        }
+        return earliest...latest
+    }
+
+    /// The Day of Month wheel when the form opens, and whether it follows
+    /// a picked start day: when adding, the day the form opened (Flutter's
+    /// default), following; when editing, the stored day (the start's day
+    /// for a weekly template), following only while it equals the start's
+    /// day (a different day was set on purpose).
+    public static func initialDayOfMonth(template: RecurringTemplate?, openedAt: DartDateTime) -> (day: Int, followsStart: Bool) {
+        guard let template else { return (openedAt.day, true) }
+        let startDay = template.startDate.day
+        guard let stored = template.dayOfMonth else { return (startDay, true) }
+        return (stored, stored == startDay)
     }
 
     /// The start date a save stores: the picked day (a local midnight, as

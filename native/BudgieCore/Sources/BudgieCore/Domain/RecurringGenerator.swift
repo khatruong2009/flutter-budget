@@ -64,6 +64,19 @@ public enum RecurringGenerator {
         return previewOccurrences(pattern: edit.pattern, start: cursor, dayOfMonth: edit.dayOfMonth, count: count, calendar: calendar)
     }
 
+    /// The cursor a resumed template continues from (Swift only: Flutter
+    /// has no pause): its cursor stepped with the generator's arithmetic
+    /// until it is on or after `now`'s local day, never moved back. The
+    /// generator treats an occurrence on `now`'s day as due, so one due
+    /// today is still generated; the ones missed while paused are not.
+    public static func resumedCursor(of template: RecurringTemplate, now: DartDateTime, calendar: DartCalendar) -> DartDateTime {
+        var cursor = template.nextOccurrence
+        while cursor.isBefore(now) && !calendar.isSameDay(cursor, now) {
+            cursor = nextOccurrence(of: template, after: cursor, calendar: calendar)
+        }
+        return cursor
+    }
+
     public struct Result: Sendable {
         public var generated: [TransactionRecord] = []
         public var advancedTemplates: [String] = []

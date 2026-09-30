@@ -5,15 +5,19 @@ import XCTest
 /// Occurrences" preview for a monthly expense and a weekly income, the
 /// recurrence glyph on the generated rows (Home Recent activity, Home SEE
 /// ALL, Flow SEE ALL), pause / resume, an edit that keeps the next
-/// occurrence, and delete behind Flutter's alert. Names carry a per-run
-/// suffix; the templates and their generated rows are deleted at the end.
+/// occurrence, "Make this recurring" from the transaction form (a deep
+/// link's and the FAB's), and delete behind Flutter's alert. Names carry a
+/// per-run suffix; the templates and their generated rows are deleted at
+/// the end.
 @MainActor
 final class RecurringUITests: XCTestCase {
     let app = XCUIApplication()
+    let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
 
     private let suffix = String(Int.random(in: 1000...9999))
     private var rent: String { "UI rent \(suffix)" }
     private var salary: String { "UI weekly \(suffix)" }
+    private var madeRecurring: String { "UI made recurring \(suffix)" }
 
     override func setUp() async throws {
         continueAfterFailure = false
@@ -199,6 +203,36 @@ final class RecurringUITests: XCTestCase {
         XCTAssertTrue(summary(edited).waitForExistence(timeout: 10))
         XCTAssertTrue(summary(edited).label.contains("next occurrence \(rentNext)"), summary(edited).label)
 
+        // "Make this recurring" turns the transaction form into the recurring
+        // form for the form's type, in the same sheet: Cancel closes all of
+        // it, also for a deep link's form (AddFormHost); Save adds the
+        // template and closes it.
+        homeRoot()
+        XCUIDevice.shared.system.open(URL(string: "budgetapp://add-income")!)
+        let openPrompt = springboard.buttons["Open"]
+        if openPrompt.waitForExistence(timeout: 3) { openPrompt.tap() }
+        XCTAssertTrue(app.staticTexts["Add Income"].waitForExistence(timeout: 10))
+        tapStable(app.buttons["Make this recurring"])
+        XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForExistence(timeout: 10))
+        tapStable(app.buttons["Cancel"].firstMatch)
+        XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForNonExistence(timeout: 10), "the deep link's sheet closed")
+        XCTAssertFalse(app.staticTexts["Add Income"].exists)
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
+
+        tapStable(app.buttons["Add transaction"])
+        XCTAssertTrue(app.staticTexts["Add Expense"].waitForExistence(timeout: 10))
+        tapStable(app.buttons["Make this recurring"])
+        XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForExistence(timeout: 10))
+        replaceText(in: app.textFields["Amount"], with: "15")
+        replaceText(in: app.textFields["Description"], with: madeRecurring)
+        tapStable(app.buttons["recurring.form.save"])
+        XCTAssertTrue(app.staticTexts["Add Recurring Expense"].waitForNonExistence(timeout: 10), "the sheet closed after Save")
+        XCTAssertFalse(app.staticTexts["Add Expense"].exists)
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
+        openRecurring()
+        XCTAssertTrue(summary(madeRecurring).waitForExistence(timeout: 10))
+        XCTAssertTrue(summary(madeRecurring).label.contains("Monthly"), summary(madeRecurring).label)
+
         // The generated rows carry the glyph: Home Recent activity and SEE ALL.
         homeRoot()
         let recent = app.descendants(matching: .any).matching(
@@ -210,13 +244,14 @@ final class RecurringUITests: XCTestCase {
 
         // Delete both templates behind Flutter's alert.
         openRecurring()
-        for name in [edited, salary] {
+        for name in [edited, salary, madeRecurring] {
             tapStable(card(name).buttons["recurring.delete"])
             let alert = app.alerts["Delete Recurring Transaction?"]
             XCTAssertTrue(alert.waitForExistence(timeout: 5))
             let message =
                 "This will stop generating future transactions for \"\(name)\". Previously generated transactions will not be affected."
-            XCTAssertTrue(alert.staticTexts[message].exists, "alert message")
+            // By predicate: an identifier query is limited to 128 characters.
+            XCTAssertTrue(alert.staticTexts.matching(NSPredicate(format: "label == %@", message)).firstMatch.exists, "alert message")
             alert.buttons["Delete"].tap()
             XCTAssertTrue(labelled("Recurring transaction deleted").waitForExistence(timeout: 10))
             XCTAssertTrue(summary(name).waitForNonExistence(timeout: 5))
@@ -235,11 +270,11 @@ final class RecurringUITests: XCTestCase {
         search.typeText(suffix)
         let rows = app.buttons.matching(identifier: "flow.all.row")
         XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 10))
-        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.count, 3)
         for index in 0..<rows.count {
             XCTAssertTrue(rows.element(boundBy: index).label.hasSuffix(", recurring"), rows.element(boundBy: index).label)
         }
-        for _ in 0..<2 {
+        for _ in 0..<3 {
             let row = rows.firstMatch
             XCTAssertTrue(row.waitForExistence(timeout: 5))
             // The row starts under the search keyboard (a swipe there

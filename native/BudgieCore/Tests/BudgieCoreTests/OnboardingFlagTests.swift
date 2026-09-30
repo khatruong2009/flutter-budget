@@ -50,7 +50,16 @@ struct OnboardingFlagTests {
         // An int 1 (what `defaults write -int 1` stores) is not a bool.
         // (Removed first: NSNumber treats @YES and @1 as equal, so setting
         // 1 over true is skipped as unchanged.)
-        defaults.set(NSNumber(value: 1 as Int), forKey: PreferenceKey.onboardingCompleted)
-        #expect(!OnboardingFlag.isCompleted(preferences))
+        for number in [NSNumber(value: 1 as Int), NSNumber(value: 1.0 as Double)] {
+            defaults.set(number, forKey: PreferenceKey.onboardingCompleted)
+            #expect(!OnboardingFlag.isCompleted(preferences))
+            // Completing the tour replaces the number with a real bool (a
+            // plain set would be skipped as unchanged).
+            OnboardingFlag.markCompleted(preferences)
+            let replaced = try #require(defaults.persistentDomain(forName: suite)?[PreferenceKey.onboardingCompleted] as? NSNumber)
+            #expect(CFGetTypeID(replaced) == CFBooleanGetTypeID(), "\(number)")
+            #expect(OnboardingFlag.isCompleted(preferences), "\(number)")
+            OnboardingFlag.reset(preferences)
+        }
     }
 }

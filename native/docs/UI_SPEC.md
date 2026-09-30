@@ -619,9 +619,11 @@ group: refresh (`arrow.clockwise`, "Generate Due Transactions",
 
 - Generate: `model.generateDueNow()`, then its toast: "Due transactions
   generated and next occurrences updated" (also when nothing was due) or
-  the save-failed toast. The button is disabled while it runs.
+  the save-failed toast. With nothing due it first retries any unsaved
+  write and reports success only once nothing is unsaved. The button is
+  disabled while it runs.
 - Empty state (`recurring.empty`): 120pt `primaryGradient` circle with a
-  white `repeat` glyph, "No Recurring Transactions" (`headingLarge`), "Create
+  white 52pt semibold `repeat` glyph, "No Recurring Transactions" (`headingLarge`), "Create
   recurring transactions to automatically\ngenerate expenses and income on
   a schedule" (`bodyMedium`, secondary), centred, padding 32; plus a filled
   "Add Recurring" pill (Swift only).
@@ -630,18 +632,25 @@ group: refresh (`arrow.clockwise`, "Generate Due Transactions",
   GlowCard with padding 16): 44pt `IconTile` (category icon, income green
   or accent; fallback `bag.fill` / `dollarsign`), description (`cardTitle`)
   with a 16pt `RecurrenceGlyph` and, when paused, a warning "Paused" chip,
-  the category (`rowSubtitle`, tertiary), the amount (`amount`, income
-  green or primary text, masked by Hide balances); a hairline with 16pt
-  above and below; two columns "Pattern" (`repeat`; Weekly / Bi-weekly /
-  Monthly) and "Next Occurrence" (`calendar`; `MMM dd, yyyy`), labels
-  `caption` w600 secondary, values `bodySmall`; then three 44pt outlined
-  pills: Edit (accent), Pause (warning) / Resume (income), Delete (danger),
-  stacked vertically when they do not fit (large text). A paused card's
+  the category (`caption`, tertiary), the amount (`numericMediumBold`,
+  22 bold tabular, scaling down to 0.6; income green or primary text,
+  masked by Hide balances); a hairline with 16pt above and below; two
+  columns "Pattern" (`repeat`; Weekly / Bi-weekly / Monthly) and "Next
+  Occurrence" (`calendar`; `MMM dd, yyyy`), 18pt symbols in a 20pt frame,
+  labels `captionStrong` secondary, values `bodySmall`; then three outlined
+  pills at least 44pt tall (`PillButton(minHeight:)`, growing with the
+  text): Edit (accent), Pause (warning) / Resume (income), Delete
+  (danger), stacked vertically when they do not fit (large text). At
+  accessibility text sizes the description wraps freely, the Paused chip
+  and the amount move under it, and the two detail columns stack. A paused card's
   content is at 0.65 opacity, its buttons are not. VoiceOver: one summary
   element (`recurring.summary`) "description, income|expense, amount,
   category, pattern, next occurrence date[, paused]", then the three
   buttons (`recurring.edit`, `recurring.pause`, `recurring.delete`).
 - Pause / Resume: `setTemplateActive`, save-failed toast on a failed write.
+  Resume moves the cursor to the first occurrence on or after today
+  (`RecurringGenerator.resumedCursor`): nothing missed while paused is
+  generated; one due today still is.
 - Delete: alert "Delete Recurring Transaction?", message `This will stop
   generating future transactions for "<description>". Previously generated
   transactions will not be affected.`, Cancel / Delete (destructive, heavy
@@ -653,18 +662,25 @@ also swapped in place into the transaction form by "Make this recurring"):
 title "Add|Edit Recurring Expense|Income" (`headingMedium`); the
 Expense/Income pills when adding only; Amount (`BudgieField`, currency
 symbol, "0.00", decimal pad, focused on open; prefill
-`toStringAsFixed(2)`); Description ("What is this for?"); "Category" wheel,
+`toStringAsFixed(2)`); Description ("What is this for?", `doc.text`);
+"Category" wheel (`CategoryWheelRow`: the tile in the fixed `expenseFixed` /
+`incomeFixed` red or green, the same in dark mode),
 "Recurrence Pattern" wheel (Weekly, Bi-weekly, Monthly; default Monthly) and,
 for monthly, "Day of Month" wheel 1-31 (90pt boxes, chip surface, radius 12,
-1.5pt border, selection haptic); "Start Date" `DateTile` (`MMM dd, yyyy`;
+1.5pt border, selection haptic), each captioned in `captionStrong` (as are
+the `BudgieField` labels); "Start Date" `DateTile` (`MMM dd, yyyy`;
 danger border, label and icon with the error below it) opening
-`DayPickerSheet` over `RecurringForm.startDateRange`; the "Next 3
+`DayPickerSheet` over `RecurringForm.startDateRange` (which also offers an
+edit's stored start day, so an older template's picker opens on it and OK
+keeps it); the "Next 3
 Occurrences" card (`eye`, `EEEE, MMM dd, yyyy` lines, `bodySmall`); footer
 Cancel (outlined) and Save / Update (expense or income gradient, spinner
 while saving, interactive dismiss disabled). The start is
 `RecurringForm.resolvedStart` (the form-open moment with its time, a picked
-day at midnight, an edit's stored value). Day of Month follows the picked
-start day until the wheel is moved. Save runs `RecurringForm.validate`
+day at midnight, an edit's stored value). Day of Month starts at
+`RecurringForm.initialDayOfMonth` (today's day when adding, else the stored
+day) and follows the resulting start day until the wheel is moved (an
+edit whose stored day differs from its start day counts as moved). Save runs `RecurringForm.validate`
 (all three errors at once, the first announced to VoiceOver; typing clears
 the amount / description error, a pick re-checks the date), then
 `addTemplate` / `updateTemplate` with `RecurringForm.edit`, and dismisses
@@ -693,8 +709,10 @@ ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
 Shown once, when `flutter.onboarding_completed` is not true
 (`model.showsOnboarding`, read at bootstrap): `MainView` shows
 `OnboardingView` instead of the tabs, before `.appLock()`, so the lock
-screen and privacy cover sit above it (not a `fullScreenCover`). Skip and
-"Start budgeting" call `model.completeOnboarding()`; the tabs replace the
+screen and privacy cover sit above it (not a `fullScreenCover`), and
+VoiceOver cannot reach it while locked. Skip and
+"Start budgeting" call `model.completeOnboarding()` (`OnboardingFlag
+.markCompleted`: the key is removed, then set to a bool true); the tabs replace the
 tour at once (Home) and a queued quick action, widget tap or link opens
 then. Launch hook (DEBUG): `BUDGIE_SKIP_ONBOARDING=1` starts past the tour,
 `=0` removes the flag.
@@ -733,4 +751,7 @@ When `appSettings.appLockEnabled`: an opaque privacy cover whenever the
 scene is inactive/background; on returning after
 `autoLockTimeoutSeconds` (0 = immediately), or at launch, require
 `LAContext.evaluatePolicy(.deviceOwnerAuthentication)` before showing data.
-The lock never blocks the bootstrap or saves.
+The lock never blocks the bootstrap or saves. While locked, everything
+beneath the lock screen (the tabs, or the onboarding tour) is hidden from
+VoiceOver (`accessibilityHidden(model.isLocked)`, Flutter's
+`ExcludeSemantics`), and the lock screen is modal (`.isModal`).

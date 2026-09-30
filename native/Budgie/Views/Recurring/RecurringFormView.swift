@@ -16,8 +16,9 @@ import SwiftUI
 /// Differences from Flutter (PARITY_GAPS): the Expense/Income toggle when
 /// adding; no Day of Week wheel; the Day of Month wheel follows the picked
 /// start day until it is touched; the picker offers only days that pass
-/// the one-year rule, which applies only to a start set here; an edit
-/// previews from the cursor the edit will leave and keeps the cursor.
+/// the one-year rule, which applies only to a start set here, plus an
+/// edit's stored start day (so OK on an old template keeps its start); an
+/// edit previews from the cursor the edit will leave and keeps the cursor.
 struct RecurringFormView: View {
     let template: RecurringTemplate?
 
@@ -57,10 +58,9 @@ struct RecurringFormView: View {
         _descriptionText = State(initialValue: template?.description ?? "")
         _category = State(initialValue: template?.category ?? "")
         _pattern = State(initialValue: template?.pattern ?? .monthly)
-        let startDay = template?.startDate.day
-        let storedDay = template?.dayOfMonth
-        _dayOfMonth = State(initialValue: storedDay ?? startDay ?? 1)
-        _dayOfMonthEdited = State(initialValue: storedDay != nil && storedDay != startDay)
+        // Set in `load()` (`RecurringForm.initialDayOfMonth`).
+        _dayOfMonth = State(initialValue: 1)
+        _dayOfMonthEdited = State(initialValue: false)
     }
 
     // MARK: - Derived values
@@ -70,8 +70,6 @@ struct RecurringFormView: View {
     private var title: String {
         (isEditing ? "Edit Recurring " : "Add Recurring ") + (type == .income ? "Income" : "Expense")
     }
-
-    private var typeColor: Color { type == .income ? BudgieColor.income : BudgieColor.danger }
 
     private var currencySymbol: String { AmountInput.currencySymbolName(model.moneyFormatter) }
 
@@ -136,7 +134,7 @@ struct RecurringFormView: View {
                     )
                     .padding(.top, Metrics.spacingM)
                     BudgieField(
-                        title: "Description", text: $descriptionText, prompt: "What is this for?", symbol: "text.alignleft",
+                        title: "Description", text: $descriptionText, prompt: "What is this for?", symbol: "doc.text",
                         error: descriptionError
                     )
                     .padding(.top, Metrics.spacingS)
@@ -165,7 +163,7 @@ struct RecurringFormView: View {
         .onChange(of: amountText) { _, _ in amountError = nil }
         .onChange(of: descriptionText) { _, _ in descriptionError = nil }
         .sheet(isPresented: $showingDatePicker) {
-            let range = RecurringForm.startDateRange(now: model.now, calendar: model.calendar)
+            let range = RecurringForm.startDateRange(now: model.now, calendar: model.calendar, storedStart: template?.startDate)
             DayPickerSheet(initial: resolvedStart, earliest: range.lowerBound, latest: range.upperBound, calendar: model.calendar) {
                 picked($0)
             }
@@ -182,7 +180,7 @@ struct RecurringFormView: View {
     /// where the control below carries the same label.
     private func fieldLabel(_ text: String) -> some View {
         Text(text)
-            .textStyle(.caption)
+            .textStyle(.captionStrong)
             .foregroundStyle(BudgieColor.textSecondary)
             .padding(.leading, 4)
             .padding(.bottom, 6)
@@ -209,7 +207,7 @@ struct RecurringFormView: View {
             let rows = categoryRows
             Picker("Category", selection: categorySelection) {
                 ForEach(rows.indices, id: \.self) { index in
-                    CategoryWheelRow(name: rows[index].name, info: rows[index].info, color: typeColor).tag(index)
+                    CategoryWheelRow(name: rows[index].name, info: rows[index].info, type: type).tag(index)
                 }
             }
             .pickerStyle(.wheel)
@@ -318,7 +316,7 @@ struct RecurringFormView: View {
                 Image(systemName: "eye")
                     .font(.system(size: 14, weight: .medium))
                     .accessibilityHidden(true)
-                Text("Next 3 Occurrences").textStyle(RecurringFormView.previewTitle)
+                Text("Next 3 Occurrences").textStyle(.captionStrong)
             }
             .foregroundStyle(BudgieColor.textSecondary)
             VStack(alignment: .leading, spacing: Metrics.spacingXS) {
@@ -337,9 +335,6 @@ struct RecurringFormView: View {
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("recurring.form.preview")
     }
-
-    /// `caption` at w600.
-    private static let previewTitle = TextSpec(face: .gabaritoSemiBold, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
 
     // MARK: Footer
 
@@ -370,20 +365,21 @@ struct RecurringFormView: View {
         if let template {
             templateInfo = model.categoryInfo(named: template.category, type: template.type)
             lastGenerated = model.lastGeneratedDate(forTemplate: template.id)
-        } else {
-            // Flutter's default is today's day; it follows the start day.
-            dayOfMonth = now.day
         }
+        let initialDay = RecurringForm.initialDayOfMonth(template: template, openedAt: now)
+        dayOfMonth = initialDay.day
+        dayOfMonthEdited = !initialDay.followsStart
         if !categoryRows.contains(where: { DartString.equal($0.name, category) }) { category = categoryRows.first?.name ?? "" }
         loaded = true
     }
 
-    /// A picked day (midnight) replaces the start; the Day of Month wheel
-    /// follows it until the wheel is touched. The rule is re-checked so a
-    /// valid day clears the error.
+    /// A picked day (midnight) replaces the start (the stored start's own
+    /// day keeps it); the Day of Month wheel follows the resulting start
+    /// until the wheel is touched. The rule is re-checked so a valid day
+    /// clears the error.
     private func picked(_ day: DartDateTime) {
         pickedStart = day
-        if !dayOfMonthEdited { dayOfMonth = day.day }
+        if !dayOfMonthEdited { dayOfMonth = resolvedStart.day }
         startDateError = RecurringForm.startDateError(start: resolvedStart, storedStart: template?.startDate, now: model.now)
     }
 

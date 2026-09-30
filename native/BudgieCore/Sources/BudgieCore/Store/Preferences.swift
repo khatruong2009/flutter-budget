@@ -122,8 +122,12 @@ public enum OnboardingFlag {
         preferences.bool(PreferenceKey.onboardingCompleted) ?? false
     }
 
-    /// Flutter `setBool(onboarding_completed, true)`.
+    /// Flutter `setBool(onboarding_completed, true)`. The key is removed
+    /// first: `NSUserDefaults` treats `@YES` and a stored `@1` as equal and
+    /// would skip the set, leaving a number the next launch reads as not
+    /// completed.
     public static func markCompleted(_ preferences: some PreferencesStore) {
+        preferences.set(nil, forKey: PreferenceKey.onboardingCompleted)
         preferences.set(.bool(true), forKey: PreferenceKey.onboardingCompleted)
     }
 

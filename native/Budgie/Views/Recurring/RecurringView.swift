@@ -129,7 +129,9 @@ struct RecurringView: View {
     }
 
     /// `_buildEmptyState` (:68-108): a 120pt primary-gradient circle with a
-    /// 60pt repeat glyph, the title and the two-line message, centred.
+    /// repeat glyph, the title and the two-line message, centred. SF
+    /// `repeat` at 52pt is as tall as Material's 60pt `repeat` (about 49pt;
+    /// SF's is wider, with rounded corners).
     private var emptyState: some View {
         GeometryReader { proxy in
             ScrollView {

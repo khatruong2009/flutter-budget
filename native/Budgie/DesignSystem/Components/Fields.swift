@@ -1,10 +1,11 @@
 import SwiftUI
 
 /// Text field in the redesign's field style (Goals' form fields, which the
-/// legacy `ModernTextField` screens are ported to, D1): caption label above,
-/// chip-surface fill, radius 14, 1pt card-border stroke that turns 1.5pt
-/// accent while focused (danger with an error), optional 20pt leading
-/// symbol, input in rowTitle, error text in danger below.
+/// legacy `ModernTextField` screens are ported to, D1): `ModernTextField`'s
+/// caption w600 label above, chip-surface fill, radius 14, 1pt card-border
+/// stroke that turns 1.5pt accent while focused (danger with an error),
+/// optional 20pt leading symbol, input in rowTitle, error text in danger
+/// below.
 struct BudgieField: View {
     let title: String
     @Binding var text: String
@@ -23,7 +24,7 @@ struct BudgieField: View {
         let stroke: Color = hasError ? BudgieColor.danger : focused ? BudgieColor.accent : BudgieColor.cardBorder
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .textStyle(.caption)
+                .textStyle(.captionStrong)
                 .foregroundStyle(hasError ? BudgieColor.danger : focused ? BudgieColor.accent : BudgieColor.textSecondary)
                 .padding(.leading, 4)
                 .accessibilityHidden(true)
