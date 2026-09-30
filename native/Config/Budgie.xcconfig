@@ -1,0 +1,10 @@
+// Base configuration for the Budgie app target (Debug and Release).
+// See Secrets.example.xcconfig for how the OpenAI key gets in.
+
+// Default: no key. Debug builds work without one (voice shows "not
+// configured"); Release builds fail the "Check OpenAI key" build phase.
+OPENAI_API_KEY =
+
+// Later assignments win in an xcconfig, so this include must stay AFTER the
+// default above. `#include?` is optional: builds work when the file is absent.
+#include? "Secrets.xcconfig"

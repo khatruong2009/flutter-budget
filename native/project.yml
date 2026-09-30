@@ -29,6 +29,30 @@ targets:
     dependencies:
       - package: BudgieCore
       - target: BudgetWidgetsExtension
+    configFiles:
+      Debug: Config/Budgie.xcconfig
+      Release: Config/Budgie.xcconfig
+    # Fails Release builds without a real OpenAI key (FULL_APP_PLAN section 6).
+    # Reads only the build-setting env var (no files read, so it works with
+    # ENABLE_USER_SCRIPT_SANDBOXING) and never prints the key. A per-configuration
+    # stamp output plus the two xcconfig inputs let Xcode skip it when neither
+    # changed since the last pass (a failing check writes no stamp, so it re-runs).
+    preBuildScripts:
+      - name: Check OpenAI key
+        inputFiles:
+          - $(SRCROOT)/Config/Budgie.xcconfig
+          - $(SRCROOT)/Config/Secrets.xcconfig
+        outputFiles:
+          - $(DERIVED_FILE_DIR)/openai-key-check-$(CONFIGURATION).stamp
+        script: |
+          if [ "$CONFIGURATION" = "Release" ]; then
+            key="$(printf '%s' "$OPENAI_API_KEY" | tr -d '[:space:]')"
+            if [ -z "$key" ] || [ "$key" = "REPLACE_WITH_OPENAI_API_KEY" ]; then
+              echo "error: OPENAI_API_KEY is empty or still the placeholder. Copy native/Config/Secrets.example.xcconfig to native/Config/Secrets.xcconfig and set a real key (native/docs/FULL_APP_PLAN.md section 6). Release builds require it for voice entry."
+              exit 1
+            fi
+          fi
+          : > "$SCRIPT_OUTPUT_FILE_0"
     entitlements:
       path: Budgie/Budgie.entitlements
       properties:
@@ -47,6 +71,10 @@ targets:
             CFBundleURLName: com.khatruong.budgetbuddy
             CFBundleURLSchemes: [budgetapp]
         NSFaceIDUsageDescription: Budgie uses Face ID to protect your financial data when App Lock is enabled.
+        # Flutter's exact string (budget_app/ios/Runner/Info.plist). Voice entry.
+        NSMicrophoneUsageDescription: Budgie uses the microphone so you can add transactions by speaking.
+        # Filled from Config/Budgie.xcconfig (+ gitignored Secrets.xcconfig).
+        OPENAI_API_KEY: $(OPENAI_API_KEY)
         # Bundled at the app bundle root (spec 01 section 4); OFL texts ship
         # beside them and show in Settings > About > Licences.
         UIAppFonts:

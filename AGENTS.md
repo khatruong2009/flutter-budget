@@ -169,3 +169,7 @@ cd budget_app && flutter analyze && flutter test
 - Don't add new state management libraries (riverpod, bloc, etc.). Stick with Provider.
 - Don't introduce a backend / network layer without an explicit ask. This app
   is offline-first by design.
+  - One deliberate exception, in the native SwiftUI app (`native/`): voice entry
+    sends the recording and its transcript to OpenAI (plan D11,
+    `native/docs/FULL_APP_PLAN.md` section 6). The key comes from the gitignored
+    `native/Config/Secrets.xcconfig`, never `.env` or committed files.

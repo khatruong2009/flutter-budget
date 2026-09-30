@@ -186,6 +186,7 @@
 		11ADA577B45D605D5B1BFC63 /* GoalActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalActions.swift; sourceTree = "<group>"; };
 		16875E9FA30EEEA296CE7D33 /* SelectedMonthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonthTests.swift; sourceTree = "<group>"; };
 		16D8FDD0639384F06528D40C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		184EC59A655A69AE870AB93F /* Budgie.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Budgie.xcconfig; sourceTree = "<group>"; };
 		1C1C12C3082F408F35ED722A /* OpeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningView.swift; sourceTree = "<group>"; };
 		213457AB69A67DF35F652E73 /* Gabarito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gabarito-Bold.ttf"; sourceTree = "<group>"; };
 		21D98BE7CAA32047DC8ED7BB /* HomeHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHero.swift; sourceTree = "<group>"; };
@@ -457,6 +458,14 @@
 			path = Typography;
 			sourceTree = "<group>";
 		};
+		713DA21B0B610A185AD70A82 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				184EC59A655A69AE870AB93F /* Budgie.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		800048EC9D716FB064F51AC7 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -606,6 +615,7 @@
 				1EC690ECEE653D7A2C642B5C /* Budgie */,
 				0E73655C9F5727E62CC36F88 /* BudgieAppTests */,
 				3D025C807F45FB00FB783484 /* BudgieUITests */,
+				713DA21B0B610A185AD70A82 /* Config */,
 				12BA3467E8BAFE73FE9781F5 /* Packages */,
 				8A60D3B8543A761CABADCFF1 /* SpringBoardProbe */,
 				A1AD42B95D245F5534D0A257 /* Products */,
@@ -692,6 +702,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B3A3421D286050624A8243B4 /* Build configuration list for PBXNativeTarget "Budgie" */;
 			buildPhases = (
+				0E233B5F7F8CF9E9BD8397F0 /* Check OpenAI key */,
 				444DBBFA4B6F2940A45C9CB0 /* Sources */,
 				2C167CA8714988387BD9D277 /* Resources */,
 				88CDBBA88D3C75CDD526E942 /* Frameworks */,
@@ -832,6 +843,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0E233B5F7F8CF9E9BD8397F0 /* Check OpenAI key */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Config/Budgie.xcconfig",
+				"$(SRCROOT)/Config/Secrets.xcconfig",
+			);
+			name = "Check OpenAI key";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/openai-key-check-$(CONFIGURATION).stamp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" = \"Release\" ]; then\n  key=\"$(printf '%s' \"$OPENAI_API_KEY\" | tr -d '[:space:]')\"\n  if [ -z \"$key\" ] || [ \"$key\" = \"REPLACE_WITH_OPENAI_API_KEY\" ]; then\n    echo \"error: OPENAI_API_KEY is empty or still the placeholder. Copy native/Config/Secrets.example.xcconfig to native/Config/Secrets.xcconfig and set a real key (native/docs/FULL_APP_PLAN.md section 6). Release builds require it for voice entry.\"\n    exit 1\n  fi\nfi\n: > \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2D80FC4B66B96B3A1EA9E893 /* Sources */ = {
@@ -1071,6 +1106,7 @@
 		};
 		807F5C97F941BE9F0C36862B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 184EC59A655A69AE870AB93F /* Budgie.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Budgie/Budgie.entitlements;
@@ -1092,6 +1128,7 @@
 		};
 		8890132E0D065274AC8398FC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 184EC59A655A69AE870AB93F /* Budgie.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Budgie/Budgie.entitlements;

@@ -41,6 +41,10 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Budgie uses Face ID to protect your financial data when App Lock is enabled.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Budgie uses the microphone so you can add transactions by speaking.</string>
+	<key>OPENAI_API_KEY</key>
+	<string>$(OPENAI_API_KEY)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Gabarito-Regular.ttf</string>

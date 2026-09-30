@@ -470,9 +470,31 @@ kept verbatim.
 ### 11.4 Info.plist / privacy
 
 Keep: display name, URL type, Face ID string, category, portrait/iPhone.
-Drop: microphone/speech strings (voice out of scope), `UIMainStoryboardFile`.
+Drop: `UIMainStoryboardFile`. `NSMicrophoneUsageDescription` is back for
+voice entry (Phase 4, reversing the earlier "voice out of scope" drop): the
+Flutter string, "Budgie uses the microphone so you can add transactions by
+speaking." No speech-recognition string (transcription is server-side).
 Add `PrivacyInfo.xcprivacy` (UserDefaults reason `CA92.1`; file timestamp
-reason if needed). No `.env`, no API keys in the binary.
+reason if needed). No `.env`, no API keys in the repo; see "Voice (OpenAI) key".
+
+#### Voice (OpenAI) key
+
+Info.plist carries `OPENAI_API_KEY = $(OPENAI_API_KEY)`. The build setting
+comes from the committed `native/Config/Budgie.xcconfig` (target
+configuration file for Debug and Release), which declares an empty default and
+then `#include?`s the gitignored `native/Config/Secrets.xcconfig`; the include
+comes last because later assignments win. Copy `Secrets.example.xcconfig` to
+`Secrets.xcconfig` and set a restricted, budget-capped key from a dedicated
+OpenAI project (FULL_APP_PLAN section 6). Debug builds work without a key
+(voice reports "not configured"). The "Check OpenAI key" build phase fails
+Release builds when the value is empty or the placeholder; it reads only the
+build-setting environment variable, so it works with user-script sandboxing,
+and it never prints the key.
+
+App Store privacy label and `PrivacyInfo.xcprivacy`: the recording (Audio
+Data) and its transcript (Other User Content) are sent to OpenAI for
+transcription and parsing. Both are declared collected for App Functionality,
+not linked to the user, not used for tracking. No other data types change.
 
 ### 11.5 Scene sessions (found in the Phase 3 rehearsal)
 
