@@ -55,7 +55,7 @@ struct DartSummaryOfSwiftStores {
                 continue
             }
             let data = FinancialData.load(
-                snapshot, preferences: preferences, calendar: calendar, now: { now }, newID: { UUID().uuidString.lowercased() }
+                snapshot, preferences: preferences, calendar: calendar, now: { now }, newID: { UUID().uuidString.lowercased() }, matchesPaddedCategoryNames: false
             ).data
             // Both sides give a row without an id a fresh one at every load
             // (old_schema's): compare the ids the bytes hold.

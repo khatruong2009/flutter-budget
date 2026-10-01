@@ -273,9 +273,9 @@ struct BackupRestoreTests {
 
     @Test("the one commit: a verified write whose backup file is the pre-restore primary; the store reloads as restored")
     func commit() async throws {
-        // Typical's padded category name is re-materialised at every launch
-        // (a Flutter bug both apps share), and its templates are due: use a
-        // store that a launch leaves as it is.
+        // Typical's first launch defines its padded category name (Flutter
+        // does so at every launch), and its templates are due: use a store
+        // that a launch leaves as it is.
         let files = InMemoryFileSystem()
         let store = FinancialStore(fileSystem: files, preferences: InMemoryPreferences(), protectedData: AlwaysAvailable(), clock: fixedNow)
         let seed = try JSONParser.parse(#"""

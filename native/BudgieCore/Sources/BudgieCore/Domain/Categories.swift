@@ -228,10 +228,21 @@ extension FinancialData {
     /// `ensureLegacyCategoryNames`): each (type, name) without a definition
     /// gets one at the end of its type, then sort orders are renumbered.
     /// Returns whether any was added.
+    ///
+    /// Dart adds the name as given (padding kept) but compares the trimmed
+    /// candidate with the stored, untrimmed names, so a padded name never
+    /// matches the definition it created and every launch adds another
+    /// (PARITY_GAPS, "padded-name"). Swift adds exactly what Dart adds, but
+    /// also treats a definition stored before this pass as matching when its
+    /// trimmed name matches: the second launch finds the first one's (unless
+    /// `matchesPaddedCategoryNames` is off).
+    /// Definitions added during this pass are compared as Dart does, so the
+    /// first launch writes the same rows as Flutter's.
     @discardableResult
     mutating func materializeCategories(_ names: [(TransactionType, String)], newID: () -> String) -> Bool {
         var added = false
-        for (type, name) in names where !containsCategory(type: type, name: name) {
+        let stored = matchesPaddedCategoryNames ? categoryRows.count : 0
+        for (type, name) in names where !containsCategory(type: type, name: name, trimmingStoredBefore: stored) {
             let count = categoryRows.filter { $0.record?.type == type }.count
             categoryRows.append(.record(CategoryInfo.make(
                 id: uniqueCategoryID(type: type, name: name, newID: newID), type: type, name: name,
@@ -243,12 +254,15 @@ extension FinancialData {
     }
 
     /// Dart `_containsName`: same type, names equal after lowercasing (the
-    /// candidate is trimmed, the stored name is not).
-    func containsCategory(type: TransactionType, name: String) -> Bool {
+    /// candidate is trimmed, the stored name is not). The first
+    /// `trimmingStoredBefore` rows are compared trimmed too (see
+    /// `materializeCategories`); 0 is Dart's rule exactly.
+    func containsCategory(type: TransactionType, name: String, trimmingStoredBefore: Int = 0) -> Bool {
         let wanted = DartString.lowercase(DartString.trim(name))
-        return categoryRows.contains { row in
+        return categoryRows.enumerated().contains { index, row in
             guard let record = row.record, record.type == type else { return false }
-            return DartString.equal(DartString.lowercase(record.name), wanted)
+            let stored = index < trimmingStoredBefore ? DartString.trim(record.name) : record.name
+            return DartString.equal(DartString.lowercase(stored), wanted)
         }
     }
 

@@ -118,7 +118,7 @@ struct BackupEncodeParityTests {
                 preferences = InMemoryPreferences(typedPreferences(item["prefs"]))
             }
             let data = FinancialData.load(
-                snapshot, preferences: preferences, calendar: calendar, now: { launchNow }, newID: newID
+                snapshot, preferences: preferences, calendar: calendar, now: { launchNow }, newID: newID, matchesPaddedCategoryNames: false
             ).data
             var bytes = try BackupEnvelope.encode(
                 data: data, themeMode: item["themeMode"].string, appVersion: appVersion, now: exportedAt)
@@ -154,7 +154,7 @@ struct BackupEncodeParityTests {
         ).read()
         let data = FinancialData.load(
             snapshot, preferences: scenario.preferences, calendar: DartCalendar(timeZone: timeZone), now: { now },
-            newID: { UUID().uuidString.lowercased() }
+            newID: { UUID().uuidString.lowercased() }, matchesPaddedCategoryNames: false
         ).data
         let bytes = try BackupEnvelope.encode(data: data, themeMode: flow["themeMode"].string, appVersion: "3.4.0", now: now)
         #expect(bytes == fixtureBytes(flow["bytes"]))
@@ -364,7 +364,7 @@ struct BackupRestoreParityTests {
                 return "swift-new-\(counter)"
             }
             let current = FinancialData.load(
-                snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: newID
+                snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: newID, matchesPaddedCategoryNames: false
             ).data
 
             let decoded = Result { () throws(BackupError) -> RestorePlan in

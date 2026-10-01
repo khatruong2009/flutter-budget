@@ -227,7 +227,7 @@ enum SwiftOutput {
     static func backup(of snapshot: FinancialSnapshot, preferences: PreferencesStore, now: DartDateTime) throws -> Backup {
         func newID() -> String { UUID().uuidString.lowercased() }
         var data = FinancialData.load(
-            snapshot, preferences: preferences, calendar: DartCalendar(timeZone: Scenario.zone), now: { now }, newID: newID
+            snapshot, preferences: preferences, calendar: DartCalendar(timeZone: Scenario.zone), now: { now }, newID: newID, matchesPaddedCategoryNames: false
         ).data
         _ = RecurringGenerator.generateDue(in: &data, now: now, clock: { now }, newID: newID)
         return Backup(bytes: try BackupEnvelope.encode(data: data, themeMode: "dark", appVersion: "4.0.0", now: now), exportedAt: now)
@@ -258,7 +258,7 @@ struct SwiftOutputForDartTests {
         func newID() -> String { UUID().uuidString.lowercased() }
         let store = scenario.makeStore()
         let current = FinancialData.load(
-            try await store.read(), preferences: scenario.preferences, calendar: calendar, now: { now }, newID: newID
+            try await store.read(), preferences: scenario.preferences, calendar: calendar, now: { now }, newID: newID, matchesPaddedCategoryNames: false
         ).data
         let plan = try BackupEnvelope.decode(bytes: backup.bytes, calendar: calendar, now: now, newID: newID)
         #expect(plan.keptItems.isEmpty, "\(emitName)")
@@ -682,8 +682,9 @@ struct SwiftOutputForDartTests {
             let snapshot = try await store.updateSections(Section.all.map { ($0, data.serializedSection($0)!) })
             // What the launch pass adds on reading this back (Flutter's
             // does the same on the same bytes): a padded legacy name is
-            // re-added at every launch (typical's "  Padded Cat ").
-            let relaunched = FinancialData.load(snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: id).data
+            // re-added at every launch (typical's "  Padded Cat "), so this
+            // load uses Flutter's rule, not Swift's fix.
+            let relaunched = FinancialData.load(snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: id, matchesPaddedCategoryNames: false).data
             try SwiftOutput.emit(
                 "edited-\(name)", fileSystem: scenario.fileSystem, preferences: scenario.preferences, snapshot: snapshot,
                 budgetLimits: data.budgetLimits, netWorth: data, goals: data, categories: data,

@@ -75,9 +75,10 @@ UPGRADE_TEST_RESULTS.md).
   template's or budget key's) is materialised again at every launch: the
   launch pass compares the trimmed name with the stored, untrimmed one
   (`_containsName`), so each launch adds another definition with a new id
-  (`type-<uuid>`, the slug being taken). Both apps do this; a restore adds
-  one as well (Swift runs the launch pass in the restore, Flutter at its
-  next launch). Fix in both apps later.
+  (`type-<uuid>`, the slug being taken). Flutter does this; Swift does it
+  once, then stops (see "Deliberate differences (not yet approved)"
+  below). A restore adds one as well (Swift runs the launch pass in the
+  restore, Flutter at its next launch). Fix in Flutter later.
 - Goals: a goal is "Behind" on its target day unless fully funded (the
   deadline is 00:00 of that day), and a goal created today for today is
   "Behind" at once. Overdue goals show "bump to ... to catch up".
@@ -979,8 +980,9 @@ real Settings page for the copy). Differences (D6; Dart cannot see them):
   the same commit (`transactions` and `categories` together), exactly as
   Flutter's next launch defines them (slug or `type-<uuid>` id, end of the
   type, icon grid, accent); the stores are then equal. Only the imported
-  rows' names are materialised: running the whole launch pass again would
-  add a padded legacy name once more (see the padded-name entry above).
+  rows' names are materialised, as Flutter's next launch would (a padded
+  one is added by Flutter's launch pass again; Swift's finds the one made
+  here, see the padded-name entry above).
 - Rows already stored are kept byte for byte. Flutter rewrites the whole
   `transactions` section in `toJson` form, which differs only for rows
   another writer produced, e.g. a local time that does not exist in the
@@ -1210,6 +1212,26 @@ what Flutter reads or shows):
   deletes the file.
 
 ## Deliberate differences (not yet approved)
+
+- A category name with leading or trailing spaces (a transaction's,
+  template's or budget key's; the typical fixture has "  Padded Cat ") no
+  longer adds a definition at every launch. Flutter's `_containsName`
+  (category_provider.dart:226) trims the candidate but not the stored
+  names, and `ensureLegacyCategoryNames` stores the name untrimmed (:93,
+  :98), so the definition it made never matches again: the debug build
+  went from 19 to 20 categories on the first launch and 29 after nine
+  restarts, each a new `type-<uuid>` row. Swift's first launch adds the
+  same one definition as Flutter's (same bytes, so the launch fixtures
+  still match); on later launches a definition stored before the launch
+  matches by its trimmed name and nothing is added. Inside one launch
+  Flutter's rule stands (two rows with the same padded name add two
+  definitions, once). Invisible to Dart beyond the missing duplicates:
+  the section is the same shape, and the Flutter build run after Swift
+  still adds its own duplicate (its bug). The parity tests load Flutter-
+  written stores with `matchesPaddedCategoryNames: false`, which is
+  Flutter's rule exactly, because a store that already holds the padded
+  definition (large_10k) is, for Flutter, a launch that adds another;
+  CategoryRelaunchTests holds the fix.
 
 - Dialog scrims (every `budgieDialog`) ignore taps while the keyboard is
   showing, hiding or changing height (between UIKit's will- and

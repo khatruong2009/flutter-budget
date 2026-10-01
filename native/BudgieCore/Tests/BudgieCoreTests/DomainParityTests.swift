@@ -30,7 +30,9 @@ func launch(_ scenario: Scenario, zone: TimeZone = Scenario.zone) async throws -
 }
 
 /// `launch`, plus the store's snapshot after the launch commits.
-func launchWithSnapshot(_ scenario: Scenario, zone: TimeZone = Scenario.zone) async throws -> (data: FinancialData, snapshot: FinancialSnapshot)? {
+func launchWithSnapshot(
+    _ scenario: Scenario, zone: TimeZone = Scenario.zone, matchesPaddedCategoryNames: Bool = false
+) async throws -> (data: FinancialData, snapshot: FinancialSnapshot)? {
     let calendar = DartCalendar(timeZone: zone)
     let now = scenario.launchNow(in: zone)
     let store = scenario.makeStore(zone: zone)
@@ -44,7 +46,8 @@ func launchWithSnapshot(_ scenario: Scenario, zone: TimeZone = Scenario.zone) as
         return nil
     }
     var loaded = FinancialData.load(
-        snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: { UUID().uuidString.lowercased() })
+        snapshot, preferences: scenario.preferences, calendar: calendar, now: { now }, newID: { UUID().uuidString.lowercased() },
+        matchesPaddedCategoryNames: matchesPaddedCategoryNames)
     if !loaded.pendingWrites.isEmpty { snapshot = try await store.updateSections(loaded.pendingWrites) }
     let result = RecurringGenerator.generateDue(in: &loaded.data, now: now, clock: { now }, newID: { UUID().uuidString.lowercased() })
     if result.changed {

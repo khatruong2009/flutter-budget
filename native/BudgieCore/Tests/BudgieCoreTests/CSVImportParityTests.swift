@@ -51,7 +51,7 @@ private func load(_ sections: JSONObject, prefs: [String: PreferenceValue] = [:]
 {
     FinancialData.load(
         FinancialSnapshot(revision: 1, sections: sections), preferences: InMemoryPreferences(prefs), calendar: calendar,
-        now: { now }, newID: { UUID().uuidString.lowercased() }
+        now: { now }, newID: { UUID().uuidString.lowercased() }, matchesPaddedCategoryNames: false
     ).data
 }
 

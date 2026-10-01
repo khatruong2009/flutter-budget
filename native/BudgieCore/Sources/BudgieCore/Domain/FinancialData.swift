@@ -38,6 +38,12 @@ public struct FinancialData: Sendable {
     /// Raw sections as loaded. Only the `appSettings` serializer reads it
     /// (unknown keys in that object survive a save).
     public private(set) var sections: JSONObject
+    /// Whether the launch pass treats a definition stored before it ran as
+    /// matching when its trimmed name matches (the padded-name fix, see
+    /// `materializeCategories`). `false` is Flutter's rule exactly; the
+    /// parity tests load Flutter-written stores with it off. Carried by
+    /// every value derived from the loaded data (restore, CSV import).
+    public internal(set) var matchesPaddedCategoryNames = true
 
     public var transactions: [TransactionRecord] { transactionRows.compactMap(\.record) }
     public var templates: [RecurringTemplate] { templateRows.compactMap(\.record) }
@@ -94,7 +100,7 @@ public struct FinancialData: Sendable {
 
     public static func load(
         _ snapshot: FinancialSnapshot, preferences: PreferencesStore, calendar: DartCalendar,
-        now: () -> DartDateTime, newID: () -> String
+        now: () -> DartDateTime, newID: () -> String, matchesPaddedCategoryNames: Bool = true
     ) -> LoadResult {
         let sections = snapshot.sections
         var pending: [(String, JSONValue)] = []
@@ -104,6 +110,7 @@ public struct FinancialData: Sendable {
             selectedNetWorthMonth: calendar.month(of: launch),
             appSettings: AppSettings.load(section: sections[Section.appSettings], preferences: preferences),
             sections: sections)
+        data.matchesPaddedCategoryNames = matchesPaddedCategoryNames
 
         // Transactions (getTransactions): unreadable rows are skipped by Dart
         // and kept verbatim here; blank or duplicate ids get fresh ones and
