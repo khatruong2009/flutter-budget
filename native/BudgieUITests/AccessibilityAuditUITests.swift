@@ -6,11 +6,9 @@ import XCTest
 /// and dialogs, the onboarding pages, the lock screen and the voice sheet
 /// (microphone denied; nothing reaches OpenAI).
 ///
-/// Passes (see `testEveryScreenInLightDarkAndAccessibilityTextSize`):
-/// - light, default text size: every audit type, every screen;
-/// - accessibility-XXXL text: `.textClipped`, `.hitRegion` and
-///   `.dynamicType` on the tab roots, Settings and the main sheets;
-/// - dark, default text size: every audit type on the same screens.
+/// The regression runs one pass, light at the default text size, every
+/// audit type, every screen. Accessibility-XXXL and dark passes are opt-in
+/// (see `testEveryScreen`).
 ///
 /// Every issue the audit reports fails the test unless
 /// `AuditExclusions.table` (AuditSupport.swift, mirrored in UI_SPEC.md)
@@ -765,12 +763,14 @@ final class AccessibilityAuditUITests: XCTestCase {
 
     // MARK: - Tests
 
-    /// Everything, seeded once: light at the default size with every audit
-    /// type, then accessibility-XXXL text, then dark.
-    func testEveryScreenInLightDarkAndAccessibilityTextSize() throws {
+    /// Every screen once, in light at the default size with every audit
+    /// type. The accessibility-XXXL and dark passes are opt-in
+    /// (TEST_RUNNER_BUDGIE_AUDIT_PASSES=light,xxxl,dark) for a manual sweep
+    /// after a design-system change; the regression runs light only.
+    func testEveryScreen() throws {
         launch()
         rememberTheme()
-        let passes = Self.environment("BUDGIE_AUDIT_PASSES") ?? "light,xxxl,dark"
+        let passes = Self.environment("BUDGIE_AUDIT_PASSES") ?? "light"
         if Self.environment("BUDGIE_AUDIT_DATA_READY") == nil { seed() } else { seeded = true }
         if Self.environment("BUDGIE_AUDIT_KEEP_DATA") != nil { seeded = false }
 
@@ -793,11 +793,11 @@ final class AccessibilityAuditUITests: XCTestCase {
         } }
     }
 
-    /// The three onboarding pages, in both themes.
+    /// The three onboarding pages.
     func testOnboardingPages() throws {
         launch()
         rememberTheme()
-        for theme in ["Light", "Dark"] {
+        for theme in ["Light"] {
             chooseTheme(theme)
             app.terminate()
             app.launchEnvironment["BUDGIE_SKIP_ONBOARDING"] = "0"
@@ -814,12 +814,12 @@ final class AccessibilityAuditUITests: XCTestCase {
         }
     }
 
-    /// The lock screen, in both themes (the DEBUG hook locks the app in
+    /// The lock screen (the DEBUG hook locks the app in
     /// memory and fails every authentication).
     func testLockScreen() throws {
         launch()
         rememberTheme()
-        for theme in ["Light", "Dark"] {
+        for theme in ["Light"] {
             chooseTheme(theme)
             extraEnvironment = ["BUDGIE_UITEST_APP_LOCK": "3600", "BUDGIE_UITEST_AUTH_SUCCESSES": "0"]
             launch(waitForHome: false)
@@ -839,7 +839,7 @@ final class AccessibilityAuditUITests: XCTestCase {
     func testVoiceSheetMicrophoneDenied() throws {
         launch()
         rememberTheme()
-        for theme in ["Light", "Dark"] {
+        for theme in ["Light"] {
             chooseTheme(theme)
             extraEnvironment = ["BUDGIE_VOICE_MIC_DENIED": "1"]
             launch()

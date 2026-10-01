@@ -966,17 +966,19 @@ accepted or not, to a file).
   an expense, an income and an older expense, a tag, a budget, a Worth
   account and a goal. Home is audited at the top and scrolled to the bottom,
   as are the tab roots, Settings and the long pushed pages.
-- Passes, in one test method (seed once): light at the default size with
-  every audit type but `.textClipped` on every screen; accessibility-XXXL
-  Dynamic Type (launch argument `-UIPreferredContentSizeCategoryName
-  UICTContentSizeCategoryAccessibilityXXXL`) with `.textClipped`,
-  `.hitRegion` and `.dynamicType` on the tab roots, Settings and the main
-  sheets; dark at the default size with every audit type but `.textClipped`
-  on the same screens. The theme is chosen through Settings and put back.
-  Separate methods: the three onboarding pages and the lock screen (DEBUG
-  hook `BUDGIE_UITEST_APP_LOCK`, authentication refused) and the voice sheet
-  with the microphone denied (`BUDGIE_VOICE_MIC_DENIED`; nothing reaches
-  OpenAI), each in light and dark.
+- The regression runs one pass (`testEveryScreen`, seeded once): light at
+  the default size with every audit type but `.textClipped`, on every
+  screen. Accessibility-XXXL Dynamic Type (launch argument
+  `-UIPreferredContentSizeCategoryName
+  UICTContentSizeCategoryAccessibilityXXXL`; `.textClipped`, `.hitRegion`,
+  `.dynamicType` on the tab roots, Settings and the main sheets) and dark
+  (every type but `.textClipped`, same screens) are opt-in for a manual
+  sweep after a design-system change:
+  `TEST_RUNNER_BUDGIE_AUDIT_PASSES=light,xxxl,dark`. The theme is chosen
+  through Settings and put back. Separate methods, light only: the three
+  onboarding pages, the lock screen (DEBUG hook `BUDGIE_UITEST_APP_LOCK`,
+  authentication refused) and the voice sheet with the microphone denied
+  (`BUDGIE_VOICE_MIC_DENIED`; nothing reaches OpenAI).
 - `.textClipped` runs only at XXXL. "May be clipped at larger Dynamic Type
   sizes" is a prediction; at the default size it fired for dozens of
   one-line labels and for every text in any bottom sheet, a plain SwiftUI
