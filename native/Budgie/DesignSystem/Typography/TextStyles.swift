@@ -70,9 +70,17 @@ extension TextSpec {
     static let numericMediumBold = TextSpec(face: .gabaritoBold, size: 22, tracking: -0.2, height: 1.3, tabular: true, relativeTo: .title2)
     static let numericSmall = TextSpec(face: .gabaritoSemiBold, size: 17, tracking: -0.4, height: 1.3, tabular: true, relativeTo: .body)
 
+    /// The text style the size scales with. `.caption2` is the one style that
+    /// is 11pt from the smallest size up to Large, so the Dynamic Type audit
+    /// reads text scaled with it as only partly supporting Dynamic Type;
+    /// `.caption` is 12pt at Large and grows from there. Scaling is a ratio to
+    /// the size at Large, so either gives `size` at the default setting and the
+    /// two grow alike above it.
+    var scalingStyle: Font.TextStyle { relativeTo == .caption2 ? .caption : relativeTo }
+
     /// The font alone (for places that take a `Font`, e.g. `Text` concatenation).
     func font(scaledSize: CGFloat? = nil) -> Font {
-        let font = Font.custom(face.postScriptName, size: scaledSize ?? size, relativeTo: relativeTo)
+        let font = Font.custom(face.postScriptName, size: scaledSize ?? size, relativeTo: scalingStyle)
         return tabular ? font.monospacedDigit() : font
     }
 }
@@ -93,6 +101,47 @@ extension View {
     /// same way.
     func textStyle(_ spec: TextSpec) -> some View {
         modifier(TextStyleModifier(spec: spec))
+    }
+}
+
+extension View {
+    /// One line, as designed (Flutter's `maxLines: 1`), at every size up to
+    /// the accessibility sizes; there the text may wrap instead of being cut
+    /// off with an ellipsis. The default look is unchanged.
+    func singleLine() -> some View { modifier(SingleLineModifier()) }
+}
+
+private struct SingleLineModifier: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    func body(content: Content) -> some View {
+        // Only at accessibility sizes does it set a scale factor, so a
+        // `minimumScaleFactor` given by the caller still applies below them.
+        if typeSize.isAccessibilitySize {
+            content.lineLimit(3).minimumScaleFactor(0.6)
+        } else {
+            content.lineLimit(1)
+        }
+    }
+}
+
+extension View {
+    /// Text with no line limit at the regular sizes (as designed); at
+    /// accessibility sizes at most two lines, shrunk if need be so that no
+    /// word is broken in the middle (a long word in a narrow chip or card
+    /// otherwise wraps letter by letter).
+    func wrapsWords() -> some View { modifier(WrapsWordsModifier()) }
+}
+
+private struct WrapsWordsModifier: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    func body(content: Content) -> some View {
+        if typeSize.isAccessibilitySize {
+            content.lineLimit(2).minimumScaleFactor(0.5)
+        } else {
+            content
+        }
     }
 }
 
@@ -123,7 +172,7 @@ private struct TextStyleModifier: ViewModifier {
 
     init(spec: TextSpec) {
         self.spec = spec
-        _scaledSize = ScaledMetric(wrappedValue: spec.size, relativeTo: spec.relativeTo)
+        _scaledSize = ScaledMetric(wrappedValue: spec.size, relativeTo: spec.scalingStyle)
     }
 
     func body(content: Content) -> some View {

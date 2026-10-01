@@ -95,7 +95,7 @@ struct GoalCard: View {
                     Text(goal.name)
                         .textStyle(.goalTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
+                        .singleLine()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     PillChip(label: status.label, color: color, style: .badgeSmall)
                         .fixedSize()

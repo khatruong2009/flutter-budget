@@ -59,7 +59,7 @@ struct AccountHistoryView: View {
                 Text(entry?.name ?? "")
                     .textStyle(.cardTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .accessibilityAddTraits(.isHeader)
             }
             if let entry {

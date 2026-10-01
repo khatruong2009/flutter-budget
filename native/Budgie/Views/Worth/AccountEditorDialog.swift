@@ -53,6 +53,7 @@ struct AccountEditorDialog: View {
 
     private var isEditing: Bool { request.entry != nil }
     private var accent: Color { type == .asset ? BudgieColor.income : BudgieColor.danger }
+    private var wash: Color { type == .asset ? BudgieColor.chartIncome : BudgieColor.chartDanger }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -127,7 +128,8 @@ struct AccountEditorDialog: View {
                     .foregroundStyle(BudgieColor.textPrimary)
                     .frame(width: 32, height: 32)
                     .background(BudgieColor.dialogCloseFill, in: Circle())
-                    .contentShape(Circle())
+                    // The circle draws 32pt; the tap area is 44.
+                    .tapArea(horizontal: 6, vertical: 6)
             }
             .buttonStyle(.plain)
             .disabled(saving)
@@ -136,8 +138,10 @@ struct AccountEditorDialog: View {
         }
         .padding(EdgeInsets(top: 24, leading: 24, bottom: 16, trailing: 24))
         .background(
+            // Flutter's lighter green and red wash: the accent text colour is
+            // darker for contrast.
             LinearGradient(
-                colors: [accent.opacity(0.22), accent.opacity(0.10)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                colors: [wash.opacity(0.22), wash.opacity(0.10)], startPoint: .topLeading, endPoint: .bottomTrailing)
         )
         // Inside the dialog card's 1pt border (radius 26).
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 25, topTrailingRadius: 25, style: .continuous))
@@ -366,7 +370,8 @@ private struct BalanceMonthGrid: View {
                     isSelected ? BudgieColor.onAccent : enabled ? BudgieColor.textPrimary : BudgieColor.textTertiary)
                 .frame(maxWidth: .infinity, minHeight: 36)
                 .background(isSelected ? BudgieColor.accent : Color.clear, in: shape)
-                .contentShape(shape)
+                // The cell draws 36pt tall; the tap area is 44.
+                .tapArea(vertical: 4)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
@@ -380,7 +385,8 @@ private struct BalanceMonthGrid: View {
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(enabled ? BudgieColor.textSecondary : BudgieColor.textTertiary)
                 .frame(width: Metrics.touchTarget, height: 32)
-                .contentShape(Rectangle())
+                // 32pt tall; the tap area is 44.
+                .tapArea(vertical: 6)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)

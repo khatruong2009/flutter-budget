@@ -19,14 +19,11 @@ struct WorthGrowthCard: View {
         let points = range.filter(history, calendar: calendar)
         GlowCard(padding: 0) {
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 0) {
-                    Text("Growth")
-                        .textStyle(.cardTitle)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .accessibilityAddTraits(.isHeader)
-                    SegmentedPills(items: NetWorthGrowthRange.allCases.map(\.label), selection: rangeIndex, mono: true)
-                        .accessibilityIdentifier("worth.growth.range")
+                // The pills drop under the title when the row is too narrow
+                // for both (the largest text sizes).
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 0) { growthTitle.frame(maxWidth: .infinity, alignment: .leading); growthRange }
+                    VStack(alignment: .leading, spacing: 8) { growthTitle; growthRange }
                 }
                 .padding(.horizontal, 4)
                 if points.isEmpty {
@@ -48,6 +45,18 @@ struct WorthGrowthCard: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("worth.growth")
+    }
+
+    private var growthTitle: some View {
+        Text("Growth")
+            .textStyle(.cardTitle)
+            .foregroundStyle(BudgieColor.textPrimary)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    private var growthRange: some View {
+        SegmentedPills(items: NetWorthGrowthRange.allCases.map(\.label), selection: rangeIndex, mono: true)
+            .accessibilityIdentifier("worth.growth.range")
     }
 
     /// Only a change of range clears the selection (Flutter fires

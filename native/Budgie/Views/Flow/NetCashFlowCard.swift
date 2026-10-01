@@ -55,7 +55,7 @@ private struct NetCashFlowBars: View {
                     .offset(y: CashFlowMath.barBaselineY)
                     .accessibilityHidden(true)
                 ForEach(Array(layout.bars.enumerated()), id: \.element.entry.month) { index, bar in
-                    NetCashFlowBarColumn(bar: bar, barWidth: barWidth, formatter: formatter) { onSelect(bar.entry) }
+                    NetCashFlowBarColumn(bar: bar, barWidth: barWidth, gap: gap, formatter: formatter) { onSelect(bar.entry) }
                         .offset(x: gap / 2 + CGFloat(index) * (barWidth + gap))
                 }
             }
@@ -73,6 +73,9 @@ private struct NetCashFlowBars: View {
 private struct NetCashFlowBarColumn: View {
     let bar: CashFlowMath.Bar
     let barWidth: CGFloat
+    /// The free space around the column (half of it on each side), which
+    /// the tap area takes up so neighbouring columns do not overlap.
+    let gap: CGFloat
     let formatter: MoneyFormatter
     let action: () -> Void
 
@@ -111,7 +114,7 @@ private struct NetCashFlowBarColumn: View {
                 .frame(height: height, alignment: .bottom)
         }
         .frame(width: barWidth, height: height, alignment: .topLeading)
-        .contentShape(Rectangle())
+        .tapArea(horizontal: max(0, gap / 2))
         .onTapGesture {
             taps += 1
             action()

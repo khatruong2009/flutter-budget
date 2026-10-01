@@ -17,7 +17,7 @@ struct GoalActionsSheet: View {
             Text(goal.name)
                 .textStyle(.goalTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
-                .lineLimit(1)
+                .singleLine()
                 .accessibilityAddTraits(.isHeader)
                 .padding(EdgeInsets(top: 12, leading: 12, bottom: 8, trailing: 12))
             GoalActionTile(title: "Edit goal", symbol: "pencil", color: BudgieColor.textPrimary, action: onEdit)

@@ -38,6 +38,7 @@ struct BudgieHeader<Trailing: View, Accessory: View>: View {
             Text(title ?? "")
                 .textStyle(.pageTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
+                .wrapsWords()
                 .accessibilityAddTraits(.isHeader)
         }
     }
@@ -79,7 +80,10 @@ struct SectionHeader: View {
                     taps += 1
                     action?()
                 } label: {
+                    // The text is about 14pt tall and 32-60pt wide; the tap
+                    // area is 44 x 44.
                     Text(link).textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
+                        .tapArea(horizontal: 6, vertical: 15)
                 }
                 .buttonStyle(.plain)
                 .disabled(action == nil)

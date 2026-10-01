@@ -101,6 +101,8 @@ struct MonthDetailSheet: View {
         }
         // Top: 16 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 20.
         .padding(EdgeInsets(top: 16, leading: 20, bottom: 24, trailing: 20))
+        // A container: the identifier must not replace the tiles' elements.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("flow.monthDetail")
         // 16, the 44pt tile, 20, the tiles (14 + 16 + 6 + amount + 14), 12,
         // the net row (14 + chipAmount + 14), 24.

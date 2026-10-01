@@ -74,7 +74,7 @@ struct CategoryTransactionsView: View {
                 Text(category)
                     .textStyle(.cardTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .accessibilityAddTraits(.isHeader)
             }
         }
@@ -139,7 +139,7 @@ private struct SummaryCard: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("TOTAL SPENT")
                         .textStyle(.eyebrow)
-                        .foregroundStyle(BudgieColor.textSecondary)
+                        .foregroundStyle(BudgieColor.textSecondaryOnTint)
                     Text(total)
                         .textStyle(.heroSmall)
                         .foregroundStyle(BudgieColor.textPrimary)
@@ -166,8 +166,8 @@ private struct SummaryCard: View {
 
     @ViewBuilder
     private func pills(_ month: String, _ count: String) -> some View {
-        PillChip(label: month, color: color)
-        PillChip(label: count, color: color)
+        PillChip(label: month, color: color, textColor: BudgieColor.legible(color, tint: 0.35))
+        PillChip(label: count, color: color, textColor: BudgieColor.legible(color, tint: 0.35))
     }
 }
 

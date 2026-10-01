@@ -45,10 +45,10 @@ struct AllocationDialog: View {
                         symbol: AmountInput.currencySymbolName(formatter), keyboard: .decimalPad,
                         error: error, autofocus: true)
                     FlowLayout(spacing: 8) {
-                        chip(formatter.format(25), fill: 25, identifier: "goals.allocate.chip.25")
-                        chip(formatter.format(100), fill: 100, identifier: "goals.allocate.chip.100")
+                        chip(formatter.format(25), spoken: "Fill amount \(formatter.format(25))", fill: 25, identifier: "goals.allocate.chip.25")
+                        chip(formatter.format(100), spoken: "Fill amount \(formatter.format(100))", fill: 100, identifier: "goals.allocate.chip.100")
                         if goal.remainingAmount > 0 {
-                            chip("Finish goal", fill: goal.finishAmount, identifier: "goals.allocate.chip.finish")
+                            chip("Finish goal", spoken: "Finish goal", fill: goal.finishAmount, identifier: "goals.allocate.chip.finish")
                         }
                     }
                 }
@@ -67,7 +67,7 @@ struct AllocationDialog: View {
     }
 
     /// A quick amount: fills `fill` to cents, replacing the text.
-    private func chip(_ label: String, fill: Double, identifier: String) -> some View {
+    private func chip(_ label: String, spoken: String, fill: Double, identifier: String) -> some View {
         Button {
             chipTaps += 1
             text = formatter.formatNumber(fill, decimalDigits: 2)
@@ -79,9 +79,11 @@ struct AllocationDialog: View {
                 .padding(.vertical, 9 + Metrics.borderThin)
                 .background(BudgieColor.chipSurface, in: Capsule())
                 .overlay(Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
-                .contentShape(Capsule())
+                // The chip draws 36pt tall; the tap area is 44.
+                .tapArea(vertical: 4)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(spoken)
         .accessibilityHint("Fills the allocation amount")
         .accessibilityIdentifier(identifier)
     }

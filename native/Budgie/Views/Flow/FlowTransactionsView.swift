@@ -341,7 +341,9 @@ private struct FiltersCard: View {
                             maxText = ""
                             filter.reset()
                         } label: {
+                            // The text is about 14pt tall; the tap area is 44.
                             Text("RESET").textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
+                                .tapArea(horizontal: 6, vertical: 15)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("Reset filters")
@@ -412,6 +414,8 @@ private struct FiltersCard: View {
             PillChip(
                 label: name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
                 symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
+                // The chip draws about 34pt tall; the tap area is 44.
+                .tapArea(vertical: 5)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(name)
@@ -448,6 +452,9 @@ private struct SearchField: View {
             .foregroundStyle(BudgieColor.textPrimary)
             .submitLabel(.search)
             .focused($focused)
+            // The whole 56pt field, so the text field's own element is not
+            // a 19pt target; the text stays centred.
+            .frame(maxHeight: .infinity)
             .accessibilityLabel("Search descriptions")
             .accessibilityIdentifier("flow.all.search")
             if showsClear {
@@ -519,7 +526,7 @@ private struct FilterButton: View {
                     Text(value)
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
+                        .singleLine()
                         .truncationMode(.tail)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -568,7 +575,7 @@ private struct AmountField: View {
                 Text(label)
                     .textStyle(Self.floatingLabel)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .lineLimit(1)
+                    .singleLine()
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
@@ -689,13 +696,13 @@ private struct ResultRow: View {
                     Text(row.flowSubtitle)
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
-                        .lineLimit(1)
+                        .singleLine()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text(amount)
                     .textStyle(.amountSmall)
                     .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .layoutPriority(1)
             }
             .padding(12)

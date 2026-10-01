@@ -25,32 +25,33 @@ All paths relative to W = `.../swiftui-mvp-migration-71aa05`. Flutter paths are 
 | trackSecondary | D9D9E6 | 2A2A3E | 18, 29 | no |
 | donutRemainder | C9C9DA | 3A3A52 | 19, 30 | no |
 | textPrimary | 111827 | F2F2FA | 122, 128 | no |
-| textSecondary | 6B7280 | 9A9AB5 | 123, 129 | no |
-| textTertiary | 9CA3AF | 5C5C78 | 124, 130 | no |
+| textSecondary | 6B7280 (Swift 626977, WCAG AA) | 9A9AB5 | 123, 129 | no |
+| textTertiary | 9CA3AF (Swift 686F7A, WCAG AA) | 5C5C78 (Swift 81829F, WCAG AA) | 124, 130 | no |
 | onAccent | FFFFFF | 0A0A12 | 14, 42 | no |
-| accent | 6366F1 | 818CF8 | 7, 13, 35 | yes |
-| income/success | 10B981 | 34D399 | 88, 103 | yes |
-| expense/danger/error | EF4444 | FB7185 | 15, 92, 108 | yes (as `expense`) |
-| warning | F59E0B | FBBF24 | 98, 107 | yes |
+| accent | 6366F1 (Swift 5453DD, WCAG AA) | 818CF8 | 7, 13, 35 | yes |
+| income/success | 10B981 (Swift 07744F, WCAG AA) | 34D399 | 88, 103 | yes |
+| expense/danger/error | EF4444 (Swift C60D21, WCAG AA) | FB7185 | 15, 92, 108 | yes (as `expense`) |
+| warning | F59E0B (Swift 8F5B05, WCAG AA) | FBBF24 | 98, 107 | yes |
 | info/neutral | 3B82F6 | 60A5FA | 96, 105 | only as the "blue" token |
 | pink | F0ABFC | F0ABFC | 16 | not dynamic |
-| dockInactiveIcon | 6B7280 (textSecondary) | 8A8AA8 | 20; `floating_dock.dart:243` | no |
+| dockInactiveIcon | 6B7280 (Swift 636A78, WCAG AA on the track) | 8A8AA8 | 20; `floating_dock.dart:243` | no |
 | dockBackground | white @88% | 13131F @88% | 21; `floating_dock.dart:155` | no |
 | dockBorder | black @8% | white @10% | `floating_dock.dart:158` | no |
 | gauge thumb | white + 2pt accent@60% border | F2F2FA | `glow_progress_bar.dart:104-111` | no |
 | split-bar gradient | 2AB98A to 34D399 | same | `glow_progress_bar.dart:159,169` | no |
-| primary dark/light | 4F46E5 / 818CF8 | | 8-9 | no |
+| primary dark/light | 4F46E5 / 818CF8 (Swift `primary` itself: 5453DD in both modes, was 6366F1) | | 8-9 | no |
 
 - **Gradients (135 degrees, topLeft to bottomRight)** (137-197):
 
 | Gradient | Light | Dark |
 |---|---|---|
-| primary | 6366F1 to 8B5CF6 | 4F46E5 to 7C3AED |
-| income | 10B981 to 34D399 | 059669 to 10B981 |
-| expense | EF4444 to F87171 | DC2626 to EF4444 |
+| primary | 6366F1 to 8B5CF6 (Swift 5F61EC to 8757F1) | 4F46E5 to 7C3AED |
+| income | 10B981 to 34D399 (Swift 006E4B to 05875E) | 059669 to 10B981 (Swift 056647 to 04875D) |
+| expense | EF4444 to F87171 (Swift C2021D to CC4A4D) | DC2626 to EF4444 (Swift CC0716 to DF3337) |
 | amber | F59E0B to F97316 | FBBF24 to FB923C |
 | blue | 3B82F6 to 60A5FA | 2563EB to 3B82F6 |
 
+  - Swift (2026-09-30, owner-approved): the gradients sit behind white labels, so both stops of the primary, income and expense gradients were darkened until white reaches 4.5:1 (the Flutter stops are given above in brackets); see UI_SPEC "Accessibility audit".
   - They are only used by the legacy `AppButton.primary`, the Add Expense/Income buttons and `ModernAppBar`.
   - `MonthSelector` chips use a primary-to-primary@80% gradient.
 - **Chart/category palette:** 14 colours per mode (200-241). Light is 6366F1, 8B5CF6, 10B981, 34D399, EF4444, F87171, F59E0B, FBBF24, 3B82F6, 60A5FA, EC4899, F472B6, 14B8A6, 2DD4BF. Dark is the lighter set at 224-237. The Spend donut ranks accent, income, danger, warning, info, pink first (per G).

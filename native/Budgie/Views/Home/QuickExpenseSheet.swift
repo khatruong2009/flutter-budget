@@ -54,7 +54,7 @@ struct QuickExpenseSheet: View {
                 Text(category.name)
                     .textStyle(.rowTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                 Spacer(minLength: 8)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 16, weight: .regular))

@@ -175,6 +175,7 @@ private struct SummaryCard: View {
                     Text("Net Cash Flow")
                         .textStyle(Self.netLabel)
                         .foregroundStyle(BudgieColor.textPrimary)
+                        .wrapsWords()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(netText)
                         .textStyle(Self.amountText)
@@ -263,7 +264,7 @@ private struct TransactionRow: View {
                     Text(MonthListCopy.rowSubtitle(record))
                         .textStyle(.caption)
                         .foregroundStyle(BudgieColor.textTertiary)
-                        .lineLimit(1)
+                        .singleLine()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 // Its own width first (Flutter's amount is not flexible), so

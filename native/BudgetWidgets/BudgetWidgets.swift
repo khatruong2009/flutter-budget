@@ -126,13 +126,15 @@ struct BudgetQuickActionsEntryView: View {
       actionButton(
         title: "Income",
         icon: "plus.circle.fill",
-        color: Color(red: 0.33, green: 0.74, blue: 0.47),
+        // Darkened from (0.33, 0.74, 0.47) so the white label passes WCAG AA (4.5:1).
+        color: Color(red: 0.047, green: 0.533, blue: 0.278),
         destination: incomeURL
       )
       actionButton(
         title: "Expense",
         icon: "minus.circle.fill",
-        color: Color(red: 0.90, green: 0.40, blue: 0.35),
+        // Darkened from (0.90, 0.40, 0.35), as above.
+        color: Color(red: 0.792, green: 0.302, blue: 0.259),
         destination: expenseURL
       )
     }
@@ -203,7 +205,8 @@ struct BudgetVoiceAddProvider: TimelineProvider {
 struct BudgetVoiceAddEntryView: View {
   var entry: BudgetVoiceAddProvider.Entry
 
-  private let accentColor = Color(red: 0.51, green: 0.55, blue: 0.97)
+  // Nudged from (0.51, 0.55, 0.97): the white mic glyph needs 3:1 against it.
+  private let accentColor = Color(red: 0.506, green: 0.545, blue: 0.965)
 
   var body: some View {
     VStack(spacing: 0) {

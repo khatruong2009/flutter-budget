@@ -206,6 +206,7 @@ struct WorthHero: View {
             Text(NetWorthText.heroEyebrow(month: month))
                 .textStyle(.eyebrow)
                 .foregroundStyle(BudgieColor.textSecondary)
+                .wrapsWords()
                 .accessibilityAddTraits(.isHeader)
             Group {
                 if formatter.hideBalances {
@@ -214,7 +215,7 @@ struct WorthHero: View {
                         .textStyle(.heroMedium)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .textGlow(glow, alpha: 0.35)
-                        .lineLimit(1)
+                        .singleLine()
                 } else {
                     RollingAmount(
                         text: label, color: BudgieColor.textPrimary, glow: glow, style: .heroMedium, glowAlpha: 0.35,
@@ -256,7 +257,7 @@ private struct DeltaPill: View {
                 .accessibilityHidden(true)
             Text(label)
                 .textStyle(Self.text)
-                .lineLimit(1)
+                .singleLine()
                 .truncationMode(.tail)
         }
         .foregroundStyle(color)

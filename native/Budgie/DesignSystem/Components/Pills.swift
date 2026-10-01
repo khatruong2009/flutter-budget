@@ -1,10 +1,28 @@
 import SwiftUI
 
+extension View {
+    /// Grows a control's tap area, and with it its accessibility frame, by
+    /// `horizontal` and `vertical` points on each side (WCAG 2.5.8 / HIG:
+    /// 44 x 44pt) without moving anything: the growth is transparent and is
+    /// taken back out of the layout, so the control draws and lays out as
+    /// before. Apply it to a Button's label.
+    func tapArea(horizontal: CGFloat = 0, vertical: CGFloat = 0) -> some View {
+        padding(.horizontal, horizontal)
+            .padding(.vertical, vertical)
+            .contentShape(Rectangle())
+            .padding(.horizontal, -horizontal)
+            .padding(.vertical, -vertical)
+    }
+}
+
 /// Small badge (`PillChip`): tinted (colour at 14%) or outlined (colour at
 /// 40%), optional 15pt symbol, badge text in the colour.
 struct PillChip: View {
     let label: String
     let color: Color
+    /// The label's colour when it differs from the tint's `color` (a category
+    /// colour that is too pale to read as text; see `BudgieColor.legible`).
+    var textColor: Color? = nil
     var outlined = false
     var symbol: String? = nil
     var style: TextSpec = .badge
@@ -21,7 +39,7 @@ struct PillChip: View {
             }
             Text(label).textStyle(style)
         }
-        .foregroundStyle(color)
+        .foregroundStyle(textColor ?? color)
         .padding(.horizontal, horizontalPadding)
         .padding(.vertical, verticalPadding)
         .background(outlined ? Color.clear : color.opacity(0.14), in: Capsule())
@@ -120,6 +138,8 @@ struct SegmentedPills: View {
                 } label: {
                     Text(items[index])
                         .font(labelFont(selected: selected))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                         .tracking(0)
                         .foregroundStyle(
                             selected ? (mono ? BudgieColor.accent : BudgieColor.onAccent) : BudgieColor.dockInactiveIcon)
@@ -132,7 +152,8 @@ struct SegmentedPills: View {
                                     .matchedGeometryEffect(id: "active", in: namespace)
                             }
                         }
-                        .contentShape(Capsule())
+                        // The capsule draws 23-26pt tall; the tap area is 44.
+                        .tapArea(horizontal: mono ? 4 : 0, vertical: mono ? 11 : 9)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selected ? .isSelected : [])
@@ -140,12 +161,15 @@ struct SegmentedPills: View {
         }
         .padding(mono ? 0 : 3)
         .background { if !mono { Capsule().fill(BudgieColor.track) } }
+        // A container, so an identifier or label given to the control does
+        // not replace its segments' own elements.
+        .accessibilityElement(children: .contain)
         .motion(Motion.segment, value: selection)
         .sensoryFeedback(.selection, trigger: selection)
     }
 
     private func labelFont(selected: Bool) -> Font {
-        if mono { return .custom(BudgieFont.monoSemiBold.postScriptName, size: 11, relativeTo: .caption2) }
+        if mono { return .custom(BudgieFont.monoSemiBold.postScriptName, size: 11, relativeTo: .caption) }
         return .custom((selected ? BudgieFont.gabaritoBold : .gabaritoSemiBold).postScriptName, size: 12, relativeTo: .caption)
     }
 }
@@ -171,6 +195,10 @@ struct MonthPill: View {
             Text(label)
                 .textStyle(Self.labelText)
                 .foregroundStyle(dimmed ? BudgieColor.textSecondary : BudgieColor.textPrimary)
+                // One line, shrunk if it must be: "6 months" must not break
+                // letter by letter at the largest text sizes.
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
             // Material `expand_more_rounded` 16 / w500: a small chevron in a 16pt box.
             Image(systemName: "chevron.down")
                 .font(.system(size: 9, weight: .semibold))
@@ -188,7 +216,8 @@ struct MonthPill: View {
                 taps += 1
                 action()
             } label: {
-                pill
+                // The pill draws 38pt tall; the tap area is 44.
+                pill.tapArea(vertical: 3)
             }
             .buttonStyle(.plain)
             .sensoryFeedback(.impact(weight: .light), trigger: taps)

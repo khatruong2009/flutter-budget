@@ -64,7 +64,8 @@ private struct YearStepper: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(BudgieColor.textSecondary)
                 .frame(width: Metrics.touchTarget, height: 36)
-                .contentShape(Rectangle())
+                // 36pt tall; the tap area is 44.
+                .tapArea(vertical: 4)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)

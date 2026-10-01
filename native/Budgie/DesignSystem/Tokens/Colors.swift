@@ -21,21 +21,29 @@ enum BudgieColor {
 
     // Text
     static let textPrimary = dynamic(light: 0x111827, dark: 0xF2F2FA)
-    static let textSecondary = dynamic(light: 0x6B7280, dark: 0x9A9AB5)
-    static let textTertiary = dynamic(light: 0x9CA3AF, dark: 0x5C5C78)
+    // WCAG AA (4.5:1) on every surface the text sits on (owner-approved
+    // 2026-09-30, PARITY_GAPS "Colour tokens"): Flutter's light #6B7280 /
+    // #9CA3AF and dark #5C5C78 fell short, so these are the nearest values
+    // with the same hue that pass.
+    static let textSecondary = dynamic(light: 0x626977, dark: 0x9A9AB5)
+    static let textTertiary = dynamic(light: 0x686F7A, dark: 0x81829F)
     static let onAccent = dynamic(light: 0xFFFFFF, dark: 0x0A0A12)
 
     // Semantic
-    static let accent = dynamic(light: 0x6366F1, dark: 0x818CF8)
-    static let income = dynamic(light: 0x10B981, dark: 0x34D399)
+    // Light values are darkened to pass WCAG AA both as text on the light
+    // surfaces and tints, and behind a white label (Flutter: #6366F1,
+    // #10B981, #EF4444, #F59E0B). Dark values are unchanged.
+    static let accent = dynamic(light: 0x5453DD, dark: 0x818CF8)
+    static let income = dynamic(light: 0x07744F, dark: 0x34D399)
     /// Expense, over-limit and errors (`getDanger`).
-    static let danger = dynamic(light: 0xEF4444, dark: 0xFB7185)
-    static let warning = dynamic(light: 0xF59E0B, dark: 0xFBBF24)
+    static let danger = dynamic(light: 0xC60D21, dark: 0xFB7185)
+    static let warning = dynamic(light: 0x8F5B05, dark: 0xFBBF24)
     static let info = dynamic(light: 0x3B82F6, dark: 0x60A5FA)
     static let pink = Color(hex: 0xF0ABFC)
     static let cyan = Color(hex: 0x22D3EE)
-    /// `AppColors.primary`: the same indigo in both modes (unlike `accent`).
-    static let primary = Color(hex: 0x6366F1)
+    /// `AppColors.primary`: the same indigo in both modes (unlike `accent`);
+    /// darkened from #6366F1 so the white month chip label passes AA.
+    static let primary = Color(hex: 0x5453DD)
     static let primaryDark = Color(hex: 0x4F46E5)
     static let primaryLight = Color(hex: 0x818CF8)
     /// `AppColors.expense` / `AppColors.income`: the same red and green in
@@ -81,7 +89,9 @@ enum BudgieColor {
     static let versionTile = overlay(dark: 0.06, light: 0.06)
 
     // Dock (unused by the native tab bar; kept for custom chrome)
-    static let dockInactiveIcon = dynamic(light: 0x6B7280, dark: 0x8A8AA8)
+    /// The segmented pills' unselected label too (on the 0xE9E9F1 track); light
+    /// darkened from #6B7280 to pass AA there.
+    static let dockInactiveIcon = dynamic(light: 0x636A78, dark: 0x8A8AA8)
 
     /// The split bar's assets segment (`glow_progress_bar.dart`).
     static let splitBarGradient = LinearGradient(
@@ -92,9 +102,16 @@ enum BudgieColor {
         colors: [Color(hex: 0x0A0A12), Color(hex: 0x0F0F18)], startPoint: .top, endPoint: .bottom)
 
     // 135-degree gradients (topLeading to bottomTrailing)
-    static let primaryGradient = gradient(light: (0x6366F1, 0x8B5CF6), dark: (0x4F46E5, 0x7C3AED))
-    static let incomeGradient = gradient(light: (0x10B981, 0x34D399), dark: (0x059669, 0x10B981))
-    static let expenseGradient = gradient(light: (0xEF4444, 0xF87171), dark: (0xDC2626, 0xEF4444))
+    // The gradients sit behind white labels (the form and sheet buttons), so
+    // both stops of each pass AA against white; the stops keep their lightness
+    // gap. Flutter: primary (#6366F1, #8B5CF6), income (#10B981, #34D399) /
+    // (#059669, #10B981), expense (#EF4444, #F87171) / (#DC2626, #EF4444).
+    static let primaryStops = stops(light: (0x5F61EC, 0x8757F1), dark: (0x4F46E5, 0x7C3AED))
+    static let incomeStops = stops(light: (0x006E4B, 0x05875E), dark: (0x056647, 0x04875D))
+    static let expenseStops = stops(light: (0xC2021D, 0xCC4A4D), dark: (0xCC0716, 0xDF3337))
+    static let primaryGradient = gradient(primaryStops)
+    static let incomeGradient = gradient(incomeStops)
+    static let expenseGradient = gradient(expenseStops)
     static let amberGradient = gradient(light: (0xF59E0B, 0xF97316), dark: (0xFBBF24, 0xFB923C))
     static let blueGradient = gradient(light: (0x3B82F6, 0x60A5FA), dark: (0x2563EB, 0x3B82F6))
 
@@ -105,6 +122,13 @@ enum BudgieColor {
         [0x818CF8, 0xA78BFA, 0x34D399, 0x6EE7B7, 0xF87171, 0xFCA5A5, 0xFBBF24, 0xFCD34D, 0x60A5FA, 0x93C5FD, 0xF472B6,
          0xF9A8D4, 0x2DD4BF, 0x5EEAD4]
     ).map { dynamic(light: $0, dark: $1) }
+
+    // The Spend donut's rank palette keeps Flutter's values (the chart
+    // palette is unchanged): the slices are graphics, not text.
+    static let chartAccent = dynamic(light: 0x6366F1, dark: 0x818CF8)
+    static let chartIncome = dynamic(light: 0x10B981, dark: 0x34D399)
+    static let chartDanger = dynamic(light: 0xEF4444, dark: 0xFB7185)
+    static let chartWarning = dynamic(light: 0xF59E0B, dark: 0xFBBF24)
 
     /// A category `colorToken` (`category_settings_page.dart` `_tokenColor`);
     /// unknown tokens use the accent. Purple is 818CF8 in both modes.
@@ -121,6 +145,27 @@ enum BudgieColor {
         }
     }
 
+    /// `textSecondary` for text on a strongly tinted card (a category colour
+    /// at 22%, or the Worth hero's wash and glow), where the page-level value
+    /// reaches only 3.3-4.4:1.
+    static let textSecondaryOnTint = dynamic(light: 0x4B5563, dark: 0xBEBED2)
+
+    /// A category or chart colour as text on its own tint (the colour at up
+    /// to 18% over the card): the colour itself when that reaches 4.5:1, else
+    /// the colour mixed towards the primary text colour until it does. The
+    /// palette includes teals, pinks and light blues that cannot be read as
+    /// text on a pale tint.
+    /// `tint` is the strongest share of the colour behind the text: 0.18 for
+    /// a chip on a card, 0.35 for a chip on a tinted card.
+    static func legible(_ color: Color, tint: Double = 0.18) -> Color {
+        Color(UIColor { traits in
+            let base = UIColor(color).resolvedColor(with: traits)
+            let card = UIColor(BudgieColor.card).resolvedColor(with: traits)
+            let ink = UIColor(textPrimary).resolvedColor(with: traits)
+            return LegibleColor.mix(base, towards: ink, on: card, tint: tint)
+        })
+    }
+
     static func dynamic(light: UInt32, dark: UInt32, alpha: Bool = false) -> Color {
         Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(hex: dark, alpha: alpha) : UIColor(hex: light, alpha: alpha) })
     }
@@ -130,10 +175,16 @@ enum BudgieColor {
         Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(white: 1, alpha: dark) : UIColor(white: 0, alpha: light) })
     }
 
+    private static func stops(light: (UInt32, UInt32), dark: (UInt32, UInt32)) -> [Color] {
+        [dynamic(light: light.0, dark: dark.0), dynamic(light: light.1, dark: dark.1)]
+    }
+
+    private static func gradient(_ stops: [Color]) -> LinearGradient {
+        LinearGradient(colors: stops, startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
     private static func gradient(light: (UInt32, UInt32), dark: (UInt32, UInt32)) -> LinearGradient {
-        LinearGradient(
-            colors: [dynamic(light: light.0, dark: dark.0), dynamic(light: light.1, dark: dark.1)],
-            startPoint: .topLeading, endPoint: .bottomTrailing)
+        gradient(stops(light: light, dark: dark))
     }
 }
 
@@ -147,5 +198,40 @@ extension UIColor {
         self.init(
             red: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
             blue: CGFloat(hex & 0xFF) / 255, alpha: alpha ? CGFloat((hex >> 24) & 0xFF) / 255 : 1)
+    }
+}
+
+/// The arithmetic behind `BudgieColor.legible`.
+private enum LegibleColor {
+    static func mix(_ base: UIColor, towards ink: UIColor, on card: UIColor, tint: Double) -> UIColor {
+        for step in 0...20 {
+            let candidate = blend(base, ink, Double(step) / 20)
+            if contrast(candidate, tinted(candidate, over: card, alpha: tint)) >= 4.5 { return candidate }
+        }
+        return ink
+    }
+
+    private static func components(_ color: UIColor) -> (Double, Double, Double) {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (Double(r), Double(g), Double(b))
+    }
+
+    private static func blend(_ a: UIColor, _ b: UIColor, _ t: Double) -> UIColor {
+        let (ar, ag, ab) = components(a), (br, bg, bb) = components(b)
+        return UIColor(red: ar + (br - ar) * t, green: ag + (bg - ag) * t, blue: ab + (bb - ab) * t, alpha: 1)
+    }
+
+    private static func tinted(_ color: UIColor, over card: UIColor, alpha: Double) -> UIColor { blend(card, color, alpha) }
+
+    private static func luminance(_ color: UIColor) -> Double {
+        func lin(_ v: Double) -> Double { v <= 0.04045 ? v / 12.92 : pow((v + 0.055) / 1.055, 2.4) }
+        let (r, g, b) = components(color)
+        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+    }
+
+    static func contrast(_ a: UIColor, _ b: UIColor) -> Double {
+        let (x, y) = (luminance(a), luminance(b))
+        return (max(x, y) + 0.05) / (min(x, y) + 0.05)
     }
 }

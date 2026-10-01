@@ -130,11 +130,11 @@ private struct BudgetRow: View {
                         Text(item.category)
                             .textStyle(.rowTitle)
                             .foregroundStyle(BudgieColor.textPrimary)
-                            .lineLimit(1)
+                            .singleLine()
                         Text(subtitle)
                             .textStyle(.rowSubtitle)
                             .foregroundStyle(BudgieColor.textSecondary)
-                            .lineLimit(1)
+                            .singleLine()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 12)

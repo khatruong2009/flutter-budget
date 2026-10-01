@@ -33,7 +33,8 @@ struct AccountsToggle: View {
                 .background(selected ? BudgieColor.accent : BudgieColor.chipSurface, in: Capsule())
                 .overlay { if !selected { Capsule().strokeBorder(BudgieColor.pillBorder, lineWidth: Metrics.borderThin) } }
                 .glow(selected ? BudgieColor.accent : .clear, blur: 20, alpha: 0.5)
-                .contentShape(Capsule())
+                // The chip draws about 38pt tall; the tap area is 44.
+                .tapArea(vertical: 4)
         }
         .buttonStyle(.plain)
         .motion(Motion.segment, value: selected)
@@ -115,7 +116,7 @@ struct AccountRow: View {
                         Text(entry.name)
                             .textStyle(.rowTitle)
                             .foregroundStyle(BudgieColor.textPrimary)
-                            .lineLimit(1)
+                            .singleLine()
                         Text(share)
                             .textStyle(.rowSubtitle)
                             .foregroundStyle(BudgieColor.textSecondary)

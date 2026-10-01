@@ -292,7 +292,9 @@ struct TransactionFormView: View {
                     PillChip(
                         label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
                         symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
-                    .lineLimit(1)
+                    .singleLine()
+                    // The chip draws about 34pt tall; the tap area is 44.
+                    .tapArea(vertical: 5)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selected ? .isSelected : [])
@@ -334,7 +336,8 @@ struct TransactionFormView: View {
                         RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
                             .strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium)
                     )
-                    .contentShape(Rectangle())
+                    // The pill draws about 37pt tall; the tap area is 44.
+                    .tapArea(vertical: 4)
                 }
                 .buttonStyle(.plain)
                 .disabled(saving)
@@ -552,7 +555,7 @@ struct CategoryWheelRow: View {
             Text(name)
                 .textStyle(.bodyMedium)
                 .foregroundStyle(BudgieColor.textPrimary)
-                .lineLimit(1)
+                .singleLine()
         }
         .padding(.horizontal, Metrics.spacingM)
         .frame(maxWidth: .infinity, alignment: .leading)

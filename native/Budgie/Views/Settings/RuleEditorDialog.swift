@@ -201,7 +201,7 @@ struct RuleEditorDialog: View {
                             label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary,
                             outlined: !selected, symbol: selected ? "checkmark" : nil, style: .labelSmall,
                             horizontalPadding: 12, verticalPadding: 8)
-                        .lineLimit(1)
+                        .singleLine()
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(tag.name)

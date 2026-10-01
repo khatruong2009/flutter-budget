@@ -80,7 +80,7 @@ struct TagsRulesView: View {
                 Text("Tags & rules")
                     .textStyle(.cardTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .accessibilityAddTraits(.isHeader)
             }
         }
@@ -256,7 +256,11 @@ private struct TagRow: View {
             Text(tag.name)
                 .textStyle(.rowTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                // 18pt of text in a 56pt row; the element is 44pt tall.
+                .frame(maxWidth: .infinity, minHeight: Metrics.touchTarget, alignment: .leading)
+                .contentShape(Rectangle())
+                // One element for the whole 44pt strip, not just the text.
+                .accessibilityElement(children: .ignore)
                 .accessibilityLabel(tag.name)
                 .accessibilityAction(named: "Delete") { onDelete() }
                 .accessibilityIdentifier("tags.row.\(key)")

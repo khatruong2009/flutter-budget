@@ -90,5 +90,8 @@ struct SafeToSpendSheet: View {
         .padding(.vertical, 6)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(label), \(text)")
+        // Plain text: without a trait the audit takes the 17pt row for a
+        // control with a hit area that is too small.
+        .accessibilityAddTraits(.isStaticText)
     }
 }

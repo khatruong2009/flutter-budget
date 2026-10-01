@@ -34,10 +34,14 @@ struct AccountHistoryHeroCard: View {
 
     var body: some View {
         let isAsset = type == .asset
+        // The wash and glow keep Flutter's lighter green and red: the text
+        // colour is darker for contrast, and a dark wash would take the
+        // labels' contrast back.
+        let wash = isAsset ? BudgieColor.chartIncome : BudgieColor.chartDanger
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         let fill = LinearGradient(
             stops: [
-                .init(color: color.opacity(0.16), location: 0), .init(color: color.opacity(0.06), location: 0.4),
+                .init(color: wash.opacity(0.16), location: 0), .init(color: wash.opacity(0.06), location: 0.4),
                 .init(color: BudgieColor.card, location: 1),
             ],
             startPoint: .top, endPoint: .bottom)
@@ -45,7 +49,7 @@ struct AccountHistoryHeroCard: View {
         let lastUpdate = NetWorthText.lastUpdate(history.latest?.recordedAt)
         let chips = metaChips
 
-        GlowCard(padding: 24, fill: AnyShapeStyle(fill), border: color.opacity(0.18)) {
+        GlowCard(padding: 24, fill: AnyShapeStyle(fill), border: wash.opacity(0.18)) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 0) {
                     IconTile(symbol: isAsset ? "arrow.up.right" : "arrow.down.left", color: color, size: 48, iconSize: 24)
@@ -56,14 +60,16 @@ struct AccountHistoryHeroCard: View {
                             .foregroundStyle(BudgieColor.textPrimary)
                         Text(lastUpdate)
                             .textStyle(.rowSubtitle)
-                            .foregroundStyle(BudgieColor.textSecondary)
+                            .foregroundStyle(BudgieColor.textSecondaryOnTint)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    PillChip(label: isAsset ? "Asset" : "Liability", color: color, style: .badgeSmall)
+                    PillChip(
+                        label: isAsset ? "Asset" : "Liability", color: color, textColor: BudgieColor.legible(color, tint: 0.35),
+                        style: .badgeSmall)
                 }
                 Text("CURRENT BALANCE")
                     .textStyle(.eyebrow)
-                    .foregroundStyle(BudgieColor.textSecondary)
+                    .foregroundStyle(BudgieColor.textSecondaryOnTint)
                     .padding(.top, 24)
                 // `FittedBox(scaleDown)`: one line, shrunk to fit.
                 Text(balance)
@@ -84,7 +90,7 @@ struct AccountHistoryHeroCard: View {
                 .padding(.top, 16)
             }
         }
-        .background(GlowHalo(shape: shape, color: color, blur: 24, alpha: 0.16))
+        .background(GlowHalo(shape: shape, color: wash, blur: 24, alpha: 0.16))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
             ([isAsset ? "Asset balance history" : "Liability balance history", "Current balance \(balance)", lastUpdate]
@@ -235,7 +241,7 @@ struct AccountTrendPlot: View {
     let formatter: MoneyFormatter
 
     @State private var touchX: CGFloat?
-    @ScaledMetric(relativeTo: .caption2) private var axisLabelHeight: CGFloat = 12
+    @ScaledMetric(relativeTo: .caption) private var axisLabelHeight: CGFloat = 12
     /// `maxContentWidth` 120, scaled with the text.
     @ScaledMetric(relativeTo: .body) private var tooltipContentWidth: CGFloat = 120
 

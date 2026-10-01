@@ -215,7 +215,7 @@ private struct SpendGauge: View {
     private func label(_ prefix: String, _ value: String) -> some View {
         (Text(prefix).foregroundStyle(BudgieColor.textTertiary) + Text(value).foregroundStyle(BudgieColor.textPrimary))
             .textStyle(.monoLabel)
-            .lineLimit(1)
+            .singleLine()
     }
 }
 
@@ -246,7 +246,7 @@ private struct FlowChip: View {
                     Text(label)
                         .textStyle(Self.labelStyle)
                         .foregroundStyle(BudgieColor.textSecondary)
-                        .lineLimit(1)
+                        .singleLine()
                 }
                 Text(HomeSummary.chipAmount(amount, formatter: formatter))
                     .textStyle(.chipAmount)
@@ -257,7 +257,7 @@ private struct FlowChip: View {
                 Text(HomeSummary.deltaLabel(delta: delta, previousMonthName: previousMonthName))
                     .textStyle(.rowSubtitle)
                     .foregroundStyle(delta == nil ? BudgieColor.textTertiary : deltaColor)
-                    .lineLimit(1)
+                    .singleLine()
                     .padding(.top, 2)
             }
         }
@@ -291,11 +291,11 @@ private struct SafeToSpendCard: View {
                     Text(card.title)
                         .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
+                        .singleLine()
                     Text(card.subtitle)
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
-                        .lineLimit(1)
+                        .singleLine()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .trailing, spacing: 2) {
@@ -377,13 +377,13 @@ private struct RecentRow: View {
                 Text(copy.subtitle)
                     .textStyle(.rowSubtitle)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .lineLimit(1)
+                    .singleLine()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             Text(copy.amount)
                 .textStyle(.amountSmall)
                 .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
-                .lineLimit(1)
+                .singleLine()
                 .layoutPriority(1)
         }
         .padding(12)

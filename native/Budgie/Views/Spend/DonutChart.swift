@@ -211,7 +211,7 @@ private struct DeltaPill: View {
             case .down: (BudgieColor.income, "arrow.down.left")
             }
         PillChip(label: delta.text, color: color, symbol: symbol, horizontalPadding: 9, verticalPadding: 3)
-            .lineLimit(1)
+            .singleLine()
             .minimumScaleFactor(0.5)
     }
 }

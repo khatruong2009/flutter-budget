@@ -54,19 +54,25 @@ private struct ToastView: View {
                 .foregroundStyle(foreground)
                 .frame(maxWidth: .infinity, alignment: .leading)
             if toast.action == .retrySaves {
-                Button("Retry") {
+                Button {
                     model.dismissToast(toast.id)
                     Task { await model.retrySaves() }
+                } label: {
+                    // The text is about 17pt tall; the tap area is 44.
+                    Text("Retry")
+                        .textStyle(.labelSmall)
+                        .foregroundStyle(foreground)
+                        .tapArea(horizontal: 6, vertical: 14)
                 }
-                .textStyle(.labelSmall)
-                .foregroundStyle(foreground)
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .background(fill, in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous))
         .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
-        .accessibilityElement(children: .combine)
+        // A toast with Retry keeps its button as its own element: combined,
+        // VoiceOver would read it as text with nothing to activate.
+        .accessibilityElement(children: toast.action == nil ? .combine : .contain)
     }
 
     private var fill: Color {

@@ -55,13 +55,13 @@ private struct FlowTransactionRow: View {
                     Text("\(record.category) \u{00B7} \(day)")
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
-                        .lineLimit(1)
+                        .singleLine()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text(formatter.formatSigned(isIncome ? record.amount : -record.amount, plusForPositive: true))
                     .textStyle(.amountSmall)
                     .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .layoutPriority(1)
             }
             .padding(12)

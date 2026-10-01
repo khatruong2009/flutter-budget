@@ -69,7 +69,7 @@ struct CategoriesView: View {
                 Text("Categories")
                     .textStyle(.cardTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
-                    .lineLimit(1)
+                    .singleLine()
                     .accessibilityAddTraits(.isHeader)
             }
             ToolbarItem(placement: .topBarTrailing) {

@@ -59,7 +59,7 @@ private struct MonthChip: View {
                     .foregroundStyle(isSelected ? Color.white : BudgieColor.textPrimary)
                 Text(chip.year)
                     .textStyle(Self.yearText)
-                    .foregroundStyle(isSelected ? Color.white.opacity(0.9) : BudgieColor.textSecondary)
+                    .foregroundStyle(isSelected ? Color.white : BudgieColor.textSecondary)
             }
             .lineLimit(1)
             .minimumScaleFactor(0.7)

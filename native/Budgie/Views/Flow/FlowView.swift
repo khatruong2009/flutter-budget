@@ -200,6 +200,7 @@ private struct MetricChip: View {
                 Text(label)
                     .textStyle(.monoMetricLabel)
                     .foregroundStyle(BudgieColor.textSecondary)
+                    .wrapsWords()
                 Text(value)
                     .textStyle(.metricAmount)
                     .foregroundStyle(color)

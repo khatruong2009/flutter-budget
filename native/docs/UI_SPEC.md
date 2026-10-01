@@ -12,12 +12,19 @@ pixel copy. Tokens live in `Budgie/Views/Theme.swift`:
 
 | Token | Light | Dark |
 |---|---|---|
-| accent | `#6366F1` | `#818CF8` |
-| income | `#10B981` | `#34D399` |
-| expense / danger | `#EF4444` | `#FB7185` |
-| warning | `#F59E0B` | `#FBBF24` |
+| accent | `#5453DD` (Flutter `#6366F1`) | `#818CF8` |
+| income | `#07744F` (Flutter `#10B981`) | `#34D399` |
+| expense / danger | `#C60D21` (Flutter `#EF4444`) | `#FB7185` |
+| warning | `#8F5B05` (Flutter `#F59E0B`) | `#FBBF24` |
+| textSecondary | `#626977` (Flutter `#6B7280`) | `#9A9AB5` |
+| textTertiary | `#686F7A` (Flutter `#9CA3AF`) | `#81829F` (Flutter `#5C5C78`) |
 | background | `#F9FAFB` | `#0A0A12` |
 | card | `#FFFFFF` | `#13131F` |
+
+The light accent, income, danger, warning, textSecondary and textTertiary
+and the dark textTertiary differ from Flutter so that text reaches WCAG AA
+(4.5:1) on every surface it sits on; see "Accessibility audit" below and
+PARITY_GAPS "Colour tokens meet WCAG AA".
 
 Monospaced digits (`.monospacedDigit()`) for amounts. Respect Dynamic Type
 and VoiceOver labels on every control. No third-party packages.
@@ -941,3 +948,212 @@ dismissed: the user's sheets and their input stay as they were underneath.
 - Identifier: `applock.lock` on the lock screen. UI tests: `AppLockUITests`
   with the DEBUG hooks `BUDGIE_UITEST_APP_LOCK=<seconds>` (lock on, in
   memory) and `BUDGIE_UITEST_AUTH_SUCCESSES=<n>` (`AppLockTestHooks`).
+
+## Accessibility audit
+
+`BudgieUITests/AccessibilityAuditUITests.swift` runs
+`XCUIApplication.performAccessibilityAudit(for:)` (iOS 17+) on every main
+screen and sheet; `AuditSupport.swift` holds the runner and the one table of
+exclusions (mirrored below). Any issue the audit reports that the table does
+not accept fails the test with the screen, the audit type, the element's
+identifier and label, its frame and, for contrast, the colours measured in a
+screenshot taken at rest (`BUDGIE_AUDIT_REPORT=<file>` writes every issue,
+accepted or not, to a file).
+
+### Method
+
+- Seeded through the UI, deleted afterwards (a per-run suffix on everything):
+  an expense, an income and an older expense, a tag, a budget, a Worth
+  account and a goal. Home is audited at the top and scrolled to the bottom,
+  as are the tab roots, Settings and the long pushed pages.
+- Passes, in one test method (seed once): light at the default size with
+  every audit type but `.textClipped` on every screen; accessibility-XXXL
+  Dynamic Type (launch argument `-UIPreferredContentSizeCategoryName
+  UICTContentSizeCategoryAccessibilityXXXL`) with `.textClipped`,
+  `.hitRegion` and `.dynamicType` on the tab roots, Settings and the main
+  sheets; dark at the default size with every audit type but `.textClipped`
+  on the same screens. The theme is chosen through Settings and put back.
+  Separate methods: the three onboarding pages and the lock screen (DEBUG
+  hook `BUDGIE_UITEST_APP_LOCK`, authentication refused) and the voice sheet
+  with the microphone denied (`BUDGIE_VOICE_MIC_DENIED`; nothing reaches
+  OpenAI), each in light and dark.
+- `.textClipped` runs only at XXXL. "May be clipped at larger Dynamic Type
+  sizes" is a prediction; at the default size it fired for dozens of
+  one-line labels and for every text in any bottom sheet, a plain SwiftUI
+  `.sheet` with a `.medium` detent included (checked in a scratch view), and
+  at XXXL, where there is no larger size, it names text that does not fit.
+- Screens: the five tab roots (Home, Worth, Goals, Spend, Flow), Settings
+  and its pushed pages (Categories, Tags & rules, Recurring, Data
+  diagnostics, Licences), the transaction forms (add expense, add income,
+  edit, the date picker, the recurring form), the budget picker and limit
+  sheet, the safe-to-spend sheet, the quick-expense sheet, the Home month
+  panel, Home SEE ALL, Flow SEE ALL with its filters, category and month
+  sheets, the Flow range sheet and month detail, the Spend month sheet and
+  drill-in, the Worth account editor (and its month grid) and account
+  history, the goal form, allocation dialog, actions sheet and delete
+  dialog, the currency and number format sheets, the category editor, tag
+  dialog and rule editor, the onboarding pages, the lock screen and the
+  voice sheet.
+
+### Issues found at BASE (light, default size, before any fix)
+
+Counts of reported issues per screen and audit type from the first run on
+the unchanged BASE app (screens the run reached; it stopped at Flow month
+detail, whose identifier sat on a container that swallowed its children, so
+Flow SEE ALL, Settings and the pushed pages were not audited at BASE):
+
+| Screen | contrast | hitRegion | dynamicType | textClipped | elementDetection | sufficientElementDescription |
+|---|---|---|---|---|---|---|
+| Add Expense form | 7 | 0 | 0 | 1 | 0 | 0 |
+| Add Income form | 5 | 0 | 0 | 1 | 0 | 0 |
+| Budget limit sheet | 4 | 0 | 0 | 2 | 2 | 0 |
+| Budget picker | 1 | 0 | 0 | 5 | 5 | 0 |
+| Date picker | 2 | 0 | 30 | 1 | 7 | 0 |
+| Edit Transaction form | 8 | 0 | 0 | 1 | 0 | 0 |
+| Flow | 16 | 1 | 6 | 8 | 7 | 0 |
+| Flow month detail | 5 | 0 | 0 | 4 | 4 | 0 |
+| Flow range sheet | 2 | 0 | 1 | 4 | 5 | 0 |
+| Goal actions sheet | 2 | 0 | 0 | 0 | 0 | 0 |
+| Goal allocation dialog | 3 | 0 | 0 | 1 | 0 | 2 |
+| Goal delete dialog | 2 | 0 | 0 | 0 | 0 | 0 |
+| Goal form | 3 | 0 | 0 | 1 | 0 | 0 |
+| Goals | 4 | 0 | 4 | 2 | 0 | 0 |
+| Home | 64 | 3 | 5 | 19 | 1 | 0 |
+| Home SEE ALL | 8 | 0 | 2 | 3 | 0 | 0 |
+| Home month panel | 45 | 1 | 4 | 7 | 0 | 0 |
+| Quick expense sheet | 7 | 0 | 0 | 8 | 1 | 0 |
+| Recurring form (from the transaction form) | 6 | 0 | 0 | 0 | 0 | 0 |
+| Safe to spend sheet | 1 | 7 | 0 | 9 | 2 | 0 |
+| Spend | 2 | 0 | 2 | 4 | 0 | 0 |
+| Spend drill-in | 10 | 0 | 10 | 4 | 0 | 0 |
+| Spend month sheet | 1 | 0 | 0 | 3 | 3 | 0 |
+| Worth | 62 | 0 | 11 | 2 | 0 | 0 |
+| Worth account editor | 4 | 0 | 0 | 1 | 1 | 0 |
+| Worth account history | 14 | 0 | 17 | 2 | 1 | 0 |
+| Worth editor month grid | 4 | 0 | 0 | 1 | 0 | 0 |
+| Total | 292 | 12 | 92 | 94 | 39 | 2 |
+
+Mostly: contrast 292 (tokens, below, and false alarms the pixels refute),
+dynamicType 92 (every `.caption2`-scaled text, the system date picker, text
+in a `ViewThatFits`), textClipped 94 (advisory at the default size, above),
+elementDetection 39 (no element named), hitRegion 12 (the "Edit" and "SEE ALL"
+links, the safe-to-spend rows, the add budget link), sufficientElementDescription 2
+(the allocation chips labelled only "$25.00").
+
+### Fixes (look unchanged at the default text size)
+
+- Tap areas of at least 44 x 44pt, drawn size and layout unchanged
+  (`View.tapArea(horizontal:vertical:)`, Pills.swift: transparent padding
+  inside the label, taken back out of the layout): `MonthPill`,
+  `SectionHeader` links (EDIT, SEE ALL), `SegmentedPills` (theme, form type,
+  categories type, Flow type, Worth range), tag chips (forms, Flow filters),
+  the allocation quick-amount chips, the Worth editor's close button, month
+  grid cells and step buttons, the Assets / Liabilities toggle, the year
+  stepper, RESET, the toast's Retry, "Make this recurring", the Flow bars
+  (the column's share of the row, so neighbours do not overlap; narrower
+  than 44pt only at 12 months), the tag row's name (a 44pt strip).
+- Elements: `flow.monthDetail` and `SegmentedPills` are containers
+  (`.accessibilityElement(children: .contain)`, so an identifier on them no
+  longer replaces their children: `worth.growth.range`'s pills and the month
+  detail's tiles are their own elements); the toast with Retry keeps its
+  button as an element (it was combined into the text); the safe-to-spend
+  rows are static text; the allocation chips say "Fill amount $25.00".
+  `goals.delete.confirm` measured 150 x 44 (its own button) in this audit.
+- Dynamic Type: `TextSpec` scales `.caption2` text from `.caption`
+  (`TextSpec.scalingStyle`: the same size at Large, so every line box is as
+  before and `TextLineHeightTests` pass; `.caption2` is the one style that
+  stays 11pt up to Large, which the audit reads as "partially unsupported");
+  `View.singleLine()` (one line as designed, up to three lines scaled to
+  60% at accessibility sizes instead of an ellipsis) replaces `lineLimit(1)` on
+  31 text sites; `View.wrapsWords()` (up to two lines, scaled to 50%) on
+  eyebrows and page titles so no word breaks letter by letter ("Catego /
+  ries", "6 month / s" at XXXL); the month pill and segmented pills stay on
+  one line; the Worth growth header stacks its pills under the title when
+  they do not fit; the Spend donut's delta chip may wrap.
+- Colour tokens: see the next section.
+
+### Colour tokens (owner-approved 2026-09-30)
+
+Light accent, income, danger and warning, light textSecondary and
+textTertiary, dark textTertiary, `primary`, the unselected segment label and
+the primary, income and expense button gradients were adjusted to WCAG AA
+(4.5:1 for text and for the white label on a fill); nothing else changed
+(dark income, danger, warning and accent already passed). Old and new values
+and the ratios before and after:
+
+| Token | Mode | Flutter / old | New | Pair | Ratio before | Ratio after |
+|---|---|---|---|---|---|---|
+| textSecondary | light | 6B7280 | 626977 | text on card | 4.83 | 5.52 |
+| textSecondary | light | 6B7280 | 626977 | text on chip | 4.30 | 4.90 |
+| textTertiary | light | 9CA3AF | 686F7A | text on card | 2.54 | 5.07 |
+| textTertiary | light | 9CA3AF | 686F7A | text on chip | 2.26 | 4.50 |
+| textTertiary | dark | 5C5C78 | 81829F | text on card | 2.86 | 4.93 |
+| textTertiary | dark | 5C5C78 | 81829F | text on chip | 2.81 | 4.86 |
+| dockInactiveIcon | light | 6B7280 | 636A78 | text on track | 4.00 | 4.50 |
+| accent | light | 6366F1 | 5453DD | text on card | 4.47 | 5.74 |
+| accent | light | 6366F1 | 5453DD | text on chip | 3.97 | 5.10 |
+| accent | light | 6366F1 | 5453DD | white on fill | 4.47 | 5.74 |
+| income | light | 10B981 | 07744F | text on card | 2.54 | 5.80 |
+| income | light | 10B981 | 07744F | text on chip | 2.25 | 5.16 |
+| income | light | 10B981 | 07744F | white on fill | 2.54 | 5.80 |
+| danger | light | EF4444 | C60D21 | text on card | 3.76 | 6.03 |
+| danger | light | EF4444 | C60D21 | text on chip | 3.34 | 5.36 |
+| danger | light | EF4444 | C60D21 | white on fill | 3.76 | 6.03 |
+| warning | light | F59E0B | 8F5B05 | text on card | 2.15 | 5.73 |
+| warning | light | F59E0B | 8F5B05 | text on chip | 1.91 | 5.09 |
+| primary | both | 6366F1 | 5453DD | white on fill | 4.47 | 5.74 |
+| primaryGradient stop 1 | light | 6366F1 | 5F61EC | white on fill | 4.47 | 4.76 |
+| primaryGradient stop 2 | light | 8B5CF6 | 8757F1 | white on fill | 4.23 | 4.50 |
+| incomeGradient stop 1 | light | 10B981 | 006E4B | white on fill | 2.54 | 6.30 |
+| incomeGradient stop 2 | light | 34D399 | 05875E | white on fill | 1.92 | 4.53 |
+| incomeGradient stop 1 | dark | 059669 | 056647 | white on fill | 3.77 | 7.00 |
+| incomeGradient stop 2 | dark | 10B981 | 04875D | white on fill | 2.54 | 4.54 |
+| expenseGradient stop 1 | light | EF4444 | C2021D | white on fill | 3.76 | 6.32 |
+| expenseGradient stop 2 | light | F87171 | CC4A4D | white on fill | 2.77 | 4.51 |
+| expenseGradient stop 1 | dark | DC2626 | CC0716 | white on fill | 4.83 | 5.82 |
+| expenseGradient stop 2 | dark | EF4444 | DF3337 | white on fill | 3.76 | 4.50 |
+
+Also: `textSecondaryOnTint` (`#4B5563` light, `#BEBED2` dark) for text on a
+strongly tinted card (Spend drill-in total, Worth history hero);
+`BudgieColor.legible(_:tint:)` mixes a pale chart colour towards the primary
+text colour until it reads on its own tint (the Spend drill-in chips and the
+Worth history Asset / Liability chip); the Spend rank palette and the wash and
+glow of the Worth hero and editor banner keep Flutter's lighter values
+(`chartAccent`, `chartIncome`, `chartDanger`, `chartWarning`); the home
+screen widget's two white-labelled buttons and its mic circle were darkened
+the same way. `BudgieAppTests/ColorContrastTests` asserts the pairs.
+
+### Exclusions
+
+Only these are accepted (audit type, element identifier or label, or where
+the element is); everything else fails the test. Rows marked FOLLOW-UP are
+findings that are not fixed, only accepted for now.
+
+| # | Audit type | Matches | Screens | Reason |
+|---|---|---|---|---|
+| 1 | all | `inTabBar` | - | The system tab bar (UIKit; Liquid Glass on iOS 26). |
+| 2 | contrast, dynamicType, textClipped | `nearTabBar` | - | Content scrolled under the floating tab bar: the audit reads it through the bar's scroll-edge blur. |
+| 3 | contrast, dynamicType, textClipped | `scrollEdge` | - | A page scrolled to its bottom: the rows at its top edge fade out under the status bar and the navigation bar (some are partly off screen, y < 0), and those at the bottom sit under the tab bar's blur. The same elements are audited, at rest, in the page's top audit. |
+| 4 | contrast | `labelPattern(".*")` | pages scrolled to the bottom | FOLLOW-UP: on a page scrolled to its bottom the screenshot that measures contrast is taken while the page may still be settling, so the pixel check cannot clear these (the page's top audit is checked at rest). |
+| 5 | contrast | `disabled` | - | A disabled control (opacity 0.38): WCAG 1.4.3 exempts inactive components. |
+| 6 | contrast | `pixelsAtLeast(4.5)` | - | The audit reports a failure, but the rendered pixels of the element measure at least 4.5:1 at rest (it sampled a glow, a border, a tinted tile or the anti-aliased edge of a thin 10-12pt glyph). |
+| 7 | contrast | `labelPattern("^[0-9$.,€—-]$")` | ["Home", "Worth"] | Hero amount glyphs (RollingAmount): one node per rolling digit, drawn over a text glow (UI_SPEC Home hero). |
+| 8 | elementDetection | `noElement` | sheets and dialogs, pages scrolled to the bottom pages, ["Flow", "Categories"] | FOLLOW-UP (name the regions): no element: the page behind a sheet or dialog is dimmed and hidden from accessibility while its text stays visible; on scrolled pages the text under the tab bar's blur. |
+| 9 | textClipped | `labelPattern(".*")` | every sheet and dialog | FOLLOW-UP (give the sheets a scrollable large detent and re-audit): text in a bottom sheet or dialog: the audit scales text without growing the presentation, which is sized from its measured content (and scrolls); even a plain SwiftUI .sheet with a .medium detent is reported. Checked at accessibility-XXXL in the screenshots. |
+| 10 | dynamicType | `labelPattern("^(1 transaction\|[0-9]+ transactions\|[A-Z][a-z]+ [0-9]{4})$")` | ["Spend drill-in"] | Chips inside a ViewThatFits: the same PillChip outside one passes (lab: two identical chips, one in a ViewThatFits flagged, one beside it not). |
+| 11 | dynamicType | `labelPattern("^(Growth\|6M\|1Y\|ALL\|1M\|3M)$")` | ["Worth"] | The growth title and range pills sit in a ViewThatFits (beside each other, or stacked); see the chip row above. |
+| 12 | hitRegion | `identifier("onboarding.dots")` | - | The tour's page indicator (8pt dots): one adjustable element (swipe up or down), not a tap target; the pages change by swiping and by Continue (48pt). |
+| 13 | hitRegion, textClipped | `identifier("flow.all.search")` | - | The text field's own element is 19pt tall, inside a 56pt field whose whole area focuses it. |
+| 14 | contrast, dynamicType | `labelPattern(".*")` | ["Data diagnostics", "Licences"] | FOLLOW-UP (restyle with design-system colours): system List pages (Section headers and rows in the system's own colours and fonts); not part of the design system. |
+| 15 | textClipped | `labelPrefix("A11y Trip ")` | ["Goals"] | FOLLOW-UP (cap the name at two lines, ring above): a goal name wrapped over three lines beside the progress ring at XXXL (frame 83x145); complete in the XXXL screenshot. |
+| 16 | textClipped | `noElement` | ["Worth", "Settings"] | FOLLOW-UP (find the element): the audit names no element; the XXXL screenshots of Worth and Settings show every label complete. |
+| 17 | dynamicType | `labelPattern("^[0-9]{1,2}$")` | ["Date picker"] | Day numbers of the system UIDatePicker. |
+| 18 | dynamicType | `labelPattern("^(Theme\|Light, dark, or match device\|Light\|Dark\|Auto)$")` | ["Settings"] | The theme row is capped at accessibility2 on purpose (dynamicTypeSize(...accessibility2)) so its pills stay on one line. |
+| 19 | all | `inKeyboard` | - | The system software keyboard. |
+| 20 | dynamicType | `inNavigationBar` | - | Titles and bar buttons in the system navigation bar: UIKit bar items, which scale to the bar's own cap. |
+
+`pixelsAtLeast(4.5)` (row 6) is a rule, not a list: a contrast report is
+accepted when the screenshot, taken after the screen has come to rest, shows
+the element at 4.5:1 or better (the commonest colour in its frame against the
+colour furthest from it; anti-aliasing can only lower this). Every contrast
+issue on a static text that it does not clear is fixed or listed.
