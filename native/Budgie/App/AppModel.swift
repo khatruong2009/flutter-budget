@@ -233,6 +233,13 @@ final class AppModel {
         }
         loadReport = await store.lastLoadReport
 
+        let incompatible = FinancialData.incompatibleSectionNames(in: snapshot)
+        guard incompatible.isEmpty else {
+            LaunchLog.storeLoadFailed("unsupportedSectionShape")
+            phase = .blocked(.readFailed("Existing data has unsupported section types: \(incompatible.joined(separator: ", ")). The original files and migration safety copy have been kept."))
+            return
+        }
+
         var loaded = Signpost.launch.withIntervalSignpost("FinancialData.load") {
             FinancialData.load(
                 snapshot, preferences: preferences, calendar: calendar, now: { [calendar] in calendar.now() }, newID: newID)

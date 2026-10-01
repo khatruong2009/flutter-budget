@@ -23,9 +23,9 @@ public enum FinancialStoreError: Error, Equatable, Sendable {
     case writeFailed(name: String, reason: String)
     /// The primary read back from disk did not verify at the expected revision.
     case verificationFailed(expected: Int64, found: Int64?)
-    /// Both store files were unreadable, were set aside as `.corrupt-<ms>`,
-    /// and no legacy data exists. Dart would silently start empty; the Swift
-    /// app stops and asks (MIGRATION_SPEC 14.0 Q3). `corruptFiles` are the
+    /// The store files were unreadable and were set aside as `.corrupt-*`.
+    /// Even with legacy preferences present, the Swift app stops and asks
+    /// (MIGRATION_SPEC 14.0 Q3). `corruptFiles` are the
     /// set-aside names not yet acknowledged.
     case dataUnreadable(corruptFiles: [String])
 }
@@ -133,6 +133,9 @@ public actor FinancialStore {
         let known = Set(acknowledgedCorruptFiles())
         let all = (known.union(corruptFiles)).sorted()
         preferences.set(.stringList(all), forKey: PreferenceKey.acknowledgedCorruptFiles)
+        // This is the explicit start-fresh path. Without it, a missing store
+        // after a prior save must remain a recovery error, not a new install.
+        preferences.set(nil, forKey: PreferenceKey.lastCommittedChecksum)
         snapshot = nil
     }
 
@@ -169,17 +172,30 @@ public actor FinancialStore {
 
         if primaryBytes != nil || backupBytes != nil {
             // Both exist (or the only one exists) and neither decodes: keep
-            // them for forensics and fall through to the legacy sources.
+            // them for recovery. An explicit acknowledgment is required
+            // before considering the legacy sources below.
             let stamp = millisecondsSinceEpoch()
+            var existingNames: Set<String>
+            do { existingNames = Set(try fileSystem.list()) }
+            catch { throw .readFailed(name: StoreFile.directoryName, reason: "\(error)") }
             for (name, bytes) in [(StoreFile.primaryName, primaryBytes), (StoreFile.backupName, backupBytes)]
             where bytes != nil {
-                let newName = "\(name).corrupt-\(stamp)"
+                let baseName = "\(name).corrupt-\(stamp)"
+                var newName = baseName
+                var suffix = 0
+                // POSIX rename replaces its destination. A repeated or reset
+                // clock must never replace an earlier recovery original.
+                while existingNames.contains(newName) {
+                    suffix += 1
+                    newName = "\(baseName)-\(suffix)"
+                }
                 do {
                     try fileSystem.rename(name, to: newName)
                 } catch {
                     throw .writeFailed(name: name, reason: "\(error)")
                 }
                 report.setAside.append(newName)
+                existingNames.insert(newName)
             }
         }
 
@@ -189,6 +205,10 @@ public actor FinancialStore {
         let unacknowledged = try unacknowledgedCorruptFiles()
         if !unacknowledged.isEmpty {
             throw .dataUnreadable(corruptFiles: unacknowledged)
+        }
+        if preferences.contains(PreferenceKey.lastCommittedChecksum) {
+            throw .readFailed(name: StoreFile.directoryName,
+                              reason: "Previously saved financial files are missing. Recovery is required before starting an empty store.")
         }
         let migrated = LegacyMigration.migrate(preferences)
         if let key = LegacyMigration.unrecoverableKeys(preferences, result: migrated).first {
@@ -230,7 +250,7 @@ public actor FinancialStore {
         let encoded = StoreFile.encode(next, writtenAt: now())
 
         // Preserve the intact current primary as the backup, byte for byte.
-        if let current = try readIfPresent(StoreFile.primaryName), StoreFile.verify(current) != nil {
+        if let current = try readIfPresent(StoreFile.primaryName), StoreFile.decode(current) != nil {
             try writeAtomically(StoreFile.backupName, current)
         }
         try writeAtomically(StoreFile.primaryName, encoded)
@@ -268,10 +288,12 @@ public actor FinancialStore {
         try requireProtectedData()
         do {
             try fileSystem.writeStaged(name, bytes)
-            try fileSystem.commitStaged(name)
         } catch {
             throw .writeFailed(name: name, reason: "\(error)")
         }
+        try requireProtectedData()
+        do { try fileSystem.commitStaged(name) }
+        catch { throw .writeFailed(name: name, reason: "\(error)") }
     }
 
     private func now() -> DartDateTime {

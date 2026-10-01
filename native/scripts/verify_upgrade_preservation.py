@@ -52,6 +52,28 @@ def verify(root):
     for key in ["flutter.themeMode", "flutter.onboarding_completed"]:
         check(before_prefs.get(key) == after_prefs.get(key), key + " preserved")
 
+    # S3 seeds the known valid primary v1 envelope. Startup may append due
+    # transactions and advance recurring cursors, but every original record
+    # field must survive. The main report independently compares the resulting
+    # generated rows/cursors with the real Flutter models.
+    legacy = root / "s3_legacy_only/1-swift"
+    original_preferences = next((legacy / "pre-native-migration").glob("*/preferences.plist"))
+    with open(original_preferences, "rb") as file:
+        envelope = json.loads(plistlib.load(file)["flutter.financial_store_v1"])
+    migrated = payload(legacy)
+    for name, value in envelope["sections"].items():
+        if name in ["transactions", "categories"]:
+            same = migrated.get(name, [])[:len(value)] == value
+        elif name == "recurringTransactions":
+            rows = migrated.get(name, [])
+            same = len(rows) == len(value) and all(
+                {key: field for key, field in before.items() if key != "nextOccurrence"}
+                == {key: field for key, field in after.items() if key != "nextOccurrence"}
+                for before, after in zip(value, rows))
+        else:
+            same = migrated.get(name) == value
+        check(same, "v1 migration " + name + ": original values preserved (due generation allowed)")
+
     snapshots = list(root.glob("**/pre-native-migration/*/COMPLETE"))
     check(bool(snapshots), "Complete safety copies exist")
     for marker in snapshots:

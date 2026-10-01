@@ -77,6 +77,21 @@ public struct FinancialData: Sendable {
         public var pendingWrites: [(String, JSONValue)]
     }
 
+    /// Existing sections with unsupported container types cannot safely be
+    /// edited by the typed models. Stop app bootstrap before a default or
+    /// launch-time migration replaces them. Missing/null sections retain
+    /// Flutter's defaults; individual unreadable rows are kept verbatim.
+    public static func incompatibleSectionNames(in snapshot: FinancialSnapshot) -> [String] {
+        Section.all.filter { name in
+            guard let value = snapshot.sections[name], !value.isNull else { return false }
+            switch name {
+            case Section.categoryBudgetLimits, Section.appSettings: return value.objectValue == nil
+            case Section.selectedNetWorthMonth: return value.stringValue == nil
+            default: return value.arrayValue == nil
+            }
+        }
+    }
+
     public static func load(
         _ snapshot: FinancialSnapshot, preferences: PreferencesStore, calendar: DartCalendar,
         now: () -> DartDateTime, newID: () -> String

@@ -19,6 +19,16 @@ Follow-up run `20260930-144200`: S5 with real currency preferences and the
 new S6 malformed ledger/envelope cases passed inside the installed app;
 original legacy values and their safety copies remained intact.
 
+Additional local audit on base `f38383f` plus local safety changes:
+`20260930-195723` passed S1/S3/S4/S5/S6 with no Dart problems or Swift/Dart
+differences. All 66 extended record-preservation and safety-copy hash
+checks passed. Final suites: 398 core tests in Debug and Release, 124
+app-model tests, 390 Flutter tests, and clean Flutter analysis. Three-zone
+compatibility passed 198 stored-data cases plus six insight-view
+comparisons; optimized Release output also passed Flutter loading and
+Swift comparison. See `DEEP_MIGRATION_AUDIT_EVIDENCE.json` and the expanded
+safety audit for the newly reproduced gaps, source hashes and limits.
+
 "Numbers" below means: per-month income, expenses and transaction count,
 net worth (assets, liabilities) per month, recurring cursors and pause
 state, and the five app settings. "Flutter's numbers" are computed by the

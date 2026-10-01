@@ -693,6 +693,12 @@ recover a damaged primary envelope. Safety-copy reuse verifies all manifest
 hashes and, for externally written/legacy-only data, all source files and
 preference domains. Commits verify the complete intended bytes in addition
 to revision and checksum. The empty-budget action requires confirmation.
+The additional local audit blocks missing files after a previous native
+save and unsupported known-section container types before app startup
+writes. Backup replacement requires a decodable primary; recovery filenames
+cannot replace earlier originals when timestamps repeat. Protection is
+checked again between staging and rename. See the audit for the regression
+tests and the Debug, optimized-core and installed-app verification results.
 
 1. Real-device prewarm/locked-launch test on a spare device with synthetic
    data (the simulator cannot do it).

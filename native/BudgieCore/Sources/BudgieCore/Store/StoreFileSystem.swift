@@ -54,7 +54,7 @@ public final class DirectoryFileSystem: StoreFileSystem, @unchecked Sendable {
         let path = path(name)
         var info = stat()
         if stat(path, &info) != 0 {
-            if errno == ENOENT || errno == ENOTDIR { return nil }
+            if errno == ENOENT { return nil }
             throw StoreFileSystemError.posix(operation: "stat", name: name, errno: errno)
         }
         guard info.st_mode & S_IFMT == S_IFREG else { throw StoreFileSystemError.notAFile(name: name) }

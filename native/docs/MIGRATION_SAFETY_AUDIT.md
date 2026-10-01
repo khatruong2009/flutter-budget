@@ -75,7 +75,87 @@ The first three new regression tests failed against the original code
 explicitly assert the safer blocking behavior for damaged inputs, while
 continuing to compare successful migrations against Flutter.
 
-## Remaining release requirements
+## Additional local audit requested before device testing
+
+Audited base: `f38383f6aa2894854617bb2ca29f7928f9faad6d`, plus the
+changes in this audit. This pass used scratch storage and the dedicated
+`Budgie-Migration-Audit` simulator only. No physical device or personal
+financial data was accessed.
+
+Nine new core tests and two app-bootstrap tests extend the previous audit.
+Before the fixes, four core regressions failed with 17 recorded issues;
+the app-bootstrap test also failed for all ten known section container types.
+The reproduced gaps and fixes are:
+
+- Repeated corruption at the same clock time could replace previous
+  `.corrupt-*` files through POSIX rename. Unique suffixes now preserve every
+  original across repeated incidents, including when the clock repeats.
+- A primary with a valid header/checksum but an undecodable payload could
+  overwrite a usable backup on the next commit. Backup replacement now
+  requires a successfully decoded primary, preserving the usable backup.
+- If both files disappeared after a verified native save, settings-only
+  fallback could silently create a replacement empty store. The existing
+  native save marker now blocks this path. Explicitly choosing to start
+  fresh after acknowledged corruption clears the marker while retaining
+  the set-aside files; that intentional recovery flow is separately tested.
+- Protection availability was checked before staging but not before the
+  rename. A new check after staging blocks either backup or primary rename
+  if protection becomes unavailable. The typed protected-data error survives
+  so startup can wait/retry rather than misreporting a successful save.
+- Valid JSON with unsupported known-section container types could load as
+  empty and later be overwritten by model defaults or startup migrations.
+  App bootstrap now blocks before model loading or automatic writes. The
+  original primary and complete migration copy remain byte-identical for
+  all ten tested section types. Missing/null sections still receive normal
+  Flutter-compatible defaults; individual unreadable array rows stay raw.
+- `ENOTDIR` is now a read failure, rather than being reported as absence.
+  A real filesystem test verifies the misplaced file is unchanged.
+
+Additional tests cover all six injected initial-migration interruptions and
+all six backup-recovery interruptions (crash, partial write and full disk at
+staging/rename). Original preferences or recovery backup remain intact,
+and a subsequent launch recovers the expected complete snapshot. A real
+disk ledger containing 20,000 records preserves every record, numeric
+lexeme, Unicode description, unknown record field and unknown section;
+the previous primary becomes an exact-byte backup. App-level tests confirm
+unreadable rows in all seven list sections survive startup, editing and two
+relaunches, while unknown settings/budget/feature values remain unchanged.
+
+Completed suites: **398 core tests in Debug**, **398 in Release**, **124
+app-model tests**, **390 Flutter tests**, and clean Flutter analysis.
+Release here means optimized core tests, not a signed distribution app.
+
+Local archive inspection found 55 matching Flutter archives. The latest
+archive (2026-09-27, 3.4.0 build 1) reports the matching bundle identifier,
+team, application identifier and App Group. Its local development signature
+trust check returned `CSSMERR_TP_NOT_TRUSTED`; this is not verification of a
+distributed Flutter binary or of the final Swift release candidate. Actual
+distribution signing and physical-device update behavior remain unverified.
+
+Compatibility rerun: **68 report cases per zone (204 total: 198 stored-data
+cases and six insight-view comparisons)** passed through the real Flutter
+models in New York, Santiago and Beirut. Each zone's Flutter
+report had no problems, and Swift's comparison against that report passed.
+Optimized Release output was also generated, loaded by Flutter (66 store
+cases plus two insight-view comparisons), and compared successfully with
+Release Swift's calculations. `DEEP_MIGRATION_AUDIT_EVIDENCE.json` records
+suite results, source hashes, binary identity and the archive check.
+
+Installed-app rerun: `rehearsal/20260930-195723` passed S1 (upgrade, edit,
+Flutter rollback), S3 (v1/bare legacy preferences), S4 (simulated locked
+startup), S5 (damaged files) and S6 (malformed legacy ledger/envelope).
+Every Dart problem list and every Swift/Flutter comparison was empty.
+All **66 independent preservation/hash checks passed**. The verifier now
+also checks every original value in the chosen v1 envelope, allowing only
+new due transactions and advancing recurring cursors. Existing template
+fields and every original transaction remain intact. Both malformed
+legacy values were retained with no replacement store or ready summary.
+
+These finite checks substantially improve confidence;
+they do not establish that every possible storage/device condition has
+been covered or that no future code change could introduce a regression.
+
+## Remaining release requirements (after the additional audit)
 
 - Install the current shipping Flutter App Store/TestFlight build on a
   spare iPhone with synthetic data, then install the actual Swift release

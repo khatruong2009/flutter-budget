@@ -93,7 +93,8 @@ public enum StoreFile {
     }
 
     /// Dart `_verifyBytes`: header and checksum valid, payload not decoded.
-    /// A file that passes this is "intact" and may be copied to the backup.
+    /// Passing this does not establish that the JSON payload is readable.
+    /// Backup replacement requires `decode`, so a usable backup survives.
     public static func verify(_ bytes: [UInt8]) -> Header? {
         guard let newline = bytes.firstIndex(of: 0x0A), newline > 0 else { return nil }
         guard case .object(let header)? = try? JSONParser.parse(Array(bytes[..<newline])) else { return nil }
