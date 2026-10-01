@@ -5,9 +5,19 @@ making changes.
 
 ## What this repo is
 
-A personal budget tracking app. The **only active code** lives in
-[`budget_app/`](budget_app) — a Flutter mobile app (iOS-first, also builds for
-Android/macOS/web/Linux/Windows).
+A personal budget tracking app ("Budgie"), in two codebases:
+
+- [`budget_app/`](budget_app) — the Flutter app that is on the App Store
+  today (3.4.0). It is also the **reference implementation**: the native app
+  and its parity harness are checked against it.
+- [`native/`](native) — the SwiftUI replacement (4.0.0), a full rewrite with
+  the same bundle ID, App Group and store file, so users upgrade in place and
+  can go back to the Flutter build without losing data. See
+  [Native app](#native-app-native) below.
+
+Unless a task says otherwise, ask which app it is about. Work on the native
+app must not modify `budget_app/` (its code is exported by the parity harness;
+see `native/ParityHarness/README.md`).
 
 All persistence is **local**. Financial data (transactions, net worth,
 budgets, goals, recurring templates, categories, tags, rules, app settings)
@@ -97,13 +107,14 @@ the ledger.
 ### UI structure
 
 `MyApp` → `BudgetHomePage` ([`lib/home_page.dart`](budget_app/lib/home_page.dart))
-hosts a `PageView` with five tabs, each in its own nested `Navigator`:
+hosts six tabs in a custom floating dock, each in its own nested `Navigator`:
 
-1. Spending — [`lib/spending_page.dart`](budget_app/lib/spending_page.dart)
-2. Net Worth — [`lib/net_worth_page.dart`](budget_app/lib/net_worth_page.dart) *(2700+ lines — the biggest file in the app)*
-3. Categories — [`lib/category_page.dart`](budget_app/lib/category_page.dart)
-4. History — [`lib/history_page.dart`](budget_app/lib/history_page.dart)
-5. Settings — [`lib/settings_page.dart`](budget_app/lib/settings_page.dart)
+1. Home — [`lib/spending_page.dart`](budget_app/lib/spending_page.dart)
+2. Worth — [`lib/net_worth_page.dart`](budget_app/lib/net_worth_page.dart) *(2700+ lines — the biggest file in the app)*
+3. Goals — [`lib/savings_goals_page.dart`](budget_app/lib/savings_goals_page.dart)
+4. Spend — [`lib/category_page.dart`](budget_app/lib/category_page.dart)
+5. Flow — [`lib/history_page.dart`](budget_app/lib/history_page.dart)
+6. More — [`lib/settings_page.dart`](budget_app/lib/settings_page.dart) (Recurring is a pushed page here)
 
 ### Design system
 
@@ -127,6 +138,51 @@ Categories (icons + labels) are defined in
 
 If you change deep-link or quick-action behavior, test on a real device or
 simulator — these paths are not covered by widget tests.
+
+## Native app (`native/`)
+
+SwiftUI, iOS 17+, Swift 6, `@Observable`, no third-party dependencies. The
+Xcode project is generated: `cd native && xcodegen generate` after adding or
+removing files (commit `project.pbxproj`).
+
+| Path | What |
+|---|---|
+| `native/BudgieCore/` | Swift package: store (byte-compatible with Flutter's `AtomicFinancialStore`), migration, Dart-exact dates/strings/numbers, domain logic. `cd native/BudgieCore && swift test` |
+| `native/Budgie/` | The app: `App/AppModel.swift` (single `@Observable` model; mutations `await persist(...)` and return the verified `Bool`), `Views/`, `DesignSystem/` (tokens, Gabarito / Spline Sans Mono, components) |
+| `native/BudgetWidgets/` | Home screen widgets (same `kind`s as Flutter) |
+| `native/BudgieUITests/`, `native/BudgieAppTests/` | XCUITests per tab, accessibility audit, app unit tests |
+| `native/ParityHarness/`, `native/Fixtures/` | Dart tests that run the real Flutter code to produce fixtures, and verify Swift-written stores load in Flutter |
+| `native/docs/` | `FULL_APP_PLAN.md` (decisions, cross-cutting rules), `MIGRATION_SPEC.md` (store format, migration), `UI_SPEC.md`, `PARITY_GAPS.md` (every difference from Flutter), `PERFORMANCE.md`, `REAL_DEVICE_CHECKLISTS.md`, `full-app/` per-area specs |
+
+Shell: a native `TabView` with five tabs — **Home, Worth, Goals, Spend,
+Flow** — each in its own `NavigationStack`. Settings (Flutter's More) is
+pushed from a gear in the Home header; Recurring, Categories, Tags & rules,
+backup and CSV import live under Settings. SEE ALL lists are pushed pages.
+
+Rules that every native change follows (FULL_APP_PLAN.md section 3):
+- Persistence: mutate memory, then `await persist([sections])`; patch stored
+  records' raw JSON in place; keep Dart number lexemes (`100.0`).
+- Dates only through `DartDateTime` / `DartCalendar` and the net-worth month
+  helpers; the clock comes from `AppModel.now`.
+- Compare strings as UTF-16 where Dart does (`DartString`); money through
+  `model.moneyFormatter`.
+- Every ported calculation has a Dart-oracle fixture; every mutation is
+  checked by `native/scripts/verify-swift-output-in-dart.sh <dir>` (New York,
+  Santiago, Beirut). Any difference from Flutter goes in `PARITY_GAPS.md`.
+- Every animation has a Reduce Motion path; VoiceOver labels; Dynamic Type
+  through the design system's text styles.
+
+Before calling native work done:
+
+```bash
+cd native/BudgieCore && swift test
+cd native && xcodegen generate   # then build for a simulator with zero warnings
+native/scripts/verify-swift-output-in-dart.sh /tmp/budgie-swift-out
+```
+
+plus the UI tests for what changed (`native/scripts/ui_flow.sh`, and
+`native/scripts/system_flow.sh <Flutter Runner.app>` when quick actions,
+deep links, the widget or the scene delegate change).
 
 ## Conventions
 

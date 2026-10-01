@@ -1,14 +1,26 @@
-# Parity gaps: what the Swift MVP does not do yet
+# Parity gaps: how the Swift app differs from the Flutter app
 
-Everything below is either missing from the MVP UI or a deliberate
-difference. In every case the data is preserved: sections the MVP does not
-edit are written back exactly as read, and the Flutter build can be
-reinstalled over the Swift app at any time (verified, see
-UPGRADE_TEST_RESULTS.md).
+The native app (4.0.0) implements every feature of the Flutter app (3.4.0).
+This file lists every place where it behaves differently, and why:
 
-## Features not in the MVP (data preserved)
+- **Flutter behaviour reproduced on purpose:** Flutter bugs the Swift app
+  copies so both apps agree (approved Q1; fix in both apps later).
+- **Deliberate differences (approved):** the owner approved each one.
+- **Deliberate differences (not yet approved):** waiting for the owner.
+- **Platform:** iOS and packaging differences.
 
-| Flutter feature | Stored in | MVP status |
+In every case the data is preserved: anything the Swift app does not edit
+is written back exactly as read, and the Flutter build can be reinstalled
+over the Swift app at any time (verified, see UPGRADE_TEST_RESULTS.md and
+MIGRATION_SAFETY_AUDIT.md). Calculations and copy are checked against the
+real Flutter code by native/ParityHarness (README there).
+
+## Features added after the MVP (data preserved)
+
+Each of these was missing from the first Swift build (the MVP) and is now
+available; the status column records how it matches Flutter.
+
+| Flutter feature | Stored in | Status |
 |---|---|---|
 | Voice entry (OpenAI) | nothing persisted | Available: the mic button on Home, the "Add by Voice" quick action, `budgetapp://voice-add` / `voice_add` and the Voice Add widget open a recording sheet over whatever is showing; it records up to 30 seconds, sends the audio to OpenAI for transcription and the transcript to a chat model, and continues into the add form prefilled with what was said (nothing is stored until Add). Needs a key in `native/Config/Secrets.xcconfig`; Debug builds without one show the "not configured" message. The widget gallery text ("Speak a transaction") is true again. Differences under "Deliberate differences" below. |
 | Insights | `local_insights_*` prefs | Available: the Insights section on Flow (up to three cards, "Insight options" menu with Snooze for 30 days / Dismiss). The engine and the two preferences match Flutter (Fixtures/insights; Swift-written prefs verified in Dart), so a dismissal or snooze in either app hides the same card in the other. |
@@ -1210,6 +1222,66 @@ what Flutter reads or shows):
   and Try again records again (Flutter leaves the sheet listening with no
   timer). Stop pressed while the recorder is still starting stops it and
   deletes the file.
+
+### Colour tokens meet WCAG AA (owner-approved 2026-09-30)
+
+The owner approved on 2026-09-30 that these colour tokens differ from
+Flutter so that text and the labels on filled controls reach WCAG AA
+(4.5:1). Flutter's values fell short: textTertiary 2.3-2.9:1 in both modes,
+light income 2.5:1, danger 3.8:1 and warning 2.2:1 as text, white on the
+income and danger fills 2.5 and 3.8:1, the filled accent button 4.47:1, the
+button gradients' lighter stops down to 1.9:1. Each value is the nearest one
+with the same hue (only the lightness changed, in OKLCH) that passes against
+every surface it sits on (page, card, chip surface, and its own 10-14% tint
+for text; white for fills). Dark income, danger, warning and accent already
+passed and are unchanged; so are the chart and category palettes
+(`BudgieColor.chartPalette`, and the Spend rank palette through
+`chartAccent` / `chartIncome` / `chartDanger` / `chartWarning`, which keep
+Flutter's values), the wash and glow behind the Worth account hero and
+editor banner, and the fixed `incomeFixed` / `expenseFixed` wheel tiles.
+The home screen widget's two white-labelled buttons and its mic circle were
+darkened the same way (the widget has its own palette, not these tokens).
+Two helpers keep category colours readable as text: `textSecondaryOnTint`
+(`#5A6170` light) on strongly tinted cards, and `BudgieColor.legible`,
+which mixes a pale chart colour towards the primary text colour until it
+reaches 4.5:1 on its own tint (the Spend drill-in chips).
+`BudgieAppTests/ColorContrastTests` asserts every pair below.
+
+| Token | Mode | Flutter / old | New | Pair | Ratio before | Ratio after |
+|---|---|---|---|---|---|---|
+| textSecondary | light | 6B7280 | 626977 | text on card | 4.83 | 5.52 |
+| textSecondary | light | 6B7280 | 626977 | text on chip | 4.30 | 4.90 |
+| textTertiary | light | 9CA3AF | 686F7A | text on card | 2.54 | 5.07 |
+| textTertiary | light | 9CA3AF | 686F7A | text on chip | 2.26 | 4.50 |
+| textTertiary | dark | 5C5C78 | 81829F | text on card | 2.86 | 4.93 |
+| textTertiary | dark | 5C5C78 | 81829F | text on chip | 2.81 | 4.86 |
+| dockInactiveIcon | light | 6B7280 | 636A78 | text on track | 4.00 | 4.50 |
+| accent | light | 6366F1 | 5453DD | text on card | 4.47 | 5.74 |
+| accent | light | 6366F1 | 5453DD | text on chip | 3.97 | 5.10 |
+| accent | light | 6366F1 | 5453DD | white on fill | 4.47 | 5.74 |
+| income | light | 10B981 | 07744F | text on card | 2.54 | 5.80 |
+| income | light | 10B981 | 07744F | text on chip | 2.25 | 5.16 |
+| income | light | 10B981 | 07744F | white on fill | 2.54 | 5.80 |
+| danger | light | EF4444 | C60D21 | text on card | 3.76 | 6.03 |
+| danger | light | EF4444 | C60D21 | text on chip | 3.34 | 5.36 |
+| danger | light | EF4444 | C60D21 | white on fill | 3.76 | 6.03 |
+| warning | light | F59E0B | 8F5B05 | text on card | 2.15 | 5.73 |
+| warning | light | F59E0B | 8F5B05 | text on chip | 1.91 | 5.09 |
+| primary | both | 6366F1 | 5453DD | white on fill | 4.47 | 5.74 |
+| primaryGradient stop 1 | light | 6366F1 | 5F61EC | white on fill | 4.47 | 4.76 |
+| primaryGradient stop 2 | light | 8B5CF6 | 8757F1 | white on fill | 4.23 | 4.50 |
+| incomeGradient stop 1 | light | 10B981 | 006E4B | white on fill | 2.54 | 6.30 |
+| incomeGradient stop 2 | light | 34D399 | 05875E | white on fill | 1.92 | 4.53 |
+| incomeGradient stop 1 | dark | 059669 | 056647 | white on fill | 3.77 | 7.00 |
+| incomeGradient stop 2 | dark | 10B981 | 04875D | white on fill | 2.54 | 4.54 |
+| expenseGradient stop 1 | light | EF4444 | C2021D | white on fill | 3.76 | 6.32 |
+| expenseGradient stop 2 | light | F87171 | CC4A4D | white on fill | 2.77 | 4.51 |
+| expenseGradient stop 1 | dark | DC2626 | CC0716 | white on fill | 4.83 | 5.82 |
+| expenseGradient stop 2 | dark | EF4444 | DF3337 | white on fill | 3.76 | 4.50 |
+
+Ratios are WCAG 2 contrast; "text on chip" is the chip surface `#F1F1F7` /
+`#15151F`. Not every token pair is listed (see `ColorContrastTests` for the
+complete set, including each colour on its own tint).
 
 ## Deliberate differences (not yet approved)
 
