@@ -955,6 +955,32 @@ available; the status column records how it matches Flutter.
   card stacks its tile above the text (Flutter keeps the row and its text
   column narrows).
 
+- (Approved 2026-10-01.) A category name with leading or trailing spaces (a transaction's,
+  template's or budget key's; the typical fixture has "  Padded Cat ") no
+  longer adds a definition at every launch. Flutter's `_containsName`
+  (category_provider.dart:226) trims the candidate but not the stored
+  names, and `ensureLegacyCategoryNames` stores the name untrimmed (:93,
+  :98), so the definition it made never matches again: the debug build
+  went from 19 to 20 categories on the first launch and 29 after nine
+  restarts, each a new `type-<uuid>` row. Swift's first launch adds the
+  same one definition as Flutter's (same bytes, so the launch fixtures
+  still match); on later launches a definition stored before the launch
+  matches by its trimmed name and nothing is added. Inside one launch
+  Flutter's rule stands (two rows with the same padded name add two
+  definitions, once). Invisible to Dart beyond the missing duplicates:
+  the section is the same shape, and the Flutter build run after Swift
+  still adds its own duplicate (its bug). The parity tests load Flutter-
+  written stores with `matchesPaddedCategoryNames: false`, which is
+  Flutter's rule exactly, because a store that already holds the padded
+  definition (large_10k) is, for Flutter, a launch that adds another;
+  CategoryRelaunchTests holds the fix.
+
+- (Approved 2026-10-01.) Dialog scrims (every `budgieDialog`) ignore taps while the keyboard is
+  showing, hiding or changing height (between UIKit's will- and
+  did-change-frame notifications): the keyboard moves the card then, so a
+  tap on the scrim was aimed at where the card just was, typically its
+  buttons (Flutter's barrier dismisses on any tap).
+
 ### CSV import
 
 The parser (csv 6.0.0 with the app's settings), `utf8.decode`, header and
@@ -1285,31 +1311,7 @@ complete set, including each colour on its own tint).
 
 ## Deliberate differences (not yet approved)
 
-- A category name with leading or trailing spaces (a transaction's,
-  template's or budget key's; the typical fixture has "  Padded Cat ") no
-  longer adds a definition at every launch. Flutter's `_containsName`
-  (category_provider.dart:226) trims the candidate but not the stored
-  names, and `ensureLegacyCategoryNames` stores the name untrimmed (:93,
-  :98), so the definition it made never matches again: the debug build
-  went from 19 to 20 categories on the first launch and 29 after nine
-  restarts, each a new `type-<uuid>` row. Swift's first launch adds the
-  same one definition as Flutter's (same bytes, so the launch fixtures
-  still match); on later launches a definition stored before the launch
-  matches by its trimmed name and nothing is added. Inside one launch
-  Flutter's rule stands (two rows with the same padded name add two
-  definitions, once). Invisible to Dart beyond the missing duplicates:
-  the section is the same shape, and the Flutter build run after Swift
-  still adds its own duplicate (its bug). The parity tests load Flutter-
-  written stores with `matchesPaddedCategoryNames: false`, which is
-  Flutter's rule exactly, because a store that already holds the padded
-  definition (large_10k) is, for Flutter, a launch that adds another;
-  CategoryRelaunchTests holds the fix.
-
-- Dialog scrims (every `budgieDialog`) ignore taps while the keyboard is
-  showing, hiding or changing height (between UIKit's will- and
-  did-change-frame notifications): the keyboard moves the card then, so a
-  tap on the scrim was aimed at where the card just was, typically its
-  buttons (Flutter's barrier dismisses on any tap).
+None.
 
 ## Platform
 
