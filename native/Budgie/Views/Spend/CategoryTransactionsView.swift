@@ -198,12 +198,14 @@ private struct ExpenseRow: View {
                         .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textTertiary)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(minWidth: 56, maxWidth: .infinity, alignment: .leading)
+                // First pick of the row's width; truncates rather than
+                // widening the page when it is wider than the row.
                 Text(amount)
                     .textStyle(.amountSmall)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .lineLimit(1)
-                    .fixedSize()
+                    .layoutPriority(1)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)

@@ -21,6 +21,13 @@ struct GoalCard: View {
     let onDelete: () -> Void
 
     @State private var longPresses = 0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var titleLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout(spacing: 8))
+    }
 
     /// `badgeSmall` at 16 / w800.
     private static let ringText = TextSpec(face: .gabaritoExtraBold, size: 16, relativeTo: .caption)
@@ -91,7 +98,10 @@ struct GoalCard: View {
                 }
             }
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 8) {
+                // At accessibility sizes the chip sits under the name, which
+                // then has the column's full width (beside the fixed-size
+                // chip it broke mid-word).
+                titleLayout {
                     Text(goal.name)
                         .textStyle(.goalTitle)
                         .foregroundStyle(BudgieColor.textPrimary)

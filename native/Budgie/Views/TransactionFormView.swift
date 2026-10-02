@@ -33,6 +33,7 @@ struct TransactionFormView: View {
 
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @State private var type: TransactionType
     @State private var amountText: String
@@ -61,6 +62,10 @@ struct TransactionFormView: View {
     @State private var wheelTicks = 0
     @State private var showingDatePicker = false
     @State private var showingRecurring = false
+    @State private var revealedWheel = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private static let wheelID = "categoryWheel"
 
     init(mode: Mode, initialCategory: String? = nil) {
         self.mode = mode
@@ -151,49 +156,62 @@ struct TransactionFormView: View {
         // the scroll area (and above the keyboard) rather than over it, so it
         // needs no fill of its own and the sheet's side borders run unbroken.
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(title)
-                        .textStyle(.headingMedium)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                        .accessibilityAddTraits(.isHeader)
-                    SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 12)
-                        .accessibilityElement(children: .contain)
-                        .accessibilityLabel("Transaction type")
-                    BudgieField(
-                        title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
-                        error: amountError, autofocus: true
-                    )
-                    .padding(.top, Metrics.spacingM)
-                    BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
-                        .padding(.top, Metrics.spacingS)
-                    // The wheel carries the "Category" label for VoiceOver.
-                    fieldLabel("Category")
-                        .accessibilityHidden(true)
-                        .padding(.top, Metrics.spacingS)
-                    categoryWheel
-                    if !model.tags.isEmpty {
-                        fieldLabel("Tags")
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(title)
+                            .textStyle(.headingMedium)
+                            .foregroundStyle(BudgieColor.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
                             .accessibilityAddTraits(.isHeader)
-                            .padding(.top, Metrics.spacingM)
-                        tagChips
-                    }
-                    DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                        SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 12)
+                            .accessibilityElement(children: .contain)
+                            .accessibilityLabel("Transaction type")
+                        BudgieField(
+                            title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
+                            error: amountError, autofocus: true
+                        )
                         .padding(.top, Metrics.spacingM)
-                    if editing != nil {
-                        PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
-                            .disabled(saving)
-                            .opacity(saving ? Metrics.opacityDisabled : 1)
-                            .padding(.top, Metrics.spacingL)
+                        BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
+                            .padding(.top, Metrics.spacingS)
+                        // The wheel carries the "Category" label for VoiceOver.
+                        fieldLabel("Category")
+                            .accessibilityHidden(true)
+                            .padding(.top, Metrics.spacingS)
+                        categoryWheel
+                            .id(Self.wheelID)
+                        if !model.tags.isEmpty {
+                            fieldLabel("Tags")
+                                .accessibilityAddTraits(.isHeader)
+                                .padding(.top, Metrics.spacingM)
+                            tagChips
+                        }
+                        DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                            .padding(.top, Metrics.spacingM)
+                        if editing != nil {
+                            PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
+                                .disabled(saving)
+                                .opacity(saving ? Metrics.opacityDisabled : 1)
+                                .padding(.top, Metrics.spacingL)
+                        }
                     }
+                    .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
                 }
-                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
+                .scrollDismissesKeyboard(.interactively)
+                // With the keyboard up the scroll area is short enough to cut
+                // the wheel's box off flat; bring all of it into view (once, so
+                // later scrolling is the user's).
+                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+                    // Not at accessibility sizes: the area is then too short to
+                    // show the wheel without scrolling the focused Amount away.
+                    guard !revealedWheel, !dynamicTypeSize.isAccessibilitySize else { return }
+                    revealedWheel = true
+                    withAnimation(reduceMotion ? nil : Motion.easeOut(Motion.fast)) { proxy.scrollTo(Self.wheelID, anchor: .bottom) }
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
             footer
         }
         .onAppear(perform: loadCategories)
@@ -325,8 +343,13 @@ struct TransactionFormView: View {
                             .font(.system(size: 17, weight: .medium))
                             .accessibilityHidden(true)
                         Text("Make this recurring").textStyle(.caption)
+                            .multilineTextAlignment(.center)
                     }
                     .foregroundStyle(BudgieColor.textSecondary)
+                    // At accessibility sizes the pill takes the row's width,
+                    // so the label wraps at the words rather than inside a
+                    // narrow pill.
+                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil)
                     .padding(.horizontal, Metrics.spacingM)
                     .padding(.vertical, Metrics.spacingS)
                     .background(

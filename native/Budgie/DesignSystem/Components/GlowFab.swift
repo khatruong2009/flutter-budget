@@ -87,8 +87,12 @@ private struct FabFace: View {
                 .frame(width: size, height: size)
                 .glow(accent, blur: 32 + 14 * flare, alpha: 0.55 + 0.25 * flare)
                 .shadow(color: .black.opacity(0.5), radius: 14, y: 12)
+            // Flutter draws `add_rounded` at 0.48 x size / w500, but that glyph
+            // fills only about 56% of its box, where SF "plus" fills about
+            // 81%: 0.36 x size at regular weight draws the same plus.
+            let plus = symbol == "plus"
             Image(systemName: symbol)
-                .font(.system(size: (size * 0.48).rounded(), weight: .medium))
+                .font(.system(size: (size * (plus ? 0.36 : 0.48)).rounded(), weight: plus ? .regular : .medium))
                 .foregroundStyle(BudgieColor.onAccent)
                 .scaleEffect(1 + 0.22 * flare)
         }

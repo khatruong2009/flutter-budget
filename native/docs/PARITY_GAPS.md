@@ -1311,10 +1311,28 @@ complete set, including each colour on its own tint).
 
 ## Deliberate differences (not yet approved)
 
-None.
+- **Transaction form, keyboard up (visual QA R5, budgie-uia.48).** With the
+  software keyboard showing, the form scrolls once so the whole Category
+  wheel box is in view (Flutter's dialog is shorter and shows it without
+  scrolling; Swift's sheet also holds the grab handle and the Expense/Income
+  toggle, D5). The title then sits just under the grab handle until the user
+  scrolls back. Not done at accessibility text sizes, where the area is too
+  short to show the wheel without scrolling the focused Amount field away.
+- **Spend rows and drill-in rows, amounts wider than the row (R1).** An
+  amount too wide for its row is cut off with an ellipsis and the category
+  name keeps at least about 56pt. Flutter lets such an amount run off the
+  screen (and in the Spend list pushes the whole page sideways); only
+  absurd amounts reach this (the September stress data).
 
 ## Platform
 
+- iOS's text layout appears to avoid ending a paragraph on a single word
+  (Flutter fills each line first; the cause is inferred, there is no
+  public switch to check it). The Flow insight headline
+  "Eating Out has stayed under budget" therefore breaks as "...stayed /
+  under budget" where Flutter breaks "...under / budget", though the
+  column is as wide as Flutter's, and the 48pt menu reserve is not the
+  cause (visual QA R6, budgie-uia.48).
 - Minimum iOS 17 (Flutter: iOS 15). Users on iOS 15/16 stay on the last
   Flutter release.
 - Quick action icons use SF Symbols (the Flutter build referenced asset

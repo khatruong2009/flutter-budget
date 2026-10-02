@@ -113,50 +113,56 @@ struct RollingAmount: View {
         let measured = natural.width > 0 && available > 0
         let scale = measured ? min(1, available / natural.width) : 1
 
-        ZStack {
-            // `textGlow` (blur 48; alpha x0.4 in light) is a shadow, i.e. a
-            // blurred copy of the glyphs in the glow colour; a shadow of
-            // clear text would paint nothing.
-            Text(text)
-                .textStyle(style)
-                .foregroundStyle(glow.opacity(scheme == .dark ? glowAlpha : glowAlpha * 0.4))
-                .perfBlur(radius: 24)
-            HStack(spacing: 0) {
-                ForEach(Self.cells(of: text, skeleton: skeleton), id: \.id) { cell in
-                    Group {
-                        if let digit = cell.digit {
-                            DigitReel(digit: digit, style: style, rowHeight: rowHeight, animation: animation)
-                        } else {
-                            Text(String(cell.character))
-                                .textStyle(style)
-                                .fixedSize()
-                                .frame(height: rowHeight)
+        VStack(spacing: 0) {
+            // The width on offer is read from a view that only fills what it is
+            // proposed. Reading it from the frame below, whose width follows its
+            // content, froze the amount at whatever scale the first (transient)
+            // layout gave it: a third of its size at accessibility text sizes.
+            Color.clear.frame(height: 0).onGeometryChangeCompat { available = $0.width }
+            ZStack {
+                // `textGlow` (blur 48; alpha x0.4 in light) is a shadow, i.e. a
+                // blurred copy of the glyphs in the glow colour; a shadow of
+                // clear text would paint nothing.
+                Text(text)
+                    .textStyle(style)
+                    .foregroundStyle(glow.opacity(scheme == .dark ? glowAlpha : glowAlpha * 0.4))
+                    .perfBlur(radius: 24)
+                HStack(spacing: 0) {
+                    ForEach(Self.cells(of: text, skeleton: skeleton), id: \.id) { cell in
+                        Group {
+                            if let digit = cell.digit {
+                                DigitReel(digit: digit, style: style, rowHeight: rowHeight, animation: animation)
+                            } else {
+                                Text(String(cell.character))
+                                    .textStyle(style)
+                                    .fixedSize()
+                                    .frame(height: rowHeight)
+                            }
                         }
+                        .transition(.identity)
                     }
-                    .transition(.identity)
                 }
+                .foregroundStyle(color)
+                .fixedSize()
+                .onGeometryChangeCompat { size in
+                    // Flutter's `AnimatedSize`: a rebuilt row eases to its new
+                    // width, clipped, over the same 900ms.
+                    if rowWidth == nil || animation == nil {
+                        rowWidth = size.width
+                    } else if rowWidth != size.width {
+                        withAnimation(animation) { rowWidth = size.width }
+                    }
+                }
+                .frame(width: rowWidth)
+                // Clips sideways only: a "$" may reach past the 1.0 line box.
+                .mask { Rectangle().padding(.vertical, -rowHeight / 2) }
             }
-            .foregroundStyle(color)
             .fixedSize()
-            .onGeometryChangeCompat { size in
-                // Flutter's `AnimatedSize`: a rebuilt row eases to its new
-                // width, clipped, over the same 900ms.
-                if rowWidth == nil || animation == nil {
-                    rowWidth = size.width
-                } else if rowWidth != size.width {
-                    withAnimation(animation) { rowWidth = size.width }
-                }
-            }
-            .frame(width: rowWidth)
-            // Clips sideways only: a "$" may reach past the 1.0 line box.
-            .mask { Rectangle().padding(.vertical, -rowHeight / 2) }
+            .onGeometryChangeCompat { natural = $0 }
+            .scaleEffect(scale)
+            .frame(width: measured ? natural.width * scale : nil, height: measured ? natural.height * scale : nil)
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: alignment)
         }
-        .fixedSize()
-        .onGeometryChangeCompat { natural = $0 }
-        .scaleEffect(scale)
-        .frame(width: measured ? natural.width * scale : nil, height: measured ? natural.height * scale : nil)
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: alignment)
-        .onGeometryChangeCompat { available = $0.width }
         // Each reel is an 11-row strip that `clipped()` hides but does not
         // stop from hit-testing: offset by its digit, a strip reaches up over
         // the month pill and wheel and swallows their touches.

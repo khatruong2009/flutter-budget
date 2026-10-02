@@ -141,14 +141,17 @@ private struct SpendRowLine: View {
                     .foregroundStyle(BudgieColor.textSecondary)
                     .singleLine()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(minWidth: 56, maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 12)
             .padding(.trailing, 8)
+            // First pick of the row's width, so an ordinary amount is never
+            // cut; one wider than the row truncates instead of widening the
+            // page (Flutter overflows the screen there).
             Text(amount)
                 .textStyle(.amount)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .lineLimit(1)
-                .fixedSize()
+                .layoutPriority(1)
         }
     }
 }
