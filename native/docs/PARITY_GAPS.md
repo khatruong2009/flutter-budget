@@ -981,6 +981,20 @@ available; the status column records how it matches Flutter.
   tap on the scrim was aimed at where the card just was, typically its
   buttons (Flutter's barrier dismisses on any tap).
 
+- (Approved 2026-10-02.) **Transaction form, keyboard up (visual QA R5, budgie-uia.48).** With the
+  software keyboard showing, the form scrolls once so the whole Category
+  wheel box is in view (Flutter's dialog is shorter and shows it without
+  scrolling; Swift's sheet also holds the grab handle and the Expense/Income
+  toggle, D5). The title then sits just under the grab handle until the user
+  scrolls back. Not done at accessibility text sizes, where the area is too
+  short to show the wheel without scrolling the focused Amount field away.
+
+- (Approved 2026-10-02.) **Spend rows and drill-in rows, amounts wider than the row (R1).** An
+  amount too wide for its row is cut off with an ellipsis and the category
+  name keeps at least about 56pt. Flutter lets such an amount run off the
+  screen (and in the Spend list pushes the whole page sideways); only
+  absurd amounts reach this (the September stress data).
+
 ### CSV import
 
 The parser (csv 6.0.0 with the app's settings), `utf8.decode`, header and
@@ -1311,18 +1325,7 @@ complete set, including each colour on its own tint).
 
 ## Deliberate differences (not yet approved)
 
-- **Transaction form, keyboard up (visual QA R5, budgie-uia.48).** With the
-  software keyboard showing, the form scrolls once so the whole Category
-  wheel box is in view (Flutter's dialog is shorter and shows it without
-  scrolling; Swift's sheet also holds the grab handle and the Expense/Income
-  toggle, D5). The title then sits just under the grab handle until the user
-  scrolls back. Not done at accessibility text sizes, where the area is too
-  short to show the wheel without scrolling the focused Amount field away.
-- **Spend rows and drill-in rows, amounts wider than the row (R1).** An
-  amount too wide for its row is cut off with an ellipsis and the category
-  name keeps at least about 56pt. Flutter lets such an amount run off the
-  screen (and in the Spend list pushes the whole page sideways); only
-  absurd amounts reach this (the September stress data).
+None.
 
 ## Platform
 
