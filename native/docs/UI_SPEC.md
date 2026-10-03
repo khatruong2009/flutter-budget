@@ -111,8 +111,9 @@ tap was aimed at the card (e.g. its Add button) and is ignored.
   status colours, EDIT and "Add a budget" pickers, and the limit sheet
   (`setBudgetLimit` / `removeBudgetLimit`, awaited before dismissing).
 - Recent activity: the 3 newest rows across all months (`ledger.recent`),
-  "SEE ALL" pushes Transactions.
-- Expense / Income pills and the FAB open the form; a FAB long-press opens
+  "See all" pushes Transactions.
+- The FAB opens the form (expense, with its Expense / Income switch); a
+  FAB long-press opens
   the quick-expense category sheet. Above the FAB, centred on it and 12pt
   clear of it, a 44pt mic FAB (`GlowFab`, `mic.fill`, VoiceOver "Add by
   voice", identifier `home.voice`) sets `model.pendingAdd = .voice`, so it

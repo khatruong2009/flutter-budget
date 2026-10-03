@@ -2,10 +2,10 @@ import BudgieCore
 import SwiftUI
 
 /// The Home tab (`SpendingPage`, spending_page.dart:448-686): header with
-/// the month pill and its wheel panel, the cash-flow hero, the spend gauge,
-/// the income/expense chips, safe to spend, budgets, recent activity and
-/// the Expense/Income pills, with the add button floating bottom-trailing
-/// under the smaller voice button.
+/// the month pill and its wheel panel, the cash-flow ring, the income and
+/// expense tiles, safe to spend, budgets and recent activity, with the add
+/// button (whose form switches between expense and income) floating
+/// bottom-trailing under the smaller voice button.
 /// Everything is read from `model.ledger` except safe to spend, whose Core
 /// calculation takes the transactions.
 struct HomeView: View {
@@ -148,13 +148,6 @@ struct HomeView: View {
         }
         .padding(.horizontal, Metrics.pageHorizontal)
         .padding(.top, Metrics.sectionGap)
-
-        HStack(spacing: 12) {
-            PillButton(title: "Expense", symbol: "minus", color: BudgieColor.danger) { sheet = .add(.expense) }
-            PillButton(title: "Income", symbol: "plus", color: BudgieColor.income) { sheet = .add(.income) }
-        }
-        .padding(.horizontal, Metrics.pageHorizontal)
-        .padding(.top, 24)
     }
 }
 

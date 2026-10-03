@@ -89,14 +89,17 @@ final class TagsRulesUITests: XCTestCase {
         XCTAssertTrue(target.isHittable, "\(target) on screen")
     }
 
-    /// Opens the add-expense form (or Home's Income pill's form) and types
-    /// an amount and a description.
+    /// Opens the add form from Home (switched to Income for an income) and
+    /// types an amount and a description.
     private func openExpenseForm(description: String, amount amountText: String = "12", income: Bool = false) {
         homeRoot()
-        (income ? app.buttons["Income"].firstMatch : app.buttons["Add transaction"]).tapSettled()
+        app.buttons["Add transaction"].tapSettled()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
-        if income { amount.tapSettled() }
+        if income {
+            app.buttons["Income"].firstMatch.tapSettled()
+            amount.tapSettled()
+        }
         amount.typeSettled(amountText)
         guard !description.isEmpty else { return }
         app.textFields["Description"].enterText(description)

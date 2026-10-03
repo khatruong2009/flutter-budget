@@ -1350,8 +1350,8 @@ the copy changes listed here.
   Budgets are two-column ring tiles (one column at accessibility sizes) with
   the share used, and a dashed "Add a budget" button; the add row's
   subtitle is now its VoiceOver hint. Recent rows tint the icon with the
-  category's colour. The Expense / Income pills stay (Home's only way to
-  add income; budgie-ou0.10).
+  category's colour. Home's Expense / Income pills are gone: the add
+  button's form switches between expense and income, as it already did.
 - **Shared.** Section links read "See all" / "Edit" in sentence case (were
   mono "SEE ALL" / "EDIT"); page titles are 30pt, section titles 21pt. Month
   chips (Worth and SEE ALL) are single-line capsules ("Sep 2026"), selected

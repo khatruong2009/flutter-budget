@@ -152,8 +152,8 @@ extension XCUIApplication {
         _ = switches["settings.hideBalances"].waitForExistence(timeout: 10)
     }
 
-    /// Adds a transaction from Home: the FAB's expense form, or the Income
-    /// pill's form. `category` spins the form's wheel to that name;
+    /// Adds a transaction from Home: the FAB's form, switched to Income for
+    /// an income. `category` spins the form's wheel to that name;
     /// `monthsAgo` > 0 dates it on the 15th of that many months back through
     /// the form's date picker (Previous Month, then the day).
     func addTransaction(
@@ -161,13 +161,10 @@ extension XCUIApplication {
         file: StaticString = #filePath, line: UInt = #line
     ) {
         goToHomeRoot()
-        if income {
-            buttons["Income"].firstMatch.tapSettled(file: file, line: line)
-        } else {
-            buttons["Add transaction"].tapSettled(file: file, line: line)
-        }
+        buttons["Add transaction"].tapSettled(file: file, line: line)
         let amountField = textFields["Amount"]
         XCTAssertTrue(amountField.waitForExistence(timeout: 10), "the add form", file: file, line: line)
+        if income { buttons["Income"].firstMatch.tapSettled(file: file, line: line) }
         amountField.enterText(amount)
         textFields["Description"].enterText(description)
         if let category {

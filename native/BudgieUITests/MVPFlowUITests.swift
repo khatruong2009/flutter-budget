@@ -105,9 +105,11 @@ final class MVPFlowUITests: XCTestCase {
         dark.tap()
         XCTAssertTrue(dark.wait(for: \.isSelected, toEqual: true, timeout: 5), "Dark selected")
 
-        // Add an income from the Home pill, then delete it from SEE ALL.
+        // Add an income from the add button's form, then delete it from SEE ALL.
         homeRoot()
-        app.buttons["Income"].firstMatch.tap()
+        app.buttons["Add transaction"].tap()
+        XCTAssertTrue(app.textFields["Amount"].waitForExistence(timeout: 5))
+        app.buttons["Income"].firstMatch.tapSettled()
         app.textFields["Amount"].enterText("5")
         app.textFields["Description"].enterText("To delete")
         app.buttons["Add"].tapSettled()
