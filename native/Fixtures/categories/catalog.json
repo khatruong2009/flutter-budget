@@ -1,0 +1,32 @@
+{
+  "iconIdentifiers": [
+    "square_grid_2x2",
+    "asterisk_circle",
+    "cart",
+    "house",
+    "car",
+    "airplane",
+    "bag",
+    "gift",
+    "heart",
+    "film",
+    "paw",
+    "people",
+    "money",
+    "chart",
+    "book",
+    "phone",
+    "wrench",
+    "leaf"
+  ],
+  "colorTokens": [
+    "accent",
+    "green",
+    "blue",
+    "orange",
+    "red",
+    "purple",
+    "pink",
+    "cyan"
+  ]
+}

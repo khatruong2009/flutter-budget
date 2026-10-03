@@ -1,0 +1,22 @@
+{
+  "flutter.transactions": {
+    "type": "string",
+    "value": "[{\"id\":\"ok-1\",\"type\":\"income\",\"description\":\"kept\",\"amount\":5,\"category\":\"Salary\",\"date\":\"2024-01-01T00:00:00.000\"}]"
+  },
+  "flutter.net_worth_entries": {
+    "type": "string",
+    "value": "{not json"
+  },
+  "flutter.savings_goals": {
+    "type": "string",
+    "value": ""
+  },
+  "flutter.category_budget_limits": {
+    "type": "string",
+    "value": "{\"Groceries\": 100}"
+  },
+  "flutter.net_worth_selected_month": {
+    "type": "string",
+    "value": "not a date"
+  }
+}

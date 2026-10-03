@@ -1,0 +1,4424 @@
+{
+  "compact": [
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "0000000000000000",
+      "compact": "$0.0",
+      "delta": "+$0.0"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "8000000000000000",
+      "compact": "-$0.0",
+      "delta": "+-$0.0"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "3fa47ae147ae147b",
+      "compact": "$0.0",
+      "delta": "+$0.0"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "3fa999999999999a",
+      "compact": "$0.1",
+      "delta": "+$0.1"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "3fe0000000000000",
+      "compact": "$0.5",
+      "delta": "+$0.5"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "bfe0000000000000",
+      "compact": "-$0.5",
+      "delta": "-$0.5"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4014000000000000",
+      "compact": "$5.0",
+      "delta": "+$5.0"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4023e147ae147ae1",
+      "compact": "$9.9",
+      "delta": "+$9.9"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4023e66666666666",
+      "compact": "$9.9",
+      "delta": "+$9.9"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4023eb851eb851ec",
+      "compact": "$10.0",
+      "delta": "+$10.0"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4058e00000000000",
+      "compact": "$99.5",
+      "delta": "+$99.5"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4058fc28f5c28f5c",
+      "compact": "$99.9",
+      "delta": "+$99.9"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4058fccccccccccd",
+      "compact": "$100",
+      "delta": "+$100"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4059000000000000",
+      "compact": "$100",
+      "delta": "+$100"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "408f3beb851eb852",
+      "compact": "$999",
+      "delta": "+$999"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "408f3c0000000000",
+      "compact": "$1K",
+      "delta": "+$1K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "408f3feb851eb852",
+      "compact": "$1K",
+      "delta": "+$1K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "408f400000000000",
+      "compact": "$1K",
+      "delta": "+$1K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4093480000000000",
+      "compact": "$1.23K",
+      "delta": "+$1.23K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40976ff5c28f5c29",
+      "compact": "$1.5K",
+      "delta": "+$1.5K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4097700000000000",
+      "compact": "$1.5K",
+      "delta": "+$1.5K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40c3850000000000",
+      "compact": "$9.99K",
+      "delta": "+$9.99K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40c3858000000000",
+      "compact": "$9.99K",
+      "delta": "+$9.99K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40c81c8000000000",
+      "compact": "$12.3K",
+      "delta": "+$12.3K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40f866e000000000",
+      "compact": "$100K",
+      "delta": "+$100K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "40fe240000000000",
+      "compact": "$123K",
+      "delta": "+$123K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "412e809600000000",
+      "compact": "$999K",
+      "delta": "+$999K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "412e809800000000",
+      "compact": "$1M",
+      "delta": "+$1M"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "412e847e00000000",
+      "compact": "$1M",
+      "delta": "+$1M"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4132d68700000000",
+      "compact": "$1.23M",
+      "delta": "+$1.23M"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "41d65a0bc0000000",
+      "compact": "$1.5B",
+      "delta": "+$1.5B"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "4282309ce5400000",
+      "compact": "$2.5T",
+      "delta": "+$2.5T"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "430c6be285d4e000",
+      "compact": "$1000T",
+      "delta": "+$1000T"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "430c6bf526340000",
+      "compact": "$1000T",
+      "delta": "+$1000T"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "43b1200c7644d500",
+      "compact": "$1234000T",
+      "delta": "+$1234000T"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "c093480000000000",
+      "compact": "-$1.23K",
+      "delta": "-$1.23K"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "c12e847e00000000",
+      "compact": "-$1M",
+      "delta": "-$1M"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "value": "3fd3333333333334",
+      "compact": "$0.3",
+      "delta": "+$0.3"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "0000000000000000",
+      "compact": "0,0 €",
+      "delta": "+0,0 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "8000000000000000",
+      "compact": "-0,0 €",
+      "delta": "+-0,0 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "3fa47ae147ae147b",
+      "compact": "0,0 €",
+      "delta": "+0,0 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "3fa999999999999a",
+      "compact": "0,1 €",
+      "delta": "+0,1 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "3fe0000000000000",
+      "compact": "0,5 €",
+      "delta": "+0,5 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "bfe0000000000000",
+      "compact": "-0,5 €",
+      "delta": "-0,5 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4014000000000000",
+      "compact": "5,0 €",
+      "delta": "+5,0 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4023e147ae147ae1",
+      "compact": "9,9 €",
+      "delta": "+9,9 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4023e66666666666",
+      "compact": "9,9 €",
+      "delta": "+9,9 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4023eb851eb851ec",
+      "compact": "10,0 €",
+      "delta": "+10,0 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4058e00000000000",
+      "compact": "99,5 €",
+      "delta": "+99,5 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4058fc28f5c28f5c",
+      "compact": "99,9 €",
+      "delta": "+99,9 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4058fccccccccccd",
+      "compact": "100 €",
+      "delta": "+100 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4059000000000000",
+      "compact": "100 €",
+      "delta": "+100 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "408f3beb851eb852",
+      "compact": "999 €",
+      "delta": "+999 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "408f3c0000000000",
+      "compact": "1000 €",
+      "delta": "+1000 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "408f3feb851eb852",
+      "compact": "1000 €",
+      "delta": "+1000 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "408f400000000000",
+      "compact": "1000 €",
+      "delta": "+1000 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4093480000000000",
+      "compact": "1234 €",
+      "delta": "+1234 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40976ff5c28f5c29",
+      "compact": "1500 €",
+      "delta": "+1500 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4097700000000000",
+      "compact": "1500 €",
+      "delta": "+1500 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40c3850000000000",
+      "compact": "9994 €",
+      "delta": "+9994 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40c3858000000000",
+      "compact": "9995 €",
+      "delta": "+9995 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40c81c8000000000",
+      "compact": "12345 €",
+      "delta": "+12345 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40f866e000000000",
+      "compact": "99950 €",
+      "delta": "+99950 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "40fe240000000000",
+      "compact": "123456 €",
+      "delta": "+123456 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "412e809600000000",
+      "compact": "999499 €",
+      "delta": "+999499 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "412e809800000000",
+      "compact": "999500 €",
+      "delta": "+999500 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "412e847e00000000",
+      "compact": "999999 €",
+      "delta": "+999999 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4132d68700000000",
+      "compact": "1,23 Mio. €",
+      "delta": "+1,23 Mio. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "41d65a0bc0000000",
+      "compact": "1,5 Mrd. €",
+      "delta": "+1,5 Mrd. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "4282309ce5400000",
+      "compact": "2,5 Bio. €",
+      "delta": "+2,5 Bio. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "430c6be285d4e000",
+      "compact": "1000 Bio. €",
+      "delta": "+1000 Bio. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "430c6bf526340000",
+      "compact": "1000 Bio. €",
+      "delta": "+1000 Bio. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "43b1200c7644d500",
+      "compact": "1234000 Bio. €",
+      "delta": "+1234000 Bio. €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "c093480000000000",
+      "compact": "-1234 €",
+      "delta": "-1234 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "c12e847e00000000",
+      "compact": "-999999 €",
+      "delta": "-999999 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "value": "3fd3333333333334",
+      "compact": "0,3 €",
+      "delta": "+0,3 €"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "0000000000000000",
+      "compact": "¥0.0",
+      "delta": "+¥0.0"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "8000000000000000",
+      "compact": "-¥0.0",
+      "delta": "+-¥0.0"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "3fa47ae147ae147b",
+      "compact": "¥0.0",
+      "delta": "+¥0.0"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "3fa999999999999a",
+      "compact": "¥0.1",
+      "delta": "+¥0.1"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "3fe0000000000000",
+      "compact": "¥0.5",
+      "delta": "+¥0.5"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "bfe0000000000000",
+      "compact": "-¥0.5",
+      "delta": "-¥0.5"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4014000000000000",
+      "compact": "¥5.0",
+      "delta": "+¥5.0"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4023e147ae147ae1",
+      "compact": "¥9.9",
+      "delta": "+¥9.9"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4023e66666666666",
+      "compact": "¥9.9",
+      "delta": "+¥9.9"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4023eb851eb851ec",
+      "compact": "¥10.0",
+      "delta": "+¥10.0"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4058e00000000000",
+      "compact": "¥99.5",
+      "delta": "+¥99.5"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4058fc28f5c28f5c",
+      "compact": "¥99.9",
+      "delta": "+¥99.9"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4058fccccccccccd",
+      "compact": "¥100",
+      "delta": "+¥100"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4059000000000000",
+      "compact": "¥100",
+      "delta": "+¥100"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "408f3beb851eb852",
+      "compact": "¥999",
+      "delta": "+¥999"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "408f3c0000000000",
+      "compact": "¥1000",
+      "delta": "+¥1000"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "408f3feb851eb852",
+      "compact": "¥1000",
+      "delta": "+¥1000"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "408f400000000000",
+      "compact": "¥1000",
+      "delta": "+¥1000"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4093480000000000",
+      "compact": "¥1234",
+      "delta": "+¥1234"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40976ff5c28f5c29",
+      "compact": "¥1500",
+      "delta": "+¥1500"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4097700000000000",
+      "compact": "¥1500",
+      "delta": "+¥1500"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40c3850000000000",
+      "compact": "¥9994",
+      "delta": "+¥9994"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40c3858000000000",
+      "compact": "¥9995",
+      "delta": "+¥9995"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40c81c8000000000",
+      "compact": "¥1.23万",
+      "delta": "+¥1.23万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40f866e000000000",
+      "compact": "¥9.99万",
+      "delta": "+¥9.99万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "40fe240000000000",
+      "compact": "¥12.3万",
+      "delta": "+¥12.3万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "412e809600000000",
+      "compact": "¥99.9万",
+      "delta": "+¥99.9万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "412e809800000000",
+      "compact": "¥100万",
+      "delta": "+¥100万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "412e847e00000000",
+      "compact": "¥100万",
+      "delta": "+¥100万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4132d68700000000",
+      "compact": "¥123万",
+      "delta": "+¥123万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "41d65a0bc0000000",
+      "compact": "¥15億",
+      "delta": "+¥15億"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "4282309ce5400000",
+      "compact": "¥2.5兆",
+      "delta": "+¥2.5兆"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "430c6be285d4e000",
+      "compact": "¥1000兆",
+      "delta": "+¥1000兆"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "430c6bf526340000",
+      "compact": "¥1000兆",
+      "delta": "+¥1000兆"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "43b1200c7644d500",
+      "compact": "¥123京",
+      "delta": "+¥123京"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "c093480000000000",
+      "compact": "-¥1234",
+      "delta": "-¥1234"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "c12e847e00000000",
+      "compact": "-¥100万",
+      "delta": "-¥100万"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "value": "3fd3333333333334",
+      "compact": "¥0.3",
+      "delta": "+¥0.3"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "0000000000000000",
+      "compact": "£0.0",
+      "delta": "+£0.0"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "8000000000000000",
+      "compact": "-£0.0",
+      "delta": "+-£0.0"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "3fa47ae147ae147b",
+      "compact": "£0.0",
+      "delta": "+£0.0"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "3fa999999999999a",
+      "compact": "£0.1",
+      "delta": "+£0.1"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "3fe0000000000000",
+      "compact": "£0.5",
+      "delta": "+£0.5"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "bfe0000000000000",
+      "compact": "-£0.5",
+      "delta": "-£0.5"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4014000000000000",
+      "compact": "£5.0",
+      "delta": "+£5.0"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4023e147ae147ae1",
+      "compact": "£9.9",
+      "delta": "+£9.9"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4023e66666666666",
+      "compact": "£9.9",
+      "delta": "+£9.9"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4023eb851eb851ec",
+      "compact": "£10.0",
+      "delta": "+£10.0"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4058e00000000000",
+      "compact": "£99.5",
+      "delta": "+£99.5"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4058fc28f5c28f5c",
+      "compact": "£99.9",
+      "delta": "+£99.9"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4058fccccccccccd",
+      "compact": "£100",
+      "delta": "+£100"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4059000000000000",
+      "compact": "£100",
+      "delta": "+£100"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "408f3beb851eb852",
+      "compact": "£999",
+      "delta": "+£999"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "408f3c0000000000",
+      "compact": "£1K",
+      "delta": "+£1K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "408f3feb851eb852",
+      "compact": "£1K",
+      "delta": "+£1K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "408f400000000000",
+      "compact": "£1K",
+      "delta": "+£1K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4093480000000000",
+      "compact": "£1.23K",
+      "delta": "+£1.23K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40976ff5c28f5c29",
+      "compact": "£1.5K",
+      "delta": "+£1.5K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4097700000000000",
+      "compact": "£1.5K",
+      "delta": "+£1.5K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40c3850000000000",
+      "compact": "£9.99K",
+      "delta": "+£9.99K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40c3858000000000",
+      "compact": "£9.99K",
+      "delta": "+£9.99K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40c81c8000000000",
+      "compact": "£12.3K",
+      "delta": "+£12.3K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40f866e000000000",
+      "compact": "£100K",
+      "delta": "+£100K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "40fe240000000000",
+      "compact": "£123K",
+      "delta": "+£123K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "412e809600000000",
+      "compact": "£999K",
+      "delta": "+£999K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "412e809800000000",
+      "compact": "£1M",
+      "delta": "+£1M"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "412e847e00000000",
+      "compact": "£1M",
+      "delta": "+£1M"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4132d68700000000",
+      "compact": "£1.23M",
+      "delta": "+£1.23M"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "41d65a0bc0000000",
+      "compact": "£1.5B",
+      "delta": "+£1.5B"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "4282309ce5400000",
+      "compact": "£2.5T",
+      "delta": "+£2.5T"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "430c6be285d4e000",
+      "compact": "£1000T",
+      "delta": "+£1000T"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "430c6bf526340000",
+      "compact": "£1000T",
+      "delta": "+£1000T"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "43b1200c7644d500",
+      "compact": "£1234000T",
+      "delta": "+£1234000T"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "c093480000000000",
+      "compact": "-£1.23K",
+      "delta": "-£1.23K"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "c12e847e00000000",
+      "compact": "-£1M",
+      "delta": "-£1M"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "value": "3fd3333333333334",
+      "compact": "£0.3",
+      "delta": "+£0.3"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "0000000000000000",
+      "compact": "₹0.0",
+      "delta": "+₹0.0"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "8000000000000000",
+      "compact": "-₹0.0",
+      "delta": "+-₹0.0"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "3fa47ae147ae147b",
+      "compact": "₹0.0",
+      "delta": "+₹0.0"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "3fa999999999999a",
+      "compact": "₹0.1",
+      "delta": "+₹0.1"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "3fe0000000000000",
+      "compact": "₹0.5",
+      "delta": "+₹0.5"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "bfe0000000000000",
+      "compact": "-₹0.5",
+      "delta": "-₹0.5"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4014000000000000",
+      "compact": "₹5.0",
+      "delta": "+₹5.0"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4023e147ae147ae1",
+      "compact": "₹9.9",
+      "delta": "+₹9.9"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4023e66666666666",
+      "compact": "₹9.9",
+      "delta": "+₹9.9"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4023eb851eb851ec",
+      "compact": "₹10.0",
+      "delta": "+₹10.0"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4058e00000000000",
+      "compact": "₹99.5",
+      "delta": "+₹99.5"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4058fc28f5c28f5c",
+      "compact": "₹99.9",
+      "delta": "+₹99.9"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4058fccccccccccd",
+      "compact": "₹100",
+      "delta": "+₹100"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4059000000000000",
+      "compact": "₹100",
+      "delta": "+₹100"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "408f3beb851eb852",
+      "compact": "₹999",
+      "delta": "+₹999"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "408f3c0000000000",
+      "compact": "₹1K",
+      "delta": "+₹1K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "408f3feb851eb852",
+      "compact": "₹1K",
+      "delta": "+₹1K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "408f400000000000",
+      "compact": "₹1K",
+      "delta": "+₹1K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4093480000000000",
+      "compact": "₹1.23K",
+      "delta": "+₹1.23K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40976ff5c28f5c29",
+      "compact": "₹1.5K",
+      "delta": "+₹1.5K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4097700000000000",
+      "compact": "₹1.5K",
+      "delta": "+₹1.5K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40c3850000000000",
+      "compact": "₹9.99K",
+      "delta": "+₹9.99K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40c3858000000000",
+      "compact": "₹9.99K",
+      "delta": "+₹9.99K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40c81c8000000000",
+      "compact": "₹12.3K",
+      "delta": "+₹12.3K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40f866e000000000",
+      "compact": "₹100K",
+      "delta": "+₹100K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "40fe240000000000",
+      "compact": "₹123K",
+      "delta": "+₹123K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "412e809600000000",
+      "compact": "₹999K",
+      "delta": "+₹999K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "412e809800000000",
+      "compact": "₹1M",
+      "delta": "+₹1M"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "412e847e00000000",
+      "compact": "₹1M",
+      "delta": "+₹1M"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4132d68700000000",
+      "compact": "₹1.23M",
+      "delta": "+₹1.23M"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "41d65a0bc0000000",
+      "compact": "₹1.5B",
+      "delta": "+₹1.5B"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "4282309ce5400000",
+      "compact": "₹2.5T",
+      "delta": "+₹2.5T"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "430c6be285d4e000",
+      "compact": "₹1000T",
+      "delta": "+₹1000T"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "430c6bf526340000",
+      "compact": "₹1000T",
+      "delta": "+₹1000T"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "43b1200c7644d500",
+      "compact": "₹1234000T",
+      "delta": "+₹1234000T"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "c093480000000000",
+      "compact": "-₹1.23K",
+      "delta": "-₹1.23K"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "c12e847e00000000",
+      "compact": "-₹1M",
+      "delta": "-₹1M"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "value": "3fd3333333333334",
+      "compact": "₹0.3",
+      "delta": "+₹0.3"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "0000000000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "8000000000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "3fa47ae147ae147b",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "3fa999999999999a",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "3fe0000000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "bfe0000000000000",
+      "compact": "-••••",
+      "delta": "-••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4014000000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4023e147ae147ae1",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4023e66666666666",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4023eb851eb851ec",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4058e00000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4058fc28f5c28f5c",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4058fccccccccccd",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4059000000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "408f3beb851eb852",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "408f3c0000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "408f3feb851eb852",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "408f400000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4093480000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40976ff5c28f5c29",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4097700000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40c3850000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40c3858000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40c81c8000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40f866e000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "40fe240000000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "412e809600000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "412e809800000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "412e847e00000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4132d68700000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "41d65a0bc0000000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "4282309ce5400000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "430c6be285d4e000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "430c6bf526340000",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "43b1200c7644d500",
+      "compact": "••••",
+      "delta": "+••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "c093480000000000",
+      "compact": "-••••",
+      "delta": "-••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "c12e847e00000000",
+      "compact": "-••••",
+      "delta": "-••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "value": "3fd3333333333334",
+      "compact": "••••",
+      "delta": "+••••"
+    }
+  ],
+  "deltaPills": [
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+$0 · +— this month",
+      "semantics": "Net worth $0.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+$0 · +0.0% this month",
+      "semantics": "Net worth $5,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+$0 · +0.0% this month",
+      "semantics": "Net worth $5,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+$4,120 · +2.3% this month",
+      "semantics": "Net worth $179,130.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-$4,120 · -2.3% this month",
+      "semantics": "Net worth $179,130.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+$100 · +— this month",
+      "semantics": "Net worth $0.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+$100 · +9090909.1% this month",
+      "semantics": "Net worth $0.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+$100 · +5000000.0% this month",
+      "semantics": "Net worth -$0.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+$50 · +5.0% this month",
+      "semantics": "Net worth -$1,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-$50 · -5.0% this month",
+      "semantics": "Net worth -$1,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+$1,235 · +123.4% this month",
+      "semantics": "Net worth $1,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+$1 · +0.1% this month",
+      "semantics": "Net worth $1,000.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+$1,000,000,000 · +33333333333.3% this month",
+      "semantics": "Net worth $3.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": false,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-$0 · -0.4% this month",
+      "semantics": "Net worth $100.00"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+0 € · +— this month",
+      "semantics": "Net worth 0,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+0 € · +0.0% this month",
+      "semantics": "Net worth 5.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+0 € · +0.0% this month",
+      "semantics": "Net worth 5.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+4.120 € · +2.3% this month",
+      "semantics": "Net worth 179.130,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-4.120 € · -2.3% this month",
+      "semantics": "Net worth 179.130,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+100 € · +— this month",
+      "semantics": "Net worth 0,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+100 € · +9090909.1% this month",
+      "semantics": "Net worth 0,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+100 € · +5000000.0% this month",
+      "semantics": "Net worth -0,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+50 € · +5.0% this month",
+      "semantics": "Net worth -1.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-50 € · -5.0% this month",
+      "semantics": "Net worth -1.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+1.235 € · +123.4% this month",
+      "semantics": "Net worth 1.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+1 € · +0.1% this month",
+      "semantics": "Net worth 1.000,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+1.000.000.000 € · +33333333333.3% this month",
+      "semantics": "Net worth 3,00 €"
+    },
+    {
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hidden": false,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-0 € · -0.4% this month",
+      "semantics": "Net worth 100,00 €"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+¥0 · +— this month",
+      "semantics": "Net worth ¥0.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+¥0 · +0.0% this month",
+      "semantics": "Net worth ¥5,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+¥0 · +0.0% this month",
+      "semantics": "Net worth ¥5,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+¥4,120 · +2.3% this month",
+      "semantics": "Net worth ¥179,130.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-¥4,120 · -2.3% this month",
+      "semantics": "Net worth ¥179,130.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+¥100 · +— this month",
+      "semantics": "Net worth ¥0.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+¥100 · +9090909.1% this month",
+      "semantics": "Net worth ¥0.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+¥100 · +5000000.0% this month",
+      "semantics": "Net worth -¥0.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+¥50 · +5.0% this month",
+      "semantics": "Net worth -¥1,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-¥50 · -5.0% this month",
+      "semantics": "Net worth -¥1,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+¥1,235 · +123.4% this month",
+      "semantics": "Net worth ¥1,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+¥1 · +0.1% this month",
+      "semantics": "Net worth ¥1,000.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+¥1,000,000,000 · +33333333333.3% this month",
+      "semantics": "Net worth ¥3.00"
+    },
+    {
+      "currency": "JPY",
+      "locale": "ja_JP",
+      "hidden": false,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-¥0 · -0.4% this month",
+      "semantics": "Net worth ¥100.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+£0 · +— this month",
+      "semantics": "Net worth £0.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+£0 · +0.0% this month",
+      "semantics": "Net worth £5,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+£0 · +0.0% this month",
+      "semantics": "Net worth £5,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+£4,120 · +2.3% this month",
+      "semantics": "Net worth £179,130.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-£4,120 · -2.3% this month",
+      "semantics": "Net worth £179,130.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+£100 · +— this month",
+      "semantics": "Net worth £0.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+£100 · +9090909.1% this month",
+      "semantics": "Net worth £0.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+£100 · +5000000.0% this month",
+      "semantics": "Net worth -£0.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+£50 · +5.0% this month",
+      "semantics": "Net worth -£1,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-£50 · -5.0% this month",
+      "semantics": "Net worth -£1,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+£1,235 · +123.4% this month",
+      "semantics": "Net worth £1,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+£1 · +0.1% this month",
+      "semantics": "Net worth £1,000.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+£1,000,000,000 · +33333333333.3% this month",
+      "semantics": "Net worth £3.00"
+    },
+    {
+      "currency": "GBP",
+      "locale": "en_GB",
+      "hidden": false,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-£0 · -0.4% this month",
+      "semantics": "Net worth £100.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+₹0 · +— this month",
+      "semantics": "Net worth ₹0.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+₹0 · +0.0% this month",
+      "semantics": "Net worth ₹5,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+₹0 · +0.0% this month",
+      "semantics": "Net worth ₹5,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+₹4,120 · +2.3% this month",
+      "semantics": "Net worth ₹179,130.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-₹4,120 · -2.3% this month",
+      "semantics": "Net worth ₹179,130.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+₹100 · +— this month",
+      "semantics": "Net worth ₹0.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+₹100 · +9090909.1% this month",
+      "semantics": "Net worth ₹0.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+₹100 · +5000000.0% this month",
+      "semantics": "Net worth -₹0.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+₹50 · +5.0% this month",
+      "semantics": "Net worth -₹1,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-₹50 · -5.0% this month",
+      "semantics": "Net worth -₹1,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+₹1,235 · +123.4% this month",
+      "semantics": "Net worth ₹1,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+₹1 · +0.1% this month",
+      "semantics": "Net worth ₹1,000.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+₹1,000,000,000 · +33333333333.3% this month",
+      "semantics": "Net worth ₹3.00"
+    },
+    {
+      "currency": "INR",
+      "locale": "en_US",
+      "hidden": false,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-₹0 · -0.4% this month",
+      "semantics": "Net worth ₹100.00"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "0000000000000000",
+      "previous": "0000000000000000",
+      "text": "+•••• · +— this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "0000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+•••• · +0.0% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "8000000000000000",
+      "previous": "40b3880000000000",
+      "text": "+•••• · +0.0% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "40b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "+•••• · +2.3% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "c0b0180000000000",
+      "previous": "4105ddd000000000",
+      "text": "-•••• · -2.3% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "4059000000000000",
+      "previous": "3f50624dd2f1a9fc",
+      "text": "+•••• · +— this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "4059000000000000",
+      "previous": "3f5205bc01a36e2f",
+      "text": "+•••• · +9090909.1% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "4059000000000000",
+      "previous": "bf60624dd2f1a9fc",
+      "text": "+•••• · +5000000.0% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "4049000000000000",
+      "previous": "c08f400000000000",
+      "text": "+•••• · +5.0% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "c049000000000000",
+      "previous": "c08f400000000000",
+      "text": "-•••• · -5.0% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "40934a0000000000",
+      "previous": "408f400000000000",
+      "text": "+•••• · +123.4% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "3fe0000000000000",
+      "previous": "408f400000000000",
+      "text": "+•••• · +0.1% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "41cdcd6500000000",
+      "previous": "4008000000000000",
+      "text": "+•••• · +33333333333.3% this month",
+      "semantics": "Net worth ••••"
+    },
+    {
+      "currency": "USD",
+      "locale": null,
+      "hidden": true,
+      "change": "bfd999999999999a",
+      "previous": "4059000000000000",
+      "text": "-•••• · -0.4% this month",
+      "semantics": "Net worth ••••"
+    }
+  ],
+  "prefill": [
+    {
+      "value": "0000000000000000",
+      "text": "0"
+    },
+    {
+      "value": "8000000000000000",
+      "text": "-0"
+    },
+    {
+      "value": "3ff0000000000000",
+      "text": "1"
+    },
+    {
+      "value": "4028000000000000",
+      "text": "12"
+    },
+    {
+      "value": "408f380000000000",
+      "text": "999"
+    },
+    {
+      "value": "408f400000000000",
+      "text": "1,000"
+    },
+    {
+      "value": "40a57c8000000000",
+      "text": "2,750.25"
+    },
+    {
+      "value": "40c3884000000000",
+      "text": "10,000.5"
+    },
+    {
+      "value": "4132d687e4189375",
+      "text": "1,234,567.89"
+    },
+    {
+      "value": "3f747ae147ae147b",
+      "text": "0.01"
+    },
+    {
+      "value": "3f70624dd2f1a9fc",
+      "text": "0"
+    },
+    {
+      "value": "3fc0000000000000",
+      "text": "0.13"
+    },
+    {
+      "value": "3ff0147ae147ae14",
+      "text": "1"
+    },
+    {
+      "value": "4005666666666666",
+      "text": "2.67"
+    },
+    {
+      "value": "3fd3333333333334",
+      "text": "0.3"
+    },
+    {
+      "value": "4058ffae147ae148",
+      "text": "100"
+    },
+    {
+      "value": "412e847fff7ced91",
+      "text": "1,000,000"
+    },
+    {
+      "value": "430c6bf526340000",
+      "text": "1,000,000,000,000,000"
+    },
+    {
+      "value": "444b1ae4d6e2ef50",
+      "text": "922,337,203,685,477,580,700"
+    },
+    {
+      "value": "423cbe991a14570a",
+      "text": "123,456,789,012.34"
+    },
+    {
+      "value": "c0934a0000000000",
+      "text": "-1,234.5"
+    },
+    {
+      "value": "0000000000000001",
+      "text": "0"
+    }
+  ],
+  "input": [
+    {
+      "old": "",
+      "new": "",
+      "result": ""
+    },
+    {
+      "old": "",
+      "new": "1",
+      "result": "1"
+    },
+    {
+      "old": "1",
+      "new": "12",
+      "result": "12"
+    },
+    {
+      "old": "12",
+      "new": "123",
+      "result": "123"
+    },
+    {
+      "old": "123",
+      "new": "1234",
+      "result": "1,234"
+    },
+    {
+      "old": "1,234",
+      "new": "12,345",
+      "result": "12,345"
+    },
+    {
+      "old": "12,345",
+      "new": "123,456",
+      "result": "123,456"
+    },
+    {
+      "old": "123,456",
+      "new": "1,234,567",
+      "result": "1,234,567"
+    },
+    {
+      "old": "1,234",
+      "new": "1,2345",
+      "result": "12,345"
+    },
+    {
+      "old": "1",
+      "new": "1.",
+      "result": "1."
+    },
+    {
+      "old": "1.",
+      "new": "1.5",
+      "result": "1.5"
+    },
+    {
+      "old": "1.5",
+      "new": "1.55",
+      "result": "1.55"
+    },
+    {
+      "old": "1.55",
+      "new": "1.555",
+      "result": "1.55"
+    },
+    {
+      "old": "1.55",
+      "new": "1.5.5",
+      "result": "1.55"
+    },
+    {
+      "old": "",
+      "new": ".",
+      "result": "."
+    },
+    {
+      "old": ".",
+      "new": ".5",
+      "result": ".5"
+    },
+    {
+      "old": "",
+      "new": "-1",
+      "result": ""
+    },
+    {
+      "old": "",
+      "new": "a",
+      "result": ""
+    },
+    {
+      "old": "1",
+      "new": "1a",
+      "result": "1"
+    },
+    {
+      "old": "",
+      "new": "1e3",
+      "result": ""
+    },
+    {
+      "old": "",
+      "new": "١٢",
+      "result": ""
+    },
+    {
+      "old": "",
+      "new": "１",
+      "result": ""
+    },
+    {
+      "old": "",
+      "new": " 1",
+      "result": ""
+    },
+    {
+      "old": "1",
+      "new": "1 ",
+      "result": "1"
+    },
+    {
+      "old": "",
+      "new": "00012",
+      "result": "00,012"
+    },
+    {
+      "old": "",
+      "new": ",",
+      "result": ""
+    },
+    {
+      "old": "1,000",
+      "new": "1,00",
+      "result": "100"
+    },
+    {
+      "old": "",
+      "new": "1234567.89",
+      "result": "1,234,567.89"
+    },
+    {
+      "old": "9",
+      "new": "9\n",
+      "result": "9"
+    },
+    {
+      "old": "",
+      "new": "12,34.5",
+      "result": "1,234.5"
+    },
+    {
+      "old": "",
+      "new": ".55",
+      "result": ".55"
+    }
+  ],
+  "parse": [
+    {
+      "text": "",
+      "result": null
+    },
+    {
+      "text": " ",
+      "result": null
+    },
+    {
+      "text": "0",
+      "result": "0000000000000000"
+    },
+    {
+      "text": "0.00",
+      "result": "0000000000000000"
+    },
+    {
+      "text": "12.",
+      "result": "4028000000000000"
+    },
+    {
+      "text": ".5",
+      "result": "3fe0000000000000"
+    },
+    {
+      "text": ".",
+      "result": null
+    },
+    {
+      "text": "00012",
+      "result": "4028000000000000"
+    },
+    {
+      "text": "1,234.56",
+      "result": "40934a3d70a3d70a"
+    },
+    {
+      "text": " 1,000 ",
+      "result": "408f400000000000"
+    },
+    {
+      "text": "-1",
+      "result": null
+    },
+    {
+      "text": "-0",
+      "result": "8000000000000000"
+    },
+    {
+      "text": "1e3",
+      "result": "408f400000000000"
+    },
+    {
+      "text": "NaN",
+      "result": "7ff8000000000000"
+    },
+    {
+      "text": "Infinity",
+      "result": "7ff0000000000000"
+    },
+    {
+      "text": "abc",
+      "result": null
+    },
+    {
+      "text": "1.2.3",
+      "result": null
+    },
+    {
+      "text": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "result": "7ff0000000000000"
+    },
+    {
+      "text": "﻿5﻿",
+      "result": "4014000000000000"
+    },
+    {
+      "text": "1,,2",
+      "result": "4028000000000000"
+    },
+    {
+      "text": ",",
+      "result": null
+    }
+  ],
+  "percents": [
+    {
+      "value": "0000000000000000",
+      "change": "+0.0%",
+      "shareAssets": "0.0% of assets",
+      "share": "0000000000000000"
+    },
+    {
+      "value": "8000000000000000",
+      "change": "+-0.0%",
+      "shareAssets": "-0.0% of assets",
+      "share": "8000000000000000"
+    },
+    {
+      "value": "3fa47ae147ae147b",
+      "change": "+0.0%",
+      "shareAssets": "0.0% of assets",
+      "share": "3f3a36e2eb1c432d"
+    },
+    {
+      "value": "bfa47ae147ae147b",
+      "change": "-0.0%",
+      "shareAssets": "-0.0% of assets",
+      "share": "bf3a36e2eb1c432d"
+    },
+    {
+      "value": "3fa999999999999a",
+      "change": "+0.1%",
+      "shareAssets": "0.1% of assets",
+      "share": "3f40624dd2f1a9fc"
+    },
+    {
+      "value": "3fa99999ef7fd522",
+      "change": "+0.1%",
+      "shareAssets": "0.1% of assets",
+      "share": "3f40624e09eb69af"
+    },
+    {
+      "value": "3fc3333333333333",
+      "change": "+0.1%",
+      "shareAssets": "0.1% of assets",
+      "share": "3f589374bc6a7efa"
+    },
+    {
+      "value": "3fd0000000000000",
+      "change": "+0.3%",
+      "shareAssets": "0.3% of assets",
+      "share": "3f647ae147ae147b"
+    },
+    {
+      "value": "3fd6666666666666",
+      "change": "+0.3%",
+      "shareAssets": "0.3% of assets",
+      "share": "3f6cac083126e978"
+    },
+    {
+      "value": "4028b0a3d70a3d71",
+      "change": "+12.3%",
+      "shareAssets": "12.3% of assets",
+      "share": "3fbf9a6b50b0f27c"
+    },
+    {
+      "value": "c028b0a3d70a3d71",
+      "change": "-12.3%",
+      "shareAssets": "-12.3% of assets",
+      "share": "bfbf9a6b50b0f27c"
+    },
+    {
+      "value": "4049000000000000",
+      "change": "+50.0%",
+      "shareAssets": "50.0% of assets",
+      "share": "3fe0000000000000"
+    },
+    {
+      "value": "4053bca1af286bca",
+      "change": "+78.9%",
+      "shareAssets": "78.9% of assets",
+      "share": "3fe9435e50d79436"
+    },
+    {
+      "value": "4058fccccccccccd",
+      "change": "+100.0%",
+      "shareAssets": "100.0% of assets",
+      "share": "3feffbe76c8b4396"
+    },
+    {
+      "value": "4059000000000000",
+      "change": "+100.0%",
+      "shareAssets": "100.0% of assets",
+      "share": "3ff0000000000000"
+    },
+    {
+      "value": "444b1ae4d6e2ef50",
+      "change": "+1e+21%",
+      "shareAssets": "1e+21% of assets",
+      "share": "43e158e460913d00"
+    },
+    {
+      "value": "be7ad7f29abcaf48",
+      "change": "-0.0%",
+      "shareAssets": "-0.0% of assets",
+      "share": "be112e0be826d694"
+    }
+  ],
+  "scales": [
+    {
+      "values": [
+        "0000000000000000"
+      ],
+      "growth": [
+        "bfc70a3d70a3d70a",
+        "3fc70a3d70a3d70a"
+      ],
+      "account": [
+        "bfc999999999999a",
+        "3fc999999999999a"
+      ],
+      "hover": [
+        [
+          "0000000000000000",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "40b3880000000000"
+      ],
+      "growth": [
+        "40b32e0000000000",
+        "40b3e20000000000"
+      ],
+      "account": [
+        "40b3380000000000",
+        "40b3d80000000000"
+      ],
+      "hover": [
+        [
+          "0000000000000000",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "c0b3880000000000"
+      ],
+      "growth": [
+        "c0b3e20000000000",
+        "c0b32e0000000000"
+      ],
+      "account": [
+        "c0b3d80000000000",
+        "c0b3380000000000"
+      ],
+      "hover": [
+        [
+          "0000000000000000",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "0000000000000000",
+        "0000000000000000"
+      ],
+      "growth": [
+        "bfc70a3d70a3d70a",
+        "3fc70a3d70a3d70a"
+      ],
+      "account": [
+        "bfc999999999999a",
+        "3fc999999999999a"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "408f400000000000",
+        "4095e00000000000"
+      ],
+      "growth": [
+        "408d000000000000",
+        "4097000000000000"
+      ],
+      "account": [
+        "408cc00000000000",
+        "4097200000000000"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "4095e00000000000",
+        "408f400000000000",
+        "4092c00000000000"
+      ],
+      "growth": [
+        "408d000000000000",
+        "4097000000000000"
+      ],
+      "account": [
+        "408cc00000000000",
+        "4097200000000000"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "0000000000000000",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "c059000000000000",
+        "4059000000000000"
+      ],
+      "growth": [
+        "c061000000000000",
+        "4061000000000000"
+      ],
+      "account": [
+        "c061800000000000",
+        "4061800000000000"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "3fd3333333333333",
+        "3fd3333333333334"
+      ],
+      "growth": [
+        "3fbeb851eb851eb8",
+        "3fdeb851eb851eb9"
+      ],
+      "account": [
+        "3fb9999999999998",
+        "3fe0000000000000"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "41cdcd6500000000",
+        "41cdcd6500800000"
+      ],
+      "growth": [
+        "41cd4410bffdb22d",
+        "41ce56b940824dd3"
+      ],
+      "account": [
+        "41cd5352fffdf3b6",
+        "41ce477700820c4a"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "c10e848000000000",
+        "c10e654000000000",
+        "c10e55a000000000"
+      ],
+      "growth": [
+        "c10f104800000000",
+        "c10dc9d800000000"
+      ],
+      "account": [
+        "c10f018000000000",
+        "c10dd8a000000000"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "0000000000000000",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "3ff0000000000000",
+        "4000000000000000",
+        "4008000000000000",
+        "4010000000000000",
+        "4014000000000000",
+        "4018000000000000",
+        "401c000000000000",
+        "4020000000000000"
+      ],
+      "growth": [
+        "bfd0a3d70a3d70a4",
+        "4022851eb851eb85"
+      ],
+      "account": [
+        "bfd999999999999c",
+        "4022cccccccccccd"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "bfe6db6db6db6db7",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "bfdb6db6db6db6dc",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "bfc2492492492494",
+          "bfe3333333333333",
+          false
+        ],
+        [
+          "3fc2492492492490",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3fdb6db6db6db6dc",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3fe6db6db6db6db6",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "8000000000000000",
+        "0000000000000000"
+      ],
+      "growth": [
+        "bfc70a3d70a3d70a",
+        "3fc70a3d70a3d70a"
+      ],
+      "account": [
+        "bfc999999999999a",
+        "3fc999999999999a"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    },
+    {
+      "values": [
+        "0000000000000000",
+        "8000000000000000"
+      ],
+      "growth": [
+        "bfc70a3d70a3d70a",
+        "3fc70a3d70a3d70a"
+      ],
+      "account": [
+        "bfc999999999999a",
+        "3fc999999999999a"
+      ],
+      "hover": [
+        [
+          "bfeae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ],
+        [
+          "3feae147ae147ae1",
+          "3fe0000000000000",
+          true
+        ]
+      ]
+    }
+  ],
+  "gridLines": [
+    {
+      "values": [
+        "40b3880000000000"
+      ],
+      "growth": [
+        "40b3560000000000",
+        "40b3830000000000",
+        "40b3b00000000000",
+        "40b3dd0000000000"
+      ],
+      "account": [
+        "40b3600000000000",
+        "40b3880000000000",
+        "40b3b00000000000"
+      ]
+    },
+    {
+      "values": [
+        "408f400000000000",
+        "4097700000000000"
+      ],
+      "growth": [
+        "408fe00000000000",
+        "4092980000000000",
+        "4095400000000000",
+        "4097e80000000000"
+      ],
+      "account": [
+        "4090680000000000",
+        "4093240000000000",
+        "4095e00000000000",
+        "40989c0000000000"
+      ]
+    },
+    {
+      "values": [
+        "c0a3880000000000",
+        "4079000000000000",
+        "4092c00000000000"
+      ],
+      "growth": [
+        "c0a3a80000000000",
+        "c093a80000000000",
+        "0000000000000000",
+        "4093a80000000000"
+      ],
+      "account": [
+        "c0a43c0000000000",
+        "c0943c0000000000",
+        "0000000000000000",
+        "40943c0000000000"
+      ]
+    },
+    {
+      "values": [
+        "0000000000000000"
+      ],
+      "growth": [
+        "bfb70a3d70a3d70a",
+        "0000000000000000",
+        "3fb70a3d70a3d70a"
+      ],
+      "account": [
+        "bfb999999999999a",
+        "0000000000000000",
+        "3fb999999999999a"
+      ]
+    },
+    {
+      "values": [
+        "4059000000000000",
+        "4059000000000000"
+      ],
+      "growth": [
+        "4058bffffffffff5",
+        "4058f9999999998e",
+        "4059333333333328",
+        "40596cccccccccc2"
+      ],
+      "account": [
+        "4058ccccccccccb4",
+        "4058ffffffffffe7",
+        "405933333333331a",
+        "405966666666664d"
+      ]
+    },
+    {
+      "values": [
+        "40c7704000000000",
+        "40ca5e2000000000",
+        "40c70c0000000000",
+        "40cd566000000000"
+      ],
+      "growth": [
+        "40c786cd70a3d70c",
+        "40c9aa547ae147b0",
+        "40cbcddb851eb854",
+        "40cdf1628f5c28f8"
+      ],
+      "account": [
+        "40c6044fffffffff",
+        "40c837f199999998",
+        "40ca6b9333333332",
+        "40cc9f34cccccccc"
+      ]
+    },
+    {
+      "values": [
+        "c08c200000000000",
+        "c079000000000000"
+      ],
+      "growth": [
+        "c08a900000000000",
+        "c085400000000000",
+        "c07fe00000000000",
+        "c075400000000000"
+      ],
+      "account": [
+        "c08b580000000000",
+        "c085e00000000000",
+        "c080680000000000",
+        "c075e00000000000"
+      ]
+    },
+    {
+      "values": [
+        "0000000000000000",
+        "3ff0000000000000"
+      ],
+      "growth": [
+        "0000000000000000",
+        "3fd5c28f5c28f5c2",
+        "3fe5c28f5c28f5c2",
+        "3ff051eb851eb852"
+      ],
+      "account": [
+        "0000000000000000",
+        "3fd6666666666666",
+        "3fe6666666666666",
+        "3ff0cccccccccccc"
+      ]
+    },
+    {
+      "values": [
+        "c10e848000000000",
+        "c10e654000000000",
+        "c10e55a000000000"
+      ],
+      "growth": [
+        "c10eec1c00000000",
+        "c10e9a8000000000",
+        "c10e48e400000000",
+        "c10df74800000000"
+      ],
+      "account": [
+        "c10ebb3000000000",
+        "c10e70f800000000",
+        "c10e26c000000000",
+        "c10ddc8800000000"
+      ]
+    },
+    {
+      "values": [
+        "41cdcd6500000000",
+        "41cdcd6500800000"
+      ],
+      "growth": [
+        "41cd8119ce3eb855",
+        "41cdc5c3ee5fdf3e",
+        "41ce0a6e0e810628",
+        "41ce4f182ea22d12"
+      ],
+      "account": [
+        "41cd53530fddf3c7",
+        "41cd905c0ffef9ec",
+        "41cdcd6510200011",
+        "41ce0a6e10410636",
+        "41ce477710620c5b"
+      ]
+    }
+  ],
+  "axisLabels": [
+    {
+      "count": 1,
+      "growth": [
+        0,
+        0
+      ],
+      "account": [
+        0
+      ]
+    },
+    {
+      "count": 2,
+      "growth": [
+        0,
+        1
+      ],
+      "account": [
+        0,
+        1
+      ]
+    },
+    {
+      "count": 3,
+      "growth": [
+        0,
+        1,
+        2
+      ],
+      "account": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "count": 4,
+      "growth": [
+        0,
+        2,
+        3
+      ],
+      "account": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "count": 5,
+      "growth": [
+        0,
+        2,
+        4
+      ],
+      "account": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "count": 6,
+      "growth": [
+        0,
+        3,
+        5
+      ],
+      "account": [
+        0,
+        5
+      ]
+    },
+    {
+      "count": 7,
+      "growth": [
+        0,
+        3,
+        6
+      ],
+      "account": [
+        0,
+        4,
+        6
+      ]
+    },
+    {
+      "count": 8,
+      "growth": [
+        0,
+        4,
+        7
+      ],
+      "account": [
+        0,
+        4,
+        7
+      ]
+    },
+    {
+      "count": 9,
+      "growth": [
+        0,
+        4,
+        8
+      ],
+      "account": [
+        0,
+        8
+      ]
+    },
+    {
+      "count": 10,
+      "growth": [
+        0,
+        5,
+        9
+      ],
+      "account": [
+        0,
+        9
+      ]
+    },
+    {
+      "count": 11,
+      "growth": [
+        0,
+        5,
+        10
+      ],
+      "account": [
+        0,
+        6,
+        10
+      ]
+    },
+    {
+      "count": 12,
+      "growth": [
+        0,
+        6,
+        11
+      ],
+      "account": [
+        0,
+        11
+      ]
+    },
+    {
+      "count": 13,
+      "growth": [
+        0,
+        6,
+        12
+      ],
+      "account": [
+        0,
+        12
+      ]
+    },
+    {
+      "count": 14,
+      "growth": [
+        0,
+        7,
+        13
+      ],
+      "account": [
+        0,
+        13
+      ]
+    },
+    {
+      "count": 15,
+      "growth": [
+        0,
+        7,
+        14
+      ],
+      "account": [
+        0,
+        14
+      ]
+    },
+    {
+      "count": 16,
+      "growth": [
+        0,
+        8,
+        15
+      ],
+      "account": [
+        0,
+        15
+      ]
+    },
+    {
+      "count": 17,
+      "growth": [
+        0,
+        8,
+        16
+      ],
+      "account": [
+        0,
+        16
+      ]
+    },
+    {
+      "count": 18,
+      "growth": [
+        0,
+        9,
+        17
+      ],
+      "account": [
+        0,
+        17
+      ]
+    },
+    {
+      "count": 19,
+      "growth": [
+        0,
+        9,
+        18
+      ],
+      "account": [
+        0,
+        18
+      ]
+    },
+    {
+      "count": 20,
+      "growth": [
+        0,
+        10,
+        19
+      ],
+      "account": [
+        0,
+        19
+      ]
+    },
+    {
+      "count": 21,
+      "growth": [
+        0,
+        10,
+        20
+      ],
+      "account": [
+        0,
+        20
+      ]
+    },
+    {
+      "count": 22,
+      "growth": [
+        0,
+        11,
+        21
+      ],
+      "account": [
+        0,
+        21
+      ]
+    },
+    {
+      "count": 23,
+      "growth": [
+        0,
+        11,
+        22
+      ],
+      "account": [
+        0,
+        22
+      ]
+    },
+    {
+      "count": 24,
+      "growth": [
+        0,
+        12,
+        23
+      ],
+      "account": [
+        0,
+        23
+      ]
+    },
+    {
+      "count": 25,
+      "growth": [
+        0,
+        12,
+        24
+      ],
+      "account": [
+        0,
+        24
+      ]
+    },
+    {
+      "count": 26,
+      "growth": [
+        0,
+        13,
+        25
+      ],
+      "account": [
+        0,
+        25
+      ]
+    },
+    {
+      "count": 27,
+      "growth": [
+        0,
+        13,
+        26
+      ],
+      "account": [
+        0,
+        26
+      ]
+    },
+    {
+      "count": 28,
+      "growth": [
+        0,
+        14,
+        27
+      ],
+      "account": [
+        0,
+        27
+      ]
+    },
+    {
+      "count": 29,
+      "growth": [
+        0,
+        14,
+        28
+      ],
+      "account": [
+        0,
+        28
+      ]
+    },
+    {
+      "count": 30,
+      "growth": [
+        0,
+        15,
+        29
+      ],
+      "account": [
+        0,
+        29
+      ]
+    }
+  ],
+  "splits": [
+    {
+      "assets": "0000000000000000",
+      "liabilities": "0000000000000000",
+      "fraction": "3ff0000000000000",
+      "flex": [
+        1000,
+        0
+      ]
+    },
+    {
+      "assets": "408f400000000000",
+      "liabilities": "4079000000000000",
+      "fraction": "3fe6db6db6db6db7",
+      "flex": [
+        714,
+        286
+      ]
+    },
+    {
+      "assets": "0000000000000000",
+      "liabilities": "4079000000000000",
+      "fraction": "0000000000000000",
+      "flex": [
+        0,
+        1000
+      ]
+    },
+    {
+      "assets": "4079000000000000",
+      "liabilities": "0000000000000000",
+      "fraction": "3ff0000000000000",
+      "flex": [
+        1000,
+        0
+      ]
+    },
+    {
+      "assets": "3ff0000000000000",
+      "liabilities": "409f3c0000000000",
+      "fraction": "3f40624dd2f1a9fc",
+      "flex": [
+        1,
+        1000
+      ]
+    },
+    {
+      "assets": "3ff0000000000000",
+      "liabilities": "409f440000000000",
+      "fraction": "3f405e1d27a3ee9c",
+      "flex": [
+        0,
+        1000
+      ]
+    },
+    {
+      "assets": "3fdff7ced916872b",
+      "liabilities": "408f3c010624dd2f",
+      "fraction": "3f405e1c15097c81",
+      "flex": [
+        0,
+        1000
+      ]
+    },
+    {
+      "assets": "3f40624dd2f1a9fc",
+      "liabilities": "3feffbe76c8b4396",
+      "fraction": "3f40624dd2f1a9fc",
+      "flex": [
+        1,
+        1000
+      ]
+    },
+    {
+      "assets": "01a56e1fc2f8f359",
+      "liabilities": "3ff0000000000000",
+      "fraction": "01a56e1fc2f8f359",
+      "flex": [
+        0,
+        1000
+      ]
+    },
+    {
+      "assets": "c059000000000000",
+      "liabilities": "4049000000000000",
+      "fraction": "3ff0000000000000",
+      "flex": [
+        1000,
+        0
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "name": "Checking",
+      "type": "asset",
+      "icon": "accountBalance"
+    },
+    {
+      "name": "Checking",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "BANK of X",
+      "type": "asset",
+      "icon": "accountBalance"
+    },
+    {
+      "name": "BANK of X",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "High-yield savings",
+      "type": "asset",
+      "icon": "savings"
+    },
+    {
+      "name": "High-yield savings",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Roth IRA",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Roth IRA",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Brokerage",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Brokerage",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Stocks",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Stocks",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "My 401k",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "My 401k",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "ETF",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "ETF",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Portfolio",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Portfolio",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Investments",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Investments",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "House",
+      "type": "asset",
+      "icon": "home"
+    },
+    {
+      "name": "House",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Home",
+      "type": "asset",
+      "icon": "home"
+    },
+    {
+      "name": "Home",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Real estate",
+      "type": "asset",
+      "icon": "home"
+    },
+    {
+      "name": "Real estate",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Property",
+      "type": "asset",
+      "icon": "home"
+    },
+    {
+      "name": "Property",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Wallet",
+      "type": "asset",
+      "icon": "accountBalanceWallet"
+    },
+    {
+      "name": "Wallet",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Cash",
+      "type": "asset",
+      "icon": "accountBalanceWallet"
+    },
+    {
+      "name": "Cash",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Car",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Car",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Student loan",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Student loan",
+      "type": "liability",
+      "icon": "attachMoney"
+    },
+    {
+      "name": "Auto",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Auto",
+      "type": "liability",
+      "icon": "attachMoney"
+    },
+    {
+      "name": "Personal",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Personal",
+      "type": "liability",
+      "icon": "attachMoney"
+    },
+    {
+      "name": "Credit card",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Credit card",
+      "type": "liability",
+      "icon": "accountBalanceWallet"
+    },
+    {
+      "name": "Visa Card",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Visa Card",
+      "type": "liability",
+      "icon": "accountBalanceWallet"
+    },
+    {
+      "name": "Mortgage",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "Mortgage",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Mirage",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "Mirage",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "İRA",
+      "type": "asset",
+      "icon": "trendingUp"
+    },
+    {
+      "name": "İRA",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "CHECKİNG",
+      "type": "asset",
+      "icon": "accountBalance"
+    },
+    {
+      "name": "CHECKİNG",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "Savings & Checking",
+      "type": "asset",
+      "icon": "accountBalance"
+    },
+    {
+      "name": "Savings & Checking",
+      "type": "liability",
+      "icon": "southWest"
+    },
+    {
+      "name": "",
+      "type": "asset",
+      "icon": "northEast"
+    },
+    {
+      "name": "",
+      "type": "liability",
+      "icon": "southWest"
+    }
+  ],
+  "texts": [
+    {
+      "date": [
+        2026,
+        3,
+        5,
+        9,
+        0
+      ],
+      "eyebrow": "TOTAL · MARCH 2026",
+      "emptyAssets": "No assets tracked for March 2026.",
+      "axis": "MAR '26",
+      "hoverMonth": "March 2026",
+      "hoverDay": "Mar 5, 2026",
+      "lastUpdate": "Last update Mar 5, 2026",
+      "trendAxis": "MAR 5",
+      "trendRange": "Mar 5 to Mar 5",
+      "deleteSnapshot": "Remove the Mar 5, 2026 9:00 AM balance for Brokerage? This only removes this one data point."
+    },
+    {
+      "date": [
+        2026,
+        3,
+        5,
+        15,
+        7
+      ],
+      "eyebrow": "TOTAL · MARCH 2026",
+      "emptyAssets": "No assets tracked for March 2026.",
+      "axis": "MAR '26",
+      "hoverMonth": "March 2026",
+      "hoverDay": "Mar 5, 2026",
+      "lastUpdate": "Last update Mar 5, 2026",
+      "trendAxis": "MAR 5",
+      "trendRange": "Mar 5 to Mar 5",
+      "deleteSnapshot": "Remove the Mar 5, 2026 3:07 PM balance for Brokerage? This only removes this one data point."
+    },
+    {
+      "date": [
+        2026,
+        12,
+        31,
+        0,
+        0
+      ],
+      "eyebrow": "TOTAL · DECEMBER 2026",
+      "emptyAssets": "No assets tracked for December 2026.",
+      "axis": "DEC '26",
+      "hoverMonth": "December 2026",
+      "hoverDay": "Dec 31, 2026",
+      "lastUpdate": "Last update Dec 31, 2026",
+      "trendAxis": "DEC 31",
+      "trendRange": "Dec 31 to Dec 31",
+      "deleteSnapshot": "Remove the Dec 31, 2026 12:00 AM balance for Brokerage? This only removes this one data point."
+    },
+    {
+      "date": [
+        2026,
+        1,
+        1,
+        12,
+        0
+      ],
+      "eyebrow": "TOTAL · JANUARY 2026",
+      "emptyAssets": "No assets tracked for January 2026.",
+      "axis": "JAN '26",
+      "hoverMonth": "January 2026",
+      "hoverDay": "Jan 1, 2026",
+      "lastUpdate": "Last update Jan 1, 2026",
+      "trendAxis": "JAN 1",
+      "trendRange": "Jan 1 to Jan 1",
+      "deleteSnapshot": "Remove the Jan 1, 2026 12:00 PM balance for Brokerage? This only removes this one data point."
+    },
+    {
+      "date": [
+        2000,
+        2,
+        29,
+        23,
+        59
+      ],
+      "eyebrow": "TOTAL · FEBRUARY 2000",
+      "emptyAssets": "No assets tracked for February 2000.",
+      "axis": "FEB '00",
+      "hoverMonth": "February 2000",
+      "hoverDay": "Feb 29, 2000",
+      "lastUpdate": "Last update Feb 29, 2000",
+      "trendAxis": "FEB 29",
+      "trendRange": "Feb 29 to Feb 29",
+      "deleteSnapshot": "Remove the Feb 29, 2000 11:59 PM balance for Brokerage? This only removes this one data point."
+    },
+    {
+      "date": [
+        1999,
+        11,
+        30,
+        12,
+        30
+      ],
+      "eyebrow": "TOTAL · NOVEMBER 1999",
+      "emptyAssets": "No assets tracked for November 1999.",
+      "axis": "NOV '99",
+      "hoverMonth": "November 1999",
+      "hoverDay": "Nov 30, 1999",
+      "lastUpdate": "Last update Nov 30, 1999",
+      "trendAxis": "NOV 30",
+      "trendRange": "Nov 30 to Nov 30",
+      "deleteSnapshot": "Remove the Nov 30, 1999 12:30 PM balance for Brokerage? This only removes this one data point."
+    }
+  ]
+}

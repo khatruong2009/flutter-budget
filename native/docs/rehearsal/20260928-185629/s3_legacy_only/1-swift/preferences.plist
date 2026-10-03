@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>flutter.app_lock_enabled</key>
+	<true/>
+	<key>flutter.auto_lock_timeout_seconds</key>
+	<integer>900</integer>
+	<key>flutter.base_currency_code</key>
+	<string>EUR</string>
+	<key>flutter.hide_balances</key>
+	<false/>
+	<key>flutter.local_insights_dismissed_v1</key>
+	<array>
+		<string>monthly-change:2026-8</string>
+		<string>savings-rate:2026-8</string>
+	</array>
+	<key>flutter.local_insights_snoozed_v1</key>
+	<string>{"negative-flow:2026-9":"2026-10-01T09:00:00.000"}</string>
+	<key>flutter.locale_override</key>
+	<string>fr_FR</string>
+	<key>flutter.onboarding_completed</key>
+	<true/>
+	<key>flutter.starting_assets</key>
+	<real>3200.0</real>
+	<key>flutter.starting_liabilities</key>
+	<real>900.0</real>
+	<key>flutter.themeMode</key>
+	<string>dark</string>
+	<key>native.lastCommittedChecksum</key>
+	<string>-4a507aab1502d819</string>
+</dict>
+</plist>

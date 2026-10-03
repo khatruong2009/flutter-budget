@@ -1,0 +1,21 @@
+{
+  "flutter.themeMode": {
+    "type": "string",
+    "value": "dark"
+  },
+  "flutter.onboarding_completed": {
+    "type": "bool",
+    "value": true
+  },
+  "flutter.local_insights_dismissed_v1": {
+    "type": "stringList",
+    "value": [
+      "monthly-change:2026-8",
+      "savings-rate:2026-8"
+    ]
+  },
+  "flutter.local_insights_snoozed_v1": {
+    "type": "string",
+    "value": "{\"negative-flow:2026-9\":\"2026-10-01T09:00:00.000\"}"
+  }
+}

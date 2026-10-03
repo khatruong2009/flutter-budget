@@ -1,0 +1,842 @@
+{
+  "tz": "America/New_York",
+  "cases": [
+    {
+      "label": "double lexemes",
+      "initial": "{\"Groceries\":400.0,\"Eating Out\":150.5,\"Pet Food\":60.0}",
+      "loaded": {
+        "memory": [
+          [
+            "Groceries",
+            "4079000000000000"
+          ],
+          [
+            "Eating Out",
+            "4062d00000000000"
+          ],
+          [
+            "Pet Food",
+            "404e000000000000"
+          ]
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "category": "Travel",
+          "limit": "4069000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":400.0,\"Eating Out\":150.5,\"Pet Food\":60.0,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079000000000000"
+            ],
+            [
+              "Eating Out",
+              "4062d00000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Eating Out",
+          "limit": "4065e80000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":400.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079000000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "  Groceries  ",
+          "limit": "4079a00000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "",
+          "limit": "4014000000000000",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "   ",
+          "limit": "4014000000000000",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Pet Food",
+          "limit": "0000000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Missing",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": " Travel",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Travel\":200.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Travel",
+              "4069000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Travel",
+          "limit": "c008000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Pet Food",
+          "limit": "404e000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Groceries",
+          "limit": "4079a00000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "﻿Health ",
+          "limit": "3e7ad7f29abcaf48",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Café",
+          "limit": "3fd3333333333334",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":0.30000000000000004}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "3fd3333333333334"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Café",
+          "limit": "4028000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":0.30000000000000004,\"Café\":12.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "3fd3333333333334"
+            ],
+            [
+              "Café",
+              "4028000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Café",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":12.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "4028000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Big",
+          "limit": "441ac53a7e04bcda",
+          "wrote": true,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":12.0,\"Big\":123456789012345680000.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "4028000000000000"
+            ],
+            [
+              "Big",
+              "441ac53a7e04bcda"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Travel",
+          "limit": "8000000000000000",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":12.0,\"Big\":123456789012345680000.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "4028000000000000"
+            ],
+            [
+              "Big",
+              "441ac53a7e04bcda"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Travel",
+          "wrote": false,
+          "section": "{\"Groceries\":410.0,\"Eating Out\":175.25,\"Pet Food\":60.0,\"Health\":1e-7,\"Café\":12.0,\"Big\":123456789012345680000.0}",
+          "memory": [
+            [
+              "Groceries",
+              "4079a00000000000"
+            ],
+            [
+              "Eating Out",
+              "4065e80000000000"
+            ],
+            [
+              "Pet Food",
+              "404e000000000000"
+            ],
+            [
+              "Health",
+              "3e7ad7f29abcaf48"
+            ],
+            [
+              "Café",
+              "4028000000000000"
+            ],
+            [
+              "Big",
+              "441ac53a7e04bcda"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    },
+    {
+      "label": "absent section",
+      "initial": null,
+      "loaded": {
+        "memory": []
+      },
+      "steps": [
+        {
+          "op": "remove",
+          "category": "General",
+          "wrote": false,
+          "section": null,
+          "memory": [],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "General",
+          "limit": "4059000000000000",
+          "wrote": true,
+          "section": "{\"General\":100.0}",
+          "memory": [
+            [
+              "General",
+              "4059000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Health",
+          "limit": "4048feb851eb851f",
+          "wrote": true,
+          "section": "{\"General\":100.0,\"Health\":49.99}",
+          "memory": [
+            [
+              "General",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4048feb851eb851f"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "General",
+          "wrote": true,
+          "section": "{\"Health\":49.99}",
+          "memory": [
+            [
+              "Health",
+              "4048feb851eb851f"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Health",
+          "wrote": true,
+          "section": "{}",
+          "memory": [],
+          "hasUnsavedChanges": false
+        }
+      ]
+    },
+    {
+      "label": "int lexemes and dropped values",
+      "initial": "{\"Groceries\":250,\"Zero\":0,\"Negative\":-5.0,\"Travel\":100}",
+      "loaded": {
+        "memory": [
+          [
+            "Groceries",
+            "406f400000000000"
+          ],
+          [
+            "Travel",
+            "4059000000000000"
+          ]
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "category": "Health",
+          "limit": "4049000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":250.0,\"Travel\":100.0,\"Health\":50.0}",
+          "memory": [
+            [
+              "Groceries",
+              "406f400000000000"
+            ],
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Zero",
+          "limit": "4034000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":250.0,\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0}",
+          "memory": [
+            [
+              "Groceries",
+              "406f400000000000"
+            ],
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Negative",
+          "wrote": false,
+          "section": "{\"Groceries\":250.0,\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0}",
+          "memory": [
+            [
+              "Groceries",
+              "406f400000000000"
+            ],
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Negative",
+          "limit": "0000000000000000",
+          "wrote": false,
+          "section": "{\"Groceries\":250.0,\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0}",
+          "memory": [
+            [
+              "Groceries",
+              "406f400000000000"
+            ],
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Travel",
+          "limit": "4059000000000000",
+          "wrote": true,
+          "section": "{\"Groceries\":250.0,\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0}",
+          "memory": [
+            [
+              "Groceries",
+              "406f400000000000"
+            ],
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "Groceries",
+          "wrote": true,
+          "section": "{\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0}",
+          "memory": [
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "Groceries",
+          "limit": "406f400000000000",
+          "wrote": true,
+          "section": "{\"Travel\":100.0,\"Health\":50.0,\"Zero\":20.0,\"Groceries\":250.0}",
+          "memory": [
+            [
+              "Travel",
+              "4059000000000000"
+            ],
+            [
+              "Health",
+              "4049000000000000"
+            ],
+            [
+              "Zero",
+              "4034000000000000"
+            ],
+            [
+              "Groceries",
+              "406f400000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    },
+    {
+      "label": "repeated keys",
+      "initial": "{\"A\":1.0,\"B\":2.0,\"A\":3.0}",
+      "loaded": {
+        "memory": [
+          [
+            "A",
+            "4008000000000000"
+          ],
+          [
+            "B",
+            "4000000000000000"
+          ]
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "category": "C",
+          "limit": "3ff0000000000000",
+          "wrote": true,
+          "section": "{\"A\":3.0,\"B\":2.0,\"C\":1.0}",
+          "memory": [
+            [
+              "A",
+              "4008000000000000"
+            ],
+            [
+              "B",
+              "4000000000000000"
+            ],
+            [
+              "C",
+              "3ff0000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "set",
+          "category": "A",
+          "limit": "4010000000000000",
+          "wrote": true,
+          "section": "{\"A\":4.0,\"B\":2.0,\"C\":1.0}",
+          "memory": [
+            [
+              "A",
+              "4010000000000000"
+            ],
+            [
+              "B",
+              "4000000000000000"
+            ],
+            [
+              "C",
+              "3ff0000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        },
+        {
+          "op": "remove",
+          "category": "B",
+          "wrote": true,
+          "section": "{\"A\":4.0,\"C\":1.0}",
+          "memory": [
+            [
+              "A",
+              "4010000000000000"
+            ],
+            [
+              "C",
+              "3ff0000000000000"
+            ]
+          ],
+          "hasUnsavedChanges": false
+        }
+      ]
+    }
+  ]
+}

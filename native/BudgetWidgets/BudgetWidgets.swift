@@ -1,0 +1,270 @@
+import SwiftUI
+import WidgetKit
+
+/// Reads the cash flow value the app writes to the shared app group.
+enum CashFlowStore {
+  static let suiteName = "group.com.khatruong.budgetbuddy"
+
+  /// Returns nil when the app has never written data (fresh install).
+  /// Returns 0 when the stored value belongs to a previous month.
+  static func read(for date: Date = Date()) -> Double? {
+    guard let defaults = UserDefaults(suiteName: suiteName),
+      defaults.object(forKey: "cashFlow") != nil,
+      let storedMonth = defaults.string(forKey: "cashFlowMonth")
+    else { return nil }
+    guard storedMonth == monthKey(for: date) else { return 0 }
+    return defaults.double(forKey: "cashFlow")
+  }
+
+  /// The app's Hide balances setting (D12), written by the Swift app only;
+  /// false when absent.
+  static func hidesBalances() -> Bool {
+    UserDefaults(suiteName: suiteName)?.bool(forKey: "budgieHideBalances") ?? false
+  }
+
+  /// Always Gregorian: the key must match what the Dart side writes from
+  /// DateTime.now(), regardless of the device calendar setting.
+  private static var gregorian: Calendar {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone.current
+    return calendar
+  }
+
+  static func monthKey(for date: Date) -> String {
+    let components = gregorian.dateComponents([.year, .month], from: date)
+    return String(format: "%04d-%02d", components.year ?? 0, components.month ?? 0)
+  }
+
+  static func startOfNextMonth(after date: Date) -> Date {
+    gregorian.dateInterval(of: .month, for: date)?.end
+      ?? date.addingTimeInterval(24 * 60 * 60)
+  }
+}
+
+/// Logo + cash flow strip shown at the top of every Budgie widget.
+struct BudgieWidgetHeader: View {
+  let cashFlow: Double?
+  var hidesBalances = false
+
+  /// MoneyFormatter's masked amount.
+  static let hiddenAmount = "\u{2022}\u{2022}\u{2022}\u{2022}"
+
+  var body: some View {
+    HStack(spacing: 5) {
+      Image("BudgieLogo")
+        .resizable()
+        .scaledToFit()
+        .frame(width: 16, height: 16)
+      if cashFlow != nil, hidesBalances {
+        // Neutral colour: red/green would still tell the sign.
+        Spacer(minLength: 4)
+        Text(Self.hiddenAmount)
+          .font(.system(size: 12, weight: .bold, design: .rounded))
+          .foregroundColor(.white.opacity(0.75))
+          .lineLimit(1)
+          .accessibilityLabel("Balance hidden")
+      } else if let amount = cashFlow {
+        Spacer(minLength: 4)
+        Text(Self.formattedAmount(amount))
+          .font(.system(size: 12, weight: .bold, design: .rounded))
+          .foregroundColor(
+            amount < 0
+              ? Color(red: 0.95, green: 0.55, blue: 0.50)
+              : Color(red: 0.55, green: 0.85, blue: 0.62)
+          )
+          .lineLimit(1)
+          .minimumScaleFactor(0.6)
+      } else {
+        Text("Budgie")
+          .font(.system(size: 11, weight: .semibold))
+          .foregroundColor(.white.opacity(0.75))
+        Spacer(minLength: 0)
+      }
+    }
+  }
+
+  static func formattedAmount(_ amount: Double) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .currency
+    formatter.locale = Locale(identifier: "en_US")
+    formatter.maximumFractionDigits = 0
+    return formatter.string(from: NSNumber(value: amount)) ?? "$0"
+  }
+}
+
+struct BudgetQuickActionsEntry: TimelineEntry {
+  let date: Date
+  let cashFlow: Double?
+  let hidesBalances: Bool
+}
+
+struct BudgetQuickActionsProvider: TimelineProvider {
+  func placeholder(in context: Context) -> BudgetQuickActionsEntry {
+    BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances())
+  }
+
+  func getSnapshot(in context: Context, completion: @escaping (BudgetQuickActionsEntry) -> Void) {
+    completion(BudgetQuickActionsEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances()))
+  }
+
+  func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetQuickActionsEntry>) -> Void) {
+    let now = Date()
+    let entry = BudgetQuickActionsEntry(date: now, cashFlow: CashFlowStore.read(for: now), hidesBalances: CashFlowStore.hidesBalances())
+    completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
+  }
+}
+
+struct BudgetQuickActionsEntryView: View {
+  var entry: BudgetQuickActionsProvider.Entry
+
+  private let incomeURL = URL(string: "budgetapp://add-income")!
+  private let expenseURL = URL(string: "budgetapp://add-expense")!
+
+  var body: some View {
+    VStack(spacing: 8) {
+      BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
+      actionButton(
+        title: "Income",
+        icon: "plus.circle.fill",
+        // Darkened from (0.33, 0.74, 0.47) so the white label passes WCAG AA (4.5:1).
+        color: Color(red: 0.047, green: 0.533, blue: 0.278),
+        destination: incomeURL
+      )
+      actionButton(
+        title: "Expense",
+        icon: "minus.circle.fill",
+        // Darkened from (0.90, 0.40, 0.35), as above.
+        color: Color(red: 0.792, green: 0.302, blue: 0.259),
+        destination: expenseURL
+      )
+    }
+    .padding(6)
+    .modifier(BackgroundForVersion())
+  }
+
+  private func actionButton(title: String, icon: String, color: Color, destination: URL) -> some View {
+    Link(destination: destination) {
+      HStack(spacing: 6) {
+        Image(systemName: icon)
+          .font(.system(size: 18))
+        Text(title)
+          .fontWeight(.semibold)
+          .font(.system(size: 13))
+          .lineLimit(1)
+          .minimumScaleFactor(0.8)
+        Spacer(minLength: 0)
+      }
+      .padding(.vertical, 9)
+      .padding(.horizontal, 10)
+      .frame(maxWidth: .infinity)
+      .background(
+        RoundedRectangle(cornerRadius: 16, style: .continuous)
+          .fill(color)
+      )
+      .foregroundColor(.white)
+    }
+    .buttonStyle(.plain)
+  }
+}
+
+struct BudgetQuickActionsWidget: Widget {
+  let kind: String = "BudgetQuickActions"
+
+  var body: some WidgetConfiguration {
+    StaticConfiguration(kind: kind, provider: BudgetQuickActionsProvider()) { entry in
+      BudgetQuickActionsEntryView(entry: entry)
+    }
+    .configurationDisplayName("Budget Quick Add")
+    .description("Add income or expense from your home screen.")
+    .supportedFamilies([.systemSmall])
+  }
+}
+
+struct BudgetVoiceAddEntry: TimelineEntry {
+  let date: Date
+  let cashFlow: Double?
+  let hidesBalances: Bool
+}
+
+struct BudgetVoiceAddProvider: TimelineProvider {
+  func placeholder(in context: Context) -> BudgetVoiceAddEntry {
+    BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances())
+  }
+
+  func getSnapshot(in context: Context, completion: @escaping (BudgetVoiceAddEntry) -> Void) {
+    completion(BudgetVoiceAddEntry(date: Date(), cashFlow: CashFlowStore.read(), hidesBalances: CashFlowStore.hidesBalances()))
+  }
+
+  func getTimeline(in context: Context, completion: @escaping (Timeline<BudgetVoiceAddEntry>) -> Void) {
+    let now = Date()
+    let entry = BudgetVoiceAddEntry(date: now, cashFlow: CashFlowStore.read(for: now), hidesBalances: CashFlowStore.hidesBalances())
+    completion(Timeline(entries: [entry], policy: .after(CashFlowStore.startOfNextMonth(after: now))))
+  }
+}
+
+struct BudgetVoiceAddEntryView: View {
+  var entry: BudgetVoiceAddProvider.Entry
+
+  // Nudged from (0.51, 0.55, 0.97): the white mic glyph needs 3:1 against it.
+  private let accentColor = Color(red: 0.506, green: 0.545, blue: 0.965)
+
+  var body: some View {
+    VStack(spacing: 0) {
+      BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
+      Spacer(minLength: 0)
+      Image(systemName: "mic.fill")
+        .font(.system(size: 26))
+        .foregroundColor(.white)
+        .frame(width: 52, height: 52)
+        .background(
+          Circle()
+            .fill(accentColor)
+        )
+      Spacer(minLength: 0)
+    }
+    .padding(6)
+    .modifier(BackgroundForVersion())
+  }
+}
+
+struct BudgetVoiceAddWidget: Widget {
+  let kind: String = "BudgetVoiceAdd"
+
+  var body: some WidgetConfiguration {
+    StaticConfiguration(kind: kind, provider: BudgetVoiceAddProvider()) { entry in
+      BudgetVoiceAddEntryView(entry: entry)
+        .widgetURL(URL(string: "budgetapp://voice-add")!)
+    }
+    .configurationDisplayName("Voice Add")
+    .description("Speak a transaction and review it before saving.")
+    .supportedFamilies([.systemSmall])
+  }
+}
+
+struct BackgroundForVersion: ViewModifier {
+  func body(content: Content) -> some View {
+    if #available(iOS 17.0, *) {
+      content.containerBackground(for: .widget) {
+        LinearGradient(
+          colors: [
+            Color(red: 0.10, green: 0.12, blue: 0.25),
+            Color(red: 0.07, green: 0.09, blue: 0.20)
+          ],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        )
+      }
+    } else {
+      content.background(
+        LinearGradient(
+          colors: [
+            Color(red: 0.10, green: 0.12, blue: 0.25),
+            Color(red: 0.07, green: 0.09, blue: 0.20)
+          ],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        )
+      )
+    }
+  }
+}

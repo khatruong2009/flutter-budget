@@ -1,0 +1,10 @@
+{
+  "flutter.transactions": {
+    "type": "string",
+    "value": "[{\"id\":\"legacy-1\",\"type\":\"expense\",\"description\":\"From prefs\",\"amount\":9.99,\"category\":\"General\",\"date\":\"2024-05-05T00:00:00.000\"}]"
+  },
+  "flutter.base_currency_code": {
+    "type": "string",
+    "value": "GBP"
+  }
+}

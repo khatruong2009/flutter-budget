@@ -1,0 +1,166 @@
+{
+  "appSettings" : {
+    "appLockEnabled" : true,
+    "autoLockTimeoutSeconds" : 300,
+    "baseCurrencyCode" : "EUR",
+    "hideBalances" : false,
+    "localeOverride" : "de_DE"
+  },
+  "backup" : "Optional(BudgieCore.PreNativeMigrationBackup.Outcome.created(file:\/\/\/Users\/khatruong\/Library\/Developer\/CoreSimulator\/Devices\/ED5CBC6D-818D-486F-A8A1-1AF963F303C7\/data\/Containers\/Data\/Application\/DAB246CD-D99A-4DC3-BE8F-AF84E192E349\/Library\/Application%20Support\/pre-native-migration\/20260930-183400-e0b7fab4\/))",
+  "hasUnsavedChanges" : false,
+  "loadReport" : "Optional(BudgieCore.FinancialStore.LoadReport(restoredFromBackup: false, setAside: [], migratedFrom: Optional(BudgieCore.LegacyMigration.Source.envelope), removedPreferenceKeys: [\"flutter.financial_store_v1\", \"flutter.transactions\", \"flutter.net_worth_entries\", \"flutter.net_worth_selected_month\", \"flutter.category_budget_limits\", \"flutter.savings_goals\", \"flutter.recurring_transactions\", \"flutter.categories_v1\", \"flutter.transaction_tags_v1\", \"flutter.categorization_rules_v1\"]))",
+  "monthly" : {
+    "2024-02" : {
+      "count" : 1,
+      "totalExpenses" : 29,
+      "totalIncome" : 0
+    },
+    "2025-06" : {
+      "count" : 6,
+      "totalExpenses" : 1635.8,
+      "totalIncome" : 4550.75
+    },
+    "2025-07" : {
+      "count" : 5,
+      "totalExpenses" : 1636.8,
+      "totalIncome" : 4200
+    },
+    "2025-08" : {
+      "count" : 5,
+      "totalExpenses" : 1637.8,
+      "totalIncome" : 4200
+    },
+    "2025-09" : {
+      "count" : 6,
+      "totalExpenses" : 1638.8,
+      "totalIncome" : 4550.75
+    },
+    "2025-10" : {
+      "count" : 5,
+      "totalExpenses" : 1639.8,
+      "totalIncome" : 4200
+    },
+    "2025-11" : {
+      "count" : 5,
+      "totalExpenses" : 1640.8,
+      "totalIncome" : 4200
+    },
+    "2025-12" : {
+      "count" : 6,
+      "totalExpenses" : 1641.8,
+      "totalIncome" : 4550.75
+    },
+    "2026-01" : {
+      "count" : 7,
+      "totalExpenses" : 3173.8000000000002,
+      "totalIncome" : 4200
+    },
+    "2026-02" : {
+      "count" : 9,
+      "totalExpenses" : 3189.8000000000002,
+      "totalIncome" : 6050
+    },
+    "2026-03" : {
+      "count" : 16,
+      "totalExpenses" : 3387.79,
+      "totalIncome" : 8250.75
+    },
+    "2026-04" : {
+      "count" : 7,
+      "totalExpenses" : 1690.8,
+      "totalIncome" : 6050
+    },
+    "2026-05" : {
+      "count" : 5,
+      "totalExpenses" : 1646.8,
+      "totalIncome" : 4200
+    },
+    "2026-06" : {
+      "count" : 6,
+      "totalExpenses" : 1647.8,
+      "totalIncome" : 4550.75
+    },
+    "2026-07" : {
+      "count" : 13,
+      "totalExpenses" : 3344.79,
+      "totalIncome" : 7900
+    },
+    "2026-08" : {
+      "count" : 14,
+      "totalExpenses" : 3390.79,
+      "totalIncome" : 7900
+    },
+    "2026-09" : {
+      "count" : 28,
+      "totalExpenses" : 1.5000000000000001e+300,
+      "totalIncome" : 1242843.6410000001
+    },
+    "2026-11" : {
+      "count" : 1,
+      "totalExpenses" : 3,
+      "totalIncome" : 0
+    }
+  },
+  "netWorth" : {
+    "2026-01" : {
+      "assets" : 2500,
+      "liabilities" : 250000,
+      "netWorth" : -247500
+    },
+    "2026-02" : {
+      "assets" : 12750.75,
+      "liabilities" : 250000,
+      "netWorth" : -237249.25
+    },
+    "2026-03" : {
+      "assets" : 12750.75,
+      "liabilities" : 250000,
+      "netWorth" : -237249.25
+    },
+    "2026-04" : {
+      "assets" : 13150.5,
+      "liabilities" : 250000,
+      "netWorth" : -236849.5
+    },
+    "2026-09" : {
+      "assets" : 13150.5,
+      "liabilities" : 250000,
+      "netWorth" : -236849.5
+    }
+  },
+  "now" : "2026-09-30T14:34:01.285596",
+  "recurring" : [
+    {
+      "id" : "abd205c1-fe85-42f8-805a-d53494e38e7f",
+      "isActive" : true,
+      "nextOccurrence" : "2026-10-04T01:00:00.000"
+    },
+    {
+      "id" : "b9e883f7-ee58-488a-9aba-fb1dc32158ff",
+      "isActive" : true,
+      "nextOccurrence" : "2026-10-05T01:00:00.000"
+    },
+    {
+      "id" : "0bec6a6f-1365-4750-9e41-08d2d265a7ad",
+      "isActive" : true,
+      "nextOccurrence" : "2026-10-31T00:00:00.000"
+    },
+    {
+      "id" : "e6913af7-ecdd-4044-bf93-45e2fa08c273",
+      "isActive" : true,
+      "nextOccurrence" : "2026-10-15T00:00:00.000"
+    },
+    {
+      "id" : "2e705578-eea5-4f94-9750-c05a8fab58ff",
+      "isActive" : false,
+      "nextOccurrence" : "2026-01-05T00:00:00.000"
+    }
+  ],
+  "theme" : "dark",
+  "transactionCount" : 145,
+  "unreadableTransactionRows" : 0,
+  "widget" : {
+    "amount" : -1.5000000000000001e+300,
+    "month" : "2026-09"
+  }
+}

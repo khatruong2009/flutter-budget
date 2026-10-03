@@ -1,0 +1,1782 @@
+{
+  "tz": "America/Santiago",
+  "cases": [
+    {
+      "name": "typical",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i9\",\"type\":\"income\",\"description\":\"i9\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s1\",\"type\":\"expense\",\"description\":\"s1\",\"amount\":150.25,\"category\":\"Groceries\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s2\",\"type\":\"expense\",\"description\":\"s2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-02T18:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-02T18:30:00.000\",\"updatedAt\":\"2026-09-02T18:30:00.000\"},{\"id\":\"s3\",\"type\":\"expense\",\"description\":\"s3\",\"amount\":249.75,\"category\":\"Groceries\",\"date\":\"2026-09-02T09:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-02T09:30:00.000\",\"updatedAt\":\"2026-09-02T09:30:00.000\"},{\"id\":\"s4\",\"type\":\"expense\",\"description\":\"s4\",\"amount\":1000.01,\"category\":\"Housing\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":\"rent\",\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s5\",\"type\":\"expense\",\"description\":\"s5\",\"amount\":85.0,\"category\":\"Health\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"s6\",\"type\":\"expense\",\"description\":\"s6\",\"amount\":50.0,\"category\":\"Pets\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i8\",\"type\":\"income\",\"description\":\"i8\",\"amount\":3000.0,\"category\":\"Salary\",\"date\":\"2026-08-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a1\",\"type\":\"expense\",\"description\":\"a1\",\"amount\":0.1,\"category\":\"Groceries\",\"date\":\"2026-08-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a2\",\"type\":\"expense\",\"description\":\"a2\",\"amount\":199.99,\"category\":\"Travel\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"a3\",\"type\":\"expense\",\"description\":\"a3\",\"amount\":0.2,\"category\":\"Groceries\",\"date\":\"2026-08-03T13:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"j1\",\"type\":\"expense\",\"description\":\"j1\",\"amount\":40.0,\"category\":\"Groceries\",\"date\":\"2026-07-31T23:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"j2\",\"type\":\"income\",\"description\":\"j2\",\"amount\":10.0,\"category\":\"Salary\",\"date\":\"2026-07-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"d1\",\"type\":\"expense\",\"description\":\"d1\",\"amount\":12.0,\"category\":\"Eating Out\",\"date\":\"2025-12-31T23:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"d2\",\"type\":\"expense\",\"description\":\"d2\",\"amount\":13.0,\"category\":\"Eating Out\",\"date\":\"2026-01-01T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"d3\",\"type\":\"income\",\"description\":\"d3\",\"amount\":100.0,\"category\":\"Salary\",\"date\":\"2025-12-15T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f1\",\"type\":\"expense\",\"description\":\"f1\",\"amount\":7.5,\"category\":\"Travel\",\"date\":\"2027-02-14T10:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "availableMonths": [
+        "2027-02-01T00:00:00.000",
+        "2026-09-01T00:00:00.000",
+        "2026-08-01T00:00:00.000",
+        "2026-07-01T00:00:00.000",
+        "2026-01-01T00:00:00.000",
+        "2025-12-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "FEB",
+          "2027"
+        ],
+        [
+          "SEP",
+          "2026"
+        ],
+        [
+          "AUG",
+          "2026"
+        ],
+        [
+          "JUL",
+          "2026"
+        ],
+        [
+          "JAN",
+          "2026"
+        ],
+        [
+          "DEC",
+          "2025"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2027-02-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$7.50",
+            "Net Cash Flow",
+            "-$7.50"
+          ],
+          "list": [
+            {
+              "header": [
+                "Feb 14, 2027"
+              ]
+            },
+            {
+              "row": "f1",
+              "texts": [
+                "f1",
+                "Travel • Feb 14",
+                "$7.50"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$3,200.00",
+            "Expenses",
+            "$1,620.00",
+            "Net Cash Flow",
+            "$1,580.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 7, 2026"
+              ]
+            },
+            {
+              "row": "s6",
+              "texts": [
+                "s6",
+                "Pets • Sep 7",
+                "$50.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 6, 2026"
+              ]
+            },
+            {
+              "row": "s5",
+              "texts": [
+                "s5",
+                "Health • Sep 6",
+                "$85.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 5, 2026"
+              ]
+            },
+            {
+              "row": "s4",
+              "texts": [
+                "s4",
+                "Housing • Sep 5",
+                "$1,000.01"
+              ]
+            },
+            {
+              "header": [
+                "Sep 2, 2026"
+              ]
+            },
+            {
+              "row": "s2",
+              "texts": [
+                "s2",
+                "Eating Out • Sep 2",
+                "$84.99"
+              ]
+            },
+            {
+              "row": "s3",
+              "texts": [
+                "s3",
+                "Groceries • Sep 2",
+                "$249.75"
+              ]
+            },
+            {
+              "row": "s1",
+              "texts": [
+                "s1",
+                "Groceries • Sep 2",
+                "$150.25"
+              ]
+            },
+            {
+              "header": [
+                "Sep 1, 2026"
+              ]
+            },
+            {
+              "row": "i9",
+              "texts": [
+                "i9",
+                "Salary • Sep 1",
+                "$3,200.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-08-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$3,000.00",
+            "Expenses",
+            "$200.29",
+            "Net Cash Flow",
+            "$2,799.71"
+          ],
+          "list": [
+            {
+              "header": [
+                "Aug 3, 2026"
+              ]
+            },
+            {
+              "row": "a3",
+              "texts": [
+                "a3",
+                "Groceries • Aug 3",
+                "$0.20"
+              ]
+            },
+            {
+              "row": "a2",
+              "texts": [
+                "a2",
+                "Travel • Aug 3",
+                "$199.99"
+              ]
+            },
+            {
+              "header": [
+                "Aug 2, 2026"
+              ]
+            },
+            {
+              "row": "a1",
+              "texts": [
+                "a1",
+                "Groceries • Aug 2",
+                "$0.10"
+              ]
+            },
+            {
+              "header": [
+                "Aug 1, 2026"
+              ]
+            },
+            {
+              "row": "i8",
+              "texts": [
+                "i8",
+                "Salary • Aug 1",
+                "$3,000.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-07-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$10.00",
+            "Expenses",
+            "$40.00",
+            "Net Cash Flow",
+            "-$30.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Jul 31, 2026"
+              ]
+            },
+            {
+              "row": "j1",
+              "texts": [
+                "j1",
+                "Groceries • Jul 31",
+                "$40.00"
+              ]
+            },
+            {
+              "header": [
+                "Jul 1, 2026"
+              ]
+            },
+            {
+              "row": "j2",
+              "texts": [
+                "j2",
+                "Salary • Jul 1",
+                "$10.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-01-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$13.00",
+            "Net Cash Flow",
+            "-$13.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Jan 1, 2026"
+              ]
+            },
+            {
+              "row": "d2",
+              "texts": [
+                "d2",
+                "Eating Out • Jan 1",
+                "$13.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2025-12-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$100.00",
+            "Expenses",
+            "$12.00",
+            "Net Cash Flow",
+            "$88.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Dec 31, 2025"
+              ]
+            },
+            {
+              "row": "d1",
+              "texts": [
+                "d1",
+                "Eating Out • Dec 31",
+                "$12.00"
+              ]
+            },
+            {
+              "header": [
+                "Dec 15, 2025"
+              ]
+            },
+            {
+              "row": "d3",
+              "texts": [
+                "d3",
+                "Salary • Dec 15",
+                "$100.00"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dst",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"g0\",\"type\":\"expense\",\"description\":\"g0\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2026-09-05T23:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g1\",\"type\":\"expense\",\"description\":\"g1\",\"amount\":2.0,\"category\":\"General\",\"date\":\"2026-09-06T01:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g2\",\"type\":\"expense\",\"description\":\"g2\",\"amount\":3.0,\"category\":\"General\",\"date\":\"2026-09-06T01:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g3\",\"type\":\"expense\",\"description\":\"g3\",\"amount\":4.0,\"category\":\"General\",\"date\":\"2026-09-06T01:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g4\",\"type\":\"expense\",\"description\":\"g4\",\"amount\":5.0,\"category\":\"General\",\"date\":\"2026-09-06T01:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g5\",\"type\":\"income\",\"description\":\"g5\",\"amount\":6.0,\"category\":\"Salary\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"g6\",\"type\":\"expense\",\"description\":\"g6\",\"amount\":7.0,\"category\":\"General\",\"date\":\"2026-09-07T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f0\",\"type\":\"expense\",\"description\":\"f0\",\"amount\":10.0,\"category\":\"General\",\"date\":\"2026-04-04T22:59:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f1\",\"type\":\"expense\",\"description\":\"f1\",\"amount\":11.0,\"category\":\"General\",\"date\":\"2026-04-04T23:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f2\",\"type\":\"expense\",\"description\":\"f2\",\"amount\":12.0,\"category\":\"General\",\"date\":\"2026-04-04T23:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f3\",\"type\":\"expense\",\"description\":\"f3\",\"amount\":13.0,\"category\":\"General\",\"date\":\"2026-04-04T23:59:59.999\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f4\",\"type\":\"expense\",\"description\":\"f4\",\"amount\":14.0,\"category\":\"General\",\"date\":\"2026-04-05T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"f5\",\"type\":\"expense\",\"description\":\"f5\",\"amount\":15.0,\"category\":\"General\",\"date\":\"2026-04-05T00:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n1\",\"type\":\"expense\",\"description\":\"n1\",\"amount\":20.0,\"category\":\"General\",\"date\":\"2026-03-08T01:59:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n2\",\"type\":\"expense\",\"description\":\"n2\",\"amount\":21.0,\"category\":\"General\",\"date\":\"2026-03-08T02:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n3\",\"type\":\"expense\",\"description\":\"n3\",\"amount\":22.0,\"category\":\"General\",\"date\":\"2026-03-08T03:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n4\",\"type\":\"expense\",\"description\":\"n4\",\"amount\":23.0,\"category\":\"General\",\"date\":\"2026-11-01T00:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n5\",\"type\":\"expense\",\"description\":\"n5\",\"amount\":24.0,\"category\":\"General\",\"date\":\"2026-11-01T01:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"n6\",\"type\":\"expense\",\"description\":\"n6\",\"amount\":25.0,\"category\":\"General\",\"date\":\"2026-11-01T02:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"l1\",\"type\":\"expense\",\"description\":\"l1\",\"amount\":30.0,\"category\":\"General\",\"date\":\"2026-10-04T02:15:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"l2\",\"type\":\"expense\",\"description\":\"l2\",\"amount\":31.0,\"category\":\"General\",\"date\":\"2026-10-04T01:59:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"l3\",\"type\":\"expense\",\"description\":\"l3\",\"amount\":32.0,\"category\":\"General\",\"date\":\"2026-04-05T01:45:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"za\",\"type\":\"expense\",\"description\":\"za\",\"amount\":100.0,\"category\":\"General\",\"date\":\"2026-06-15T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T12:00:00.000\",\"updatedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"zb\",\"type\":\"income\",\"description\":\"zb\",\"amount\":101.0,\"category\":\"General\",\"date\":\"2026-06-15T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T12:00:00.000\",\"updatedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"zc\",\"type\":\"expense\",\"description\":\"zc\",\"amount\":102.0,\"category\":\"General\",\"date\":\"2026-06-15T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T12:00:00.000\",\"updatedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"zd\",\"type\":\"income\",\"description\":\"zd\",\"amount\":103.0,\"category\":\"General\",\"date\":\"2026-06-15T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T12:00:00.000\",\"updatedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"ze\",\"type\":\"expense\",\"description\":\"ze\",\"amount\":104.0,\"category\":\"General\",\"date\":\"2026-06-15T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T12:00:00.000\",\"updatedAt\":\"2026-06-15T12:00:00.000\"},{\"id\":\"zz-late\",\"type\":\"expense\",\"description\":\"zz-late\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2026-06-15T08:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T13:00:00.000\",\"updatedAt\":\"2026-06-15T13:00:00.000\"},{\"id\":\"zz-early\",\"type\":\"expense\",\"description\":\"zz-early\",\"amount\":1.0,\"category\":\"General\",\"date\":\"2026-06-15T20:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-06-15T07:00:00.000\",\"updatedAt\":\"2026-06-15T07:00:00.000\"}]}",
+      "availableMonths": [
+        "2026-11-01T00:00:00.000",
+        "2026-10-01T00:00:00.000",
+        "2026-09-01T00:00:00.000",
+        "2026-06-01T00:00:00.000",
+        "2026-04-01T00:00:00.000",
+        "2026-03-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "NOV",
+          "2026"
+        ],
+        [
+          "OCT",
+          "2026"
+        ],
+        [
+          "SEP",
+          "2026"
+        ],
+        [
+          "JUN",
+          "2026"
+        ],
+        [
+          "APR",
+          "2026"
+        ],
+        [
+          "MAR",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-11-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$72.00",
+            "Net Cash Flow",
+            "-$72.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Nov 1, 2026"
+              ]
+            },
+            {
+              "row": "n6",
+              "texts": [
+                "n6",
+                "General • Nov 1",
+                "$25.00"
+              ]
+            },
+            {
+              "row": "n5",
+              "texts": [
+                "n5",
+                "General • Nov 1",
+                "$24.00"
+              ]
+            },
+            {
+              "row": "n4",
+              "texts": [
+                "n4",
+                "General • Nov 1",
+                "$23.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-10-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$61.00",
+            "Net Cash Flow",
+            "-$61.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Oct 4, 2026"
+              ]
+            },
+            {
+              "row": "l2",
+              "texts": [
+                "l2",
+                "General • Oct 4",
+                "$31.00"
+              ]
+            },
+            {
+              "row": "l1",
+              "texts": [
+                "l1",
+                "General • Oct 4",
+                "$30.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$6.00",
+            "Expenses",
+            "$22.00",
+            "Net Cash Flow",
+            "-$16.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 7, 2026"
+              ]
+            },
+            {
+              "row": "g6",
+              "texts": [
+                "g6",
+                "General • Sep 7",
+                "$7.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 6, 2026"
+              ]
+            },
+            {
+              "row": "g5",
+              "texts": [
+                "g5",
+                "Salary • Sep 6",
+                "$6.00"
+              ]
+            },
+            {
+              "row": "g4",
+              "texts": [
+                "g4",
+                "General • Sep 6",
+                "$5.00"
+              ]
+            },
+            {
+              "row": "g3",
+              "texts": [
+                "g3",
+                "General • Sep 6",
+                "$4.00"
+              ]
+            },
+            {
+              "row": "g2",
+              "texts": [
+                "g2",
+                "General • Sep 6",
+                "$3.00"
+              ]
+            },
+            {
+              "row": "g1",
+              "texts": [
+                "g1",
+                "General • Sep 6",
+                "$2.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 5, 2026"
+              ]
+            },
+            {
+              "row": "g0",
+              "texts": [
+                "g0",
+                "General • Sep 5",
+                "$1.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-06-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$204.00",
+            "Expenses",
+            "$308.00",
+            "Net Cash Flow",
+            "-$104.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Jun 15, 2026"
+              ]
+            },
+            {
+              "row": "zz-late",
+              "texts": [
+                "zz-late",
+                "General • Jun 15",
+                "$1.00"
+              ]
+            },
+            {
+              "row": "ze",
+              "texts": [
+                "ze",
+                "General • Jun 15",
+                "$104.00"
+              ]
+            },
+            {
+              "row": "zd",
+              "texts": [
+                "zd",
+                "General • Jun 15",
+                "$103.00"
+              ]
+            },
+            {
+              "row": "zc",
+              "texts": [
+                "zc",
+                "General • Jun 15",
+                "$102.00"
+              ]
+            },
+            {
+              "row": "zb",
+              "texts": [
+                "zb",
+                "General • Jun 15",
+                "$101.00"
+              ]
+            },
+            {
+              "row": "za",
+              "texts": [
+                "za",
+                "General • Jun 15",
+                "$100.00"
+              ]
+            },
+            {
+              "row": "zz-early",
+              "texts": [
+                "zz-early",
+                "General • Jun 15",
+                "$1.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-04-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$107.00",
+            "Net Cash Flow",
+            "-$107.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Apr 5, 2026"
+              ]
+            },
+            {
+              "row": "l3",
+              "texts": [
+                "l3",
+                "General • Apr 5",
+                "$32.00"
+              ]
+            },
+            {
+              "row": "f5",
+              "texts": [
+                "f5",
+                "General • Apr 5",
+                "$15.00"
+              ]
+            },
+            {
+              "row": "f4",
+              "texts": [
+                "f4",
+                "General • Apr 5",
+                "$14.00"
+              ]
+            },
+            {
+              "header": [
+                "Apr 4, 2026"
+              ]
+            },
+            {
+              "row": "f3",
+              "texts": [
+                "f3",
+                "General • Apr 4",
+                "$13.00"
+              ]
+            },
+            {
+              "row": "f2",
+              "texts": [
+                "f2",
+                "General • Apr 4",
+                "$12.00"
+              ]
+            },
+            {
+              "row": "f1",
+              "texts": [
+                "f1",
+                "General • Apr 4",
+                "$11.00"
+              ]
+            },
+            {
+              "row": "f0",
+              "texts": [
+                "f0",
+                "General • Apr 4",
+                "$10.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-03-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$63.00",
+            "Net Cash Flow",
+            "-$63.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Mar 8, 2026"
+              ]
+            },
+            {
+              "row": "n3",
+              "texts": [
+                "n3",
+                "General • Mar 8",
+                "$22.00"
+              ]
+            },
+            {
+              "row": "n2",
+              "texts": [
+                "n2",
+                "General • Mar 8",
+                "$21.00"
+              ]
+            },
+            {
+              "row": "n1",
+              "texts": [
+                "n1",
+                "General • Mar 8",
+                "$20.00"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "income_only",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"i1\",\"type\":\"income\",\"description\":\"i1\",\"amount\":1000.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i2\",\"type\":\"income\",\"description\":\"i2\",\"amount\":250.5,\"category\":\"Salary\",\"date\":\"2026-09-01T14:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"i3\",\"type\":\"income\",\"description\":\"i3\",\"amount\":99.99,\"category\":\"Salary\",\"date\":\"2026-08-10T00:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "availableMonths": [
+        "2026-09-01T00:00:00.000",
+        "2026-08-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "SEP",
+          "2026"
+        ],
+        [
+          "AUG",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$1,250.50",
+            "Expenses",
+            "$0.00",
+            "Net Cash Flow",
+            "$1,250.50"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 1, 2026"
+              ]
+            },
+            {
+              "row": "i2",
+              "texts": [
+                "i2",
+                "Salary • Sep 1",
+                "$250.50"
+              ]
+            },
+            {
+              "row": "i1",
+              "texts": [
+                "i1",
+                "Salary • Sep 1",
+                "$1,000.00"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-08-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$99.99",
+            "Expenses",
+            "$0.00",
+            "Net Cash Flow",
+            "$99.99"
+          ],
+          "list": [
+            {
+              "header": [
+                "Aug 10, 2026"
+              ]
+            },
+            {
+              "row": "i3",
+              "texts": [
+                "i3",
+                "Salary • Aug 10",
+                "$99.99"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[]}",
+      "availableMonths": [],
+      "title": [
+        "Transactions"
+      ],
+      "empty": [
+        "No Transactions Yet",
+        "Start tracking your finances by adding your first transaction",
+        "Add Transaction",
+        "Transactions"
+      ]
+    },
+    {
+      "name": "unicode",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"u1\",\"type\":\"expense\",\"description\":\"Café ☕️ \\\"quoted\\\" 🍕\",\"amount\":30.0,\"category\":\"Café\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u2\",\"type\":\"expense\",\"description\":\"decomposed\",\"amount\":20.0,\"category\":\"Café\",\"date\":\"2026-09-02T13:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u3\",\"type\":\"expense\",\"description\":\"\",\"amount\":12.5,\"category\":\"🍕 Pizza\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u4\",\"type\":\"expense\",\"description\":\"Straße ǆungla\",\"amount\":8.0,\"category\":\"straße\",\"date\":\"2026-09-04T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u5\",\"type\":\"expense\",\"description\":\"u5\",\"amount\":5.0,\"category\":\"STRASSE\",\"date\":\"2026-09-04T13:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u6\",\"type\":\"income\",\"description\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"amount\":1000000000.0,\"category\":\"Salary\",\"date\":\"2026-09-05T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u7\",\"type\":\"expense\",\"description\":\"u7\",\"amount\":0.004,\"category\":\"Café\",\"date\":\"2026-09-06T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u8\",\"type\":\"expense\",\"description\":\"u8\",\"amount\":0.0,\"category\":\"Café\",\"date\":\"2026-09-07T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u9\",\"type\":\"expense\",\"description\":\"u9\",\"amount\":-5.0,\"category\":\"Café\",\"date\":\"2026-09-08T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"u10\",\"type\":\"expense\",\"description\":\"u10\",\"amount\":1234567.891,\"category\":\"Café\",\"date\":\"2026-09-09T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "availableMonths": [
+        "2026-09-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "SEP",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$1,000,000,000.00",
+            "Expenses",
+            "$1,234,638.40",
+            "Net Cash Flow",
+            "$998,765,361.61"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 9, 2026"
+              ]
+            },
+            {
+              "row": "u10",
+              "texts": [
+                "u10",
+                "Café • Sep 9",
+                "$1,234,567.89"
+              ]
+            },
+            {
+              "header": [
+                "Sep 8, 2026"
+              ]
+            },
+            {
+              "row": "u9",
+              "texts": [
+                "u9",
+                "Café • Sep 8",
+                "-$5.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 7, 2026"
+              ]
+            },
+            {
+              "row": "u8",
+              "texts": [
+                "u8",
+                "Café • Sep 7",
+                "$0.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 6, 2026"
+              ]
+            },
+            {
+              "row": "u7",
+              "texts": [
+                "u7",
+                "Café • Sep 6",
+                "$0.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 5, 2026"
+              ]
+            },
+            {
+              "row": "u6",
+              "texts": [
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "Salary • Sep 5",
+                "$1,000,000,000.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 4, 2026"
+              ]
+            },
+            {
+              "row": "u5",
+              "texts": [
+                "u5",
+                "STRASSE • Sep 4",
+                "$5.00"
+              ]
+            },
+            {
+              "row": "u4",
+              "texts": [
+                "Straße ǆungla",
+                "straße • Sep 4",
+                "$8.00"
+              ]
+            },
+            {
+              "header": [
+                "Sep 3, 2026"
+              ]
+            },
+            {
+              "row": "u3",
+              "texts": [
+                "",
+                "🍕 Pizza • Sep 3",
+                "$12.50"
+              ]
+            },
+            {
+              "header": [
+                "Sep 2, 2026"
+              ]
+            },
+            {
+              "row": "u2",
+              "texts": [
+                "decomposed",
+                "Café • Sep 2",
+                "$20.00"
+              ]
+            },
+            {
+              "row": "u1",
+              "texts": [
+                "Café ☕️ \"quoted\" 🍕",
+                "Café • Sep 2",
+                "$30.00"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hidden_euro",
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hide": true,
+      "sections": "{\"transactions\":[{\"id\":\"h1\",\"type\":\"income\",\"description\":\"h1\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h2\",\"type\":\"expense\",\"description\":\"h2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h3\",\"type\":\"expense\",\"description\":\"h3\",\"amount\":10.0,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "availableMonths": [
+        "2026-09-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "SEP",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "••••",
+            "Expenses",
+            "••••",
+            "Net Cash Flow",
+            "••••"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 3, 2026"
+              ]
+            },
+            {
+              "row": "h3",
+              "texts": [
+                "h3",
+                "Eating Out • Sep 3",
+                "••••"
+              ]
+            },
+            {
+              "header": [
+                "Sep 2, 2026"
+              ]
+            },
+            {
+              "row": "h2",
+              "texts": [
+                "h2",
+                "Eating Out • Sep 2",
+                "••••"
+              ]
+            },
+            {
+              "header": [
+                "Sep 1, 2026"
+              ]
+            },
+            {
+              "row": "h1",
+              "texts": [
+                "h1",
+                "Salary • Sep 1",
+                "••••"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "euro_de",
+      "currency": "EUR",
+      "locale": "de_DE",
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"h1\",\"type\":\"income\",\"description\":\"h1\",\"amount\":3200.0,\"category\":\"Salary\",\"date\":\"2026-09-01T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h2\",\"type\":\"expense\",\"description\":\"h2\",\"amount\":84.99,\"category\":\"Eating Out\",\"date\":\"2026-09-02T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h3\",\"type\":\"expense\",\"description\":\"h3\",\"amount\":1234.5,\"category\":\"Eating Out\",\"date\":\"2026-09-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"},{\"id\":\"h4\",\"type\":\"expense\",\"description\":\"h4\",\"amount\":5000.0,\"category\":\"Housing\",\"date\":\"2026-08-03T12:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-09-01T08:00:00.000\",\"updatedAt\":\"2026-09-01T08:00:00.000\"}]}",
+      "availableMonths": [
+        "2026-09-01T00:00:00.000",
+        "2026-08-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "SEP",
+          "2026"
+        ],
+        [
+          "AUG",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-09-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "3.200,00 €",
+            "Expenses",
+            "1.319,49 €",
+            "Net Cash Flow",
+            "1.880,51 €"
+          ],
+          "list": [
+            {
+              "header": [
+                "Sep 3, 2026"
+              ]
+            },
+            {
+              "row": "h3",
+              "texts": [
+                "h3",
+                "Eating Out • Sep 3",
+                "1.234,50 €"
+              ]
+            },
+            {
+              "header": [
+                "Sep 2, 2026"
+              ]
+            },
+            {
+              "row": "h2",
+              "texts": [
+                "h2",
+                "Eating Out • Sep 2",
+                "84,99 €"
+              ]
+            },
+            {
+              "header": [
+                "Sep 1, 2026"
+              ]
+            },
+            {
+              "row": "h1",
+              "texts": [
+                "h1",
+                "Salary • Sep 1",
+                "3.200,00 €"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-08-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "0,00 €",
+            "Expenses",
+            "5.000,00 €",
+            "Net Cash Flow",
+            "-5.000,00 €"
+          ],
+          "list": [
+            {
+              "header": [
+                "Aug 3, 2026"
+              ]
+            },
+            {
+              "row": "h4",
+              "texts": [
+                "h4",
+                "Housing • Aug 3",
+                "5.000,00 €"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "many",
+      "currency": "USD",
+      "locale": null,
+      "hide": false,
+      "sections": "{\"transactions\":[{\"id\":\"m0\",\"type\":\"income\",\"description\":\"m0\",\"amount\":5.0,\"category\":\"General\",\"date\":\"2026-05-01T06:00:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:00:00.000\",\"updatedAt\":\"2026-05-01T08:00:00.000\"},{\"id\":\"m1\",\"type\":\"expense\",\"description\":\"m1\",\"amount\":8.17,\"category\":\"Groceries\",\"date\":\"2026-06-06T07:01:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:01:00.000\",\"updatedAt\":\"2026-05-01T08:01:00.000\"},{\"id\":\"m2\",\"type\":\"expense\",\"description\":\"m2\",\"amount\":11.34,\"category\":\"Eating Out\",\"date\":\"2026-07-11T08:02:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:02:00.000\",\"updatedAt\":\"2026-05-01T08:02:00.000\"},{\"id\":\"m3\",\"type\":\"expense\",\"description\":\"m3\",\"amount\":14.51,\"category\":\"General\",\"date\":\"2026-08-16T09:03:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:03:00.000\",\"updatedAt\":\"2026-05-01T08:03:00.000\"},{\"id\":\"m4\",\"type\":\"expense\",\"description\":\"m4\",\"amount\":17.68,\"category\":\"Groceries\",\"date\":\"2026-05-21T10:04:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:04:00.000\",\"updatedAt\":\"2026-05-01T08:04:00.000\"},{\"id\":\"m5\",\"type\":\"expense\",\"description\":\"m5\",\"amount\":20.85,\"category\":\"Eating Out\",\"date\":\"2026-06-26T11:05:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:05:00.000\",\"updatedAt\":\"2026-05-01T08:05:00.000\"},{\"id\":\"m6\",\"type\":\"income\",\"description\":\"m6\",\"amount\":24.02,\"category\":\"General\",\"date\":\"2026-07-03T12:06:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:06:00.000\",\"updatedAt\":\"2026-05-01T08:06:00.000\"},{\"id\":\"m7\",\"type\":\"expense\",\"description\":\"m7\",\"amount\":27.189999999999998,\"category\":\"Groceries\",\"date\":\"2026-08-08T13:07:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:07:00.000\",\"updatedAt\":\"2026-05-01T08:07:00.000\"},{\"id\":\"m8\",\"type\":\"expense\",\"description\":\"m8\",\"amount\":30.36,\"category\":\"Eating Out\",\"date\":\"2026-05-13T14:08:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:08:00.000\",\"updatedAt\":\"2026-05-01T08:08:00.000\"},{\"id\":\"m9\",\"type\":\"expense\",\"description\":\"m9\",\"amount\":33.53,\"category\":\"General\",\"date\":\"2026-06-18T15:09:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:09:00.000\",\"updatedAt\":\"2026-05-01T08:09:00.000\"},{\"id\":\"m10\",\"type\":\"expense\",\"description\":\"m10\",\"amount\":36.7,\"category\":\"Groceries\",\"date\":\"2026-07-23T16:10:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:10:00.000\",\"updatedAt\":\"2026-05-01T08:10:00.000\"},{\"id\":\"m11\",\"type\":\"expense\",\"description\":\"m11\",\"amount\":39.87,\"category\":\"Eating Out\",\"date\":\"2026-08-28T17:11:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:11:00.000\",\"updatedAt\":\"2026-05-01T08:11:00.000\"},{\"id\":\"m12\",\"type\":\"income\",\"description\":\"m12\",\"amount\":43.04,\"category\":\"General\",\"date\":\"2026-05-05T18:12:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:12:00.000\",\"updatedAt\":\"2026-05-01T08:12:00.000\"},{\"id\":\"m13\",\"type\":\"expense\",\"description\":\"m13\",\"amount\":46.21,\"category\":\"Groceries\",\"date\":\"2026-06-10T19:13:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:13:00.000\",\"updatedAt\":\"2026-05-01T08:13:00.000\"},{\"id\":\"m14\",\"type\":\"expense\",\"description\":\"m14\",\"amount\":49.379999999999995,\"category\":\"Eating Out\",\"date\":\"2026-07-15T06:14:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:14:00.000\",\"updatedAt\":\"2026-05-01T08:14:00.000\"},{\"id\":\"m15\",\"type\":\"expense\",\"description\":\"m15\",\"amount\":52.55,\"category\":\"General\",\"date\":\"2026-08-20T07:15:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:15:00.000\",\"updatedAt\":\"2026-05-01T08:15:00.000\"},{\"id\":\"m16\",\"type\":\"expense\",\"description\":\"m16\",\"amount\":55.72,\"category\":\"Groceries\",\"date\":\"2026-05-25T08:16:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:16:00.000\",\"updatedAt\":\"2026-05-01T08:16:00.000\"},{\"id\":\"m17\",\"type\":\"expense\",\"description\":\"m17\",\"amount\":58.89,\"category\":\"Eating Out\",\"date\":\"2026-06-02T09:17:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:17:00.000\",\"updatedAt\":\"2026-05-01T08:17:00.000\"},{\"id\":\"m18\",\"type\":\"income\",\"description\":\"m18\",\"amount\":62.06,\"category\":\"General\",\"date\":\"2026-07-07T10:18:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:18:00.000\",\"updatedAt\":\"2026-05-01T08:18:00.000\"},{\"id\":\"m19\",\"type\":\"expense\",\"description\":\"m19\",\"amount\":65.22999999999999,\"category\":\"Groceries\",\"date\":\"2026-08-12T11:19:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:19:00.000\",\"updatedAt\":\"2026-05-01T08:19:00.000\"},{\"id\":\"m20\",\"type\":\"expense\",\"description\":\"m20\",\"amount\":68.4,\"category\":\"Eating Out\",\"date\":\"2026-05-17T12:20:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:20:00.000\",\"updatedAt\":\"2026-05-01T08:20:00.000\"},{\"id\":\"m21\",\"type\":\"expense\",\"description\":\"m21\",\"amount\":71.57,\"category\":\"General\",\"date\":\"2026-06-22T13:21:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:21:00.000\",\"updatedAt\":\"2026-05-01T08:21:00.000\"},{\"id\":\"m22\",\"type\":\"expense\",\"description\":\"m22\",\"amount\":74.74,\"category\":\"Groceries\",\"date\":\"2026-07-27T14:22:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:22:00.000\",\"updatedAt\":\"2026-05-01T08:22:00.000\"},{\"id\":\"m23\",\"type\":\"expense\",\"description\":\"m23\",\"amount\":77.91,\"category\":\"Eating Out\",\"date\":\"2026-08-04T15:23:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:23:00.000\",\"updatedAt\":\"2026-05-01T08:23:00.000\"},{\"id\":\"m24\",\"type\":\"income\",\"description\":\"m24\",\"amount\":81.08,\"category\":\"General\",\"date\":\"2026-05-09T16:24:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:24:00.000\",\"updatedAt\":\"2026-05-01T08:24:00.000\"},{\"id\":\"m25\",\"type\":\"expense\",\"description\":\"m25\",\"amount\":84.25,\"category\":\"Groceries\",\"date\":\"2026-06-14T17:25:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:25:00.000\",\"updatedAt\":\"2026-05-01T08:25:00.000\"},{\"id\":\"m26\",\"type\":\"expense\",\"description\":\"m26\",\"amount\":87.42,\"category\":\"Eating Out\",\"date\":\"2026-07-19T18:26:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:26:00.000\",\"updatedAt\":\"2026-05-01T08:26:00.000\"},{\"id\":\"m27\",\"type\":\"expense\",\"description\":\"m27\",\"amount\":90.59,\"category\":\"General\",\"date\":\"2026-08-24T19:27:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:27:00.000\",\"updatedAt\":\"2026-05-01T08:27:00.000\"},{\"id\":\"m28\",\"type\":\"expense\",\"description\":\"m28\",\"amount\":93.75999999999999,\"category\":\"Groceries\",\"date\":\"2026-05-01T06:28:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:28:00.000\",\"updatedAt\":\"2026-05-01T08:28:00.000\"},{\"id\":\"m29\",\"type\":\"expense\",\"description\":\"m29\",\"amount\":96.92999999999999,\"category\":\"Eating Out\",\"date\":\"2026-06-06T07:29:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:29:00.000\",\"updatedAt\":\"2026-05-01T08:29:00.000\"},{\"id\":\"m30\",\"type\":\"income\",\"description\":\"m30\",\"amount\":100.1,\"category\":\"General\",\"date\":\"2026-07-11T08:30:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:30:00.000\",\"updatedAt\":\"2026-05-01T08:30:00.000\"},{\"id\":\"m31\",\"type\":\"expense\",\"description\":\"m31\",\"amount\":103.27,\"category\":\"Groceries\",\"date\":\"2026-08-16T09:31:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:31:00.000\",\"updatedAt\":\"2026-05-01T08:31:00.000\"},{\"id\":\"m32\",\"type\":\"expense\",\"description\":\"m32\",\"amount\":106.44,\"category\":\"Eating Out\",\"date\":\"2026-05-21T10:32:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:32:00.000\",\"updatedAt\":\"2026-05-01T08:32:00.000\"},{\"id\":\"m33\",\"type\":\"expense\",\"description\":\"m33\",\"amount\":109.61,\"category\":\"General\",\"date\":\"2026-06-26T11:33:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:33:00.000\",\"updatedAt\":\"2026-05-01T08:33:00.000\"},{\"id\":\"m34\",\"type\":\"expense\",\"description\":\"m34\",\"amount\":112.78,\"category\":\"Groceries\",\"date\":\"2026-07-03T12:34:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:34:00.000\",\"updatedAt\":\"2026-05-01T08:34:00.000\"},{\"id\":\"m35\",\"type\":\"expense\",\"description\":\"m35\",\"amount\":115.95,\"category\":\"Eating Out\",\"date\":\"2026-08-08T13:35:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:35:00.000\",\"updatedAt\":\"2026-05-01T08:35:00.000\"},{\"id\":\"m36\",\"type\":\"income\",\"description\":\"m36\",\"amount\":119.12,\"category\":\"General\",\"date\":\"2026-05-13T14:36:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:36:00.000\",\"updatedAt\":\"2026-05-01T08:36:00.000\"},{\"id\":\"m37\",\"type\":\"expense\",\"description\":\"m37\",\"amount\":122.28999999999999,\"category\":\"Groceries\",\"date\":\"2026-06-18T15:37:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:37:00.000\",\"updatedAt\":\"2026-05-01T08:37:00.000\"},{\"id\":\"m38\",\"type\":\"expense\",\"description\":\"m38\",\"amount\":125.46,\"category\":\"Eating Out\",\"date\":\"2026-07-23T16:38:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:38:00.000\",\"updatedAt\":\"2026-05-01T08:38:00.000\"},{\"id\":\"m39\",\"type\":\"expense\",\"description\":\"m39\",\"amount\":128.63,\"category\":\"General\",\"date\":\"2026-08-28T17:39:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:39:00.000\",\"updatedAt\":\"2026-05-01T08:39:00.000\"},{\"id\":\"m40\",\"type\":\"expense\",\"description\":\"m40\",\"amount\":131.8,\"category\":\"Groceries\",\"date\":\"2026-05-05T18:40:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:40:00.000\",\"updatedAt\":\"2026-05-01T08:40:00.000\"},{\"id\":\"m41\",\"type\":\"expense\",\"description\":\"m41\",\"amount\":134.97,\"category\":\"Eating Out\",\"date\":\"2026-06-10T19:41:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:41:00.000\",\"updatedAt\":\"2026-05-01T08:41:00.000\"},{\"id\":\"m42\",\"type\":\"income\",\"description\":\"m42\",\"amount\":138.14,\"category\":\"General\",\"date\":\"2026-07-15T06:42:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:42:00.000\",\"updatedAt\":\"2026-05-01T08:42:00.000\"},{\"id\":\"m43\",\"type\":\"expense\",\"description\":\"m43\",\"amount\":141.31,\"category\":\"Groceries\",\"date\":\"2026-08-20T07:43:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:43:00.000\",\"updatedAt\":\"2026-05-01T08:43:00.000\"},{\"id\":\"m44\",\"type\":\"expense\",\"description\":\"m44\",\"amount\":144.48,\"category\":\"Eating Out\",\"date\":\"2026-05-25T08:44:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:44:00.000\",\"updatedAt\":\"2026-05-01T08:44:00.000\"},{\"id\":\"m45\",\"type\":\"expense\",\"description\":\"m45\",\"amount\":147.65,\"category\":\"General\",\"date\":\"2026-06-02T09:45:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:45:00.000\",\"updatedAt\":\"2026-05-01T08:45:00.000\"},{\"id\":\"m46\",\"type\":\"expense\",\"description\":\"m46\",\"amount\":150.82,\"category\":\"Groceries\",\"date\":\"2026-07-07T10:46:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:46:00.000\",\"updatedAt\":\"2026-05-01T08:46:00.000\"},{\"id\":\"m47\",\"type\":\"expense\",\"description\":\"m47\",\"amount\":153.99,\"category\":\"Eating Out\",\"date\":\"2026-08-12T11:47:00.000\",\"recurringTemplateId\":null,\"tagIds\":[],\"createdAt\":\"2026-05-01T08:47:00.000\",\"updatedAt\":\"2026-05-01T08:47:00.000\"}]}",
+      "availableMonths": [
+        "2026-08-01T00:00:00.000",
+        "2026-07-01T00:00:00.000",
+        "2026-06-01T00:00:00.000",
+        "2026-05-01T00:00:00.000"
+      ],
+      "title": [
+        "Transactions"
+      ],
+      "chips": [
+        [
+          "AUG",
+          "2026"
+        ],
+        [
+          "JUL",
+          "2026"
+        ],
+        [
+          "JUN",
+          "2026"
+        ],
+        [
+          "MAY",
+          "2026"
+        ]
+      ],
+      "months": [
+        {
+          "month": "2026-08-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$1,011.00",
+            "Net Cash Flow",
+            "-$1,011.00"
+          ],
+          "list": [
+            {
+              "header": [
+                "Aug 28, 2026"
+              ]
+            },
+            {
+              "row": "m39",
+              "texts": [
+                "m39",
+                "General • Aug 28",
+                "$128.63"
+              ]
+            },
+            {
+              "row": "m11",
+              "texts": [
+                "m11",
+                "Eating Out • Aug 28",
+                "$39.87"
+              ]
+            },
+            {
+              "header": [
+                "Aug 24, 2026"
+              ]
+            },
+            {
+              "row": "m27",
+              "texts": [
+                "m27",
+                "General • Aug 24",
+                "$90.59"
+              ]
+            },
+            {
+              "header": [
+                "Aug 20, 2026"
+              ]
+            },
+            {
+              "row": "m43",
+              "texts": [
+                "m43",
+                "Groceries • Aug 20",
+                "$141.31"
+              ]
+            },
+            {
+              "row": "m15",
+              "texts": [
+                "m15",
+                "General • Aug 20",
+                "$52.55"
+              ]
+            },
+            {
+              "header": [
+                "Aug 16, 2026"
+              ]
+            },
+            {
+              "row": "m31",
+              "texts": [
+                "m31",
+                "Groceries • Aug 16",
+                "$103.27"
+              ]
+            },
+            {
+              "row": "m3",
+              "texts": [
+                "m3",
+                "General • Aug 16",
+                "$14.51"
+              ]
+            },
+            {
+              "header": [
+                "Aug 12, 2026"
+              ]
+            },
+            {
+              "row": "m47",
+              "texts": [
+                "m47",
+                "Eating Out • Aug 12",
+                "$153.99"
+              ]
+            },
+            {
+              "row": "m19",
+              "texts": [
+                "m19",
+                "Groceries • Aug 12",
+                "$65.23"
+              ]
+            },
+            {
+              "header": [
+                "Aug 8, 2026"
+              ]
+            },
+            {
+              "row": "m35",
+              "texts": [
+                "m35",
+                "Eating Out • Aug 8",
+                "$115.95"
+              ]
+            },
+            {
+              "row": "m7",
+              "texts": [
+                "m7",
+                "Groceries • Aug 8",
+                "$27.19"
+              ]
+            },
+            {
+              "header": [
+                "Aug 4, 2026"
+              ]
+            },
+            {
+              "row": "m23",
+              "texts": [
+                "m23",
+                "Eating Out • Aug 4",
+                "$77.91"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-07-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$324.32",
+            "Expenses",
+            "$648.64",
+            "Net Cash Flow",
+            "-$324.32"
+          ],
+          "list": [
+            {
+              "header": [
+                "Jul 27, 2026"
+              ]
+            },
+            {
+              "row": "m22",
+              "texts": [
+                "m22",
+                "Groceries • Jul 27",
+                "$74.74"
+              ]
+            },
+            {
+              "header": [
+                "Jul 23, 2026"
+              ]
+            },
+            {
+              "row": "m38",
+              "texts": [
+                "m38",
+                "Eating Out • Jul 23",
+                "$125.46"
+              ]
+            },
+            {
+              "row": "m10",
+              "texts": [
+                "m10",
+                "Groceries • Jul 23",
+                "$36.70"
+              ]
+            },
+            {
+              "header": [
+                "Jul 19, 2026"
+              ]
+            },
+            {
+              "row": "m26",
+              "texts": [
+                "m26",
+                "Eating Out • Jul 19",
+                "$87.42"
+              ]
+            },
+            {
+              "header": [
+                "Jul 15, 2026"
+              ]
+            },
+            {
+              "row": "m42",
+              "texts": [
+                "m42",
+                "General • Jul 15",
+                "$138.14"
+              ]
+            },
+            {
+              "row": "m14",
+              "texts": [
+                "m14",
+                "Eating Out • Jul 15",
+                "$49.38"
+              ]
+            },
+            {
+              "header": [
+                "Jul 11, 2026"
+              ]
+            },
+            {
+              "row": "m30",
+              "texts": [
+                "m30",
+                "General • Jul 11",
+                "$100.10"
+              ]
+            },
+            {
+              "row": "m2",
+              "texts": [
+                "m2",
+                "Eating Out • Jul 11",
+                "$11.34"
+              ]
+            },
+            {
+              "header": [
+                "Jul 7, 2026"
+              ]
+            },
+            {
+              "row": "m46",
+              "texts": [
+                "m46",
+                "Groceries • Jul 7",
+                "$150.82"
+              ]
+            },
+            {
+              "row": "m18",
+              "texts": [
+                "m18",
+                "General • Jul 7",
+                "$62.06"
+              ]
+            },
+            {
+              "header": [
+                "Jul 3, 2026"
+              ]
+            },
+            {
+              "row": "m34",
+              "texts": [
+                "m34",
+                "Groceries • Jul 3",
+                "$112.78"
+              ]
+            },
+            {
+              "row": "m6",
+              "texts": [
+                "m6",
+                "General • Jul 3",
+                "$24.02"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-06-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$0.00",
+            "Expenses",
+            "$934.92",
+            "Net Cash Flow",
+            "-$934.92"
+          ],
+          "list": [
+            {
+              "header": [
+                "Jun 26, 2026"
+              ]
+            },
+            {
+              "row": "m33",
+              "texts": [
+                "m33",
+                "General • Jun 26",
+                "$109.61"
+              ]
+            },
+            {
+              "row": "m5",
+              "texts": [
+                "m5",
+                "Eating Out • Jun 26",
+                "$20.85"
+              ]
+            },
+            {
+              "header": [
+                "Jun 22, 2026"
+              ]
+            },
+            {
+              "row": "m21",
+              "texts": [
+                "m21",
+                "General • Jun 22",
+                "$71.57"
+              ]
+            },
+            {
+              "header": [
+                "Jun 18, 2026"
+              ]
+            },
+            {
+              "row": "m37",
+              "texts": [
+                "m37",
+                "Groceries • Jun 18",
+                "$122.29"
+              ]
+            },
+            {
+              "row": "m9",
+              "texts": [
+                "m9",
+                "General • Jun 18",
+                "$33.53"
+              ]
+            },
+            {
+              "header": [
+                "Jun 14, 2026"
+              ]
+            },
+            {
+              "row": "m25",
+              "texts": [
+                "m25",
+                "Groceries • Jun 14",
+                "$84.25"
+              ]
+            },
+            {
+              "header": [
+                "Jun 10, 2026"
+              ]
+            },
+            {
+              "row": "m41",
+              "texts": [
+                "m41",
+                "Eating Out • Jun 10",
+                "$134.97"
+              ]
+            },
+            {
+              "row": "m13",
+              "texts": [
+                "m13",
+                "Groceries • Jun 10",
+                "$46.21"
+              ]
+            },
+            {
+              "header": [
+                "Jun 6, 2026"
+              ]
+            },
+            {
+              "row": "m29",
+              "texts": [
+                "m29",
+                "Eating Out • Jun 6",
+                "$96.93"
+              ]
+            },
+            {
+              "row": "m1",
+              "texts": [
+                "m1",
+                "Groceries • Jun 6",
+                "$8.17"
+              ]
+            },
+            {
+              "header": [
+                "Jun 2, 2026"
+              ]
+            },
+            {
+              "row": "m45",
+              "texts": [
+                "m45",
+                "General • Jun 2",
+                "$147.65"
+              ]
+            },
+            {
+              "row": "m17",
+              "texts": [
+                "m17",
+                "Eating Out • Jun 2",
+                "$58.89"
+              ]
+            }
+          ]
+        },
+        {
+          "month": "2026-05-01T00:00:00.000",
+          "summary": [
+            "Income",
+            "$248.24",
+            "Expenses",
+            "$648.64",
+            "Net Cash Flow",
+            "-$400.40"
+          ],
+          "list": [
+            {
+              "header": [
+                "May 25, 2026"
+              ]
+            },
+            {
+              "row": "m44",
+              "texts": [
+                "m44",
+                "Eating Out • May 25",
+                "$144.48"
+              ]
+            },
+            {
+              "row": "m16",
+              "texts": [
+                "m16",
+                "Groceries • May 25",
+                "$55.72"
+              ]
+            },
+            {
+              "header": [
+                "May 21, 2026"
+              ]
+            },
+            {
+              "row": "m32",
+              "texts": [
+                "m32",
+                "Eating Out • May 21",
+                "$106.44"
+              ]
+            },
+            {
+              "row": "m4",
+              "texts": [
+                "m4",
+                "Groceries • May 21",
+                "$17.68"
+              ]
+            },
+            {
+              "header": [
+                "May 17, 2026"
+              ]
+            },
+            {
+              "row": "m20",
+              "texts": [
+                "m20",
+                "Eating Out • May 17",
+                "$68.40"
+              ]
+            },
+            {
+              "header": [
+                "May 13, 2026"
+              ]
+            },
+            {
+              "row": "m36",
+              "texts": [
+                "m36",
+                "General • May 13",
+                "$119.12"
+              ]
+            },
+            {
+              "row": "m8",
+              "texts": [
+                "m8",
+                "Eating Out • May 13",
+                "$30.36"
+              ]
+            },
+            {
+              "header": [
+                "May 9, 2026"
+              ]
+            },
+            {
+              "row": "m24",
+              "texts": [
+                "m24",
+                "General • May 9",
+                "$81.08"
+              ]
+            },
+            {
+              "header": [
+                "May 5, 2026"
+              ]
+            },
+            {
+              "row": "m40",
+              "texts": [
+                "m40",
+                "Groceries • May 5",
+                "$131.80"
+              ]
+            },
+            {
+              "row": "m12",
+              "texts": [
+                "m12",
+                "General • May 5",
+                "$43.04"
+              ]
+            },
+            {
+              "header": [
+                "May 1, 2026"
+              ]
+            },
+            {
+              "row": "m28",
+              "texts": [
+                "m28",
+                "Groceries • May 1",
+                "$93.76"
+              ]
+            },
+            {
+              "row": "m0",
+              "texts": [
+                "m0",
+                "General • May 1",
+                "$5.00"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

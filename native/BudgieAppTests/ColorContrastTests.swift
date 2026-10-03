@@ -1,0 +1,165 @@
+import SwiftUI
+import UIKit
+import XCTest
+
+@testable import Runner
+
+/// WCAG 2.x contrast of the colour tokens against every surface they sit on,
+/// light and dark (owner-approved change of 2026-09-30, see PARITY_GAPS
+/// "Colour tokens"). Text must reach 4.5:1 (AA); the pairs here are the ones
+/// the accessibility audit flagged and that were fixed, so a regression in a
+/// token fails here before it fails the audit.
+@MainActor
+final class ColorContrastTests: XCTestCase {
+    private typealias RGB = (r: Double, g: Double, b: Double)
+
+    private func resolve(_ color: Color, dark: Bool) -> RGB {
+        rgb(UIColor(color).resolvedColor(with: UITraitCollection(userInterfaceStyle: dark ? .dark : .light)), over: nil)
+    }
+
+    /// The colour's RGB; a translucent colour is composited over `background`.
+    private func rgb(_ color: UIColor, over background: RGB?) -> RGB {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        guard let background, a < 1 else { return (r, g, b) }
+        return (r * a + background.r * (1 - a), g * a + background.g * (1 - a), b * a + background.b * (1 - a))
+    }
+
+    private func mix(_ foreground: RGB, over background: RGB, alpha: Double) -> RGB {
+        (
+            foreground.r * alpha + background.r * (1 - alpha), foreground.g * alpha + background.g * (1 - alpha),
+            foreground.b * alpha + background.b * (1 - alpha)
+        )
+    }
+
+    private func luminance(_ c: RGB) -> Double {
+        func lin(_ v: Double) -> Double { v <= 0.04045 ? v / 12.92 : pow((v + 0.055) / 1.055, 2.4) }
+        return 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b)
+    }
+
+    private func ratio(_ a: RGB, _ b: RGB) -> Double {
+        let (x, y) = (luminance(a), luminance(b))
+        return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+    }
+
+    private let white: RGB = (1, 1, 1)
+    private let aa = 4.5
+
+    private func surfaces(dark: Bool) -> [(name: String, color: RGB)] {
+        [
+            ("background", resolve(BudgieColor.background, dark: dark)), ("card", resolve(BudgieColor.card, dark: dark)),
+            ("chipSurface", resolve(BudgieColor.chipSurface, dark: dark)),
+        ]
+    }
+
+    private func assertAtLeast(_ target: Double, _ foreground: RGB, _ background: RGB, _ what: String) {
+        let value = ratio(foreground, background)
+        XCTAssertGreaterThanOrEqual(value, target, "\(what): \(String(format: "%.2f", value)):1 < \(target):1")
+    }
+
+    /// Text tokens on the surfaces (page, card, chip) in both modes.
+    func testTextTokensPassOnTheSurfaces() {
+        for dark in [false, true] {
+            let mode = dark ? "dark" : "light"
+            let tokens: [(String, Color)] = [
+                ("textPrimary", BudgieColor.textPrimary), ("textSecondary", BudgieColor.textSecondary),
+                ("textTertiary", BudgieColor.textTertiary), ("accent", BudgieColor.accent), ("income", BudgieColor.income),
+                ("danger", BudgieColor.danger), ("warning", BudgieColor.warning),
+            ]
+            for (name, color) in tokens {
+                for surface in surfaces(dark: dark) {
+                    assertAtLeast(aa, resolve(color, dark: dark), surface.color, "\(mode) \(name) on \(surface.name)")
+                }
+            }
+        }
+    }
+
+    /// Coloured text on its own tint (chips and tiles fill a colour at 10-14%).
+    func testColouredTextPassesOnItsOwnTint() {
+        for dark in [false, true] {
+            let mode = dark ? "dark" : "light"
+            let tokens: [(String, Color)] = [
+                ("accent", BudgieColor.accent), ("income", BudgieColor.income), ("danger", BudgieColor.danger),
+                ("warning", BudgieColor.warning),
+            ]
+            for (name, color) in tokens {
+                let foreground = resolve(color, dark: dark)
+                for base in [resolve(BudgieColor.background, dark: dark), resolve(BudgieColor.card, dark: dark)] {
+                    for alpha in [0.10, 0.14] {
+                        assertAtLeast(aa, foreground, mix(foreground, over: base, alpha: alpha), "\(mode) \(name) on its \(alpha) tint")
+                    }
+                }
+            }
+        }
+    }
+
+    /// The unselected segmented pill label on its track, and the month
+    /// chip's muted label.
+    func testDockInactiveOnTheTrack() {
+        for dark in [false, true] {
+            assertAtLeast(
+                aa, resolve(BudgieColor.dockInactiveIcon, dark: dark), resolve(BudgieColor.track, dark: dark),
+                "\(dark ? "dark" : "light") dockInactiveIcon on track")
+        }
+    }
+
+    /// Labels on filled accent, income and danger (the filled pill, the toasts,
+    /// the Worth editor's Add / Save), the on-accent colour in each mode.
+    func testOnAccentLabelsOnFills() {
+        for dark in [false, true] {
+            let onAccent = resolve(BudgieColor.onAccent, dark: dark)
+            for (name, fill) in [("accent", BudgieColor.accent), ("income", BudgieColor.income), ("danger", BudgieColor.danger)] {
+                assertAtLeast(aa, onAccent, resolve(fill, dark: dark), "\(dark ? "dark" : "light") onAccent on \(name)")
+            }
+        }
+    }
+
+    /// The month chip (white, 0.9 white on the primary gradient to 80%).
+    func testMonthChipLabelOnPrimary() {
+        let primary = resolve(BudgieColor.primary, dark: false)
+        assertAtLeast(aa, mix(white, over: primary, alpha: 0.9), primary, "0.9 white on primary")
+        assertAtLeast(aa, white, primary, "white on primary")
+    }
+
+    /// The buttons' white labels on both stops of the form and sheet gradients.
+    func testWhiteLabelsOnTheButtonGradients() {
+        let gradients: [(String, [Color])] = [
+            ("primary", BudgieColor.primaryStops), ("income", BudgieColor.incomeStops), ("expense", BudgieColor.expenseStops),
+        ]
+        for dark in [false, true] {
+            for (name, stops) in gradients {
+                for (index, stop) in stops.enumerated() {
+                    assertAtLeast(aa, white, resolve(stop, dark: dark), "\(dark ? "dark" : "light") white on \(name) stop \(index)")
+                }
+            }
+        }
+    }
+
+    /// `textSecondaryOnTint` on a category colour at 22% (the strongest tint
+    /// a card carries).
+    func testSecondaryOnTintOnStrongTints() {
+        for dark in [false, true] {
+            let card = resolve(BudgieColor.card, dark: dark)
+            for tint in [BudgieColor.chartAccent, BudgieColor.chartIncome, BudgieColor.chartDanger] {
+                assertAtLeast(
+                    aa, resolve(BudgieColor.textSecondaryOnTint, dark: dark),
+                    mix(resolve(tint, dark: dark), over: card, alpha: 0.22), "\(dark ? "dark" : "light") textSecondaryOnTint on 22% tint")
+            }
+        }
+    }
+
+    /// Every chart colour, made `legible`, reads on its own 18% tint.
+    func testLegibleChartColoursReadOnTheirTint() {
+        for dark in [false, true] {
+            let card = resolve(BudgieColor.card, dark: dark)
+            for (index, color) in BudgieColor.chartPalette.enumerated() {
+                for tint in [0.18, 0.35] {
+                    let text = resolve(BudgieColor.legible(color, tint: tint), dark: dark)
+                    assertAtLeast(
+                        aa, text, mix(resolve(color, dark: dark), over: card, alpha: tint),
+                        "\(dark ? "dark" : "light") chart colour \(index) made legible on a \(tint) tint")
+                }
+            }
+        }
+    }
+}

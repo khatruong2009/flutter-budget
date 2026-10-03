@@ -1,0 +1,823 @@
+{
+  "scenario": "v1_backup_empty_bare_list",
+  "description": "An empty bare list still replaces the backup ledger.",
+  "commit": "959921d674058da3e0835996298e42375b88ccf6",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "revision": 9,
+    "schemaVersion": 2,
+    "sections": {
+      "fnv": "-fd0af527b684d34",
+      "length": 6992,
+      "keys": [
+        "transactions",
+        "netWorthEntries",
+        "selectedNetWorthMonth",
+        "categoryBudgetLimits",
+        "savingsGoals",
+        "recurringTransactions",
+        "categories",
+        "transactionTags",
+        "categorizationRules",
+        "appSettings"
+      ],
+      "json": "{\"transactions\":[],\"netWorthEntries\":[{\"id\":\"003af403-e982-4ffd-b56d-d751147b29bd\",\"name\":\"Checking\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":2500.0},{\"recordedAt\":\"2026-02-28T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-04-10T11:05:08.043243\",\"amount\":3100.0},{\"recordedAt\":\"2026-04-10T11:05:09.044477\",\"amount\":3150.0}]},{\"id\":\"17c66198-527e-47c0-a502-9d89f8d69938\",\"name\":\"Mortgage\",\"type\":\"liability\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":250000.0}]},{\"id\":\"52eeba53-a308-4917-89a7-b66dde936314\",\"name\":\"Brokerage\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-02-14T16:30:00.000007\",\"amount\":10000.5},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":10000.5}]}],\"selectedNetWorthMonth\":\"2026-02-01T00:00:00.000\",\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":150.5,\"Pet Food\":60.0},\"savingsGoals\":[{\"id\":\"savings_goal_hmgvakxrll_0\",\"name\":\"Vacation\",\"targetAmount\":3000.0,\"currentAmount\":500.0,\"targetDate\":\"2026-12-20T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:28.034553\",\"completedAt\":null},{\"id\":\"savings_goal_hmgvalj85n_1\",\"name\":\"Emergency\",\"targetAmount\":1000.0,\"currentAmount\":1000.0,\"targetDate\":\"2027-06-01T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:29.035787\",\"completedAt\":\"2026-09-20T08:00:31.038255\"}],\"recurringTransactions\":[{\"id\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-02-22T00:00:00.000\",\"nextOccurrence\":\"2026-04-12T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":7,\"isActive\":true},{\"id\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"pattern\":\"biweekly\",\"startDate\":\"2026-02-23T00:00:00.000\",\"nextOccurrence\":\"2026-04-20T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":1,\"isActive\":true},{\"id\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-31T00:00:00.000\",\"nextOccurrence\":\"2026-04-30T00:00:00.000\",\"dayOfMonth\":31,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-03-15T14:32:11.123456\",\"nextOccurrence\":\"2026-04-15T00:00:00.000\",\"dayOfMonth\":15,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"2e705578-eea5-4f94-9750-c05a8fab58ff\",\"type\":\"expense\",\"description\":\"Paused magazine\",\"amount\":9.0,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-05T00:00:00.000\",\"nextOccurrence\":\"2026-01-05T00:00:00.000\",\"dayOfMonth\":5,\"dayOfWeek\":null,\"isActive\":false}],\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pet-food\",\"type\":\"expense\",\"name\":\"Pet Food\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":13,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-side-gig\",\"type\":\"income\",\"name\":\"Side Gig ✨\",\"iconIdentifier\":\"wrench\",\"colorToken\":\"orange\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":false}],\"transactionTags\":[{\"id\":\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\",\"name\":\"Work\",\"colorToken\":\"accent\"},{\"id\":\"95f0cf2f-94e0-4050-b4f2-4a1d899f196d\",\"name\":\"Vacation 🏖️\",\"colorToken\":\"cyan\"}],\"categorizationRules\":[{\"id\":\"3e138a83-9b34-48f4-ab28-e1bfee2a02c8\",\"merchantPattern\":\"Starbucks\",\"matchType\":\"contains\",\"transactionType\":\"expense\",\"minimumAmount\":null,\"maximumAmount\":20.0,\"category\":\"Eating Out\",\"tagIds\":[\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\"],\"priority\":2,\"isEnabled\":true},{\"id\":\"efc11174-1bec-487d-ab07-4c4f1e3977a5\",\"merchantPattern\":\"ACME PAYROLL\",\"matchType\":\"startsWith\",\"transactionType\":\"income\",\"minimumAmount\":1000.0,\"maximumAmount\":null,\"category\":\"Salary\",\"tagIds\":[],\"priority\":0,\"isEnabled\":true},{\"id\":\"afc57701-bd6d-4217-bd43-801f7339a1fa\",\"merchantPattern\":\"rent\",\"matchType\":\"exact\",\"transactionType\":null,\"minimumAmount\":null,\"maximumAmount\":null,\"category\":\"Housing\",\"tagIds\":[],\"priority\":0,\"isEnabled\":false}],\"appSettings\":{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":\"de_DE\",\"appLockEnabled\":true,\"autoLockTimeoutSeconds\":300,\"hideBalances\":false}}"
+    }
+  },
+  "filesAfterLoad": {
+    "financial_store_v2.json": {
+      "size": 7158,
+      "fnv": "3f1259e05659f3c8"
+    }
+  },
+  "prefsAfterLoad": {},
+  "afterOneCommit": {
+    "revision": 10,
+    "files": {
+      "financial_store_v2.backup.json": {
+        "size": 7158,
+        "fnv": "3f1259e05659f3c8"
+      },
+      "financial_store_v2.json": {
+        "size": 7160,
+        "fnv": "-1c9a408098977d6e"
+      }
+    }
+  },
+  "appBeforeGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 0,
+    "sortedIds": [],
+    "availableMonths": [],
+    "monthly": {},
+    "selectedNetWorthMonth": "2026-02-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2026-04-01T00:00:00.000",
+      "2026-03-01T00:00:00.000",
+      "2026-02-01T00:00:00.000",
+      "2026-01-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "change": null,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 0,
+        "stale": 3,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 3150.0
+          }
+        ]
+      },
+      "2026-04": {
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "change": 399.75,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 1,
+        "stale": 2,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 3150.0
+          }
+        ]
+      },
+      "2026-03": {
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "change": 0.0,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 2,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2750.25
+          }
+        ]
+      },
+      "2026-02": {
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "change": 10250.75,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 2,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2750.25
+          }
+        ]
+      },
+      "2026-01": {
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 2,
+        "updated": 2,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2500.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2026-04-10T00:00:00.000",
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-03-31T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-28T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-14T00:00:00.000",
+        "assets": 12500.5,
+        "liabilities": 250000.0,
+        "netWorth": -237499.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-01-31T00:00:00.000",
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2026-04-10T00:00:00.000",
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-03-31T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-28T23:59:59.999",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "month"
+      },
+      {
+        "date": "2026-01-31T00:00:00.000",
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {
+      "Groceries": 400.0,
+      "Eating Out": 150.5,
+      "Pet Food": 60.0
+    },
+    "savingsGoals": [
+      {
+        "id": "savings_goal_hmgvakxrll_0",
+        "isCompleted": false,
+        "suggestedMonthlyContribution": 625.0
+      },
+      {
+        "id": "savings_goal_hmgvalj85n_1",
+        "isCompleted": true,
+        "suggestedMonthlyContribution": 0.0
+      }
+    ],
+    "recurring": [
+      {
+        "id": "abd205c1-fe85-42f8-805a-d53494e38e7f",
+        "nextOccurrence": "2026-04-12T01:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "b9e883f7-ee58-488a-9aba-fb1dc32158ff",
+        "nextOccurrence": "2026-04-20T01:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "0bec6a6f-1365-4750-9e41-08d2d265a7ad",
+        "nextOccurrence": "2026-04-30T00:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "e6913af7-ecdd-4044-bf93-45e2fa08c273",
+        "nextOccurrence": "2026-04-15T00:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "2e705578-eea5-4f94-9750-c05a8fab58ff",
+        "nextOccurrence": "2026-01-05T00:00:00.000",
+        "isActive": false
+      }
+    ],
+    "safeToSpend": {},
+    "appSettings": {
+      "baseCurrencyCode": "EUR",
+      "localeOverride": "de_DE",
+      "appLockEnabled": true,
+      "autoLockTimeoutSeconds": 300,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterInit": {
+    "fnv": "-fd0af527b684d34",
+    "length": 6992,
+    "keys": [
+      "transactions",
+      "netWorthEntries",
+      "selectedNetWorthMonth",
+      "categoryBudgetLimits",
+      "savingsGoals",
+      "recurringTransactions",
+      "categories",
+      "transactionTags",
+      "categorizationRules",
+      "appSettings"
+    ],
+    "json": "{\"transactions\":[],\"netWorthEntries\":[{\"id\":\"003af403-e982-4ffd-b56d-d751147b29bd\",\"name\":\"Checking\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":2500.0},{\"recordedAt\":\"2026-02-28T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-04-10T11:05:08.043243\",\"amount\":3100.0},{\"recordedAt\":\"2026-04-10T11:05:09.044477\",\"amount\":3150.0}]},{\"id\":\"17c66198-527e-47c0-a502-9d89f8d69938\",\"name\":\"Mortgage\",\"type\":\"liability\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":250000.0}]},{\"id\":\"52eeba53-a308-4917-89a7-b66dde936314\",\"name\":\"Brokerage\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-02-14T16:30:00.000007\",\"amount\":10000.5},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":10000.5}]}],\"selectedNetWorthMonth\":\"2026-02-01T00:00:00.000\",\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":150.5,\"Pet Food\":60.0},\"savingsGoals\":[{\"id\":\"savings_goal_hmgvakxrll_0\",\"name\":\"Vacation\",\"targetAmount\":3000.0,\"currentAmount\":500.0,\"targetDate\":\"2026-12-20T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:28.034553\",\"completedAt\":null},{\"id\":\"savings_goal_hmgvalj85n_1\",\"name\":\"Emergency\",\"targetAmount\":1000.0,\"currentAmount\":1000.0,\"targetDate\":\"2027-06-01T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:29.035787\",\"completedAt\":\"2026-09-20T08:00:31.038255\"}],\"recurringTransactions\":[{\"id\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-02-22T00:00:00.000\",\"nextOccurrence\":\"2026-04-12T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":7,\"isActive\":true},{\"id\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"pattern\":\"biweekly\",\"startDate\":\"2026-02-23T00:00:00.000\",\"nextOccurrence\":\"2026-04-20T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":1,\"isActive\":true},{\"id\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-31T00:00:00.000\",\"nextOccurrence\":\"2026-04-30T00:00:00.000\",\"dayOfMonth\":31,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-03-15T14:32:11.123456\",\"nextOccurrence\":\"2026-04-15T00:00:00.000\",\"dayOfMonth\":15,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"2e705578-eea5-4f94-9750-c05a8fab58ff\",\"type\":\"expense\",\"description\":\"Paused magazine\",\"amount\":9.0,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-05T00:00:00.000\",\"nextOccurrence\":\"2026-01-05T00:00:00.000\",\"dayOfMonth\":5,\"dayOfWeek\":null,\"isActive\":false}],\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pet-food\",\"type\":\"expense\",\"name\":\"Pet Food\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":13,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-side-gig\",\"type\":\"income\",\"name\":\"Side Gig ✨\",\"iconIdentifier\":\"wrench\",\"colorToken\":\"orange\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":false}],\"transactionTags\":[{\"id\":\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\",\"name\":\"Work\",\"colorToken\":\"accent\"},{\"id\":\"95f0cf2f-94e0-4050-b4f2-4a1d899f196d\",\"name\":\"Vacation 🏖️\",\"colorToken\":\"cyan\"}],\"categorizationRules\":[{\"id\":\"3e138a83-9b34-48f4-ab28-e1bfee2a02c8\",\"merchantPattern\":\"Starbucks\",\"matchType\":\"contains\",\"transactionType\":\"expense\",\"minimumAmount\":null,\"maximumAmount\":20.0,\"category\":\"Eating Out\",\"tagIds\":[\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\"],\"priority\":2,\"isEnabled\":true},{\"id\":\"efc11174-1bec-487d-ab07-4c4f1e3977a5\",\"merchantPattern\":\"ACME PAYROLL\",\"matchType\":\"startsWith\",\"transactionType\":\"income\",\"minimumAmount\":1000.0,\"maximumAmount\":null,\"category\":\"Salary\",\"tagIds\":[],\"priority\":0,\"isEnabled\":true},{\"id\":\"afc57701-bd6d-4217-bd43-801f7339a1fa\",\"merchantPattern\":\"rent\",\"matchType\":\"exact\",\"transactionType\":null,\"minimumAmount\":null,\"maximumAmount\":null,\"category\":\"Housing\",\"tagIds\":[],\"priority\":0,\"isEnabled\":false}],\"appSettings\":{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":\"de_DE\",\"appLockEnabled\":true,\"autoLockTimeoutSeconds\":300,\"hideBalances\":false}}"
+  },
+  "revisionAfterInit": 9,
+  "appAfterGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 25,
+    "sortedIds": [
+      "ad468765-ebf1-41d5-afa2-71a45baaaef3",
+      "9eda286a-6dcd-4995-9bde-835169c3df40",
+      "19c138aa-a519-4dbd-ae0d-6ee6e26178be",
+      "7c24b23d-aa9a-4727-ad32-addf7b53c539",
+      "dc44ae3b-a254-44b3-84ac-20bfb3709509",
+      "1189d87f-4571-4793-817f-92dfc8f5b20c",
+      "b8a06132-56f0-4614-8a08-04f0698a852e",
+      "199666e8-7aa7-438c-9265-142c1c97ef35",
+      "1d09b716-22e7-4e4f-94d1-b7ab619cd6c8",
+      "c474981e-0084-47b2-bc06-9fe078ef6302",
+      "057c296f-462b-46fc-ae78-3ac5589dfbe4",
+      "e53528d3-284b-47d4-b038-df359216267e",
+      "d7463a8b-811d-4614-9cd5-9b145c986106",
+      "69ca56a9-ca08-4608-8bf4-567c5b568616",
+      "80093fdc-4a3d-4cb9-beae-2219f5b487fc",
+      "382f053a-a758-400a-8c7e-16fbd0606ee1",
+      "cab569e7-980d-40fe-b2ce-96f6352ec439",
+      "c69e6098-4fbc-4e3d-844b-6b460eaa683f",
+      "dd7d72c8-2aa3-4698-8353-448f96039eb8",
+      "193bda33-991a-4b31-9894-f43998cbd618",
+      "27910dde-eb27-4292-ac88-2b796b79e308",
+      "c229687e-f7cb-4d72-953f-36e844f6d335",
+      "dd403dc1-72ac-42b2-a5c2-fd1c0c4cf42d",
+      "affabb9f-979c-4ff9-8d72-abd211a371a4",
+      "d8b06add-e696-42ec-b5f8-d1063b55fd3b"
+    ],
+    "availableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2026-08-01T00:00:00.000",
+      "2026-07-01T00:00:00.000",
+      "2026-06-01T00:00:00.000"
+    ],
+    "monthly": {
+      "2026-09": {
+        "summary": {
+          "income": 3700.0,
+          "expenses": 195.99,
+          "net": 3504.01
+        },
+        "totalIncome": 3700.0,
+        "totalExpenses": 195.99,
+        "transactionIds": [
+          "b8a06132-56f0-4614-8a08-04f0698a852e",
+          "dc44ae3b-a254-44b3-84ac-20bfb3709509",
+          "19c138aa-a519-4dbd-ae0d-6ee6e26178be",
+          "ad468765-ebf1-41d5-afa2-71a45baaaef3",
+          "1189d87f-4571-4793-817f-92dfc8f5b20c",
+          "9eda286a-6dcd-4995-9bde-835169c3df40",
+          "7c24b23d-aa9a-4727-ad32-addf7b53c539"
+        ],
+        "categoryExpenses": {
+          "Health": 180.0,
+          "Entertainment": 15.99
+        }
+      },
+      "2026-08": {
+        "summary": {
+          "income": 3700.0,
+          "expenses": 1740.99,
+          "net": 1959.01
+        },
+        "totalIncome": 3700.0,
+        "totalExpenses": 1740.99,
+        "transactionIds": [
+          "382f053a-a758-400a-8c7e-16fbd0606ee1",
+          "80093fdc-4a3d-4cb9-beae-2219f5b487fc",
+          "e53528d3-284b-47d4-b038-df359216267e",
+          "057c296f-462b-46fc-ae78-3ac5589dfbe4",
+          "1d09b716-22e7-4e4f-94d1-b7ab619cd6c8",
+          "69ca56a9-ca08-4608-8bf4-567c5b568616",
+          "c474981e-0084-47b2-bc06-9fe078ef6302",
+          "199666e8-7aa7-438c-9265-142c1c97ef35",
+          "d7463a8b-811d-4614-9cd5-9b145c986106"
+        ],
+        "categoryExpenses": {
+          "Health": 225.0,
+          "Housing": 1500.0,
+          "Entertainment": 15.99
+        }
+      },
+      "2026-07": {
+        "summary": {
+          "income": 3700.0,
+          "expenses": 1695.99,
+          "net": 2004.01
+        },
+        "totalIncome": 3700.0,
+        "totalExpenses": 1695.99,
+        "transactionIds": [
+          "affabb9f-979c-4ff9-8d72-abd211a371a4",
+          "dd403dc1-72ac-42b2-a5c2-fd1c0c4cf42d",
+          "193bda33-991a-4b31-9894-f43998cbd618",
+          "dd7d72c8-2aa3-4698-8353-448f96039eb8",
+          "c229687e-f7cb-4d72-953f-36e844f6d335",
+          "c69e6098-4fbc-4e3d-844b-6b460eaa683f",
+          "cab569e7-980d-40fe-b2ce-96f6352ec439",
+          "27910dde-eb27-4292-ac88-2b796b79e308"
+        ],
+        "categoryExpenses": {
+          "Health": 180.0,
+          "Housing": 1500.0,
+          "Entertainment": 15.99
+        }
+      },
+      "2026-06": {
+        "summary": {
+          "income": 0.0,
+          "expenses": 1500.0,
+          "net": -1500.0
+        },
+        "totalIncome": 0.0,
+        "totalExpenses": 1500.0,
+        "transactionIds": [
+          "d8b06add-e696-42ec-b5f8-d1063b55fd3b"
+        ],
+        "categoryExpenses": {
+          "Housing": 1500.0
+        }
+      }
+    },
+    "selectedNetWorthMonth": "2026-02-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000",
+      "2026-04-01T00:00:00.000",
+      "2026-03-01T00:00:00.000",
+      "2026-02-01T00:00:00.000",
+      "2026-01-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "change": null,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 0,
+        "stale": 3,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 3150.0
+          }
+        ]
+      },
+      "2026-04": {
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "change": 399.75,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 1,
+        "stale": 2,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 3150.0
+          }
+        ]
+      },
+      "2026-03": {
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "change": 0.0,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 2,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2750.25
+          }
+        ]
+      },
+      "2026-02": {
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "change": 10250.75,
+        "hasData": true,
+        "tracked": 3,
+        "updated": 2,
+        "stale": 1,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "52eeba53-a308-4917-89a7-b66dde936314",
+            "amount": 10000.5
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2750.25
+          }
+        ]
+      },
+      "2026-01": {
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 2,
+        "updated": 2,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "17c66198-527e-47c0-a502-9d89f8d69938",
+            "amount": 250000.0
+          },
+          {
+            "id": "003af403-e982-4ffd-b56d-d751147b29bd",
+            "amount": 2500.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2026-04-10T00:00:00.000",
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-03-31T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-28T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-14T00:00:00.000",
+        "assets": 12500.5,
+        "liabilities": 250000.0,
+        "netWorth": -237499.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-01-31T00:00:00.000",
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2026-04-10T00:00:00.000",
+        "assets": 13150.5,
+        "liabilities": 250000.0,
+        "netWorth": -236849.5,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-03-31T00:00:00.000",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "day"
+      },
+      {
+        "date": "2026-02-28T23:59:59.999",
+        "assets": 12750.75,
+        "liabilities": 250000.0,
+        "netWorth": -237249.25,
+        "assetCount": 2,
+        "liabilityCount": 1,
+        "granularity": "month"
+      },
+      {
+        "date": "2026-01-31T00:00:00.000",
+        "assets": 2500.0,
+        "liabilities": 250000.0,
+        "netWorth": -247500.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {
+      "Groceries": 400.0,
+      "Eating Out": 150.5,
+      "Pet Food": 60.0
+    },
+    "savingsGoals": [
+      {
+        "id": "savings_goal_hmgvakxrll_0",
+        "isCompleted": false,
+        "suggestedMonthlyContribution": 625.0
+      },
+      {
+        "id": "savings_goal_hmgvalj85n_1",
+        "isCompleted": true,
+        "suggestedMonthlyContribution": 0.0
+      }
+    ],
+    "recurring": [
+      {
+        "id": "abd205c1-fe85-42f8-805a-d53494e38e7f",
+        "nextOccurrence": "2026-10-04T01:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "b9e883f7-ee58-488a-9aba-fb1dc32158ff",
+        "nextOccurrence": "2026-10-05T01:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "0bec6a6f-1365-4750-9e41-08d2d265a7ad",
+        "nextOccurrence": "2026-09-30T00:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "e6913af7-ecdd-4044-bf93-45e2fa08c273",
+        "nextOccurrence": "2026-10-15T00:00:00.000",
+        "isActive": true
+      },
+      {
+        "id": "2e705578-eea5-4f94-9750-c05a8fab58ff",
+        "nextOccurrence": "2026-01-05T00:00:00.000",
+        "isActive": false
+      }
+    ],
+    "safeToSpend": {
+      "2026-09": {
+        "month": "2026-09-01T00:00:00.000",
+        "asOf": "2026-09-28T00:00:00.000",
+        "actualIncome": 3700.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 195.99,
+        "upcomingRecurringExpenses": 1500.0,
+        "flexibleBudgetReserve": 610.5,
+        "plannedGoalContributions": 625.0,
+        "daysRemaining": 3,
+        "safeToSpend": 768.5100000000002,
+        "isOverCommitted": false,
+        "overCommitment": 0.0,
+        "dailyAllowance": 256.1700000000001
+      },
+      "2026-08": {
+        "month": "2026-08-01T00:00:00.000",
+        "asOf": "2026-08-31T00:00:00.000",
+        "actualIncome": 3700.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 1740.99,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 610.5,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": 1348.51,
+        "isOverCommitted": false,
+        "overCommitment": 0.0,
+        "dailyAllowance": 0.0
+      },
+      "2026-07": {
+        "month": "2026-07-01T00:00:00.000",
+        "asOf": "2026-07-31T00:00:00.000",
+        "actualIncome": 3700.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 1695.99,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 610.5,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": 1393.51,
+        "isOverCommitted": false,
+        "overCommitment": 0.0,
+        "dailyAllowance": 0.0
+      },
+      "2026-06": {
+        "month": "2026-06-01T00:00:00.000",
+        "asOf": "2026-06-30T00:00:00.000",
+        "actualIncome": 0.0,
+        "expectedIncome": 0.0,
+        "actualExpenses": 1500.0,
+        "upcomingRecurringExpenses": 0.0,
+        "flexibleBudgetReserve": 610.5,
+        "plannedGoalContributions": 0.0,
+        "daysRemaining": 0,
+        "safeToSpend": -2110.5,
+        "isOverCommitted": true,
+        "overCommitment": 2110.5,
+        "dailyAllowance": 0.0
+      }
+    },
+    "appSettings": {
+      "baseCurrencyCode": "EUR",
+      "localeOverride": "de_DE",
+      "appLockEnabled": true,
+      "autoLockTimeoutSeconds": 300,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 3504.01,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterGenerate": {
+    "fnv": "-17e4e7132da93391",
+    "length": 14742,
+    "keys": [
+      "transactions",
+      "netWorthEntries",
+      "selectedNetWorthMonth",
+      "categoryBudgetLimits",
+      "savingsGoals",
+      "recurringTransactions",
+      "categories",
+      "transactionTags",
+      "categorizationRules",
+      "appSettings"
+    ],
+    "json": "{\"transactions\":[{\"id\":\"affabb9f-979c-4ff9-8d72-abd211a371a4\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-07-05T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"dd403dc1-72ac-42b2-a5c2-fd1c0c4cf42d\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-07-12T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"193bda33-991a-4b31-9894-f43998cbd618\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-07-19T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"dd7d72c8-2aa3-4698-8353-448f96039eb8\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-07-26T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"382f053a-a758-400a-8c7e-16fbd0606ee1\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-08-02T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"80093fdc-4a3d-4cb9-beae-2219f5b487fc\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-08-09T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"e53528d3-284b-47d4-b038-df359216267e\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-08-16T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"057c296f-462b-46fc-ae78-3ac5589dfbe4\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-08-23T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"1d09b716-22e7-4e4f-94d1-b7ab619cd6c8\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-08-30T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"b8a06132-56f0-4614-8a08-04f0698a852e\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-09-06T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"dc44ae3b-a254-44b3-84ac-20bfb3709509\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-09-13T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"19c138aa-a519-4dbd-ae0d-6ee6e26178be\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-09-20T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"ad468765-ebf1-41d5-afa2-71a45baaaef3\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"date\":\"2026-09-27T01:00:00.000\",\"recurringTemplateId\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"c229687e-f7cb-4d72-953f-36e844f6d335\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-07-13T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"c69e6098-4fbc-4e3d-844b-6b460eaa683f\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-07-27T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"69ca56a9-ca08-4608-8bf4-567c5b568616\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-08-10T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"c474981e-0084-47b2-bc06-9fe078ef6302\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-08-24T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"1189d87f-4571-4793-817f-92dfc8f5b20c\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-09-07T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"9eda286a-6dcd-4995-9bde-835169c3df40\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"date\":\"2026-09-21T01:00:00.000\",\"recurringTemplateId\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"d8b06add-e696-42ec-b5f8-d1063b55fd3b\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"date\":\"2026-06-30T00:00:00.000\",\"recurringTemplateId\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"cab569e7-980d-40fe-b2ce-96f6352ec439\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"date\":\"2026-07-31T00:00:00.000\",\"recurringTemplateId\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"199666e8-7aa7-438c-9265-142c1c97ef35\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"date\":\"2026-08-31T00:00:00.000\",\"recurringTemplateId\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"27910dde-eb27-4292-ac88-2b796b79e308\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"date\":\"2026-07-15T00:00:00.000\",\"recurringTemplateId\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"d7463a8b-811d-4614-9cd5-9b145c986106\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"date\":\"2026-08-15T00:00:00.000\",\"recurringTemplateId\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"},{\"id\":\"7c24b23d-aa9a-4727-ad32-addf7b53c539\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"date\":\"2026-09-15T00:00:00.000\",\"recurringTemplateId\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"tagIds\":[],\"createdAt\":\"2026-09-28T09:15:30.250125\",\"updatedAt\":\"2026-09-28T09:15:30.250125\"}],\"netWorthEntries\":[{\"id\":\"003af403-e982-4ffd-b56d-d751147b29bd\",\"name\":\"Checking\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":2500.0},{\"recordedAt\":\"2026-02-28T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":2750.25},{\"recordedAt\":\"2026-04-10T11:05:08.043243\",\"amount\":3100.0},{\"recordedAt\":\"2026-04-10T11:05:09.044477\",\"amount\":3150.0}]},{\"id\":\"17c66198-527e-47c0-a502-9d89f8d69938\",\"name\":\"Mortgage\",\"type\":\"liability\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-01-31T23:59:59.999\",\"amount\":250000.0}]},{\"id\":\"52eeba53-a308-4917-89a7-b66dde936314\",\"name\":\"Brokerage\",\"type\":\"asset\",\"createdAt\":\"2026-04-10T11:05:07.042009\",\"snapshots\":[{\"recordedAt\":\"2026-02-14T16:30:00.000007\",\"amount\":10000.5},{\"recordedAt\":\"2026-03-31T23:59:59.999\",\"amount\":10000.5}]}],\"selectedNetWorthMonth\":\"2026-02-01T00:00:00.000\",\"categoryBudgetLimits\":{\"Groceries\":400.0,\"Eating Out\":150.5,\"Pet Food\":60.0},\"savingsGoals\":[{\"id\":\"savings_goal_hmgvakxrll_0\",\"name\":\"Vacation\",\"targetAmount\":3000.0,\"currentAmount\":500.0,\"targetDate\":\"2026-12-20T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:28.034553\",\"completedAt\":null},{\"id\":\"savings_goal_hmgvalj85n_1\",\"name\":\"Emergency\",\"targetAmount\":1000.0,\"currentAmount\":1000.0,\"targetDate\":\"2027-06-01T00:00:00.000\",\"createdAt\":\"2026-09-20T08:00:29.035787\",\"completedAt\":\"2026-09-20T08:00:31.038255\"}],\"recurringTransactions\":[{\"id\":\"abd205c1-fe85-42f8-805a-d53494e38e7f\",\"type\":\"expense\",\"description\":\"Gym\",\"amount\":45.0,\"category\":\"Health\",\"pattern\":\"weekly\",\"startDate\":\"2026-02-22T00:00:00.000\",\"nextOccurrence\":\"2026-10-04T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":7,\"isActive\":true},{\"id\":\"b9e883f7-ee58-488a-9aba-fb1dc32158ff\",\"type\":\"income\",\"description\":\"Paycheck\",\"amount\":1850.0,\"category\":\"Salary\",\"pattern\":\"biweekly\",\"startDate\":\"2026-02-23T00:00:00.000\",\"nextOccurrence\":\"2026-10-05T01:00:00.000\",\"dayOfMonth\":null,\"dayOfWeek\":1,\"isActive\":true},{\"id\":\"0bec6a6f-1365-4750-9e41-08d2d265a7ad\",\"type\":\"expense\",\"description\":\"Rent (recurring)\",\"amount\":1500.0,\"category\":\"Housing\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-31T00:00:00.000\",\"nextOccurrence\":\"2026-09-30T00:00:00.000\",\"dayOfMonth\":31,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"e6913af7-ecdd-4044-bf93-45e2fa08c273\",\"type\":\"expense\",\"description\":\"Streaming\",\"amount\":15.99,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-03-15T14:32:11.123456\",\"nextOccurrence\":\"2026-10-15T00:00:00.000\",\"dayOfMonth\":15,\"dayOfWeek\":null,\"isActive\":true},{\"id\":\"2e705578-eea5-4f94-9750-c05a8fab58ff\",\"type\":\"expense\",\"description\":\"Paused magazine\",\"amount\":9.0,\"category\":\"Entertainment\",\"pattern\":\"monthly\",\"startDate\":\"2026-01-05T00:00:00.000\",\"nextOccurrence\":\"2026-01-05T00:00:00.000\",\"dayOfMonth\":5,\"dayOfWeek\":null,\"isActive\":false}],\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pet-food\",\"type\":\"expense\",\"name\":\"Pet Food\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":13,\"isArchived\":false,\"isBuiltIn\":false},{\"id\":\"income-side-gig\",\"type\":\"income\",\"name\":\"Side Gig ✨\",\"iconIdentifier\":\"wrench\",\"colorToken\":\"orange\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":false}],\"transactionTags\":[{\"id\":\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\",\"name\":\"Work\",\"colorToken\":\"accent\"},{\"id\":\"95f0cf2f-94e0-4050-b4f2-4a1d899f196d\",\"name\":\"Vacation 🏖️\",\"colorToken\":\"cyan\"}],\"categorizationRules\":[{\"id\":\"3e138a83-9b34-48f4-ab28-e1bfee2a02c8\",\"merchantPattern\":\"Starbucks\",\"matchType\":\"contains\",\"transactionType\":\"expense\",\"minimumAmount\":null,\"maximumAmount\":20.0,\"category\":\"Eating Out\",\"tagIds\":[\"a473ff7b-b3cd-4899-a04d-ea0fbd30a72e\"],\"priority\":2,\"isEnabled\":true},{\"id\":\"efc11174-1bec-487d-ab07-4c4f1e3977a5\",\"merchantPattern\":\"ACME PAYROLL\",\"matchType\":\"startsWith\",\"transactionType\":\"income\",\"minimumAmount\":1000.0,\"maximumAmount\":null,\"category\":\"Salary\",\"tagIds\":[],\"priority\":0,\"isEnabled\":true},{\"id\":\"afc57701-bd6d-4217-bd43-801f7339a1fa\",\"merchantPattern\":\"rent\",\"matchType\":\"exact\",\"transactionType\":null,\"minimumAmount\":null,\"maximumAmount\":null,\"category\":\"Housing\",\"tagIds\":[],\"priority\":0,\"isEnabled\":false}],\"appSettings\":{\"baseCurrencyCode\":\"EUR\",\"localeOverride\":\"de_DE\",\"appLockEnabled\":true,\"autoLockTimeoutSeconds\":300,\"hideBalances\":false}}"
+  },
+  "revisionAfterGenerate": 38,
+  "filesAfterGenerate": {
+    "financial_store_v2.backup.json": {
+      "size": 14911,
+      "fnv": "0e7256cdfde93e20"
+    },
+    "financial_store_v2.json": {
+      "size": 14911,
+      "fnv": "75ac6e40a323db4c"
+    }
+  }
+}

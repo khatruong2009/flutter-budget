@@ -1,0 +1,3965 @@
+{
+  "tz": "America/New_York",
+  "rules": "[{\"id\":\"r1\",\"merchantPattern\":\"coffee\",\"matchType\":\"contains\",\"transactionType\":\"expense\",\"category\":\"Eating Out\",\"priority\":0},{\"id\":\"r2\",\"merchantPattern\":\"  Star  \",\"matchType\":\"startsWith\",\"category\":\"Eating Out\",\"priority\":5,\"tagIds\":[\"t1\"]},{\"id\":\"r3\",\"merchantPattern\":\"rent\",\"matchType\":\"exact\",\"minimumAmount\":1000,\"maximumAmount\":2000.0,\"category\":\"Housing\",\"priority\":1},{\"id\":\"r4\",\"merchantPattern\":\"coffee\",\"category\":\"Groceries\",\"priority\":10,\"isEnabled\":false},{\"id\":\"r5\",\"merchantPattern\":\"   \",\"category\":\"General\",\"priority\":100},{\"id\":\"r6\",\"merchantPattern\":\"salary\",\"transactionType\":\"income\",\"category\":\"Salary\"},{\"id\":\"r7\",\"merchantPattern\":\"Café\",\"matchType\":\"contains\",\"category\":\"Eating Out\",\"priority\":0},{\"id\":\"r8\",\"merchantPattern\":\"İstanbul\",\"matchType\":\"startsWith\",\"category\":\"Travel\",\"priority\":0},{\"id\":\"r9\",\"merchantPattern\":\"shop\",\"matchType\":\"fuzzy\",\"category\":\"Clothing\",\"priority\":0},{\"id\":\"r10\",\"merchantPattern\":\"shop\",\"minimumAmount\":5.5,\"category\":\"Gift\",\"priority\":2},{\"id\":\"r11\",\"merchantPattern\":\"shop\",\"maximumAmount\":5.5,\"category\":\"Pets\",\"priority\":2},{\"id\":\"r12\",\"merchantPattern\":\"gas\",\"transactionType\":\"bogus\",\"category\":\"Transportation\",\"priority\":0},{\"id\":\"r13\",\"merchantPattern\":\"gas\",\"category\":\"Travel\",\"priority\":3.7},{\"id\":\"r14\",\"merchantPattern\":\"uber\",\"category\":\"Transportation\",\"priority\":-1},{\"id\":\"r15\",\"merchantPattern\":\"COFFEE\",\"matchType\":\"exact\",\"category\":\"Groceries\",\"priority\":0}]",
+  "sortedIds": [
+    "r5",
+    "r4",
+    "r2",
+    "r13",
+    "r10",
+    "r11",
+    "r3",
+    "r1",
+    "r6",
+    "r7",
+    "r8",
+    "r9",
+    "r12",
+    "r15",
+    "r14"
+  ],
+  "queries": [
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "0000000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "4016000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "408f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "409f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "Coffee shop",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "0000000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "4016000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "  COFFEE  ",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "0000000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "4016000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "408f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "409f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "coffee",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "Starbucks",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "starbucks",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": " star",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "st",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "408f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "409f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "rent",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "income",
+      "description": "Rent ",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "rent payment",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "0000000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "4016000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "408f400000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "409f400000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "Café au lait",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "İSTANBUL kebab",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "istanbul",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "ISTANBUL",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "0000000000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "4016000000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "408f400000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "409f400000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "salary sept",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r6"
+      ],
+      "suggestion": "r6"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "0000000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "4016000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "408f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "409f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "shop",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "0000000000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "4016000000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "408f400000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "409f400000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "gas station",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "   ",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "0000000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "4016000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "408f400000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "409f400000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "uber eats",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "0000000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "4016000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "﻿coffee ",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r15"
+      ],
+      "suggestion": "r15"
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "income",
+      "description": "​coffee",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "0000000000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "4016000000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r1",
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "408f400000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r1",
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "409f400000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r1",
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "Coffee shop",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r1",
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "0000000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "4016000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "  COFFEE  ",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "0000000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "4016000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "408f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "409f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "coffee",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "Starbucks",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "starbucks",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "0000000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "4016000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "408f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "409f400000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": " star",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r2"
+      ],
+      "suggestion": "r2"
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "st",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "408f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "409f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "rent",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r3"
+      ],
+      "suggestion": "r3"
+    },
+    {
+      "type": "expense",
+      "description": "Rent ",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "rent payment",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "0000000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "4016000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "408f400000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "409f400000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r7"
+      ],
+      "suggestion": "r7"
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "Café au lait",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "İSTANBUL kebab",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "istanbul",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "0000000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "4016000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "408f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "409f400000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "ISTANBUL",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r8"
+      ],
+      "suggestion": "r8"
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "salary sept",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "0000000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "4016000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "408f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "409f400000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r9",
+        "r11"
+      ],
+      "suggestion": "r11"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r9",
+        "r10",
+        "r11"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "shop",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r9",
+        "r10"
+      ],
+      "suggestion": "r10"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "0000000000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "4016000000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "408f400000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "409f400000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "gas station",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r12",
+        "r13"
+      ],
+      "suggestion": "r13"
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "0000000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "4016000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "408f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "408f3feb851eb852",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "409f400000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "bff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "fff8000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "   ",
+      "amount": "7ff0000000000000",
+      "matches": [],
+      "suggestion": null
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "0000000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "4016000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "408f400000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "409f400000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "uber eats",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r14"
+      ],
+      "suggestion": "r14"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "0000000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "4016000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "408f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "409f400000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "﻿coffee ",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r1",
+        "r15"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "0000000000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "4016000000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "4015ffe5c91d14e4",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "408f400000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "408f3feb851eb852",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "409f400000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "409f400a3d70a3d7",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "bff0000000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "fff8000000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    },
+    {
+      "type": "expense",
+      "description": "​coffee",
+      "amount": "7ff0000000000000",
+      "matches": [
+        "r1"
+      ],
+      "suggestion": "r1"
+    }
+  ]
+}

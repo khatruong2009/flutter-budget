@@ -1,0 +1,85 @@
+{
+  "commit": "41139b5ea1720d37fe6799bebc47b4e0162d130f",
+  "dartProblems": {
+    "s5-restored": []
+  },
+  "scenarios": {
+    "s5_corruption": {
+      "blockedSummaryWritten": false,
+      "bothCorrupt": {
+        "files": [
+          "financial_store_v2.backup.json.corrupt-1790793919560",
+          "financial_store_v2.json.corrupt-1790793919560"
+        ],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed"
+        ],
+        "preNativeSnapshots": [
+          "20260930-184519-15efc617"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      },
+      "loadReport": "Optional(BudgieCore.FinancialStore.LoadReport(restoredFromBackup: true, setAside: [], migratedFrom: nil, removedPreferenceKeys: []))",
+      "restoredTransactionCount": 145,
+      "truncatedPrimary": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.onboarding_completed"
+        ],
+        "preNativeSnapshots": [
+          "20260930-184334-ea1b404a"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      }
+    },
+    "s6_malformed_legacy": {
+      "envelope": {
+        "files": [],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.financial_store_v1",
+          "flutter.onboarding_completed"
+        ],
+        "preNativeSnapshots": [
+          "20260930-184807-b7169f28"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      },
+      "ledger": {
+        "files": [],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed",
+          "flutter.transactions"
+        ],
+        "preNativeSnapshots": [
+          "20260930-184641-f0460283"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      }
+    }
+  },
+  "simulator": {
+    "name": "Budgie-Migration-Audit",
+    "udid": "ED5CBC6D-818D-486F-A8A1-1AF963F303C7"
+  },
+  "swiftVsDart": {
+    "s5-restored: Swift vs Flutter models on the same files": []
+  }
+}

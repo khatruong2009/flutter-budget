@@ -1,0 +1,58 @@
+{
+  "transactions": [
+    {
+      "id": "b",
+      "type": "expense",
+      "description": "x",
+      "amount": 1.0,
+      "category": "G",
+      "date": "2026-03-01T00:00:00.000",
+      "recurringTemplateId": null,
+      "tagIds": [],
+      "createdAt": "2026-03-01T09:00:00.000",
+      "updatedAt": "2026-03-01T09:00:00.000"
+    },
+    {
+      "id": "a",
+      "type": "expense",
+      "description": "x",
+      "amount": 1.0,
+      "category": "G",
+      "date": "2026-03-01T23:00:00.000",
+      "recurringTemplateId": null,
+      "tagIds": [],
+      "createdAt": "2026-03-01T09:00:00.000",
+      "updatedAt": "2026-03-01T09:00:00.000"
+    },
+    {
+      "id": "c",
+      "type": "expense",
+      "description": "x",
+      "amount": 1.0,
+      "category": "G",
+      "date": "2026-02-28T23:30:00.000",
+      "recurringTemplateId": null,
+      "tagIds": [],
+      "createdAt": "2026-03-02T00:00:00.000",
+      "updatedAt": "2026-03-02T00:00:00.000"
+    },
+    {
+      "id": "d",
+      "type": "expense",
+      "description": "x",
+      "amount": 1.0,
+      "category": "G",
+      "date": "2026-03-01T00:00:00.000",
+      "recurringTemplateId": null,
+      "tagIds": [],
+      "createdAt": "2026-03-01T10:00:00.000",
+      "updatedAt": "2026-03-01T10:00:00.000"
+    }
+  ],
+  "newestFirst": [
+    "d",
+    "b",
+    "a",
+    "c"
+  ]
+}

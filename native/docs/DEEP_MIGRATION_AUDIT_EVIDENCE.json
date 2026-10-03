@@ -1,0 +1,133 @@
+{
+  "baseCommit": "f38383f6aa2894854617bb2ca29f7928f9faad6d",
+  "localChangesIncluded": true,
+  "physicalDeviceAccessed": false,
+  "personalFinancialDataAccessed": false,
+  "actualDistributionArchiveVerified": false,
+  "checks": {
+    "swift-final": [
+      "\u2714 Test run with 398 tests in 73 suites passed after 107.751 seconds."
+    ],
+    "release": [
+      "\u2714 Test run with 398 tests in 73 suites passed after 21.414 seconds."
+    ],
+    "app-final": [
+      "\t Executed 124 tests, with 0 failures (0 unexpected) in 32.431 (32.482) seconds",
+      "\t Executed 124 tests, with 0 failures (0 unexpected) in 32.431 (32.483) seconds"
+    ],
+    "flutter-analyze": [
+      "No issues found! (ran in 12.5s)"
+    ],
+    "flutter-tests": [
+      "00:24 +390: All tests passed!"
+    ]
+  },
+  "compatibility": [
+    {
+      "zone": "America/New_York",
+      "reportCaseCount": 68,
+      "storeCases": 66,
+      "insightWidgetCases": 2,
+      "problems": {},
+      "swiftComparisonPassed": true
+    },
+    {
+      "zone": "America/Santiago",
+      "reportCaseCount": 68,
+      "storeCases": 66,
+      "insightWidgetCases": 2,
+      "problems": {},
+      "swiftComparisonPassed": true
+    },
+    {
+      "zone": "Asia/Beirut",
+      "reportCaseCount": 68,
+      "storeCases": 66,
+      "insightWidgetCases": 2,
+      "problems": {},
+      "swiftComparisonPassed": true
+    }
+  ],
+  "sourceSha256": {
+    "native/Budgie/App/AppModel.swift": "a768e9e10a553db7ab4ccfafbdd4a87c6ab7b0119a9b9e625b696f6e85968721",
+    "native/BudgieCore/Sources/BudgieCore/Domain/FinancialData.swift": "9b5e23738c000ebacb1f567b314b38a599dc3140c2dffb636fbeba3750572f4c",
+    "native/BudgieCore/Sources/BudgieCore/Store/FinancialStore.swift": "8bbf9bf91a9aaaddcfb802ab89e1a6e5647b7758905f0fb5131ea68a14fbef68",
+    "native/BudgieCore/Sources/BudgieCore/Store/StoreFile.swift": "4d960a9a2fe1374e7d5a5c1e99393063d15d12d45aa0a2ecb1aaad5cccf63ddf",
+    "native/BudgieCore/Sources/BudgieCore/Store/StoreFileSystem.swift": "0a9d6d507a8678777ef80ec32a445e963d2356699666cd010ab42e71cd84e065",
+    "native/BudgieCore/Tests/BudgieCoreTests/DeepMigrationSafetyTests.swift": "ef84a88eed04533fcdc7f6b192a3454b16189da9119215e992ede3d393da3d34",
+    "native/BudgieAppTests/DataTransferModelTests.swift": "cc94ab20560980e82a16eac6f350b9338cdea5e23dc179ed994f2526c85f8a25",
+    "native/scripts/verify_upgrade_preservation.py": "d8ac273cdb425ad8ff6d670b500fdc6a176204fce214a523f59a280a0653ea9c"
+  },
+  "archiveIdentity": {
+    "archiveCount": 55,
+    "archive": "/Users/khatruong/Library/Developer/Xcode/Archives/2026-09-27/Runner 9-27-26, 10.00\u202fPM.xcarchive",
+    "bundle": "com.khatruong.budgetbuddy",
+    "version": "3.4.0",
+    "build": "1",
+    "team": "TJ37GFZKW2",
+    "reportedEntitlements": "[Dict]\n\t[Key] application-identifier\n\t[Value]\n\t\t[String] TJ37GFZKW2.com.khatruong.budgetbuddy\n\t[Key] com.apple.developer.team-identifier\n\t[Value]\n\t\t[String] TJ37GFZKW2\n\t[Key] com.apple.security.application-groups\n\t[Value]\n\t\t[Array]\n\t\t\t[String] group.com.khatruong.budgetbuddy\n\t[Key] get-task-allow\n\t[Value]\n\t\t[Bool] true\n",
+    "actualDistributionArchiveVerified": false,
+    "localArchiveSignatureVerificationExitCode": 1,
+    "localArchiveSignatureVerificationMessage": "/Users/khatruong/Library/Developer/Xcode/Archives/2026-09-27/Runner 9-27-26, 10.00\u202fPM.xcarchive/Products/Applications/Runner.app: CSSMERR_TP_NOT_TRUSTED\nIn architecture: arm64\n"
+  },
+  "reproducedBeforeFix": {
+    "coreTestsFailed": 4,
+    "coreIssues": 17,
+    "bootstrapSectionTypeFailures": 10
+  },
+  "releaseOutputCompatibility": {
+    "reportCaseCount": 68,
+    "storeCases": 66,
+    "problems": {},
+    "swiftComparisonPassed": true
+  },
+  "rehearsalBinary": {
+    "bundleIdentifier": "com.khatruong.budgetbuddy",
+    "version": "4.0.0",
+    "build": "1",
+    "configuration": "Debug simulator, ad hoc signing, empty voice key",
+    "executableSha256": "2d3b56deb5605f69938deea468a2712340c35fbc1e9574dc5dd9031839a81532"
+  },
+  "installedUpgrade": {
+    "report": "rehearsal/20260930-195723/report.json",
+    "preservationAudit": "rehearsal/20260930-195723/preservation-audit.json",
+    "scenariosPassed": [
+      "s1_typical_roundtrip",
+      "s3_legacy_only",
+      "s4_locked_launch",
+      "s5_corruption",
+      "s6_malformed_legacy"
+    ],
+    "preservationChecksPassed": 66,
+    "preservationIssues": [],
+    "dartProblems": {
+      "1-flutter": [],
+      "2-swift": [],
+      "3-swift-edited": [],
+      "4-flutter-back": [],
+      "s3-flutter-back": [],
+      "s3-swift": [],
+      "s4-after": [],
+      "s5-restored": []
+    },
+    "swiftVsDart": {
+      "2-swift (Swift) vs 1-flutter (Flutter)": [],
+      "2-swift: Swift vs Flutter models on the same files": [],
+      "3-swift-edited (Swift) vs 4-flutter-back (Flutter)": [],
+      "3-swift-edited: Swift vs Flutter models on the same files": [],
+      "s3-swift (Swift) vs s3-flutter-back (Flutter)": [],
+      "s3-swift: Swift vs Flutter models on the same files": [],
+      "s4-after: Swift vs Flutter models on the same files": [],
+      "s5-restored: Swift vs Flutter models on the same files": []
+    },
+    "simulatedLock": {
+      "firstWriteSecondsAfterLaunch": {
+        "preNative": 20.1,
+        "store": 20.6,
+        "summary": 20.6
+      },
+      "lockSeconds": 15,
+      "nothingWrittenWhileLocked": true
+    }
+  }
+}

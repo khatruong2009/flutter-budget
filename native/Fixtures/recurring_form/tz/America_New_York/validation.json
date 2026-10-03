@@ -1,0 +1,6412 @@
+{
+  "tz": "America/New_York",
+  "cases": [
+    {
+      "label": "amount \"\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount is required",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \" \"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": " ",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"abc\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "abc",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"1,5\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1,5",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"NaN\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "NaN",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": "non-finite",
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "7ff8000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "7ff8000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"Infinity\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "Infinity",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": "non-finite",
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "7ff0000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "7ff0000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"-Infinity\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "-Infinity",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"1e400\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1e400",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": "non-finite",
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "7ff0000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "7ff0000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"0\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "0",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"-5\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "-5",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"-0\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "-0",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"0.00\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "0.00",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"12.50\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "12.50",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 12.5,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4029000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4029000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \" 12 \"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": " 12 ",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 12.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4028000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4028000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \".5\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": ".5",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.5,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3fe0000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "3fe0000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"5.\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "5.",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 5.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4014000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4014000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"1e3\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1e3",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1000.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408f400000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "408f400000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"0x10\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "0x10",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"+5\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "+5",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 5.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4014000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4014000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"1_000\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1_000",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"١٢\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "١٢",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"1.2.3\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1.2.3",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"$5\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "$5",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": "Please enter a valid number",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "amount \"0.001\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "0.001",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.001,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3f50624dd2f1a9fc",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "3f50624dd2f1a9fc",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"1e-7\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1e-7",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1e-7,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3e7ad7f29abcaf48",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "3e7ad7f29abcaf48",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"1e21\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "1e21",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1e+21,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "444b1ae4d6e2ef50",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "444b1ae4d6e2ef50",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"0.1\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "0.1",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.1,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3fb999999999999a",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "3fb999999999999a",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "amount \"100\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "100",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 100.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4059000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4059000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "description \"\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": "Description is required",
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "description \" \"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": " ",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": "Description is required",
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "description \"﻿ \\n\\t\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "﻿ \n\t",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": "Description is required",
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "description \" \"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": " ",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": "Description is required",
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "description \" x \"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": " x ",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "x",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4024000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4024000000000000",
+          "description": "x"
+        }
+      ]
+    },
+    {
+      "label": "description \"  Rent ﻿\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "  Rent ﻿",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4024000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4024000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "description \"​\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "​",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "​",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4024000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4024000000000000",
+          "description": "​"
+        }
+      ]
+    },
+    {
+      "label": "description \"\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": "Description is required",
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "description \"x\"",
+      "mode": "add",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Expense",
+      "amountText": "10",
+      "descriptionText": "x",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "expense",
+        "description": "x",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4024000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4024000000000000",
+          "description": "x"
+        }
+      ]
+    },
+    {
+      "label": "all three",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "",
+      "descriptionText": " ",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2024-01-15T00:00:00.000",
+        "nextOccurrence": "2024-01-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2024-01-15T00:00:00.000",
+        "us": 1705294800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": "Amount is required",
+      "descriptionError": "Description is required",
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "edit prefill 0 12.345",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "12.35",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 12.345,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 12.35,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4028b33333333333",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit prefill 1 0.001",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "0.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.001,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": "Amount must be greater than 0",
+      "descriptionError": null,
+      "startError": null,
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "edit prefill 2 1e+21",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "1e+21",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1e+21,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1e+21,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "444b1ae4d6e2ef50",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit prefill 3 0.30000000000000004",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "0.30",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.30000000000000004,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.3,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3fd3333333333333",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit prefill 4 100.0",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "100.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 100.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 100.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4059000000000000",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit prefill 5 1234.5",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "1234.50",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1234.5,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 1234.5,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "40934a0000000000",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit prefill 6 0.005",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "0.01",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.005,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 0.01,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "3f847ae147ae147b",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit weekly",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "weekly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 3,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfWeek",
+        "value": 3
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "weekly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 3,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit biweekly",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "biweekly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 1,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfWeek",
+        "value": 1
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "biweekly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 1,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit monthly day 31",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-01-31T00:00:00.000",
+        "nextOccurrence": "2026-01-31T00:00:00.000",
+        "dayOfMonth": 31,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-01-31T00:00:00.000",
+        "us": 1769835600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 31
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-01-31T00:00:00.000",
+        "nextOccurrence": "2026-01-31T00:00:00.000",
+        "dayOfMonth": 31,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-01-31T00:00:00.000",
+        "us": 1769835600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "edit income",
+      "mode": "edit",
+      "type": "income",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Income",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "income",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Salary",
+        "pattern": "monthly",
+        "startDate": "2026-06-15T00:00:00.000",
+        "nextOccurrence": "2026-06-15T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-06-15T00:00:00.000",
+        "us": 1781496000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "add income",
+      "mode": "add",
+      "type": "income",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Add Recurring Income",
+      "amountText": "10",
+      "descriptionText": "Rent",
+      "template": null,
+      "templateStart": null,
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 28
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "<new>",
+        "type": "income",
+        "description": "Rent",
+        "amount": 10.0,
+        "category": "Salary",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 28,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "4024000000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": [
+        {
+          "date": {
+            "iso": "2026-09-28T09:15:30.250125",
+            "us": 1790601330250125
+          },
+          "recurringTemplateId": "<new>",
+          "amount": "4024000000000000",
+          "description": "Rent"
+        }
+      ]
+    },
+    {
+      "label": "start floor @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:30.250125",
+        "nextOccurrence": "2025-09-28T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T09:15:30.250125",
+        "us": 1759065330250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:30.250125",
+        "nextOccurrence": "2025-09-28T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T09:15:30.250125",
+        "us": 1759065330250125
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:30.250124",
+        "nextOccurrence": "2025-09-28T09:15:30.250124",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T09:15:30.250124",
+        "us": 1759065330250124
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:30.250126",
+        "nextOccurrence": "2025-09-28T09:15:30.250126",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T09:15:30.250126",
+        "us": 1759065330250126
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:30.250126",
+        "nextOccurrence": "2025-09-28T09:15:30.250126",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T09:15:30.250126",
+        "us": 1759065330250126
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T08:15:30.250125",
+        "nextOccurrence": "2025-09-28T08:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T08:15:30.250125",
+        "us": 1759061730250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T10:15:30.250125",
+        "nextOccurrence": "2025-09-28T10:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T10:15:30.250125",
+        "us": 1759068930250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T10:15:30.250125",
+        "nextOccurrence": "2025-09-28T10:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T10:15:30.250125",
+        "us": 1759068930250125
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 day @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-27T09:15:30.250125",
+        "nextOccurrence": "2025-09-27T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-27T09:15:30.250125",
+        "us": 1758978930250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 day @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T09:15:30.250125",
+        "nextOccurrence": "2025-09-29T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-29T09:15:30.250125",
+        "us": 1759151730250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T09:15:30.250125",
+        "nextOccurrence": "2025-09-29T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-29T09:15:30.250125",
+        "us": 1759151730250125
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T09:15:00.000",
+        "nextOccurrence": "2025-09-28T09:15:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T09:15:00.000",
+        "us": 1759065300000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T00:00:00.000",
+        "nextOccurrence": "2025-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-29T00:00:00.000",
+        "us": 1759118400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T00:00:00.000",
+        "nextOccurrence": "2025-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-29T00:00:00.000",
+        "us": 1759118400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start now @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-09-28T09:15:30.250125",
+        "nextOccurrence": "2026-09-28T09:15:30.250125",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "generated": null
+    },
+    {
+      "label": "start tomorrow @ launch",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-09-29T00:00:00.000",
+        "nextOccurrence": "2026-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2026-09-29T00:00:00.000",
+        "us": 1790654400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2026-09-29T00:00:00.000",
+        "nextOccurrence": "2026-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2026-09-29T00:00:00.000",
+        "us": 1790654400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000",
+        "nextOccurrence": "2025-09-06T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:30:00.000",
+        "us": 1757133000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000",
+        "nextOccurrence": "2025-09-06T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-06T00:30:00.000",
+        "us": 1757133000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:29:59.999999",
+        "nextOccurrence": "2025-09-06T00:29:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:29:59.999999",
+        "us": 1757132999999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000001",
+        "nextOccurrence": "2025-09-06T00:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:30:00.000001",
+        "us": 1757133000000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000001",
+        "nextOccurrence": "2025-09-06T00:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-06T00:30:00.000001",
+        "us": 1757133000000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-05T23:30:00.000",
+        "nextOccurrence": "2025-09-05T23:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-05T23:30:00.000",
+        "us": 1757129400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T01:30:00.000",
+        "nextOccurrence": "2025-09-06T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T01:30:00.000",
+        "us": 1757136600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T01:30:00.000",
+        "nextOccurrence": "2025-09-06T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-06T01:30:00.000",
+        "us": 1757136600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:00:00.000",
+        "nextOccurrence": "2025-09-06T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:00:00.000",
+        "us": 1757131200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000",
+        "nextOccurrence": "2025-09-06T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:30:00.000",
+        "us": 1757133000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:30:00.000",
+        "nextOccurrence": "2025-09-06T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-06T00:30:00.000",
+        "us": 1757133000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-06T00:00:00.000",
+        "nextOccurrence": "2025-09-06T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-06T00:00:00.000",
+        "us": 1757131200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ Santiago gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788669000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-07T00:00:00.000",
+        "nextOccurrence": "2025-09-07T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-07T00:00:00.000",
+        "us": 1757217600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-07T00:00:00.000",
+        "nextOccurrence": "2025-09-07T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-07T00:00:00.000",
+        "us": 1757217600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000",
+        "nextOccurrence": "2025-04-04T23:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T23:30:00.000",
+        "us": 1743823800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000",
+        "nextOccurrence": "2025-04-04T23:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-04T23:30:00.000",
+        "us": 1743823800000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:29:59.999999",
+        "nextOccurrence": "2025-04-04T23:29:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T23:29:59.999999",
+        "us": 1743823799999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000001",
+        "nextOccurrence": "2025-04-04T23:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T23:30:00.000001",
+        "us": 1743823800000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000001",
+        "nextOccurrence": "2025-04-04T23:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-04T23:30:00.000001",
+        "us": 1743823800000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T22:30:00.000",
+        "nextOccurrence": "2025-04-04T22:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T22:30:00.000",
+        "us": 1743820200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:30:00.000",
+        "nextOccurrence": "2025-04-05T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T00:30:00.000",
+        "us": 1743827400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:30:00.000",
+        "nextOccurrence": "2025-04-05T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T00:30:00.000",
+        "us": 1743827400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T00:00:00.000",
+        "nextOccurrence": "2025-04-04T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T00:00:00.000",
+        "us": 1743739200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000",
+        "nextOccurrence": "2025-04-04T23:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T23:30:00.000",
+        "us": 1743823800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T23:30:00.000",
+        "nextOccurrence": "2025-04-04T23:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-04T23:30:00.000",
+        "us": 1743823800000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-04T00:00:00.000",
+        "nextOccurrence": "2025-04-04T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-04T00:00:00.000",
+        "us": 1743739200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ Santiago fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775359800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:00:00.000",
+        "nextOccurrence": "2025-04-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T00:00:00.000",
+        "us": 1743825600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:00:00.000",
+        "nextOccurrence": "2025-04-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T00:00:00.000",
+        "us": 1743825600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T02:30:00.000",
+        "nextOccurrence": "2025-03-08T02:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T02:30:00.000",
+        "us": 1741419000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T02:30:00.000",
+        "nextOccurrence": "2025-03-08T02:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-03-08T02:30:00.000",
+        "us": 1741419000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T02:29:59.999999",
+        "nextOccurrence": "2025-03-08T02:29:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T02:29:59.999999",
+        "us": 1741418999999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T02:30:00.000001",
+        "nextOccurrence": "2025-03-08T02:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T02:30:00.000001",
+        "us": 1741419000000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T02:30:00.000001",
+        "nextOccurrence": "2025-03-08T02:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-03-08T02:30:00.000001",
+        "us": 1741419000000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T01:30:00.000",
+        "nextOccurrence": "2025-03-08T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T01:30:00.000",
+        "us": 1741415400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T03:30:00.000",
+        "nextOccurrence": "2025-03-08T03:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T03:30:00.000",
+        "us": 1741422600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T03:30:00.000",
+        "nextOccurrence": "2025-03-08T03:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-03-08T03:30:00.000",
+        "us": 1741422600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T00:00:00.000",
+        "nextOccurrence": "2025-03-08T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T00:00:00.000",
+        "us": 1741410000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T03:30:00.000",
+        "nextOccurrence": "2025-03-08T03:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T03:30:00.000",
+        "us": 1741422600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T03:30:00.000",
+        "nextOccurrence": "2025-03-08T03:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-03-08T03:30:00.000",
+        "us": 1741422600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-08T00:00:00.000",
+        "nextOccurrence": "2025-03-08T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-08T00:00:00.000",
+        "us": 1741410000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ New York gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772955000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-09T00:00:00.000",
+        "nextOccurrence": "2025-03-09T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-03-09T00:00:00.000",
+        "us": 1741496400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-03-09T00:00:00.000",
+        "nextOccurrence": "2025-03-09T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-03-09T00:00:00.000",
+        "us": 1741496400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000",
+        "nextOccurrence": "2025-11-01T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T01:30:00.000",
+        "us": 1761975000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000",
+        "nextOccurrence": "2025-11-01T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-11-01T01:30:00.000",
+        "us": 1761975000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:29:59.999999",
+        "nextOccurrence": "2025-11-01T01:29:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T01:29:59.999999",
+        "us": 1761974999999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000001",
+        "nextOccurrence": "2025-11-01T01:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T01:30:00.000001",
+        "us": 1761975000000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000001",
+        "nextOccurrence": "2025-11-01T01:30:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-11-01T01:30:00.000001",
+        "us": 1761975000000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T00:30:00.000",
+        "nextOccurrence": "2025-11-01T00:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T00:30:00.000",
+        "us": 1761971400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T02:30:00.000",
+        "nextOccurrence": "2025-11-01T02:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T02:30:00.000",
+        "us": 1761978600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T02:30:00.000",
+        "nextOccurrence": "2025-11-01T02:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-11-01T02:30:00.000",
+        "us": 1761978600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T00:00:00.000",
+        "nextOccurrence": "2025-11-01T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T00:00:00.000",
+        "us": 1761969600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000",
+        "nextOccurrence": "2025-11-01T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T01:30:00.000",
+        "us": 1761975000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T01:30:00.000",
+        "nextOccurrence": "2025-11-01T01:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-11-01T01:30:00.000",
+        "us": 1761975000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-01T00:00:00.000",
+        "nextOccurrence": "2025-11-01T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-01T00:00:00.000",
+        "us": 1761969600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ New York fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793511000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-02T00:00:00.000",
+        "nextOccurrence": "2025-11-02T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-11-02T00:00:00.000",
+        "us": 1762056000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-11-02T00:00:00.000",
+        "nextOccurrence": "2025-11-02T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-11-02T00:00:00.000",
+        "us": 1762056000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000",
+        "nextOccurrence": "2025-10-04T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T02:45:00.000",
+        "us": 1759560300000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000",
+        "nextOccurrence": "2025-10-04T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-10-04T02:45:00.000",
+        "us": 1759560300000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:44:59.999999",
+        "nextOccurrence": "2025-10-04T02:44:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T02:44:59.999999",
+        "us": 1759560299999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000001",
+        "nextOccurrence": "2025-10-04T02:45:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T02:45:00.000001",
+        "us": 1759560300000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000001",
+        "nextOccurrence": "2025-10-04T02:45:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-10-04T02:45:00.000001",
+        "us": 1759560300000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T01:45:00.000",
+        "nextOccurrence": "2025-10-04T01:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T01:45:00.000",
+        "us": 1759556700000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T03:45:00.000",
+        "nextOccurrence": "2025-10-04T03:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T03:45:00.000",
+        "us": 1759563900000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T03:45:00.000",
+        "nextOccurrence": "2025-10-04T03:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-10-04T03:45:00.000",
+        "us": 1759563900000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T00:00:00.000",
+        "nextOccurrence": "2025-10-04T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T00:00:00.000",
+        "us": 1759550400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000",
+        "nextOccurrence": "2025-10-04T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T02:45:00.000",
+        "us": 1759560300000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T02:45:00.000",
+        "nextOccurrence": "2025-10-04T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-10-04T02:45:00.000",
+        "us": 1759560300000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-04T00:00:00.000",
+        "nextOccurrence": "2025-10-04T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-04T00:00:00.000",
+        "us": 1759550400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ Lord Howe gap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-10-04T02:45:00.000",
+        "us": 1791096300000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-05T00:00:00.000",
+        "nextOccurrence": "2025-10-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-10-05T00:00:00.000",
+        "us": 1759636800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-10-05T00:00:00.000",
+        "nextOccurrence": "2025-10-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-10-05T00:00:00.000",
+        "us": 1759636800000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000",
+        "nextOccurrence": "2025-04-05T01:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T01:45:00.000",
+        "us": 1743831900000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000",
+        "nextOccurrence": "2025-04-05T01:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T01:45:00.000",
+        "us": 1743831900000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:44:59.999999",
+        "nextOccurrence": "2025-04-05T01:44:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T01:44:59.999999",
+        "us": 1743831899999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000001",
+        "nextOccurrence": "2025-04-05T01:45:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T01:45:00.000001",
+        "us": 1743831900000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000001",
+        "nextOccurrence": "2025-04-05T01:45:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T01:45:00.000001",
+        "us": 1743831900000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:45:00.000",
+        "nextOccurrence": "2025-04-05T00:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T00:45:00.000",
+        "us": 1743828300000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T02:45:00.000",
+        "nextOccurrence": "2025-04-05T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T02:45:00.000",
+        "us": 1743835500000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T02:45:00.000",
+        "nextOccurrence": "2025-04-05T02:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T02:45:00.000",
+        "us": 1743835500000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:00:00.000",
+        "nextOccurrence": "2025-04-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T00:00:00.000",
+        "us": 1743825600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000",
+        "nextOccurrence": "2025-04-05T01:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T01:45:00.000",
+        "us": 1743831900000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T01:45:00.000",
+        "nextOccurrence": "2025-04-05T01:45:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-05T01:45:00.000",
+        "us": 1743831900000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-05T00:00:00.000",
+        "nextOccurrence": "2025-04-05T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-05T00:00:00.000",
+        "us": 1743825600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ Lord Howe fold day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-06T00:00:00.000",
+        "nextOccurrence": "2025-04-06T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-04-06T00:00:00.000",
+        "us": 1743912000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-04-06T00:00:00.000",
+        "nextOccurrence": "2025-04-06T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-04-06T00:00:00.000",
+        "us": 1743912000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T12:00:00.000",
+        "nextOccurrence": "2027-03-02T12:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T12:00:00.000",
+        "us": 1804006800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T12:00:00.000",
+        "nextOccurrence": "2027-03-02T12:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2027-03-02T12:00:00.000",
+        "us": 1804006800000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T11:59:59.999999",
+        "nextOccurrence": "2027-03-02T11:59:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T11:59:59.999999",
+        "us": 1804006799999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T12:00:00.000001",
+        "nextOccurrence": "2027-03-02T12:00:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T12:00:00.000001",
+        "us": 1804006800000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T12:00:00.000001",
+        "nextOccurrence": "2027-03-02T12:00:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2027-03-02T12:00:00.000001",
+        "us": 1804006800000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T11:00:00.000",
+        "nextOccurrence": "2027-03-02T11:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T11:00:00.000",
+        "us": 1804003200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T13:00:00.000",
+        "nextOccurrence": "2027-03-02T13:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T13:00:00.000",
+        "us": 1804010400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T13:00:00.000",
+        "nextOccurrence": "2027-03-02T13:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2027-03-02T13:00:00.000",
+        "us": 1804010400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-01T00:00:00.000",
+        "nextOccurrence": "2027-03-01T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-01T00:00:00.000",
+        "us": 1803877200000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-01T12:00:00.000",
+        "nextOccurrence": "2027-03-01T12:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-01T12:00:00.000",
+        "us": 1803920400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-02T00:00:00.000",
+        "nextOccurrence": "2027-03-02T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-02T00:00:00.000",
+        "us": 1803963600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ leap day",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2028-03-01T12:00:00.000",
+        "us": 1835542800000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-03T00:00:00.000",
+        "nextOccurrence": "2027-03-03T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2027-03-03T00:00:00.000",
+        "us": 1804050000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2027-03-03T00:00:00.000",
+        "nextOccurrence": "2027-03-03T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2027-03-03T00:00:00.000",
+        "us": 1804050000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 us @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-27T23:59:59.999999",
+        "nextOccurrence": "2025-09-27T23:59:59.999999",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-27T23:59:59.999999",
+        "us": 1759031999999999
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 us @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000001",
+        "nextOccurrence": "2025-09-28T00:00:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000001",
+        "us": 1759032000000001
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000001",
+        "nextOccurrence": "2025-09-28T00:00:00.000001",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T00:00:00.000001",
+        "us": 1759032000000001
+      },
+      "generated": null
+    },
+    {
+      "label": "start floor - 1 h @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-27T23:00:00.000",
+        "nextOccurrence": "2025-09-27T23:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-27T23:00:00.000",
+        "us": 1759028400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start floor + 1 h @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T01:00:00.000",
+        "nextOccurrence": "2025-09-28T01:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T01:00:00.000",
+        "us": 1759035600000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T01:00:00.000",
+        "nextOccurrence": "2025-09-28T01:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T01:00:00.000",
+        "us": 1759035600000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same day last year @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start same time last year @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight of the floor day @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-28T00:00:00.000",
+        "nextOccurrence": "2025-09-28T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-28T00:00:00.000",
+        "us": 1759032000000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start midnight after the floor day @ midnight",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T00:00:00.000",
+        "us": 1790568000000000
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T00:00:00.000",
+        "nextOccurrence": "2025-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2025-09-29T00:00:00.000",
+        "us": 1759118400000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2025-09-29T00:00:00.000",
+        "nextOccurrence": "2025-09-29T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2025-09-29T00:00:00.000",
+        "us": 1759118400000000
+      },
+      "generated": null
+    },
+    {
+      "label": "start years ago",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2024-03-15T08:30:00.000",
+        "nextOccurrence": "2024-03-15T08:30:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2024-03-15T08:30:00.000",
+        "us": 1710505800000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": false,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": "Start date cannot be more than 1 year in the past",
+      "stored": null,
+      "storedAmount": null,
+      "storedStart": null,
+      "generated": null
+    },
+    {
+      "label": "start far future",
+      "mode": "edit",
+      "type": "expense",
+      "now": {
+        "iso": "2026-09-28T09:15:30.250125",
+        "us": 1790601330250125
+      },
+      "title": "Edit Recurring Expense",
+      "amountText": "900.00",
+      "descriptionText": "Rent",
+      "template": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2030-01-01T00:00:00.000",
+        "nextOccurrence": "2030-01-01T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "templateStart": {
+        "iso": "2030-01-01T00:00:00.000",
+        "us": 1893474000000000
+      },
+      "wheel": {
+        "kind": "dayOfMonth",
+        "value": 15
+      },
+      "closed": true,
+      "amountError": null,
+      "descriptionError": null,
+      "startError": null,
+      "stored": {
+        "id": "edit-1",
+        "type": "expense",
+        "description": "Rent",
+        "amount": 900.0,
+        "category": "Housing",
+        "pattern": "monthly",
+        "startDate": "2030-01-01T00:00:00.000",
+        "nextOccurrence": "2030-01-01T00:00:00.000",
+        "dayOfMonth": 15,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "storedAmount": "408c200000000000",
+      "storedStart": {
+        "iso": "2030-01-01T00:00:00.000",
+        "us": 1893474000000000
+      },
+      "generated": null
+    }
+  ]
+}

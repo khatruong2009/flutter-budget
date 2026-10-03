@@ -1,0 +1,194 @@
+# XcodeGen spec for the native Budgie app (MIGRATION_SPEC 14.0 Q9).
+# Regenerate with: cd native && xcodegen generate
+# Identifiers must stay identical to the Flutter app (MIGRATION_SPEC section 2).
+name: Budgie
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+settings:
+  base:
+    DEVELOPMENT_TEAM: TJ37GFZKW2
+    CODE_SIGN_STYLE: Automatic
+    # Q6 (resolved 2026-09-30): the last upload is 3.4.0 (1) (every Flutter
+    # archive in ~/Library/Developer/Xcode/Archives uses build 1). 4.0.0 is a
+    # new version train, so build 1 is valid; raise it for each re-upload of
+    # 4.0.0.
+    MARKETING_VERSION: "4.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "6.0"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+packages:
+  BudgieCore:
+    path: BudgieCore
+targets:
+  Budgie:
+    type: application
+    platform: iOS
+    sources:
+      - path: Budgie
+    dependencies:
+      - package: BudgieCore
+      - target: BudgetWidgetsExtension
+    configFiles:
+      Debug: Config/Budgie.xcconfig
+      Release: Config/Budgie.xcconfig
+    # Fails Release builds without a real OpenAI key (FULL_APP_PLAN section 6).
+    # Reads only the build-setting env var (no files read, so it works with
+    # ENABLE_USER_SCRIPT_SANDBOXING) and never prints the key. A per-configuration
+    # stamp output plus the two xcconfig inputs let Xcode skip it when neither
+    # changed since the last pass (a failing check writes no stamp, so it re-runs).
+    preBuildScripts:
+      - name: Check OpenAI key
+        # Xcode echoes every exported build setting (the key included) into
+        # the log of a script phase unless this is off.
+        showEnvVars: false
+        inputFiles:
+          - $(SRCROOT)/Config/Budgie.xcconfig
+          - $(SRCROOT)/Config/Secrets.xcconfig
+        outputFiles:
+          - $(DERIVED_FILE_DIR)/openai-key-check-$(CONFIGURATION).stamp
+        script: |
+          if [ "$CONFIGURATION" = "Release" ]; then
+            key="$(printf '%s' "$OPENAI_API_KEY" | tr -d '[:space:]')"
+            if [ -z "$key" ] || [ "$key" = "REPLACE_WITH_OPENAI_API_KEY" ]; then
+              echo "error: OPENAI_API_KEY is empty or still the placeholder. Copy native/Config/Secrets.example.xcconfig to native/Config/Secrets.xcconfig and set a real key (native/docs/FULL_APP_PLAN.md section 6). Release builds require it for voice entry."
+              exit 1
+            fi
+          fi
+          : > "$SCRIPT_OUTPUT_FILE_0"
+    entitlements:
+      path: Budgie/Budgie.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.khatruong.budgetbuddy
+    info:
+      path: Budgie/Info.plist
+      properties:
+        CFBundleDisplayName: Budgie
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.finance
+        LSRequiresIPhoneOS: true
+        CFBundleURLTypes:
+          - CFBundleTypeRole: Editor
+            CFBundleURLName: com.khatruong.budgetbuddy
+            CFBundleURLSchemes: [budgetapp]
+        NSFaceIDUsageDescription: Budgie uses Face ID to protect your financial data when App Lock is enabled.
+        # Flutter's exact string (budget_app/ios/Runner/Info.plist). Voice entry.
+        NSMicrophoneUsageDescription: Budgie uses the microphone so you can add transactions by speaking.
+        # Filled from Config/Budgie.xcconfig (+ gitignored Secrets.xcconfig).
+        OPENAI_API_KEY: $(OPENAI_API_KEY)
+        # Bundled at the app bundle root (spec 01 section 4); OFL texts ship
+        # beside them and show in Settings > About > Licences.
+        UIAppFonts:
+          - Gabarito-Regular.ttf
+          - Gabarito-Medium.ttf
+          - Gabarito-SemiBold.ttf
+          - Gabarito-Bold.ttf
+          - Gabarito-ExtraBold.ttf
+          - SplineSansMono-Regular.ttf
+          - SplineSansMono-Medium.ttf
+          - SplineSansMono-SemiBold.ttf
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        # The Flutter launch storyboard: the 120pt mark centred on #0A0A12,
+        # continuous with OpeningView.
+        UILaunchScreen:
+          UIColorName: launch-screen-background
+          UIImageName: logo
+          UIImageRespectsSafeAreaInsets: false
+        # Same shape as the Flutter app's Info.plist (see BudgieApp.swift).
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy
+        PRODUCT_NAME: Budgie
+        # Scene sessions persist "<module>.SceneDelegate"; must match Flutter's.
+        PRODUCT_MODULE_NAME: Runner
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+  BudgetWidgetsExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: BudgetWidgets
+    entitlements:
+      path: BudgetWidgets/BudgetWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.khatruong.budgetbuddy
+    info:
+      path: BudgetWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Budget Widgets
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy.BudgetWidgetsExtension
+        PRODUCT_NAME: BudgetWidgetsExtension
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: YES
+  BudgieAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: BudgieAppTests
+    dependencies:
+      - target: Budgie
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Budgie.app/Budgie
+        BUNDLE_LOADER: $(TEST_HOST)
+  BudgieUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: BudgieUITests
+    dependencies:
+      - target: Budgie
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Budgie
+  SpringBoardProbe:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SpringBoardProbe
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.khatruong.budgetbuddy.springboardprobe
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  SpringBoardProbe:
+    build:
+      targets:
+        SpringBoardProbe: [test]
+    test:
+      targets:
+        - SpringBoardProbe
+  Budgie:
+    build:
+      targets:
+        Budgie: all
+        BudgieAppTests: [test]
+        BudgieUITests: [test]
+    test:
+      targets:
+        - BudgieAppTests
+        - BudgieUITests

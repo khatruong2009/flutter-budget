@@ -1,0 +1,3336 @@
+{
+  "tz": "America/Santiago",
+  "parse": [
+    {
+      "input": "2026-03-05T14:30:00.000",
+      "result": {
+        "iso": "2026-03-05T14:30:00.000",
+        "us": 1772731800000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30:00.123456",
+      "result": {
+        "iso": "2026-03-05T14:30:00.123456",
+        "us": 1772731800123456,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30:00.1234567",
+      "result": {
+        "iso": "2026-03-05T14:30:00.123456",
+        "us": 1772731800123456,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30:00.1",
+      "result": {
+        "iso": "2026-03-05T14:30:00.100",
+        "us": 1772731800100000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05 14:30:00",
+      "result": {
+        "iso": "2026-03-05T14:30:00.000",
+        "us": 1772731800000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05",
+      "result": {
+        "iso": "2026-03-05T00:00:00.000",
+        "us": 1772679600000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "20260305",
+      "result": {
+        "iso": "2026-03-05T00:00:00.000",
+        "us": 1772679600000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30",
+      "result": {
+        "iso": "2026-03-05T14:30:00.000",
+        "us": 1772731800000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T24:00:00",
+      "result": {
+        "iso": "2026-03-06T00:00:00.000",
+        "us": 1772766000000000,
+        "isUtc": false,
+        "weekday": 5
+      }
+    },
+    {
+      "input": "2026-02-30",
+      "result": {
+        "iso": "2026-03-02T00:00:00.000",
+        "us": 1772420400000000,
+        "isUtc": false,
+        "weekday": 1
+      }
+    },
+    {
+      "input": "2026-13-01",
+      "result": {
+        "iso": "2027-01-01T00:00:00.000",
+        "us": 1798772400000000,
+        "isUtc": false,
+        "weekday": 5
+      }
+    },
+    {
+      "input": "2026-3-5",
+      "error": "FormatException"
+    },
+    {
+      "input": " 2026-03-05",
+      "error": "FormatException"
+    },
+    {
+      "input": "2026-03-05T14:30:00.000Z",
+      "result": {
+        "iso": "2026-03-05T14:30:00.000Z",
+        "us": 1772721000000000,
+        "isUtc": true,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30:00.000+05:30",
+      "result": {
+        "iso": "2026-03-05T09:00:00.000Z",
+        "us": 1772701200000000,
+        "isUtc": true,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-05T14:30:00-0800",
+      "result": {
+        "iso": "2026-03-05T22:30:00.000Z",
+        "us": 1772749800000000,
+        "isUtc": true,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-03-08T02:30:00.000",
+      "result": {
+        "iso": "2026-03-08T02:30:00.000",
+        "us": 1772947800000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-08T03:30:00.000",
+      "result": {
+        "iso": "2026-03-08T03:30:00.000",
+        "us": 1772951400000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-11-01T01:30:00.000",
+      "result": {
+        "iso": "2026-11-01T01:30:00.000",
+        "us": 1793507400000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-11-01T00:59:59.999999",
+      "result": {
+        "iso": "2026-11-01T00:59:59.999999",
+        "us": 1793505599999999,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-29T01:30:00.000",
+      "result": {
+        "iso": "2026-03-29T01:30:00.000",
+        "us": 1774758600000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-10-25T01:30:00.000",
+      "result": {
+        "iso": "2026-10-25T01:30:00.000",
+        "us": 1792902600000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-10-04T02:15:00.000",
+      "result": {
+        "iso": "2026-10-04T02:15:00.000",
+        "us": 1791090900000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-04-05T02:15:00.000",
+      "result": {
+        "iso": "2026-04-05T02:15:00.000",
+        "us": 1775369700000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-04-05T01:45:00.000",
+      "result": {
+        "iso": "2026-04-05T01:45:00.000",
+        "us": 1775367900000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-09-05T23:59:59.999",
+      "result": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-09-06T00:00:00.000",
+      "result": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-09-06T00:30:00.000",
+      "result": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-09-06T00:59:59.999",
+      "result": {
+        "iso": "2026-09-06T01:59:59.999",
+        "us": 1788670799999000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-09-06T01:00:00.000",
+      "result": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-04-04T22:59:59.999",
+      "result": {
+        "iso": "2026-04-04T22:59:59.999",
+        "us": 1775354399999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-04-04T23:00:00.000",
+      "result": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775354400000000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-04-04T23:30:00.000",
+      "result": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-04-04T23:59:59.999",
+      "result": {
+        "iso": "2026-04-04T23:59:59.999",
+        "us": 1775357999999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-04-05T00:00:00.000",
+      "result": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-28T23:59:59.999",
+      "result": {
+        "iso": "2026-03-28T23:59:59.999",
+        "us": 1774753199999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-03-29T00:00:00.000",
+      "result": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-29T00:30:00.000",
+      "result": {
+        "iso": "2026-03-29T00:30:00.000",
+        "us": 1774755000000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-29T01:00:00.000",
+      "result": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774756800000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-10-24T22:59:59.999",
+      "result": {
+        "iso": "2026-10-24T22:59:59.999",
+        "us": 1792893599999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-10-24T23:30:00.000",
+      "result": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-10-24T23:59:59.999",
+      "result": {
+        "iso": "2026-10-24T23:59:59.999",
+        "us": 1792897199999000,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "2026-10-25T00:00:00.000",
+      "result": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-09-06",
+      "result": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2026-03-29",
+      "result": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "input": "2024-02-29T12:00:00.000",
+      "result": {
+        "iso": "2024-02-29T12:00:00.000",
+        "us": 1709218800000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "1999-12-31T23:59:59.999",
+      "result": {
+        "iso": "1999-12-31T23:59:59.999",
+        "us": 946695599999000,
+        "isUtc": false,
+        "weekday": 5
+      }
+    },
+    {
+      "input": "0099-01-01T00:00:00.000",
+      "result": {
+        "iso": "0099-01-01T00:00:00.000",
+        "us": -59042984400000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    },
+    {
+      "input": "2026-01-31T23:59:59.999999",
+      "result": {
+        "iso": "2026-01-31T23:59:59.999999",
+        "us": 1769914799999999,
+        "isUtc": false,
+        "weekday": 6
+      }
+    },
+    {
+      "input": "not a date",
+      "error": "FormatException"
+    },
+    {
+      "input": "",
+      "error": "FormatException"
+    }
+  ],
+  "constructed": [
+    {
+      "label": "2026,2,31",
+      "iso": "2026-03-03T00:00:00.000",
+      "us": 1772506800000000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "2026,1,0",
+      "iso": "2025-12-31T00:00:00.000",
+      "us": 1767150000000000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "2026,13,1",
+      "iso": "2027-01-01T00:00:00.000",
+      "us": 1798772400000000,
+      "isUtc": false,
+      "weekday": 5
+    },
+    {
+      "label": "2026,0,1",
+      "iso": "2025-12-01T00:00:00.000",
+      "us": 1764558000000000,
+      "isUtc": false,
+      "weekday": 1
+    },
+    {
+      "label": "2026,-1,1",
+      "iso": "2025-11-01T00:00:00.000",
+      "us": 1761966000000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2026,3,0",
+      "iso": "2026-02-28T00:00:00.000",
+      "us": 1772247600000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2024,3,0",
+      "iso": "2024-02-29T00:00:00.000",
+      "us": 1709175600000000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "2026,1,1,25",
+      "iso": "2026-01-02T01:00:00.000",
+      "us": 1767326400000000,
+      "isUtc": false,
+      "weekday": 5
+    },
+    {
+      "label": "2026,3,8,2,30",
+      "iso": "2026-03-08T02:30:00.000",
+      "us": 1772947800000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,11,1,1,30",
+      "iso": "2026-11-01T01:30:00.000",
+      "us": 1793507400000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,3,29,1,30",
+      "iso": "2026-03-29T01:30:00.000",
+      "us": 1774758600000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,10,4,2,30",
+      "iso": "2026-10-04T02:30:00.000",
+      "us": 1791091800000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,10,4,2,15",
+      "iso": "2026-10-04T02:15:00.000",
+      "us": 1791090900000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,4,5,1,45",
+      "iso": "2026-04-05T01:45:00.000",
+      "us": 1775367900000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,4,5,2,15",
+      "iso": "2026-04-05T02:15:00.000",
+      "us": 1775369700000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,9,5,23,59",
+      "iso": "2026-09-05T23:59:00.000",
+      "us": 1788667140000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2026,9,6",
+      "iso": "2026-09-06T01:00:00.000",
+      "us": 1788667200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,9,6,0,30",
+      "iso": "2026-09-06T01:30:00.000",
+      "us": 1788669000000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,9,6,1",
+      "iso": "2026-09-06T01:00:00.000",
+      "us": 1788667200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,9,5,24",
+      "iso": "2026-09-06T01:00:00.000",
+      "us": 1788667200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,9,7,-1",
+      "iso": "2026-09-06T23:00:00.000",
+      "us": 1788746400000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,4,4,23,30",
+      "iso": "2026-04-04T23:30:00.000",
+      "us": 1775356200000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2026,4,4,23,59",
+      "iso": "2026-04-04T23:59:00.000",
+      "us": 1775357940000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2026,4,5",
+      "iso": "2026-04-05T00:00:00.000",
+      "us": 1775361600000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,3,29",
+      "iso": "2026-03-29T00:00:00.000",
+      "us": 1774753200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,3,29,0,30",
+      "iso": "2026-03-29T00:30:00.000",
+      "us": 1774755000000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,3,28,24",
+      "iso": "2026-03-29T00:00:00.000",
+      "us": 1774753200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "2026,10,24,23,30",
+      "iso": "2026-10-24T23:30:00.000",
+      "us": 1792895400000000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "2026,10,25",
+      "iso": "2026-10-25T00:00:00.000",
+      "us": 1792897200000000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "99,1,1",
+      "iso": "0099-01-01T00:00:00.000",
+      "us": -59042984400000000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eom 2026,1",
+      "iso": "2026-01-31T23:59:59.999",
+      "us": 1769914799999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eom 2024,1",
+      "iso": "2024-01-31T23:59:59.999",
+      "us": 1706756399999000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "eod 2026,1,1",
+      "iso": "2026-01-01T23:59:59.999",
+      "us": 1767322799999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eom 2026,2",
+      "iso": "2026-02-28T23:59:59.999",
+      "us": 1772333999999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eom 2024,2",
+      "iso": "2024-02-29T23:59:59.999",
+      "us": 1709261999999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eod 2026,2,1",
+      "iso": "2026-02-01T23:59:59.999",
+      "us": 1770001199999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eom 2026,3",
+      "iso": "2026-03-31T23:59:59.999",
+      "us": 1775012399999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eom 2024,3",
+      "iso": "2024-03-31T23:59:59.999",
+      "us": 1711940399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,3,1",
+      "iso": "2026-03-01T23:59:59.999",
+      "us": 1772420399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eom 2026,4",
+      "iso": "2026-04-30T23:59:59.999",
+      "us": 1777607999999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eom 2024,4",
+      "iso": "2024-04-30T23:59:59.999",
+      "us": 1714535999999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eod 2026,4,1",
+      "iso": "2026-04-01T23:59:59.999",
+      "us": 1775098799999000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "eom 2026,5",
+      "iso": "2026-05-31T23:59:59.999",
+      "us": 1780286399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eom 2024,5",
+      "iso": "2024-05-31T23:59:59.999",
+      "us": 1717214399999000,
+      "isUtc": false,
+      "weekday": 5
+    },
+    {
+      "label": "eod 2026,5,1",
+      "iso": "2026-05-01T23:59:59.999",
+      "us": 1777694399999000,
+      "isUtc": false,
+      "weekday": 5
+    },
+    {
+      "label": "eom 2026,6",
+      "iso": "2026-06-30T23:59:59.999",
+      "us": 1782878399999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eom 2024,6",
+      "iso": "2024-06-30T23:59:59.999",
+      "us": 1719806399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,6,1",
+      "iso": "2026-06-01T23:59:59.999",
+      "us": 1780372799999000,
+      "isUtc": false,
+      "weekday": 1
+    },
+    {
+      "label": "eom 2026,7",
+      "iso": "2026-07-31T23:59:59.999",
+      "us": 1785556799999000,
+      "isUtc": false,
+      "weekday": 5
+    },
+    {
+      "label": "eom 2024,7",
+      "iso": "2024-07-31T23:59:59.999",
+      "us": 1722484799999000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "eod 2026,7,1",
+      "iso": "2026-07-01T23:59:59.999",
+      "us": 1782964799999000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "eom 2026,8",
+      "iso": "2026-08-31T23:59:59.999",
+      "us": 1788235199999000,
+      "isUtc": false,
+      "weekday": 1
+    },
+    {
+      "label": "eom 2024,8",
+      "iso": "2024-08-31T23:59:59.999",
+      "us": 1725163199999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eod 2026,8,1",
+      "iso": "2026-08-01T23:59:59.999",
+      "us": 1785643199999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eom 2026,9",
+      "iso": "2026-09-30T23:59:59.999",
+      "us": 1790823599999000,
+      "isUtc": false,
+      "weekday": 3
+    },
+    {
+      "label": "eom 2024,9",
+      "iso": "2024-09-30T23:59:59.999",
+      "us": 1727751599999000,
+      "isUtc": false,
+      "weekday": 1
+    },
+    {
+      "label": "eod 2026,9,1",
+      "iso": "2026-09-01T23:59:59.999",
+      "us": 1788321599999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eom 2026,10",
+      "iso": "2026-10-31T23:59:59.999",
+      "us": 1793501999999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eom 2024,10",
+      "iso": "2024-10-31T23:59:59.999",
+      "us": 1730429999999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eod 2026,10,1",
+      "iso": "2026-10-01T23:59:59.999",
+      "us": 1790909999999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eom 2026,11",
+      "iso": "2026-11-30T23:59:59.999",
+      "us": 1796093999999000,
+      "isUtc": false,
+      "weekday": 1
+    },
+    {
+      "label": "eom 2024,11",
+      "iso": "2024-11-30T23:59:59.999",
+      "us": 1733021999999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eod 2026,11,1",
+      "iso": "2026-11-01T23:59:59.999",
+      "us": 1793588399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eom 2026,12",
+      "iso": "2026-12-31T23:59:59.999",
+      "us": 1798772399999000,
+      "isUtc": false,
+      "weekday": 4
+    },
+    {
+      "label": "eom 2024,12",
+      "iso": "2024-12-31T23:59:59.999",
+      "us": 1735700399999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eod 2026,12,1",
+      "iso": "2026-12-01T23:59:59.999",
+      "us": 1796180399999000,
+      "isUtc": false,
+      "weekday": 2
+    },
+    {
+      "label": "eod 2026,3,8",
+      "iso": "2026-03-08T23:59:59.999",
+      "us": 1773025199999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,11,1",
+      "iso": "2026-11-01T23:59:59.999",
+      "us": 1793588399999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,9,5",
+      "iso": "2026-09-05T23:59:59.999",
+      "us": 1788667199999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eod 2026,9,6",
+      "iso": "2026-09-06T23:59:59.999",
+      "us": 1788749999999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,4,4",
+      "iso": "2026-04-04T23:59:59.999",
+      "us": 1775361599999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eod 2026,3,28",
+      "iso": "2026-03-28T23:59:59.999",
+      "us": 1774753199999000,
+      "isUtc": false,
+      "weekday": 6
+    },
+    {
+      "label": "eod 2026,3,29",
+      "iso": "2026-03-29T23:59:59.999",
+      "us": 1774839599999000,
+      "isUtc": false,
+      "weekday": 7
+    },
+    {
+      "label": "eod 2026,10,24",
+      "iso": "2026-10-24T23:59:59.999",
+      "us": 1792897199999000,
+      "isUtc": false,
+      "weekday": 6
+    }
+  ],
+  "arithmetic": [
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2025-12-01T00:00:00.000",
+        "us": 1764558000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-02-28T00:00:00.000",
+        "us": 1772247600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-03-02T00:00:00.000",
+        "us": 1772420400000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-03-15T00:00:00.000",
+        "us": 1773543600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-05-29T23:00:00.000",
+        "us": 1780110000000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2025-12-08T00:00:00.000",
+        "us": 1765162800000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-03-07T00:00:00.000",
+        "us": 1772852400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-03-09T00:00:00.000",
+        "us": 1773025200000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-03-15T00:00:00.000",
+        "us": 1773543600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-03-22T00:00:00.000",
+        "us": 1774148400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-06-05T23:00:00.000",
+        "us": 1780714800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2025-12-07T23:30:00.000",
+        "us": 1765161000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-03-06T23:30:00.000",
+        "us": 1772850600000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-03-08T23:30:00.000",
+        "us": 1773023400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-03-14T23:30:00.000",
+        "us": 1773541800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-03-21T23:30:00.000",
+        "us": 1774146600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-07T23:30:00.000",
+        "us": 1772937000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-06-05T22:30:00.000",
+        "us": 1780713000000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-07-26T23:00:00.000",
+        "us": 1785121200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-10-24T00:00:00.000",
+        "us": 1792810800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-10-26T00:00:00.000",
+        "us": 1792983600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-11-08T00:00:00.000",
+        "us": 1794106800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2027-01-23T00:00:00.000",
+        "us": 1800673200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-08-02T23:00:00.000",
+        "us": 1785726000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-10-31T00:00:00.000",
+        "us": 1793415600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-11-02T00:00:00.000",
+        "us": 1793588400000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-11-08T00:00:00.000",
+        "us": 1794106800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-11-15T00:00:00.000",
+        "us": 1794711600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2027-01-30T00:00:00.000",
+        "us": 1801278000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2025-12-29T00:00:00.000",
+        "us": 1766977200000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-03-28T00:00:00.000",
+        "us": 1774666800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-03-30T00:00:00.000",
+        "us": 1774839600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775358000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-11T23:00:00.000",
+        "us": 1775962800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-06-26T23:00:00.000",
+        "us": 1782529200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-07-05T23:00:00.000",
+        "us": 1783306800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-10-03T00:00:00.000",
+        "us": 1790996400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-10-05T00:00:00.000",
+        "us": 1791169200000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-10-11T00:00:00.000",
+        "us": 1791687600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-10-18T00:00:00.000",
+        "us": 1792292400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-04T00:00:00.000",
+        "us": 1791082800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2027-01-02T00:00:00.000",
+        "us": 1798858800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-01-05T01:00:00.000",
+        "us": 1767585600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-04-04T01:00:00.000",
+        "us": 1775275200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-04-06T00:00:00.000",
+        "us": 1775448000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-12T00:00:00.000",
+        "us": 1775966400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-19T00:00:00.000",
+        "us": 1776571200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-07-04T00:00:00.000",
+        "us": 1783137600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-06-07T00:00:00.000",
+        "us": 1780804800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-09-04T00:00:00.000",
+        "us": 1788494400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-09-12T01:00:00.000",
+        "us": 1789185600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-09-19T01:00:00.000",
+        "us": 1789790400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-12-04T01:00:00.000",
+        "us": 1796356800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-06-07T23:59:59.999",
+        "us": 1780891199999000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-09-04T23:59:59.999",
+        "us": 1788580799999000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-09-07T00:59:59.999",
+        "us": 1788753599999000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-09-13T00:59:59.999",
+        "us": 1789271999999000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-09-20T00:59:59.999",
+        "us": 1789876799999000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788667199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-12-05T00:59:59.999",
+        "us": 1796443199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-06-08T00:00:00.000",
+        "us": 1780891200000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-09-07T01:00:00.000",
+        "us": 1788753600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-09-13T01:00:00.000",
+        "us": 1789272000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-09-20T01:00:00.000",
+        "us": 1789876800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-12-05T01:00:00.000",
+        "us": 1796443200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-06-08T00:30:00.000",
+        "us": 1780893000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-09-05T00:30:00.000",
+        "us": 1788582600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-09-07T01:30:00.000",
+        "us": 1788755400000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-09-13T01:30:00.000",
+        "us": 1789273800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-09-20T01:30:00.000",
+        "us": 1789878600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-12-05T01:30:00.000",
+        "us": 1796445000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-01-03T23:30:00.000",
+        "us": 1767493800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-04-02T23:30:00.000",
+        "us": 1775183400000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-10T22:30:00.000",
+        "us": 1775874600000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-17T22:30:00.000",
+        "us": 1776479400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-07-02T22:30:00.000",
+        "us": 1783045800000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-01-04T00:00:00.000",
+        "us": 1767495600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-04-03T00:00:00.000",
+        "us": 1775185200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775358000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 1,
+      "sameDay": true
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-10T23:00:00.000",
+        "us": 1775876400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-17T23:00:00.000",
+        "us": 1776481200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-07-02T23:00:00.000",
+        "us": 1783047600000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-01-04T23:30:00.000",
+        "us": 1767580200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-04-03T23:30:00.000",
+        "us": 1775269800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-04-05T22:30:00.000",
+        "us": 1775442600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775961000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-18T22:30:00.000",
+        "us": 1776565800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-07-03T22:30:00.000",
+        "us": 1783132200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2025-12-28T23:30:00.000",
+        "us": 1766975400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-03-27T23:30:00.000",
+        "us": 1774665000000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-03-29T23:30:00.000",
+        "us": 1774837800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775961000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-03-28T23:30:00.000",
+        "us": 1774751400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-06-26T22:30:00.000",
+        "us": 1782527400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-07-26T22:30:00.000",
+        "us": 1785119400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-10-23T23:30:00.000",
+        "us": 1792809000000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-10-25T23:30:00.000",
+        "us": 1792981800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-10-31T23:30:00.000",
+        "us": 1793500200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-11-07T23:30:00.000",
+        "us": 1794105000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2027-01-22T23:30:00.000",
+        "us": 1800671400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-07-19T22:30:00.000",
+        "us": 1784514600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-10-16T23:30:00.000",
+        "us": 1792204200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-10-18T23:30:00.000",
+        "us": 1792377000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-10-31T23:30:00.000",
+        "us": 1793500200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-10-17T23:30:00.000",
+        "us": 1792290600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "days": 90,
+      "added": {
+        "iso": "2027-01-15T23:30:00.000",
+        "us": 1800066600000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": -90,
+      "added": {
+        "iso": "2026-03-03T15:32:11.123456",
+        "us": 1772562731123456,
+        "isUtc": false,
+        "weekday": 2
+      },
+      "differenceInDays": -90,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": -1,
+      "added": {
+        "iso": "2026-05-31T14:32:11.123456",
+        "us": 1780252331123456,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": -1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": 1,
+      "added": {
+        "iso": "2026-06-02T14:32:11.123456",
+        "us": 1780425131123456,
+        "isUtc": false,
+        "weekday": 2
+      },
+      "differenceInDays": 1,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": 7,
+      "added": {
+        "iso": "2026-06-08T14:32:11.123456",
+        "us": 1780943531123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 7,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": 14,
+      "added": {
+        "iso": "2026-06-15T14:32:11.123456",
+        "us": 1781548331123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "differenceInDays": 14,
+      "sameDay": false
+    },
+    {
+      "start": {
+        "iso": "2026-06-01T14:32:11.123456",
+        "us": 1780338731123456,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "days": 90,
+      "added": {
+        "iso": "2026-08-30T14:32:11.123456",
+        "us": 1788114731123456,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "differenceInDays": 90,
+      "sameDay": false
+    }
+  ],
+  "inDays": [
+    {
+      "a": {
+        "iso": "2026-03-15T00:00:00.000",
+        "us": 1773543600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "inDays": 14
+    },
+    {
+      "a": {
+        "iso": "2026-11-15T00:00:00.000",
+        "us": 1794711600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-11-01T00:00:00.000",
+        "us": 1793502000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "inDays": 14
+    },
+    {
+      "a": {
+        "iso": "2026-03-31T00:00:00.000",
+        "us": 1774926000000000,
+        "isUtc": false,
+        "weekday": 2
+      },
+      "b": {
+        "iso": "2026-03-08T00:00:00.000",
+        "us": 1772938800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "inDays": 23
+    },
+    {
+      "a": {
+        "iso": "2026-04-30T00:00:00.000",
+        "us": 1777521600000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "b": {
+        "iso": "2026-04-01T00:00:00.000",
+        "us": 1775012400000000,
+        "isUtc": false,
+        "weekday": 3
+      },
+      "inDays": 29
+    },
+    {
+      "a": {
+        "iso": "2026-10-10T00:00:00.000",
+        "us": 1791601200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "b": {
+        "iso": "2026-09-26T00:00:00.000",
+        "us": 1790391600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 14
+    },
+    {
+      "a": {
+        "iso": "2026-04-12T00:00:00.000",
+        "us": 1775966400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-03-29T00:00:00.000",
+        "us": 1774753200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "inDays": 14
+    },
+    {
+      "a": {
+        "iso": "2026-01-01T00:00:00.000",
+        "us": 1767236400000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "b": {
+        "iso": "2026-01-02T00:00:00.000",
+        "us": 1767322800000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "inDays": -1
+    },
+    {
+      "a": {
+        "iso": "2026-09-07T00:00:00.000",
+        "us": 1788750000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "b": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 1
+    },
+    {
+      "a": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-09-05T23:59:00.000",
+        "us": 1788667140000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 0
+    },
+    {
+      "a": {
+        "iso": "2026-09-10T00:00:00.000",
+        "us": 1789009200000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "b": {
+        "iso": "2026-09-01T00:00:00.000",
+        "us": 1788235200000000,
+        "isUtc": false,
+        "weekday": 2
+      },
+      "inDays": 8
+    },
+    {
+      "a": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-09-05T00:00:00.000",
+        "us": 1788580800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 1
+    },
+    {
+      "a": {
+        "iso": "2026-09-07T00:00:00.000",
+        "us": 1788750000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "b": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788667200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "inDays": 0
+    },
+    {
+      "a": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775361600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-04-04T00:00:00.000",
+        "us": 1775271600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 1
+    },
+    {
+      "a": {
+        "iso": "2026-04-06T00:00:00.000",
+        "us": 1775448000000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "b": {
+        "iso": "2026-04-03T00:00:00.000",
+        "us": 1775185200000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "inDays": 3
+    },
+    {
+      "a": {
+        "iso": "2026-04-05T00:30:00.000",
+        "us": 1775363400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 0
+    },
+    {
+      "a": {
+        "iso": "2026-03-30T00:00:00.000",
+        "us": 1774839600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "b": {
+        "iso": "2026-03-28T00:00:00.000",
+        "us": 1774666800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 2
+    },
+    {
+      "a": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774756800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-03-28T23:59:00.000",
+        "us": 1774753140000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 0
+    },
+    {
+      "a": {
+        "iso": "2026-10-26T00:00:00.000",
+        "us": 1792983600000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "b": {
+        "iso": "2026-10-24T00:00:00.000",
+        "us": 1792810800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 2
+    },
+    {
+      "a": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792897200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-10-24T00:00:00.000",
+        "us": 1792810800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 1
+    },
+    {
+      "a": {
+        "iso": "2026-10-25T00:30:00.000",
+        "us": 1792899000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "b": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "inDays": 0
+    }
+  ],
+  "keys": [
+    {
+      "date": {
+        "iso": "2026-03-05T14:00:00.000",
+        "us": 1772730000000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "monthKey": "2026-03",
+      "dayKey": "2026-03-05",
+      "monthFromKey": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "date": {
+        "iso": "2026-12-31T23:59:00.000",
+        "us": 1798772340000000,
+        "isUtc": false,
+        "weekday": 4
+      },
+      "monthKey": "2026-12",
+      "dayKey": "2026-12-31",
+      "monthFromKey": {
+        "iso": "2026-12-01T00:00:00.000",
+        "us": 1796094000000000,
+        "isUtc": false,
+        "weekday": 2
+      }
+    },
+    {
+      "date": {
+        "iso": "2027-01-01T00:00:00.000",
+        "us": 1798772400000000,
+        "isUtc": false,
+        "weekday": 5
+      },
+      "monthKey": "2027-01",
+      "dayKey": "2027-01-01",
+      "monthFromKey": {
+        "iso": "2027-01-01T00:00:00.000",
+        "us": 1798772400000000,
+        "isUtc": false,
+        "weekday": 5
+      }
+    },
+    {
+      "date": {
+        "iso": "0099-07-04T00:00:00.000",
+        "us": -59027086800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "monthKey": "0099-07",
+      "dayKey": "0099-07-04",
+      "monthFromKey": {
+        "iso": "0099-07-01T00:00:00.000",
+        "us": -59027346000000000,
+        "isUtc": false,
+        "weekday": 3
+      }
+    },
+    {
+      "date": {
+        "iso": "2026-09-06T01:30:00.000",
+        "us": 1788669000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "monthKey": "2026-09",
+      "dayKey": "2026-09-06",
+      "monthFromKey": {
+        "iso": "2026-09-01T00:00:00.000",
+        "us": 1788235200000000,
+        "isUtc": false,
+        "weekday": 2
+      }
+    },
+    {
+      "date": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775356200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "monthKey": "2026-04",
+      "dayKey": "2026-04-04",
+      "monthFromKey": {
+        "iso": "2026-04-01T00:00:00.000",
+        "us": 1775012400000000,
+        "isUtc": false,
+        "weekday": 3
+      }
+    },
+    {
+      "date": {
+        "iso": "2026-03-29T00:30:00.000",
+        "us": 1774755000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "monthKey": "2026-03",
+      "dayKey": "2026-03-29",
+      "monthFromKey": {
+        "iso": "2026-03-01T00:00:00.000",
+        "us": 1772334000000000,
+        "isUtc": false,
+        "weekday": 7
+      }
+    },
+    {
+      "date": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792895400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "monthKey": "2026-10",
+      "dayKey": "2026-10-24",
+      "monthFromKey": {
+        "iso": "2026-10-01T00:00:00.000",
+        "us": 1790823600000000,
+        "isUtc": false,
+        "weekday": 4
+      }
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "commit": "81fc729ff1375123d5a158665e69ec836dd71958",
+  "dartProblems": {
+    "1-flutter": [],
+    "2-swift": [],
+    "3-swift-edited": [],
+    "4-flutter-back": []
+  },
+  "scenarios": {
+    "s1_typical_roundtrip": {
+      "flutterBackState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-230718-5e233a99"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      },
+      "flutterState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      },
+      "swiftEditedState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-230718-5e233a99"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      },
+      "swiftState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-230718-5e233a99"
+        ],
+        "sceneDelegateClasses": [
+          "Default Configuration",
+          "UISceneConfiguration"
+        ]
+      }
+    }
+  },
+  "simulator": {
+    "name": "Budgie-Rehearsal",
+    "udid": "97B42ABB-DF59-47F2-B5B4-87CA2E93DD75"
+  },
+  "swiftVsDart": {
+    "2-swift (Swift) vs 1-flutter (Flutter)": [],
+    "2-swift: Swift vs Flutter models on the same files": [],
+    "3-swift-edited (Swift) vs 4-flutter-back (Flutter)": [],
+    "3-swift-edited: Swift vs Flutter models on the same files": []
+  }
+}

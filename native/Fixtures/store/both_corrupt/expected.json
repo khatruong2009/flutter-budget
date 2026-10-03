@@ -1,0 +1,161 @@
+{
+  "scenario": "both_corrupt",
+  "description": "Both files damaged, no legacy preferences.",
+  "commit": "959921d674058da3e0835996298e42375b88ccf6",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "revision": 0,
+    "schemaVersion": 2,
+    "sections": {
+      "fnv": "08f44b07b5901a25",
+      "length": 2,
+      "keys": [],
+      "json": "{}"
+    }
+  },
+  "filesAfterLoad": {
+    "financial_store_v2.backup.json.corrupt-*": {
+      "size": 41893,
+      "fnv": "-2ecd14d87d3230f5"
+    },
+    "financial_store_v2.json.corrupt-*": {
+      "size": 41889,
+      "fnv": "-6260d005a88167b2"
+    }
+  },
+  "prefsAfterLoad": {},
+  "afterOneCommit": {
+    "revision": 1,
+    "files": {
+      "financial_store_v2.backup.json.corrupt-*": {
+        "size": 41893,
+        "fnv": "-2ecd14d87d3230f5"
+      },
+      "financial_store_v2.json": {
+        "size": 216,
+        "fnv": "-16b050abf43a203f"
+      },
+      "financial_store_v2.json.corrupt-*": {
+        "size": 41889,
+        "fnv": "-6260d005a88167b2"
+      }
+    }
+  },
+  "appBeforeGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 0,
+    "sortedIds": [],
+    "availableMonths": [],
+    "monthly": {},
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 0.0,
+        "liabilities": 0.0,
+        "netWorth": 0.0,
+        "change": null,
+        "hasData": false,
+        "tracked": 0,
+        "updated": 0,
+        "stale": 0,
+        "entries": []
+      }
+    },
+    "netWorthHistory24": [],
+    "netWorthHistory4": [],
+    "categoryBudgetLimits": {},
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {},
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterInit": {
+    "fnv": "3ded82e3a65af323",
+    "length": 2692,
+    "keys": [
+      "categories"
+    ],
+    "json": "{\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true}]}"
+  },
+  "revisionAfterInit": 1,
+  "appAfterGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 0,
+    "sortedIds": [],
+    "availableMonths": [],
+    "monthly": {},
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 0.0,
+        "liabilities": 0.0,
+        "netWorth": 0.0,
+        "change": null,
+        "hasData": false,
+        "tracked": 0,
+        "updated": 0,
+        "stale": 0,
+        "entries": []
+      }
+    },
+    "netWorthHistory24": [],
+    "netWorthHistory4": [],
+    "categoryBudgetLimits": {},
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {},
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterGenerate": {
+    "fnv": "3ded82e3a65af323",
+    "length": 2692,
+    "keys": [
+      "categories"
+    ],
+    "json": "{\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true}]}"
+  },
+  "revisionAfterGenerate": 1,
+  "filesAfterGenerate": {
+    "financial_store_v2.backup.json.corrupt-*": {
+      "size": 41893,
+      "fnv": "-2ecd14d87d3230f5"
+    },
+    "financial_store_v2.json": {
+      "size": 2858,
+      "fnv": "-337310bc21148d50"
+    },
+    "financial_store_v2.json.corrupt-*": {
+      "size": 41889,
+      "fnv": "-6260d005a88167b2"
+    }
+  }
+}

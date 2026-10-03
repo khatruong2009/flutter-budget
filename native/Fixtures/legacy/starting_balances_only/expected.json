@@ -1,0 +1,209 @@
+{
+  "scenario": "starting_balances_only",
+  "description": "Not store data: migration finds nothing, the net worth model then creates Starting Assets/Liabilities entries.",
+  "commit": "959921d674058da3e0835996298e42375b88ccf6",
+  "tz": "America/New_York",
+  "launchNow": "2026-09-28T09:15:30.250125",
+  "load": {
+    "revision": 0,
+    "schemaVersion": 2,
+    "sections": {
+      "fnv": "08f44b07b5901a25",
+      "length": 2,
+      "keys": [],
+      "json": "{}"
+    }
+  },
+  "filesAfterLoad": {},
+  "prefsAfterLoad": {
+    "flutter.starting_assets": {
+      "type": "double",
+      "value": 3200.0
+    },
+    "flutter.starting_liabilities": {
+      "type": "double",
+      "value": 900.0
+    }
+  },
+  "afterOneCommit": {
+    "revision": 1,
+    "files": {
+      "financial_store_v2.json": {
+        "size": 216,
+        "fnv": "-16b050abf43a203f"
+      }
+    }
+  },
+  "appBeforeGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 0,
+    "sortedIds": [],
+    "availableMonths": [],
+    "monthly": {},
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 2,
+        "updated": 2,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "07bb4cb6-542e-4f8c-b959-9766fd83db68",
+            "amount": 3200.0
+          },
+          {
+            "id": "337ef0c0-9e4a-4581-a0be-3df35a25a910",
+            "amount": 900.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2026-09-28T00:00:00.000",
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2026-09-28T00:00:00.000",
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {},
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {},
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterInit": {
+    "fnv": "-384a78cde007dde4",
+    "length": 3122,
+    "keys": [
+      "categories",
+      "netWorthEntries"
+    ],
+    "json": "{\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true}],\"netWorthEntries\":[{\"id\":\"07bb4cb6-542e-4f8c-b959-9766fd83db68\",\"name\":\"Starting Assets\",\"type\":\"asset\",\"createdAt\":\"2026-09-28T09:15:30.250125\",\"snapshots\":[{\"recordedAt\":\"2026-09-28T09:15:30.250125\",\"amount\":3200.0}]},{\"id\":\"337ef0c0-9e4a-4581-a0be-3df35a25a910\",\"name\":\"Starting Liabilities\",\"type\":\"liability\",\"createdAt\":\"2026-09-28T09:15:30.250125\",\"snapshots\":[{\"recordedAt\":\"2026-09-28T09:15:30.250125\",\"amount\":900.0}]}]}"
+  },
+  "revisionAfterInit": 2,
+  "appAfterGenerate": {
+    "asOf": "2026-09-28T09:15:30.250125",
+    "transactionCount": 0,
+    "sortedIds": [],
+    "availableMonths": [],
+    "monthly": {},
+    "selectedNetWorthMonth": "2026-09-01T00:00:00.000",
+    "netWorthAvailableMonths": [
+      "2026-09-01T00:00:00.000"
+    ],
+    "netWorth": {
+      "2026-09": {
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "change": null,
+        "hasData": true,
+        "tracked": 2,
+        "updated": 2,
+        "stale": 0,
+        "entries": [
+          {
+            "id": "24c22571-8d1e-44dd-a8d0-bb4f137d6f08",
+            "amount": 3200.0
+          },
+          {
+            "id": "affabb9f-979c-4ff9-8d72-abd211a371a4",
+            "amount": 900.0
+          }
+        ]
+      }
+    },
+    "netWorthHistory24": [
+      {
+        "date": "2026-09-28T00:00:00.000",
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "netWorthHistory4": [
+      {
+        "date": "2026-09-28T00:00:00.000",
+        "assets": 3200.0,
+        "liabilities": 900.0,
+        "netWorth": 2300.0,
+        "assetCount": 1,
+        "liabilityCount": 1,
+        "granularity": "day"
+      }
+    ],
+    "categoryBudgetLimits": {},
+    "savingsGoals": [],
+    "recurring": [],
+    "safeToSpend": {},
+    "appSettings": {
+      "baseCurrencyCode": "USD",
+      "localeOverride": null,
+      "appLockEnabled": false,
+      "autoLockTimeoutSeconds": 60,
+      "hideBalances": false
+    },
+    "widgetCashFlow": {
+      "amount": 0.0,
+      "month": "2026-09"
+    },
+    "hasUnsavedChanges": false
+  },
+  "sectionsAfterGenerate": {
+    "fnv": "72d80c7458313f9e",
+    "length": 3122,
+    "keys": [
+      "categories",
+      "netWorthEntries"
+    ],
+    "json": "{\"categories\":[{\"id\":\"expense-general\",\"type\":\"expense\",\"name\":\"General\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-eating-out\",\"type\":\"expense\",\"name\":\"Eating Out\",\"iconIdentifier\":\"asterisk_circle\",\"colorToken\":\"orange\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-groceries\",\"type\":\"expense\",\"name\":\"Groceries\",\"iconIdentifier\":\"cart\",\"colorToken\":\"green\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-housing\",\"type\":\"expense\",\"name\":\"Housing\",\"iconIdentifier\":\"house\",\"colorToken\":\"blue\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-transportation\",\"type\":\"expense\",\"name\":\"Transportation\",\"iconIdentifier\":\"car\",\"colorToken\":\"purple\",\"sortOrder\":4,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-travel\",\"type\":\"expense\",\"name\":\"Travel\",\"iconIdentifier\":\"airplane\",\"colorToken\":\"cyan\",\"sortOrder\":5,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-clothing\",\"type\":\"expense\",\"name\":\"Clothing\",\"iconIdentifier\":\"bag\",\"colorToken\":\"pink\",\"sortOrder\":6,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-gift\",\"type\":\"expense\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":7,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-health\",\"type\":\"expense\",\"name\":\"Health\",\"iconIdentifier\":\"heart\",\"colorToken\":\"red\",\"sortOrder\":8,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-entertainment\",\"type\":\"expense\",\"name\":\"Entertainment\",\"iconIdentifier\":\"film\",\"colorToken\":\"orange\",\"sortOrder\":9,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-pets\",\"type\":\"expense\",\"name\":\"Pets\",\"iconIdentifier\":\"paw\",\"colorToken\":\"green\",\"sortOrder\":10,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-family\",\"type\":\"expense\",\"name\":\"Family\",\"iconIdentifier\":\"people\",\"colorToken\":\"blue\",\"sortOrder\":11,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"expense-loan-payment\",\"type\":\"expense\",\"name\":\"Loan Payment\",\"iconIdentifier\":\"money\",\"colorToken\":\"red\",\"sortOrder\":12,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-salary\",\"type\":\"income\",\"name\":\"Salary\",\"iconIdentifier\":\"money\",\"colorToken\":\"green\",\"sortOrder\":0,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-investment\",\"type\":\"income\",\"name\":\"Investment\",\"iconIdentifier\":\"chart\",\"colorToken\":\"blue\",\"sortOrder\":1,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-gift\",\"type\":\"income\",\"name\":\"Gift\",\"iconIdentifier\":\"gift\",\"colorToken\":\"purple\",\"sortOrder\":2,\"isArchived\":false,\"isBuiltIn\":true},{\"id\":\"income-other\",\"type\":\"income\",\"name\":\"Other\",\"iconIdentifier\":\"square_grid_2x2\",\"colorToken\":\"accent\",\"sortOrder\":3,\"isArchived\":false,\"isBuiltIn\":true}],\"netWorthEntries\":[{\"id\":\"24c22571-8d1e-44dd-a8d0-bb4f137d6f08\",\"name\":\"Starting Assets\",\"type\":\"asset\",\"createdAt\":\"2026-09-28T09:15:30.250125\",\"snapshots\":[{\"recordedAt\":\"2026-09-28T09:15:30.250125\",\"amount\":3200.0}]},{\"id\":\"affabb9f-979c-4ff9-8d72-abd211a371a4\",\"name\":\"Starting Liabilities\",\"type\":\"liability\",\"createdAt\":\"2026-09-28T09:15:30.250125\",\"snapshots\":[{\"recordedAt\":\"2026-09-28T09:15:30.250125\",\"amount\":900.0}]}]}"
+  },
+  "revisionAfterGenerate": 2,
+  "filesAfterGenerate": {
+    "financial_store_v2.backup.json": {
+      "size": 2858,
+      "fnv": "-337310bc21148d50"
+    },
+    "financial_store_v2.json": {
+      "size": 3288,
+      "fnv": "29a7afa9457cc365"
+    }
+  }
+}

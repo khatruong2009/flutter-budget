@@ -1,0 +1,221 @@
+{
+  "commit": "9674c89a6dade0500d07b43d74565b906a32e563",
+  "dartProblems": {
+    "1-flutter": [],
+    "2-swift": [],
+    "3-swift-edited": [],
+    "4-flutter-back": [],
+    "s3-flutter-back": [],
+    "s3-swift": [],
+    "s4-after": [],
+    "s5-restored": []
+  },
+  "scenarios": {
+    "s1_typical_roundtrip": {
+      "flutterBackState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-224105-ae46b439"
+        ]
+      },
+      "flutterState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": []
+      },
+      "swiftEditedState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.base_currency_code",
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-224105-ae46b439"
+        ]
+      },
+      "swiftState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.onboarding_completed",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-224105-ae46b439"
+        ]
+      }
+    },
+    "s3_legacy_only": {
+      "flutterBackState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.app_lock_enabled",
+          "flutter.auto_lock_timeout_seconds",
+          "flutter.base_currency_code",
+          "flutter.hide_balances",
+          "flutter.local_insights_dismissed_v1",
+          "flutter.local_insights_snoozed_v1",
+          "flutter.locale_override",
+          "flutter.onboarding_completed",
+          "flutter.starting_assets",
+          "flutter.starting_liabilities",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-224306-b88b3e07"
+        ]
+      },
+      "injectedKeys": [
+        "flutter.app_lock_enabled",
+        "flutter.auto_lock_timeout_seconds",
+        "flutter.base_currency_code",
+        "flutter.categories_v1",
+        "flutter.categorization_rules_v1",
+        "flutter.category_budget_limits",
+        "flutter.financial_store_v1",
+        "flutter.hide_balances",
+        "flutter.local_insights_dismissed_v1",
+        "flutter.local_insights_snoozed_v1",
+        "flutter.locale_override",
+        "flutter.net_worth_entries",
+        "flutter.net_worth_selected_month",
+        "flutter.onboarding_completed",
+        "flutter.recurring_transactions",
+        "flutter.savings_goals",
+        "flutter.starting_assets",
+        "flutter.starting_liabilities",
+        "flutter.themeMode",
+        "flutter.transaction_tags_v1",
+        "flutter.transactions"
+      ],
+      "legacyKeysInBackup": [
+        "flutter.app_lock_enabled",
+        "flutter.auto_lock_timeout_seconds",
+        "flutter.base_currency_code",
+        "flutter.categories_v1",
+        "flutter.categorization_rules_v1",
+        "flutter.category_budget_limits",
+        "flutter.financial_store_v1",
+        "flutter.hide_balances",
+        "flutter.local_insights_dismissed_v1",
+        "flutter.local_insights_snoozed_v1",
+        "flutter.locale_override",
+        "flutter.net_worth_entries",
+        "flutter.net_worth_selected_month",
+        "flutter.onboarding_completed",
+        "flutter.recurring_transactions",
+        "flutter.savings_goals",
+        "flutter.starting_assets",
+        "flutter.starting_liabilities",
+        "flutter.themeMode",
+        "flutter.transaction_tags_v1",
+        "flutter.transactions"
+      ],
+      "swiftState": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [
+          "flutter.app_lock_enabled",
+          "flutter.auto_lock_timeout_seconds",
+          "flutter.base_currency_code",
+          "flutter.hide_balances",
+          "flutter.local_insights_dismissed_v1",
+          "flutter.local_insights_snoozed_v1",
+          "flutter.locale_override",
+          "flutter.onboarding_completed",
+          "flutter.starting_assets",
+          "flutter.starting_liabilities",
+          "flutter.themeMode"
+        ],
+        "preNativeSnapshots": [
+          "20260928-224306-b88b3e07"
+        ]
+      }
+    },
+    "s4_locked_launch": {
+      "afterUnlock": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [],
+        "preNativeSnapshots": [
+          "20260928-224453-6f1568a3"
+        ]
+      },
+      "whileLocked": {
+        "firstWriteSecondsAfterLaunch": {
+          "preNative": 18.8,
+          "store": 18.8,
+          "summary": 18.8
+        },
+        "lockSeconds": 15,
+        "nothingWrittenWhileLocked": true
+      }
+    },
+    "s5_corruption": {
+      "blockedSummaryWritten": false,
+      "bothCorrupt": {
+        "files": [
+          "financial_store_v2.backup.json.corrupt-1790635599294",
+          "financial_store_v2.json.corrupt-1790635599294"
+        ],
+        "flutterPrefKeys": [],
+        "preNativeSnapshots": [
+          "20260928-224639-9b8888a9"
+        ]
+      },
+      "loadReport": "Optional(BudgieCore.FinancialStore.LoadReport(restoredFromBackup: true, setAside: [], migratedFrom: nil, removedPreferenceKeys: []))",
+      "restoredTransactionCount": 145,
+      "truncatedPrimary": {
+        "files": [
+          "financial_store_v2.backup.json",
+          "financial_store_v2.json"
+        ],
+        "flutterPrefKeys": [],
+        "preNativeSnapshots": [
+          "20260928-224537-6c09fa51"
+        ]
+      }
+    }
+  },
+  "simulator": {
+    "name": "Budgie-Rehearsal",
+    "udid": "97B42ABB-DF59-47F2-B5B4-87CA2E93DD75"
+  },
+  "swiftVsDart": {
+    "2-swift (Swift) vs 1-flutter (Flutter)": [],
+    "2-swift: Swift vs Flutter models on the same files": [],
+    "3-swift-edited (Swift) vs 4-flutter-back (Flutter)": [],
+    "3-swift-edited: Swift vs Flutter models on the same files": [],
+    "s3-swift (Swift) vs s3-flutter-back (Flutter)": [],
+    "s3-swift: Swift vs Flutter models on the same files": [],
+    "s4-after: Swift vs Flutter models on the same files": [],
+    "s5-restored: Swift vs Flutter models on the same files": []
+  }
+}

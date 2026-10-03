@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>flutter.base_currency_code</key>
+	<string>GBP</string>
+	<key>flutter.onboarding_completed</key>
+	<true/>
+	<key>flutter.themeMode</key>
+	<string>light</string>
+	<key>native.lastCommittedChecksum</key>
+	<string>607601e902e234e2</string>
+</dict>
+</plist>

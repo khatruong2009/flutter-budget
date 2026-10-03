@@ -1,0 +1,5144 @@
+{
+  "tz": "Asia/Beirut",
+  "cases": [
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-05T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-06T00:00:00.000",
+      "nextOccurrenceUs": 1788642000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:00:00.000",
+          "dateUs": 1789246800000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the spring gap (Sunday start)",
+      "template": {
+        "id": "dw1",
+        "type": "expense",
+        "description": "dw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T00:00:00.000",
+        "nextOccurrence": "2026-08-30T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T00:00:00.000",
+          "dateUs": 1788037200000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:00:00.000",
+          "dateUs": 1789246800000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-20T00:00:00.000",
+          "dateUs": 1789851600000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-27T00:00:00.000",
+          "dateUs": 1790456400000000,
+          "recurringTemplateId": "dw1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-04T00:00:00.000",
+      "nextOccurrenceUs": 1791061200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-05T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-06T00:00:00.000",
+      "nextOccurrenceUs": 1788642000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the spring gap",
+      "template": {
+        "id": "dw2",
+        "type": "expense",
+        "description": "dw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-08-23T00:00:00.000",
+        "nextOccurrence": "2026-08-23T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-08-23T00:00:00.000",
+          "dateUs": 1787432400000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-20T00:00:00.000",
+          "dateUs": 1789851600000000,
+          "recurringTemplateId": "dw2",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-04T00:00:00.000",
+      "nextOccurrenceUs": 1791061200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [],
+      "nextOccurrence": "2026-09-06T00:00:00.000",
+      "nextOccurrenceUs": 1788642000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:00:00.000",
+      "nextOccurrenceUs": 1789246800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:00:00.000",
+          "dateUs": 1789246800000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:00:00.000",
+      "nextOccurrenceUs": 1789851600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the gap day",
+      "template": {
+        "id": "dw3",
+        "type": "expense",
+        "description": "dw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:00:00.000",
+          "dateUs": 1789246800000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-20T00:00:00.000",
+          "dateUs": 1789851600000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-27T00:00:00.000",
+          "dateUs": 1790456400000000,
+          "recurringTemplateId": "dw3",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-04T00:00:00.000",
+      "nextOccurrenceUs": 1791061200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [],
+      "nextOccurrence": "2026-09-06T00:30:00.000",
+      "nextOccurrenceUs": 1788643800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:30:00.000",
+          "dateUs": 1788643800000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:30:00.000",
+      "nextOccurrenceUs": 1789248600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:30:00.000",
+          "dateUs": 1788643800000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:30:00.000",
+      "nextOccurrenceUs": 1789248600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:30:00.000",
+          "dateUs": 1788643800000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T00:30:00.000",
+      "nextOccurrenceUs": 1789248600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:30:00.000",
+          "dateUs": 1788643800000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:30:00.000",
+          "dateUs": 1789248600000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T00:30:00.000",
+      "nextOccurrenceUs": 1789853400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting 00:30 on the gap day",
+      "template": {
+        "id": "dw4",
+        "type": "expense",
+        "description": "dw4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-09-06T00:30:00.000",
+        "nextOccurrence": "2026-09-06T00:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:30:00.000",
+          "dateUs": 1788643800000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T00:30:00.000",
+          "dateUs": 1789248600000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-20T00:30:00.000",
+          "dateUs": 1789853400000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-27T00:30:00.000",
+          "dateUs": 1790458200000000,
+          "recurringTemplateId": "dw4",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-04T00:30:00.000",
+      "nextOccurrenceUs": 1791063000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-05T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-05T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-06T00:00:00.000",
+      "nextOccurrenceUs": 1788642000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 through the gap",
+      "template": {
+        "id": "dm1",
+        "type": "expense",
+        "description": "dm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-07-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-07-06T00:00:00.000",
+          "dateUs": 1783285200000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-06T00:00:00.000",
+          "dateUs": 1785963600000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm1",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [],
+      "nextOccurrence": "2026-09-06T00:00:00.000",
+      "nextOccurrenceUs": 1788642000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm2",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm2",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm2",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm2",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 6 cursor on the gap",
+      "template": {
+        "id": "dm2",
+        "type": "expense",
+        "description": "dm2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-07-06T00:00:00.000",
+        "nextOccurrence": "2026-09-06T00:00:00.000",
+        "dayOfMonth": 6,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-09-06T00:00:00.000",
+          "dateUs": 1788642000000000,
+          "recurringTemplateId": "dm2",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-06T00:00:00.000",
+      "nextOccurrenceUs": 1791234000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-05T23:59:59.999",
+        "us": 1788641999999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-05T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-06T23:30:00.000",
+      "nextOccurrenceUs": 1788726600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T00:30:00.000",
+        "us": 1788643800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T23:30:00.000",
+          "dateUs": 1788726600000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T23:30:00.000",
+      "nextOccurrenceUs": 1789331400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T01:00:00.000",
+        "us": 1788645600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T23:30:00.000",
+          "dateUs": 1788726600000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T23:30:00.000",
+      "nextOccurrenceUs": 1789331400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-06T12:00:00.000",
+        "us": 1788685200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T23:30:00.000",
+          "dateUs": 1788726600000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-06T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-13T23:30:00.000",
+      "nextOccurrenceUs": 1789331400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-13T00:30:00.000",
+        "us": 1789248600000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T23:30:00.000",
+          "dateUs": 1788726600000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T23:30:00.000",
+          "dateUs": 1789331400000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-13T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-09-20T23:30:00.000",
+      "nextOccurrenceUs": 1789936200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly day before gap with time",
+      "template": {
+        "id": "dw5",
+        "type": "expense",
+        "description": "dw5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-08-30T23:30:00.000",
+        "nextOccurrence": "2026-08-30T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-09-28T09:15:00.000",
+        "us": 1790576100000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-08-30T23:30:00.000",
+          "dateUs": 1788121800000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-06T23:30:00.000",
+          "dateUs": 1788726600000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-13T23:30:00.000",
+          "dateUs": 1789331400000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-20T23:30:00.000",
+          "dateUs": 1789936200000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-27T23:30:00.000",
+          "dateUs": 1790541000000000,
+          "recurringTemplateId": "dw5",
+          "createdAt": "2026-09-28T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-04T23:30:00.000",
+      "nextOccurrenceUs": 1791145800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T22:59:00.000",
+        "us": 1775332740000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775332800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775336400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T00:30:00.000",
+      "nextOccurrenceUs": 1775943000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775935800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T00:30:00.000",
+      "nextOccurrenceUs": 1775943000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the fall fold",
+      "template": {
+        "id": "df1",
+        "type": "expense",
+        "description": "df1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T23:30:00.000",
+        "us": 1775939400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df1",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T00:30:00.000",
+      "nextOccurrenceUs": 1775943000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T22:59:00.000",
+        "us": 1775332740000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T01:00:00.000",
+      "nextOccurrenceUs": 1775858400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775332800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T01:00:00.000",
+      "nextOccurrenceUs": 1775858400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T01:00:00.000",
+      "nextOccurrenceUs": 1775858400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775336400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T01:00:00.000",
+      "nextOccurrenceUs": 1775858400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775935800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-11T01:00:00.000",
+          "dateUs": 1775858400000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-18T01:00:00.000",
+      "nextOccurrenceUs": 1776463200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across the fold day",
+      "template": {
+        "id": "df2",
+        "type": "expense",
+        "description": "df2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T00:00:00.000",
+        "nextOccurrence": "2026-03-28T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T23:30:00.000",
+        "us": 1775939400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T00:00:00.000",
+          "dateUs": 1774648800000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T01:00:00.000",
+          "dateUs": 1775253600000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-11T01:00:00.000",
+          "dateUs": 1775858400000000,
+          "recurringTemplateId": "df2",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-18T01:00:00.000",
+      "nextOccurrenceUs": 1776463200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T22:59:00.000",
+        "us": 1775332740000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775332800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775336400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-19T00:30:00.000",
+      "nextOccurrenceUs": 1776547800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775935800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-19T00:30:00.000",
+      "nextOccurrenceUs": 1776547800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the fold",
+      "template": {
+        "id": "df3",
+        "type": "expense",
+        "description": "df3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-21T23:30:00.000",
+        "nextOccurrence": "2026-03-21T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T23:30:00.000",
+        "us": 1775939400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-21T23:30:00.000",
+          "dateUs": 1774128600000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T00:30:00.000",
+          "dateUs": 1775338200000000,
+          "recurringTemplateId": "df3",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-19T00:30:00.000",
+      "nextOccurrenceUs": 1776547800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T22:59:00.000",
+        "us": 1775332740000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-01-04T23:30:00.000",
+          "dateUs": 1767562200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775332800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-01-04T23:30:00.000",
+          "dateUs": 1767562200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-01-04T23:30:00.000",
+          "dateUs": 1767562200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775336400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-01-04T23:30:00.000",
+          "dateUs": 1767562200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775935800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 4 with fold time",
+      "template": {
+        "id": "df4",
+        "type": "expense",
+        "description": "df4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-04T23:30:00.000",
+        "nextOccurrence": "2026-01-04T23:30:00.000",
+        "dayOfMonth": 4,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T23:30:00.000",
+        "us": 1775939400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-02-04T00:00:00.000",
+          "dateUs": 1770156000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-04T00:00:00.000",
+          "dateUs": 1772575200000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-04T00:00:00.000",
+          "dateUs": 1775250000000000,
+          "recurringTemplateId": "df4",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-05-04T00:00:00.000",
+      "nextOccurrenceUs": 1777842000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T22:59:00.000",
+        "us": 1775332740000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-04T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T23:30:00.000",
+      "nextOccurrenceUs": 1775939400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:00:00.000",
+        "us": 1775332800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-04T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T23:30:00.000",
+      "nextOccurrenceUs": 1775939400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T23:30:00.000",
+      "nextOccurrenceUs": 1775939400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:00:00.000",
+        "us": 1775336400000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-05T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-11T23:30:00.000",
+      "nextOccurrenceUs": 1775939400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T22:30:00.000",
+        "us": 1775935800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-11T23:30:00.000",
+          "dateUs": 1775939400000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-11T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-18T23:30:00.000",
+      "nextOccurrenceUs": 1776544200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly cursor in the fold hour",
+      "template": {
+        "id": "df5",
+        "type": "expense",
+        "description": "df5",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-04-04T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-11T23:30:00.000",
+        "us": 1775939400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-04-04T23:30:00.000",
+          "dateUs": 1775334600000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-11T23:30:00.000",
+          "dateUs": 1775939400000000,
+          "recurringTemplateId": "df5",
+          "createdAt": "2026-04-11T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-18T23:30:00.000",
+      "nextOccurrenceUs": 1776544200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly fold hour, clock at either 23:30",
+      "template": {
+        "id": "df6",
+        "type": "expense",
+        "description": "df6",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-28T23:30:00.000",
+        "nextOccurrence": "2026-03-28T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-04T23:30:00.000",
+        "us": 1775334600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-28T23:30:00.000",
+          "dateUs": 1774733400000000,
+          "recurringTemplateId": "df6",
+          "createdAt": "2026-04-04T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T00:30:00.000",
+      "nextOccurrenceUs": 1775338200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-28T23:59:59.999",
+        "us": 1774735199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-28T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-03-29T01:00:00.000",
+      "nextOccurrenceUs": 1774735200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:30:00.000",
+        "us": 1774737000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:00:00.000",
+      "nextOccurrenceUs": 1775340000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774735200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:00:00.000",
+      "nextOccurrenceUs": 1775340000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T12:00:00.000",
+        "us": 1774774800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:00:00.000",
+      "nextOccurrenceUs": 1775340000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:30:00.000",
+        "us": 1775338200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T01:00:00.000",
+          "dateUs": 1775340000000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:00:00.000",
+      "nextOccurrenceUs": 1775944800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut spring gap",
+      "template": {
+        "id": "bw1",
+        "type": "expense",
+        "description": "bw1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-22T00:00:00.000",
+        "nextOccurrence": "2026-03-22T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-20T09:15:00.000",
+        "us": 1776665700000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-03-22T00:00:00.000",
+          "dateUs": 1774130400000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T01:00:00.000",
+          "dateUs": 1775340000000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-12T01:00:00.000",
+          "dateUs": 1775944800000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-19T01:00:00.000",
+          "dateUs": 1776549600000000,
+          "recurringTemplateId": "bw1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-26T01:00:00.000",
+      "nextOccurrenceUs": 1777154400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-28T23:59:59.999",
+        "us": 1774735199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-28T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-03-29T01:00:00.000",
+      "nextOccurrenceUs": 1774735200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:30:00.000",
+        "us": 1774737000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:00:00.000",
+      "nextOccurrenceUs": 1775944800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774735200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:00:00.000",
+      "nextOccurrenceUs": 1775944800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T12:00:00.000",
+        "us": 1774774800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:00:00.000",
+      "nextOccurrenceUs": 1775944800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:30:00.000",
+        "us": 1775338200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:00:00.000",
+      "nextOccurrenceUs": 1775944800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst biweekly across the Beirut gap",
+      "template": {
+        "id": "bw2",
+        "type": "expense",
+        "description": "bw2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "biweekly",
+        "startDate": "2026-03-15T00:00:00.000",
+        "nextOccurrence": "2026-03-15T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-20T09:15:00.000",
+        "us": 1776665700000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-03-15T00:00:00.000",
+          "dateUs": 1773525600000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-12T01:00:00.000",
+          "dateUs": 1775944800000000,
+          "recurringTemplateId": "bw2",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-26T01:00:00.000",
+      "nextOccurrenceUs": 1777154400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-28T23:59:59.999",
+        "us": 1774735199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-28T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-28T23:59:59.999",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-03-29T01:00:00.000",
+      "nextOccurrenceUs": 1774735200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:30:00.000",
+        "us": 1774737000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-29T00:00:00.000",
+      "nextOccurrenceUs": 1777410000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774735200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-29T00:00:00.000",
+      "nextOccurrenceUs": 1777410000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T12:00:00.000",
+        "us": 1774774800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-29T00:00:00.000",
+      "nextOccurrenceUs": 1777410000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:30:00.000",
+        "us": 1775338200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-29T00:00:00.000",
+      "nextOccurrenceUs": 1777410000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 29 through the Beirut gap",
+      "template": {
+        "id": "bm1",
+        "type": "expense",
+        "description": "bm1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-01-29T00:00:00.000",
+        "nextOccurrence": "2026-01-29T00:00:00.000",
+        "dayOfMonth": 29,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-20T09:15:00.000",
+        "us": 1776665700000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-01-29T00:00:00.000",
+          "dateUs": 1769637600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-02-28T00:00:00.000",
+          "dateUs": 1772229600000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-03-29T01:00:00.000",
+          "dateUs": 1774735200000000,
+          "recurringTemplateId": "bm1",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-29T00:00:00.000",
+      "nextOccurrenceUs": 1777410000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-28T23:59:59.999",
+        "us": 1774735199999000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [],
+      "nextOccurrence": "2026-03-29T01:30:00.000",
+      "nextOccurrenceUs": 1774737000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:30:00.000",
+        "us": 1774737000000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-29T01:30:00.000",
+          "dateUs": 1774737000000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-03-29T01:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:30:00.000",
+      "nextOccurrenceUs": 1775341800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T01:00:00.000",
+        "us": 1774735200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-29T01:30:00.000",
+          "dateUs": 1774737000000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-03-29T01:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:30:00.000",
+      "nextOccurrenceUs": 1775341800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-03-29T12:00:00.000",
+        "us": 1774774800000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-29T01:30:00.000",
+          "dateUs": 1774737000000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-03-29T12:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-05T01:30:00.000",
+      "nextOccurrenceUs": 1775341800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-05T00:30:00.000",
+        "us": 1775338200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-03-29T01:30:00.000",
+          "dateUs": 1774737000000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T01:30:00.000",
+          "dateUs": 1775341800000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-05T00:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-12T01:30:00.000",
+      "nextOccurrenceUs": 1775946600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly starting on the Beirut gap day",
+      "template": {
+        "id": "bw3",
+        "type": "expense",
+        "description": "bw3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-03-29T01:30:00.000",
+        "nextOccurrence": "2026-03-29T01:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 7,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-04-20T09:15:00.000",
+        "us": 1776665700000000,
+        "isUtc": false,
+        "weekday": 1
+      },
+      "generated": [
+        {
+          "date": "2026-03-29T01:30:00.000",
+          "dateUs": 1774737000000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-05T01:30:00.000",
+          "dateUs": 1775341800000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-12T01:30:00.000",
+          "dateUs": 1775946600000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-04-19T01:30:00.000",
+          "dateUs": 1776551400000000,
+          "recurringTemplateId": "bw3",
+          "createdAt": "2026-04-20T09:15:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-04-26T01:30:00.000",
+      "nextOccurrenceUs": 1777156200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T22:59:00.000",
+        "us": 1792871940000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:00:00.000",
+        "us": 1792872000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792873800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792879200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T22:30:00.000",
+        "us": 1793478600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-31T22:30:00.000",
+          "dateUs": 1793478600000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-07T22:30:00.000",
+      "nextOccurrenceUs": 1794083400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly across the Beirut fold",
+      "template": {
+        "id": "bf1",
+        "type": "expense",
+        "description": "bf1",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T23:30:00.000",
+        "us": 1793482200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-31T22:30:00.000",
+          "dateUs": 1793478600000000,
+          "recurringTemplateId": "bf1",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-07T22:30:00.000",
+      "nextOccurrenceUs": 1794083400000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T22:59:00.000",
+        "us": 1792871940000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:00:00.000",
+        "us": 1792872000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792873800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792879200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T22:30:00.000",
+        "us": 1793478600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst monthly dom 24 with fold time",
+      "template": {
+        "id": "bf2",
+        "type": "expense",
+        "description": "bf2",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "monthly",
+        "startDate": "2026-08-24T23:30:00.000",
+        "nextOccurrence": "2026-08-24T23:30:00.000",
+        "dayOfMonth": 24,
+        "dayOfWeek": null,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T23:30:00.000",
+        "us": 1793482200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-08-24T23:30:00.000",
+          "dateUs": 1787603400000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-09-24T00:00:00.000",
+          "dateUs": 1790197200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf2",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-24T00:00:00.000",
+      "nextOccurrenceUs": 1795471200000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly Beirut fold hour, clock at either 23:30",
+      "template": {
+        "id": "bf3",
+        "type": "expense",
+        "description": "bf3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792873800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf3",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf3",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly Beirut fold hour, clock at either 23:30",
+      "template": {
+        "id": "bf3",
+        "type": "expense",
+        "description": "bf3",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T23:30:00.000",
+        "nextOccurrence": "2026-10-17T23:30:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792877400000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T23:30:00.000",
+          "dateUs": 1792269000000000,
+          "recurringTemplateId": "bf3",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T23:30:00.000",
+          "dateUs": 1792873800000000,
+          "recurringTemplateId": "bf3",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-31T22:30:00.000",
+      "nextOccurrenceUs": 1793478600000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T22:59:00.000",
+        "us": 1792871940000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T22:59:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-30T23:00:00.000",
+      "nextOccurrenceUs": 1793394000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:00:00.000",
+        "us": 1792872000000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T23:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-30T23:00:00.000",
+      "nextOccurrenceUs": 1793394000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-24T23:30:00.000",
+        "us": 1792873800000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-24T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-30T23:00:00.000",
+      "nextOccurrenceUs": 1793394000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-25T00:00:00.000",
+        "us": 1792879200000000,
+        "isUtc": false,
+        "weekday": 7
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-25T00:00:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-10-30T23:00:00.000",
+      "nextOccurrenceUs": 1793394000000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T22:30:00.000",
+        "us": 1793478600000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-30T23:00:00.000",
+          "dateUs": 1793394000000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T22:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-06T23:00:00.000",
+      "nextOccurrenceUs": 1793998800000000,
+      "isActive": true
+    },
+    {
+      "label": "dst weekly midnight across Beirut fold day",
+      "template": {
+        "id": "bf4",
+        "type": "expense",
+        "description": "bf4",
+        "amount": 10.0,
+        "category": "General",
+        "pattern": "weekly",
+        "startDate": "2026-10-17T00:00:00.000",
+        "nextOccurrence": "2026-10-17T00:00:00.000",
+        "dayOfMonth": null,
+        "dayOfWeek": 6,
+        "isActive": true
+      },
+      "now": {
+        "iso": "2026-10-31T23:30:00.000",
+        "us": 1793482200000000,
+        "isUtc": false,
+        "weekday": 6
+      },
+      "generated": [
+        {
+          "date": "2026-10-17T00:00:00.000",
+          "dateUs": 1792184400000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-24T00:00:00.000",
+          "dateUs": 1792789200000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        },
+        {
+          "date": "2026-10-30T23:00:00.000",
+          "dateUs": 1793394000000000,
+          "recurringTemplateId": "bf4",
+          "createdAt": "2026-10-31T23:30:00.000",
+          "amount": 10.0,
+          "type": "expense"
+        }
+      ],
+      "nextOccurrence": "2026-11-06T23:00:00.000",
+      "nextOccurrenceUs": 1793998800000000,
+      "isActive": true
+    }
+  ]
+}

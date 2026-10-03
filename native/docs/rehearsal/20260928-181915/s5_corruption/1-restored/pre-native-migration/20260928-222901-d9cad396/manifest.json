@@ -1,0 +1,20 @@
+{
+  "appGroupSha256" : "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1",
+  "appVersion" : "4.0.0",
+  "createdAt" : "2026-09-28T22:29:01Z",
+  "files" : [
+    {
+      "name" : "financial_store_v2.backup.json",
+      "sha256" : "dd0ed8c18af02ce77a3be67be5188fb6056203e8806caeb15c893c2f4764f65c",
+      "size" : 41894
+    },
+    {
+      "name" : "financial_store_v2.json",
+      "sha256" : "fc38ff9e3058b8a2f2c02387c8ec580dbbea106857c13bd377e4e99245a1eef5",
+      "size" : 20945
+    }
+  ],
+  "osVersion" : "Version 27.0 (Build 24A434)",
+  "preferencesSha256" : "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1",
+  "primaryChecksum" : "unverified:fc38ff9e3058b8a2f2c02387c8ec580dbbea106857c13bd377e4e99245a1eef5"
+}

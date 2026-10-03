@@ -24,3 +24,17 @@ budget_app/lib/.env
 budget_app/.env
 budget_app/.env
 budget_app/.env
+
+# Beads local issue tracker (local-only)
+.beads/
+.beads.gate.lock
+
+# Native Swift build products
+native/**/.build/
+native/**/DerivedData/
+native/**/*.xcuserstate
+native/**/xcuserdata/
+native/**/__pycache__/
+
+# OpenAI key for voice entry (native/docs/FULL_APP_PLAN.md section 6)
+native/Config/Secrets.xcconfig

@@ -1,0 +1,340 @@
+{
+  "cases": [
+    {
+      "fields": [
+        2026,
+        9,
+        28,
+        9,
+        15
+      ],
+      "formats": {
+        "MMMM": "September",
+        "MMM": "Sep",
+        "y": "2026",
+        "MMMd": "Sep 28",
+        "yMMMd": "Sep 28, 2026",
+        "MMM d, y": "Sep 28, 2026",
+        "MMM dd, yyyy": "Sep 28, 2026",
+        "yMMMM": "September 2026",
+        "MMMM y": "September 2026",
+        "MMMM yyyy": "September 2026",
+        "yMMMMd": "September 28, 2026",
+        "MMM ''yy": "Sep '26",
+        "EEEE": "Monday",
+        "EEEE, MMM dd, yyyy": "Monday, Sep 28, 2026",
+        "yyyy-MM-dd": "2026-09-28",
+        "yyyy-MM": "2026-09",
+        "jm": "9:15 AM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        1,
+        1,
+        0,
+        0
+      ],
+      "formats": {
+        "MMMM": "January",
+        "MMM": "Jan",
+        "y": "2026",
+        "MMMd": "Jan 1",
+        "yMMMd": "Jan 1, 2026",
+        "MMM d, y": "Jan 1, 2026",
+        "MMM dd, yyyy": "Jan 01, 2026",
+        "yMMMM": "January 2026",
+        "MMMM y": "January 2026",
+        "MMMM yyyy": "January 2026",
+        "yMMMMd": "January 1, 2026",
+        "MMM ''yy": "Jan '26",
+        "EEEE": "Thursday",
+        "EEEE, MMM dd, yyyy": "Thursday, Jan 01, 2026",
+        "yyyy-MM-dd": "2026-01-01",
+        "yyyy-MM": "2026-01",
+        "jm": "12:00 AM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        12,
+        31,
+        23,
+        59
+      ],
+      "formats": {
+        "MMMM": "December",
+        "MMM": "Dec",
+        "y": "2026",
+        "MMMd": "Dec 31",
+        "yMMMd": "Dec 31, 2026",
+        "MMM d, y": "Dec 31, 2026",
+        "MMM dd, yyyy": "Dec 31, 2026",
+        "yMMMM": "December 2026",
+        "MMMM y": "December 2026",
+        "MMMM yyyy": "December 2026",
+        "yMMMMd": "December 31, 2026",
+        "MMM ''yy": "Dec '26",
+        "EEEE": "Thursday",
+        "EEEE, MMM dd, yyyy": "Thursday, Dec 31, 2026",
+        "yyyy-MM-dd": "2026-12-31",
+        "yyyy-MM": "2026-12",
+        "jm": "11:59 PM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        5,
+        8,
+        12,
+        0
+      ],
+      "formats": {
+        "MMMM": "May",
+        "MMM": "May",
+        "y": "2026",
+        "MMMd": "May 8",
+        "yMMMd": "May 8, 2026",
+        "MMM d, y": "May 8, 2026",
+        "MMM dd, yyyy": "May 08, 2026",
+        "yMMMM": "May 2026",
+        "MMMM y": "May 2026",
+        "MMMM yyyy": "May 2026",
+        "yMMMMd": "May 8, 2026",
+        "MMM ''yy": "May '26",
+        "EEEE": "Friday",
+        "EEEE, MMM dd, yyyy": "Friday, May 08, 2026",
+        "yyyy-MM-dd": "2026-05-08",
+        "yyyy-MM": "2026-05",
+        "jm": "12:00 PM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        2,
+        3,
+        12,
+        5
+      ],
+      "formats": {
+        "MMMM": "February",
+        "MMM": "Feb",
+        "y": "2026",
+        "MMMd": "Feb 3",
+        "yMMMd": "Feb 3, 2026",
+        "MMM d, y": "Feb 3, 2026",
+        "MMM dd, yyyy": "Feb 03, 2026",
+        "yMMMM": "February 2026",
+        "MMMM y": "February 2026",
+        "MMMM yyyy": "February 2026",
+        "yMMMMd": "February 3, 2026",
+        "MMM ''yy": "Feb '26",
+        "EEEE": "Tuesday",
+        "EEEE, MMM dd, yyyy": "Tuesday, Feb 03, 2026",
+        "yyyy-MM-dd": "2026-02-03",
+        "yyyy-MM": "2026-02",
+        "jm": "12:05 PM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        6,
+        14,
+        13,
+        1
+      ],
+      "formats": {
+        "MMMM": "June",
+        "MMM": "Jun",
+        "y": "2026",
+        "MMMd": "Jun 14",
+        "yMMMd": "Jun 14, 2026",
+        "MMM d, y": "Jun 14, 2026",
+        "MMM dd, yyyy": "Jun 14, 2026",
+        "yMMMM": "June 2026",
+        "MMMM y": "June 2026",
+        "MMMM yyyy": "June 2026",
+        "yMMMMd": "June 14, 2026",
+        "MMM ''yy": "Jun '26",
+        "EEEE": "Sunday",
+        "EEEE, MMM dd, yyyy": "Sunday, Jun 14, 2026",
+        "yyyy-MM-dd": "2026-06-14",
+        "yyyy-MM": "2026-06",
+        "jm": "1:01 PM"
+      }
+    },
+    {
+      "fields": [
+        2026,
+        7,
+        19,
+        11,
+        59
+      ],
+      "formats": {
+        "MMMM": "July",
+        "MMM": "Jul",
+        "y": "2026",
+        "MMMd": "Jul 19",
+        "yMMMd": "Jul 19, 2026",
+        "MMM d, y": "Jul 19, 2026",
+        "MMM dd, yyyy": "Jul 19, 2026",
+        "yMMMM": "July 2026",
+        "MMMM y": "July 2026",
+        "MMMM yyyy": "July 2026",
+        "yMMMMd": "July 19, 2026",
+        "MMM ''yy": "Jul '26",
+        "EEEE": "Sunday",
+        "EEEE, MMM dd, yyyy": "Sunday, Jul 19, 2026",
+        "yyyy-MM-dd": "2026-07-19",
+        "yyyy-MM": "2026-07",
+        "jm": "11:59 AM"
+      }
+    },
+    {
+      "fields": [
+        2000,
+        3,
+        5,
+        0,
+        30
+      ],
+      "formats": {
+        "MMMM": "March",
+        "MMM": "Mar",
+        "y": "2000",
+        "MMMd": "Mar 5",
+        "yMMMd": "Mar 5, 2000",
+        "MMM d, y": "Mar 5, 2000",
+        "MMM dd, yyyy": "Mar 05, 2000",
+        "yMMMM": "March 2000",
+        "MMMM y": "March 2000",
+        "MMMM yyyy": "March 2000",
+        "yMMMMd": "March 5, 2000",
+        "MMM ''yy": "Mar '00",
+        "EEEE": "Sunday",
+        "EEEE, MMM dd, yyyy": "Sunday, Mar 05, 2000",
+        "yyyy-MM-dd": "2000-03-05",
+        "yyyy-MM": "2000-03",
+        "jm": "12:30 AM"
+      }
+    },
+    {
+      "fields": [
+        1999,
+        10,
+        9,
+        22,
+        0
+      ],
+      "formats": {
+        "MMMM": "October",
+        "MMM": "Oct",
+        "y": "1999",
+        "MMMd": "Oct 9",
+        "yMMMd": "Oct 9, 1999",
+        "MMM d, y": "Oct 9, 1999",
+        "MMM dd, yyyy": "Oct 09, 1999",
+        "yMMMM": "October 1999",
+        "MMMM y": "October 1999",
+        "MMMM yyyy": "October 1999",
+        "yMMMMd": "October 9, 1999",
+        "MMM ''yy": "Oct '99",
+        "EEEE": "Saturday",
+        "EEEE, MMM dd, yyyy": "Saturday, Oct 09, 1999",
+        "yyyy-MM-dd": "1999-10-09",
+        "yyyy-MM": "1999-10",
+        "jm": "10:00 PM"
+      }
+    },
+    {
+      "fields": [
+        2100,
+        4,
+        22,
+        1,
+        2
+      ],
+      "formats": {
+        "MMMM": "April",
+        "MMM": "Apr",
+        "y": "2100",
+        "MMMd": "Apr 22",
+        "yMMMd": "Apr 22, 2100",
+        "MMM d, y": "Apr 22, 2100",
+        "MMM dd, yyyy": "Apr 22, 2100",
+        "yMMMM": "April 2100",
+        "MMMM y": "April 2100",
+        "MMMM yyyy": "April 2100",
+        "yMMMMd": "April 22, 2100",
+        "MMM ''yy": "Apr '00",
+        "EEEE": "Thursday",
+        "EEEE, MMM dd, yyyy": "Thursday, Apr 22, 2100",
+        "yyyy-MM-dd": "2100-04-22",
+        "yyyy-MM": "2100-04",
+        "jm": "1:02 AM"
+      }
+    },
+    {
+      "fields": [
+        9,
+        8,
+        7,
+        6,
+        5
+      ],
+      "formats": {
+        "MMMM": "August",
+        "MMM": "Aug",
+        "y": "9",
+        "MMMd": "Aug 7",
+        "yMMMd": "Aug 7, 9",
+        "MMM d, y": "Aug 7, 9",
+        "MMM dd, yyyy": "Aug 07, 0009",
+        "yMMMM": "August 9",
+        "MMMM y": "August 9",
+        "MMMM yyyy": "August 0009",
+        "yMMMMd": "August 7, 9",
+        "MMM ''yy": "Aug '09",
+        "EEEE": "Friday",
+        "EEEE, MMM dd, yyyy": "Friday, Aug 07, 0009",
+        "yyyy-MM-dd": "0009-08-07",
+        "yyyy-MM": "0009-08",
+        "jm": "6:05 AM"
+      }
+    },
+    {
+      "fields": [
+        2024,
+        11,
+        3,
+        18,
+        45
+      ],
+      "formats": {
+        "MMMM": "November",
+        "MMM": "Nov",
+        "y": "2024",
+        "MMMd": "Nov 3",
+        "yMMMd": "Nov 3, 2024",
+        "MMM d, y": "Nov 3, 2024",
+        "MMM dd, yyyy": "Nov 03, 2024",
+        "yMMMM": "November 2024",
+        "MMMM y": "November 2024",
+        "MMMM yyyy": "November 2024",
+        "yMMMMd": "November 3, 2024",
+        "MMM ''yy": "Nov '24",
+        "EEEE": "Sunday",
+        "EEEE, MMM dd, yyyy": "Sunday, Nov 03, 2024",
+        "yyyy-MM-dd": "2024-11-03",
+        "yyyy-MM": "2024-11",
+        "jm": "6:45 PM"
+      }
+    }
+  ]
+}
