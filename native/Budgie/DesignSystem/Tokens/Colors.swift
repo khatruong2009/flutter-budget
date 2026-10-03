@@ -35,6 +35,8 @@ enum BudgieColor {
     static let accent = dynamic(light: 0x1D6646, dark: 0xB3ADFF)
     /// Income, money kept and good changes.
     static let income = dynamic(light: 0x1D6646, dark: 0x5EE6B0)
+    /// Money spent on charts: ink in light mode, coral in dark mode.
+    static let spent = dynamic(light: 0x1A1A17, dark: 0xFF8B7B)
     /// Expense, over-limit and errors (`getDanger`).
     static let danger = dynamic(light: 0xA63D24, dark: 0xFF8B7B)
     static let warning = dynamic(light: 0x7E5300, dark: 0xFFC861)
@@ -49,6 +51,27 @@ enum BudgieColor {
     /// of the income and expense button fills.
     static let expenseFixed = dynamic(light: 0xA63D24, dark: 0xA3372A)
     static let incomeFixed = dynamic(light: 0x1D6646, dark: 0x0E6B4C)
+
+    // Selection (month chips, segmented toggles): an ink chip with a paper
+    // label in light mode, a lilac tint with a lilac label in dark mode.
+    static let selectionFill = dynamic(light: 0x1A1A17, dark: 0x29B3_ADFF, alpha: true)
+    static let selectionText = dynamic(light: 0xF3EFE6, dark: 0xB3ADFF)
+    static let selectionBorder = dynamic(light: 0x1A1A17, dark: 0x66B3_ADFF, alpha: true)
+
+    // The feature card (Home's Safe to spend, the Goals summary): an ink
+    // block in light mode, a mint-tinted tile in dark mode.
+    static let featureFill = dynamic(light: 0x1A1A17, dark: 0x10231F)
+    static let featureBorder = dynamic(light: 0x1A1A17, dark: 0x475E_E6B0, alpha: true)
+    static let featureText = dynamic(light: 0xF3EFE6, dark: 0xEEF1F5)
+    static let featureSecondary = dynamic(light: 0xC2BBAA, dark: 0x9AA3B2)
+    /// The feature card's figure: paper on ink, mint on the dark tile.
+    static let featureAmount = dynamic(light: 0xF3EFE6, dark: 0x5EE6B0)
+    /// A shortfall on the feature card.
+    static let featureDanger = dynamic(light: 0xF0A08C, dark: 0xFF8B7B)
+    /// The feature card's chevron circle and ring track.
+    static let featureControl = dynamic(light: 0x1FF3_EFE6, dark: 0x0FFF_FFFF, alpha: true)
+    /// The feature card's progress ring.
+    static let featureRing = dynamic(light: 0x8ED0AA, dark: 0x5EE6B0)
 
     // Flow charts
     /// The net cash flow bars' zero baseline: white 12% dark, black 12% light.

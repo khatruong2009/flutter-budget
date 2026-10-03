@@ -22,8 +22,10 @@ extension TextSpec {
     static let heroDecimals = TextSpec(face: .gabaritoBold, size: 32, height: 1.0, tabular: true, relativeTo: .largeTitle)
     static let heroMedium = TextSpec(face: .gabaritoExtraBold, size: 48, tracking: -1.8, height: 1.0, tabular: true, relativeTo: .largeTitle)
     static let heroSmall = TextSpec(face: .gabaritoExtraBold, size: 34, tracking: -1, height: 1.1, tabular: true, relativeTo: .largeTitle)
-    static let pageTitle = TextSpec(face: .gabaritoExtraBold, size: 26, tracking: -0.6, relativeTo: .title)
-    static let sectionHeader = TextSpec(face: .gabaritoBold, size: 20, tracking: -0.3, relativeTo: .title3)
+    static let pageTitle = TextSpec(face: .gabaritoExtraBold, size: 30, tracking: -0.9, relativeTo: .title)
+    static let sectionHeader = TextSpec(face: .gabaritoBold, size: 21, tracking: -0.2, relativeTo: .title3)
+    /// A section's text link ("See all", "Edit").
+    static let textLink = TextSpec(face: .gabaritoSemiBold, size: 15, relativeTo: .subheadline)
     static let cardTitle = TextSpec(face: .gabaritoBold, size: 17, height: 1.25, relativeTo: .headline)
     static let goalTitle = TextSpec(face: .gabaritoBold, size: 18, tracking: -0.3, height: 1.25, relativeTo: .headline)
     static let rowTitle = TextSpec(face: .gabaritoSemiBold, size: 15, height: 1.25, relativeTo: .body)

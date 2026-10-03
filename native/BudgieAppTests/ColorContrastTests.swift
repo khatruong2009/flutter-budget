@@ -121,6 +121,34 @@ final class ColorContrastTests: XCTestCase {
         assertAtLeast(aa, white, primary, "white on primary")
     }
 
+    /// The selected chip's and segment's label on the selection fill, which
+    /// is translucent in dark mode (composited over the page and the track).
+    func testSelectionLabelOnItsFill() {
+        for dark in [false, true] {
+            let fill = UIColor(BudgieColor.selectionFill).resolvedColor(
+                with: UITraitCollection(userInterfaceStyle: dark ? .dark : .light))
+            for (name, base) in [("background", BudgieColor.background), ("track", BudgieColor.track)] {
+                assertAtLeast(
+                    aa, resolve(BudgieColor.selectionText, dark: dark), rgb(fill, over: resolve(base, dark: dark)),
+                    "\(dark ? "dark" : "light") selectionText on selectionFill over \(name)")
+            }
+        }
+    }
+
+    /// Text on the feature card (Home's Safe to spend, the Goals summary).
+    func testFeatureCardText() {
+        for dark in [false, true] {
+            let fill = resolve(BudgieColor.featureFill, dark: dark)
+            let tokens: [(String, Color)] = [
+                ("featureText", BudgieColor.featureText), ("featureSecondary", BudgieColor.featureSecondary),
+                ("featureAmount", BudgieColor.featureAmount), ("featureDanger", BudgieColor.featureDanger),
+            ]
+            for (name, color) in tokens {
+                assertAtLeast(aa, resolve(color, dark: dark), fill, "\(dark ? "dark" : "light") \(name) on featureFill")
+            }
+        }
+    }
+
     /// The buttons' white labels on both stops of the form and sheet gradients.
     func testWhiteLabelsOnTheButtonGradients() {
         let gradients: [(String, [Color])] = [

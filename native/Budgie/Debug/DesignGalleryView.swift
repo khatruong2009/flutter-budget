@@ -129,7 +129,7 @@ struct DesignGalleryView: View {
 
     private var typography: some View {
         VStack(alignment: .leading, spacing: 6) {
-            SectionHeader(title: "Type", link: "SEE ALL") {}
+            SectionHeader(title: "Type", link: "See all") {}
             let samples: [(String, TextSpec)] = [
                 ("Net worth", .pageTitle), ("$48,210", .heroMedium), ("$1,284", .heroSmall), ("Budgets", .sectionHeader),
                 ("Growth", .cardTitle), ("Emergency fund", .goalTitle), ("General", .rowTitle), ("$42.50 of $100", .rowSubtitle),
@@ -145,7 +145,7 @@ struct DesignGalleryView: View {
 
     private var cards: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SectionHeader(title: "Budgets", link: "EDIT") {}
+            SectionHeader(title: "Budgets", link: "Edit") {}
             HStack(spacing: 12) {
                 statCard(title: "Income", dot: BudgieColor.income, value: "$3,200", delta: "+100.0% vs August")
                 statCard(title: "Expenses", dot: BudgieColor.danger, value: "$43", delta: "+100.0% vs August")

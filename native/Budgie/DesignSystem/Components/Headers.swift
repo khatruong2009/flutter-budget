@@ -57,12 +57,12 @@ extension BudgieHeader where Trailing == EmptyView, Accessory == EmptyView {
     }
 }
 
-/// Section header (`SectionHeader`): title plus an optional mono accent link
-/// ("EDIT", "SEE ALL"), baseline aligned, inset 4.
+/// Section header (`SectionHeader`): title plus an optional accent text link
+/// ("Edit", "See all"), baseline aligned, inset 4.
 struct SectionHeader: View {
     let title: String
     var link: String? = nil
-    /// VoiceOver label for the link; defaults to "<Link>, <title>".
+    /// VoiceOver label for the link; defaults to "<link>, <title>".
     var linkAccessibilityLabel: String? = nil
     var action: (() -> Void)? = nil
 
@@ -80,15 +80,15 @@ struct SectionHeader: View {
                     taps += 1
                     action?()
                 } label: {
-                    // The text is about 14pt tall and 32-60pt wide; the tap
+                    // The text is about 18pt tall and 30-50pt wide; the tap
                     // area is 44 x 44.
-                    Text(link).textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
-                        .tapArea(horizontal: 6, vertical: 15)
+                    Text(link).textStyle(.textLink).foregroundStyle(BudgieColor.accent)
+                        .tapArea(horizontal: 8, vertical: 13)
                 }
                 .buttonStyle(.plain)
                 .disabled(action == nil)
                 .sensoryFeedback(.impact(weight: .light), trigger: taps)
-                .accessibilityLabel(linkAccessibilityLabel ?? "\(link.capitalized), \(title)")
+                .accessibilityLabel(linkAccessibilityLabel ?? "\(link), \(title)")
             }
         }
         .padding(.horizontal, 4)

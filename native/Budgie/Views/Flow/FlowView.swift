@@ -45,7 +45,7 @@ struct FlowView: View {
                 .padding(.top, 16)
 
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Transactions", link: "SEE ALL", linkAccessibilityLabel: "See all transactions") {
+                    SectionHeader(title: "Transactions", link: "See all", linkAccessibilityLabel: "See all transactions") {
                         page = .transactions
                     }
                     TransactionsPreviewCard(rows: model.ledger.recent(3), formatter: formatter) { page = .transactions }
