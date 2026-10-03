@@ -3,7 +3,8 @@ import XCTest
 /// Settings > DATA backup rows end to end through the system share sheet
 /// and document picker: Export backup opens the share sheet (cancelled: no
 /// message), a corrupt file gives Flutter's error, and a backup is
-/// restored after its confirmation (Cancel first changes nothing).
+/// restored after its confirmation (Cancel first changes nothing), and a
+/// backup that turns App Lock on locks the app.
 ///
 /// Erased simulators only. Restoring replaces the app's data with the
 /// fixture's three transactions (dated last month, so a later suite's
@@ -80,6 +81,32 @@ final class BackupUITests: XCTestCase {
         for name in ["UITest Groceries", "UITest Rent", "UITest Paycheck"] {
             XCTAssertTrue(screen.containing(name).waitForExistence(timeout: 10), name)
         }
+    }
+
+    /// Restoring a backup that turns App Lock on locks this session at
+    /// once: a restore is not an authentication (only the Settings toggle,
+    /// which authenticates first, keeps the session open). With every
+    /// authentication refused (DEBUG hook) the lock screen stays up.
+    func testRestoreThatTurnsAppLockOnLocksTheApp() throws {
+        app.terminate()
+        app.launchEnvironment["BUDGIE_UITEST_AUTH_SUCCESSES"] = "0"
+        try screen.launchOverTestData()
+        screen.openSettings()
+        screen.tapRow("settings.importBackup")
+        screen.pick("Budgie UITest Locked Backup")
+        screen.element("backup.confirm.confirm").tapSettled()
+        let lock = screen.element("applock.lock")
+        XCTAssertTrue(lock.waitForExistence(timeout: 15), "the lock screen after the restore")
+        XCTAssertFalse(screen.waitUntil(3) { !lock.exists }, "nothing unlocks it without authenticating")
+
+        // Put the unlocked fixture back for the suites that follow: the
+        // relaunch's lock screen unlocks with one authentication the hook
+        // lets succeed.
+        app.terminate()
+        app.launchEnvironment["BUDGIE_UITEST_AUTH_SUCCESSES"] = "1"
+        try screen.launchOverTestData()
+        screen.openSettings()
+        screen.restoreFixtureBackup()
     }
 }
 

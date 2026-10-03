@@ -10,7 +10,8 @@
 # is touched. Those two suites replace the app's data, so they belong on an
 # erased simulator only: they launch the app with BUDGIE_UITEST_DATA_GUARD=1,
 # which refuses a store UI tests did not make (the tests then skip). Files: "Budgie UITest Backup.json" (schema 3, three
-# transactions), "Budgie UITest Corrupt.json", "Budgie UITest Import.csv"
+# transactions), "Budgie UITest Locked Backup.json" (the same with App Lock
+# on), "Budgie UITest Corrupt.json", "Budgie UITest Import.csv"
 # (two duplicates of the backup's rows, two new rows, one bad row),
 # "Budgie UITest Duplicates.csv" and "Budgie UITest Bad Header.csv".
 set -euo pipefail
@@ -72,6 +73,10 @@ cat > "$STORAGE/Budgie UITest Backup.json" <<EOF
   }
 }
 EOF
+
+# The same backup with App Lock on (BackupUITests: a restore must not
+# unlock the session it locks).
+sed 's/"appLockEnabled": false/"appLockEnabled": true/' "$STORAGE/Budgie UITest Backup.json" > "$STORAGE/Budgie UITest Locked Backup.json"
 
 printf '{ "schemaVersion": 3, "data": ' > "$STORAGE/Budgie UITest Corrupt.json"
 

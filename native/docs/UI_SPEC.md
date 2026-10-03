@@ -865,8 +865,8 @@ ALL, Flow preview, Flow SEE ALL, Spend category drill-in), and adds
 
 Shown once, when `flutter.onboarding_completed` is not true
 (`model.showsOnboarding`, read at bootstrap): `MainView` shows
-`OnboardingView` instead of the tabs, before `.appLock()`, so the lock
-screen and privacy cover sit above it (not a `fullScreenCover`), and
+`OnboardingView` instead of the tabs; the lock
+screen and privacy cover (`AppLockWindow`) sit above it (not a `fullScreenCover`), and
 VoiceOver cannot reach it while locked. Skip and
 "Start budgeting" call `model.completeOnboarding()` (`OnboardingFlag
 .markCompleted`: the key is removed, then set to a bool true); the tabs replace the
@@ -910,7 +910,11 @@ When `appSettings.appLockEnabled`: an opaque privacy cover whenever the
 scene is inactive/background; on returning after
 `autoLockTimeoutSeconds` (0 = immediately), or at launch, require
 `LAContext.evaluatePolicy(.deviceOwnerAuthentication)` before showing data.
-The lock never blocks the bootstrap or saves.
+The lock never blocks the bootstrap or saves. Only an authentication
+unlocks the session: the lock screen's own, or the Settings toggle's (it
+authenticates, then calls `markUnlocked()` before turning the lock on). A
+backup restore that turns App Lock on locks the session at once
+(BackupUITests `testRestoreThatTurnsAppLockOnLocksTheApp`).
 
 The cover and the lock screen are drawn in a second `UIWindow` of the same
 scene (`AppLockWindow`, `windowLevel = .alert + 1`), not as an overlay on

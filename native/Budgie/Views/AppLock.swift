@@ -42,26 +42,6 @@ enum DeviceAuth {
     }
 }
 
-extension View {
-    /// UI_SPEC "App lock": turning the lock on keeps the open session
-    /// unlocked. The cover and the lock screen are not drawn here: they live
-    /// in `AppLockWindow`, above every sheet.
-    func appLock() -> some View { modifier(AppLockModifier()) }
-}
-
-private struct AppLockModifier: ViewModifier {
-    @Environment(AppModel.self) private var model
-
-    func body(content: Content) -> some View {
-        content
-            .onChange(of: model.data?.appSettings.appLockEnabled == true) { _, isOn in
-                // Turning the lock on (Settings authenticated first) must not
-                // lock the session that is already open.
-                if isOn { model.markUnlocked() }
-            }
-    }
-}
-
 /// The privacy cover and the lock screen, in a second window of the same
 /// scene above the app's own (UI_SPEC "App lock"). Presentations (SwiftUI
 /// sheets, dialogs, the over-full-screen `AddFormHost`) live inside the app

@@ -41,7 +41,6 @@ struct MainView: View {
         .onChange(of: model.canOpenRoutes) { _, _ in AddFormPresenter.openPendingAdd(model) }
         // Above the tab bar (49pt).
         .toastHost(bottomInset: model.showsOnboarding ? 0 : 49)
-        .appLock()
     }
 
     /// `$tab`, beginning the `tabSwitch` interval at the tap.
