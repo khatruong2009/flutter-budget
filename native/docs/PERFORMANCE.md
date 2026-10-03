@@ -71,10 +71,11 @@ protectedData=<available|unavailable>`, `protected data available after <s>s`
 `store loaded revision=<n>` (or `store load failed <kind>`). No financial data.
 
 **Glow A/B.** A Debug build started with `BUDGIE_PERF_NO_GLOW=1` (pass
-`TEST_RUNNER_BUDGIE_PERF_NO_GLOW=1`) draws no `.glow` / `.textGlow` /
-`GlowHalo`, no blur behind the Home hero number and no per-row shadow on Home
-SEE ALL. It does not remove the FAB's second (black) shadow or the
-`DialogShadow` black layer. Release builds ignore the variable.
+`TEST_RUNNER_BUDGIE_PERF_NO_GLOW=1`) draws no per-row shadow on Home SEE ALL.
+Since the 2026-10-03 redesign the app draws no glows, text glows or hero
+blur at all, so the glow numbers below describe the earlier build. It does
+not remove the FAB's shadow or the `DialogShadow` black layer. Release
+builds ignore the variable.
 
 **Environment of the numbers below.** MacBookPro18,4 (M1 Max, 10 cores, 64 GB),
 macOS 27.0, Xcode 27.0 (27A266a); simulator "Budgie-Agent-2" = iPhone 17

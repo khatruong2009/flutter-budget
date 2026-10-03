@@ -1323,6 +1323,48 @@ Ratios are WCAG 2 contrast; "text on chip" is the chip surface `#F1F1F7` /
 `#15151F`. Not every token pair is listed (see `ColorContrastTests` for the
 complete set, including each colour on its own tint).
 
+### Visual redesign (owner-approved 2026-10-03)
+
+The owner approved a new look for the whole app on 2026-10-03, designed on
+the canvas https://claude.ai/artifact/9v74CfEWe7LQAy5oenMvij. It changes
+only presentation: data, calculations and copy still match Flutter, except
+the copy changes listed here.
+
+- **Palette.** Every colour token changed (see UI_SPEC's table): "Paper" in
+  light mode (warm paper, ink, deep green, terracotta), "Midnight" in dark
+  mode (near-black, mint, coral, lilac). The values in "Colour tokens meet
+  WCAG AA" above are superseded; the AA rule still holds and
+  `ColorContrastTests` checks the new values. The chart and Spend rank
+  palettes are new too (`SpendPaletteTests`), in Flutter's slot order.
+- **No glows.** Glows, text glows, halos, the hero blur and the glow
+  underlay on chart lines are gone; cards are flat with a 1pt border and a
+  22pt radius. The add button keeps a soft drop shadow.
+- **Home.** The hero is a ring of the month's income split into spent and
+  kept, with the cash flow in whole units in the middle (still never a sign;
+  danger when negative), "34% kept" / "Short this month" / "Breaking even"
+  under it, and a legend with the exact spent and kept amounts. Flutter's
+  spend gauge and the "$X in · $Y out" subline are gone. The income and
+  expense tiles add a six-month sparkline and colour the change by whether
+  it is good (income up, expenses down) instead of by type. Safe to spend is
+  the feature card (ink block in light mode, mint tile in dark mode).
+  Budgets are two-column ring tiles (one column at accessibility sizes) with
+  the share used, and a dashed "Add a budget" button; the add row's
+  subtitle is now its VoiceOver hint. Recent rows tint the icon with the
+  category's colour. The Expense / Income pills stay (Home's only way to
+  add income; budgie-ou0.10).
+- **Shared.** Section links read "See all" / "Edit" in sentence case (were
+  mono "SEE ALL" / "EDIT"); page titles are 30pt, section titles 21pt. Month
+  chips (Worth and SEE ALL) are single-line capsules ("Sep 2026"), selected
+  in the selection fill. The Assets / Liabilities toggle is a segmented
+  track.
+- **Worth.** The hero is centred; the change pill has no border; the split
+  card puts its legend above a 12pt bar.
+- **Goals.** The summary is the feature card. A goal card shows the name and
+  status pill, "{saved} of {target}" with the percent, a 10pt bar in the
+  status colour and the pace line (Flutter's 84pt ring is gone).
+- **Spend.** The page title is "Spending" (Flutter: "Categories"), matching
+  the tab.
+
 ## Deliberate differences (not yet approved)
 
 None.

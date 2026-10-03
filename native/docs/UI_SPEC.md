@@ -6,25 +6,28 @@ files. Money is shown with `model.moneyFormatter` (a port of the Flutter
 formatter: same symbols, rounding and "Match device" = en_US), dates with
 `DartDateTime` fields (never `Date` arithmetic for stored values).
 
-Visual language: native SwiftUI (List/Form, NavigationStack, sheets) with the
-Flutter app's accent palette so it feels like the same product, not a
-pixel copy. Tokens live in `Budgie/Views/Theme.swift`:
+Visual language: native SwiftUI (List/Form, NavigationStack, sheets) with
+the owner-approved redesign of 2026-10-03 (PARITY_GAPS "Visual redesign"):
+one layout in both modes, flat cards (no glows), "Paper" colours in light
+mode and "Midnight" colours in dark mode. Tokens live in
+`Budgie/DesignSystem/Tokens/Colors.swift`:
 
-| Token | Light | Dark |
+| Token | Light (Paper) | Dark (Midnight) |
 |---|---|---|
-| accent | `#5453DD` (Flutter `#6366F1`) | `#818CF8` |
-| income | `#07744F` (Flutter `#10B981`) | `#34D399` |
-| expense / danger | `#C60D21` (Flutter `#EF4444`) | `#FB7185` |
-| warning | `#8F5B05` (Flutter `#F59E0B`) | `#FBBF24` |
-| textSecondary | `#626977` (Flutter `#6B7280`) | `#9A9AB5` |
-| textTertiary | `#686F7A` (Flutter `#9CA3AF`) | `#81829F` (Flutter `#5C5C78`) |
-| background | `#F9FAFB` | `#0A0A12` |
-| card | `#FFFFFF` | `#13131F` |
+| background | `#F3EFE6` | `#07090D` |
+| card | `#FBF9F4` | `#11151C` |
+| textPrimary | `#1A1A17` | `#EEF1F5` |
+| textSecondary | `#5C584F` | `#9AA3B2` |
+| accent (links, selection, add button) | `#1D6646` | `#B3ADFF` |
+| income (and money kept) | `#1D6646` | `#5EE6B0` |
+| spent (charts) | `#1A1A17` | `#FF8B7B` |
+| danger | `#A63D24` | `#FF8B7B` |
+| warning | `#7E5300` | `#FFC861` |
+| featureFill (Safe to spend, Goals summary) | `#1A1A17` | `#10231F` |
+| selectionFill (month chips, segments) | `#1A1A17` | lilac 16% |
 
-The light accent, income, danger, warning, textSecondary and textTertiary
-and the dark textTertiary differ from Flutter so that text reaches WCAG AA
-(4.5:1) on every surface it sits on; see "Accessibility audit" below and
-PARITY_GAPS "Colour tokens meet WCAG AA".
+Every text token reaches WCAG AA (4.5:1) on every surface it sits on
+(`ColorContrastTests`).
 
 Monospaced digits (`.monospacedDigit()`) for amounts. Respect Dynamic Type
 and VoiceOver labels on every control. No third-party packages.
