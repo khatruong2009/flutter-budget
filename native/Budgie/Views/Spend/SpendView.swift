@@ -1,7 +1,7 @@
 import BudgieCore
 import SwiftUI
 
-/// The Spend tab (`CategoryPage`, category_page.dart): "Categories" with a
+/// The Spend tab (`CategoryPage`, category_page.dart): "Spending" with a
 /// month pill, then the month's donut and its ranked category rows, or an
 /// empty state. The month is local to the tab (never `model.selectedMonth`)
 /// and defaults to the newest month with data. The breakdown is built once
@@ -29,7 +29,7 @@ struct SpendView: View {
         let expanded = resolution.resetsSelection ? false : tailExpanded
 
         VStack(spacing: 0) {
-            BudgieHeader(title: "Categories") {
+            BudgieHeader(title: "Spending") {
                 if let shown = resolution.month, !months.isEmpty {
                     MonthPill(label: DartDateFormat.MMMM(shown)) {
                         sheetOpens += 1

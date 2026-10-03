@@ -105,9 +105,10 @@ struct PillButton: View {
     }
 }
 
-/// Segmented capsule control (`SegmentedPillControl`): a track with an
-/// accent-filled active segment (Settings theme), or the mono variant with
-/// no track and an accent-tint active segment (chart range pills).
+/// Segmented capsule control (`SegmentedPillControl`): a track with the
+/// active segment in the selection fill (Settings theme), or the mono
+/// variant with no track and an accent-tint active segment (chart range
+/// pills).
 struct SegmentedPills: View {
     let items: [String]
     @Binding var selection: Int
@@ -128,13 +129,13 @@ struct SegmentedPills: View {
                         .minimumScaleFactor(0.5)
                         .tracking(0)
                         .foregroundStyle(
-                            selected ? (mono ? BudgieColor.accent : BudgieColor.onAccent) : BudgieColor.dockInactiveIcon)
+                            selected ? (mono ? BudgieColor.accent : BudgieColor.selectionText) : BudgieColor.dockInactiveIcon)
                         .padding(.horizontal, mono ? 11 : 12)
                         .padding(.vertical, mono ? 5 : 6)
                         .background {
                             if selected {
                                 Capsule()
-                                    .fill(mono ? BudgieColor.accent.opacity(0.18) : BudgieColor.accent)
+                                    .fill(mono ? BudgieColor.accent.opacity(0.18) : BudgieColor.selectionFill)
                                     .matchedGeometryEffect(id: "active", in: namespace)
                             }
                         }

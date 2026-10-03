@@ -2,12 +2,11 @@ import BudgieCore
 import SwiftUI
 
 /// The horizontal month chip strip (`MonthSelector`, month_selector.dart),
-/// shared by the SEE ALL page and the Worth tab (D13): 120pt chips 8 apart,
-/// list padding 16 x 8 (84pt tall), newest month first. The selected chip
-/// is centred when the strip appears (without animation) and whenever the
-/// selection changes (300ms easeOut, none under Reduce Motion). This is the
-/// older chip generation: `AppColors.primary` in both themes. The caller
-/// owns the tap haptic and the selection.
+/// shared by the SEE ALL page and the Worth tab (D13): capsule chips 8
+/// apart reading "Sep 2026", list padding 16 x 8, newest month first. The
+/// selected chip is centred when the strip appears (without animation) and
+/// whenever the selection changes (300ms easeOut, none under Reduce
+/// Motion). The caller owns the tap haptic and the selection.
 struct MonthStrip: View {
     let months: [DartDateTime]
     let selected: DartDateTime
@@ -26,10 +25,8 @@ struct MonthStrip: View {
                 .padding(.horizontal, Metrics.spacingM)
                 .padding(.vertical, Metrics.spacingS)
             }
-            // A horizontal scroll view takes all the height it is offered;
-            // Flutter's bar is its chips plus 8 above and below (84).
+            // A horizontal scroll view takes all the height it is offered.
             .fixedSize(horizontal: false, vertical: true)
-            // Flutter centres the selected chip after the first frame too.
             .onAppear { proxy.scrollTo(selected, anchor: .center) }
             .onChange(of: selected) { _, month in
                 withAnimation(reduceMotion ? nil : Motion.easeOut(Motion.normal)) {
@@ -45,55 +42,23 @@ private struct MonthChip: View {
     let isSelected: Bool
     let action: () -> Void
 
-    /// Flutter `bodyLarge` bold with 0.5 tracking, and `bodySmall` w500.
-    private static let monthText = TextSpec(face: .gabaritoBold, size: 17, tracking: 0.5, height: 1.5, relativeTo: .body)
-    private static let yearText = TextSpec(face: .gabaritoMedium, size: 13, tracking: -0.1, height: 1.4, relativeTo: .footnote)
+    private static let text = TextSpec(face: .gabaritoSemiBold, size: 14, height: 1.25, relativeTo: .subheadline)
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-        let chip = MonthListCopy.chip(month)
         Button(action: action) {
-            VStack(spacing: 2) {
-                Text(chip.month)
-                    .textStyle(Self.monthText)
-                    .foregroundStyle(isSelected ? Color.white : BudgieColor.textPrimary)
-                Text(chip.year)
-                    .textStyle(Self.yearText)
-                    .foregroundStyle(isSelected ? Color.white : BudgieColor.textSecondary)
-            }
-            .lineLimit(1)
-            .minimumScaleFactor(0.7)
-            .padding(Metrics.spacingS)
-            .frame(width: 120)
-            .frame(minHeight: 68)
-            .background {
-                if isSelected {
-                    shape.fill(LinearGradient(
-                        colors: [BudgieColor.primary, BudgieColor.primary.opacity(0.8)],
-                        startPoint: .topLeading, endPoint: .bottomTrailing))
-                } else {
-                    shape.fill(BudgieColor.surface)
-                }
-            }
-            .overlay(shape.strokeBorder(isSelected ? BudgieColor.primary : BudgieColor.border, lineWidth: isSelected ? 2 : 1))
-            .modifier(ChipShadow(isSelected: isSelected))
-            .contentShape(shape)
+            Text("\(DartDateFormat.MMM(month)) \(DartDateFormat.y(month))")
+                .textStyle(Self.text)
+                .foregroundStyle(isSelected ? BudgieColor.selectionText : BudgieColor.textSecondary)
+                .lineLimit(1)
+                .padding(.horizontal, 16)
+                .frame(minHeight: 44)
+                .background(isSelected ? BudgieColor.selectionFill : .clear, in: Capsule())
+                .overlay(Capsule().strokeBorder(isSelected ? BudgieColor.selectionBorder : BudgieColor.border, lineWidth: 1))
+                .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .motion(Motion.easeOut(Motion.fast), value: isSelected)
         .accessibilityLabel("\(DartDateFormat.MMMM(month)) \(DartDateFormat.y(month))")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-private struct ChipShadow: ViewModifier {
-    let isSelected: Bool
-
-    func body(content: Content) -> some View {
-        if isSelected {
-            content
-        } else {
-            content.shadow(color: .black.opacity(0.06), radius: 2, y: 1)
-        }
     }
 }

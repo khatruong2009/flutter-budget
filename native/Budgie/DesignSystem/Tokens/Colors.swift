@@ -16,9 +16,9 @@ enum BudgieColor {
     static let chipSurface = dynamic(light: 0xEAE4D7, dark: 0x161B24)
     /// `MonthPill`'s border: white 8% dark, black 8% light (not `cardBorder`).
     static let pillBorder = overlay(dark: 0.08, light: 0.08)
-    static let cardBorder = dynamic(light: 0xDCD4C4, dark: 0x12FF_FFFF, alpha: true)
-    static let hairline = dynamic(light: 0xE6DFD1, dark: 0x0FFF_FFFF, alpha: true)
-    static let border = dynamic(light: 0xDCD4C4, dark: 0x12FF_FFFF, alpha: true)
+    static let cardBorder = dynamic(light: 0xFFDC_D4C4, dark: 0x12FF_FFFF, alpha: true)
+    static let hairline = dynamic(light: 0xFFE6_DFD1, dark: 0x0FFF_FFFF, alpha: true)
+    static let border = dynamic(light: 0xFFDC_D4C4, dark: 0x12FF_FFFF, alpha: true)
     static let track = dynamic(light: 0xE4DDCE, dark: 0x161B24)
     static let trackSecondary = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
     static let donutRemainder = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
@@ -54,14 +54,14 @@ enum BudgieColor {
 
     // Selection (month chips, segmented toggles): an ink chip with a paper
     // label in light mode, a lilac tint with a lilac label in dark mode.
-    static let selectionFill = dynamic(light: 0x1A1A17, dark: 0x29B3_ADFF, alpha: true)
+    static let selectionFill = dynamic(light: 0xFF1A_1A17, dark: 0x29B3_ADFF, alpha: true)
     static let selectionText = dynamic(light: 0xF3EFE6, dark: 0xB3ADFF)
-    static let selectionBorder = dynamic(light: 0x1A1A17, dark: 0x66B3_ADFF, alpha: true)
+    static let selectionBorder = dynamic(light: 0xFF1A_1A17, dark: 0x66B3_ADFF, alpha: true)
 
     // The feature card (Home's Safe to spend, the Goals summary): an ink
     // block in light mode, a mint-tinted tile in dark mode.
     static let featureFill = dynamic(light: 0x1A1A17, dark: 0x10231F)
-    static let featureBorder = dynamic(light: 0x1A1A17, dark: 0x475E_E6B0, alpha: true)
+    static let featureBorder = dynamic(light: 0xFF1A_1A17, dark: 0x475E_E6B0, alpha: true)
     static let featureText = dynamic(light: 0xF3EFE6, dark: 0xEEF1F5)
     static let featureSecondary = dynamic(light: 0xC2BBAA, dark: 0x9AA3B2)
     /// The feature card's figure: paper on ink, mint on the dark tile.
@@ -78,8 +78,8 @@ enum BudgieColor {
     static let chartBaseline = overlay(dark: 0.12, light: 0.12)
     /// The trend's dashed zero line: white 8% dark, black 12% light.
     static let chartZeroLine = overlay(dark: 0.08, light: 0.12)
-    /// The trend's end dot.
-    static let trendDot = accent
+    /// The end dot on the trend and growth lines.
+    static let trendDot = textPrimary
 
     // Worth editor dialog
     /// The 32pt close circle: white 8% dark, black 6% light.

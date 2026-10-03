@@ -121,6 +121,24 @@ final class ColorContrastTests: XCTestCase {
         assertAtLeast(aa, white, primary, "white on primary")
     }
 
+    /// The translucent tokens (0xAARRGGBB) show in both modes: an opaque
+    /// value written as 0xRRGGBB would read its red byte as the alpha.
+    func testTranslucentTokensAreVisible() {
+        let tokens: [(String, Color)] = [
+            ("cardBorder", BudgieColor.cardBorder), ("hairline", BudgieColor.hairline), ("border", BudgieColor.border),
+            ("selectionFill", BudgieColor.selectionFill), ("selectionBorder", BudgieColor.selectionBorder),
+            ("featureBorder", BudgieColor.featureBorder), ("featureControl", BudgieColor.featureControl),
+        ]
+        for dark in [false, true] {
+            for (name, color) in tokens {
+                var alpha: CGFloat = 0
+                UIColor(color).resolvedColor(with: UITraitCollection(userInterfaceStyle: dark ? .dark : .light))
+                    .getRed(nil, green: nil, blue: nil, alpha: &alpha)
+                XCTAssertGreaterThanOrEqual(alpha, 0.05, "\(dark ? "dark" : "light") \(name) is invisible")
+            }
+        }
+    }
+
     /// The selected chip's and segment's label on the selection fill, which
     /// is translucent in dark mode (composited over the page and the track).
     func testSelectionLabelOnItsFill() {

@@ -48,11 +48,11 @@ struct TrendCard: View {
 /// The sparkline alone (`_TrendSparkline`, hp:982-1055), drawn the way
 /// fl_chart 1.2.0 paints it so the curve matches exactly: the plot is the
 /// whole frame (no axes, grid, border or touch), y runs from -bound to
-/// +bound, both lines use fl_chart's cubic with smoothness 0.35 (overshoot
+/// +bound, the line uses fl_chart's cubic with smoothness 0.35 (overshoot
 /// allowed, flat first tangent, butt caps), and only the last point gets a
 /// 5pt dot, centred on the right edge so it overhangs the plot. Paint order
-/// is fl_chart's with `extraLinesOnTop`: glow underlay (accent 40%, 9pt),
-/// dashed zero line, main line (accent, 3pt), end dot, dashed zero line again.
+/// is fl_chart's with `extraLinesOnTop`: dashed zero line, line (accent,
+/// 3pt), end dot, dashed zero line again.
 /// A data change animates for 150ms linear (fl_chart's implicit animation);
 /// none under Reduce Motion. Self-contained so it can be swapped for Swift
 /// Charts.
@@ -65,8 +65,6 @@ struct TrendLine: View {
         let zeroLine = TrendZeroLine()
             .stroke(BudgieColor.chartZeroLine, style: StrokeStyle(lineWidth: 1, dash: [3, 4]))
         ZStack {
-            TrendCurve(values: values)
-                .stroke(BudgieColor.accent.opacity(0.4), style: StrokeStyle(lineWidth: 9, lineCap: .butt, lineJoin: .miter))
             zeroLine
             TrendCurve(values: values)
                 .stroke(BudgieColor.accent, style: StrokeStyle(lineWidth: 3, lineCap: .butt, lineJoin: .miter))

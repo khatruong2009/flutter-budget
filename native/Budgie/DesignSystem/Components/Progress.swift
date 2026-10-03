@@ -112,6 +112,7 @@ struct ProgressRing<Center: View>: View {
     var size: CGFloat = 84
     var thickness: CGFloat = 9
     var color: Color = BudgieColor.accent
+    var track: Color = BudgieColor.track
     var inner: Color? = nil
     @ViewBuilder var center: () -> Center
 
@@ -124,7 +125,7 @@ struct ProgressRing<Center: View>: View {
         ZStack {
             Circle()
                 .inset(by: thickness / 2)
-                .stroke(BudgieColor.track, lineWidth: thickness)
+                .stroke(track, lineWidth: thickness)
             Circle()
                 .inset(by: thickness / 2)
                 .trim(from: 0, to: t)

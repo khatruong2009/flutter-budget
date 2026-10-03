@@ -266,9 +266,9 @@ enum GoalText {
 
 // MARK: - Summary
 
-/// `_SavingsGoalsSummary` (savings_goals_page.dart:608-687): the 72pt
-/// accent ring with the overall percent, SAVED SO FAR, the saved total and
-/// "of {target} · {n} of {count} complete".
+/// `_SavingsGoalsSummary` (savings_goals_page.dart:608-687), the page's
+/// feature card: the 72pt ring with the overall percent, SAVED SO FAR, the
+/// saved total and "of {target} · {n} of {count} complete".
 struct GoalsSummaryCard: View {
     let summary: SavingsGoalsSummary
     let formatter: MoneyFormatter
@@ -281,12 +281,15 @@ struct GoalsSummaryCard: View {
 
     var body: some View {
         let saved = formatter.format(summary.totalSaved, decimalDigits: 0)
-        GlowCard {
+        GlowCard(fill: AnyShapeStyle(BudgieColor.featureFill), border: BudgieColor.featureBorder) {
             HStack(spacing: 18) {
-                ProgressRing(value: summary.progress, size: 72, thickness: 8, color: BudgieColor.accent) {
+                ProgressRing(
+                    value: summary.progress, size: 72, thickness: 8, color: BudgieColor.featureRing,
+                    track: BudgieColor.featureControl, inner: BudgieColor.featureFill
+                ) {
                     Text(SavingsGoalText.summaryPercent(summary))
                         .textStyle(Self.ringText)
-                        .foregroundStyle(BudgieColor.textPrimary)
+                        .foregroundStyle(BudgieColor.featureText)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .padding(.horizontal, 10)
@@ -294,16 +297,16 @@ struct GoalsSummaryCard: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("SAVED SO FAR")
                         .textStyle(.eyebrowTight)
-                        .foregroundStyle(BudgieColor.textSecondary)
+                        .foregroundStyle(BudgieColor.featureSecondary)
                     Text(saved)
                         .textStyle(Self.amountText)
-                        .foregroundStyle(BudgieColor.textPrimary)
+                        .foregroundStyle(BudgieColor.featureAmount)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .padding(.top, 6)
                     Text(SavingsGoalText.summaryCaption(summary, formatter: formatter))
                         .textStyle(GoalText.caption)
-                        .foregroundStyle(BudgieColor.textSecondary)
+                        .foregroundStyle(BudgieColor.featureSecondary)
                         .padding(.top, 2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

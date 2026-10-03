@@ -3,37 +3,35 @@ import SwiftUI
 
 // MARK: - Toggle (NW:938-1025)
 
-/// "Assets" / "Liabilities" chips, 8 apart: the selected one accent-filled
-/// with a glow and on-accent w700 text, the other on the chip surface with
-/// a white/black 8% border (which, as in Flutter, adds 1pt to its padding).
-/// Tapping the selected chip does nothing; a switch ticks.
+/// "Assets" / "Liabilities" as two equal segments on the track, the
+/// selected one in the selection fill. Tapping the selected segment does
+/// nothing; a switch ticks.
 struct AccountsToggle: View {
     @Binding var isAssetsTab: Bool
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 4) {
             chip("Assets", assets: true)
             chip("Liabilities", assets: false)
-            Spacer(minLength: 0)
         }
+        .padding(4)
+        .background(BudgieColor.track, in: Capsule())
         .sensoryFeedback(.selection, trigger: isAssetsTab)
     }
 
     private func chip(_ title: String, assets: Bool) -> some View {
         let selected = isAssetsTab == assets
-        let inset: CGFloat = selected ? 0 : Metrics.borderThin
         return Button {
             if !selected { isAssetsTab = assets }
         } label: {
             Text(title)
                 .textStyle(selected ? WorthStyle.chipBold : WorthStyle.chip)
-                .foregroundStyle(selected ? BudgieColor.onAccent : BudgieColor.textSecondary)
-                .padding(.horizontal, 20 + inset)
-                .padding(.vertical, 10 + inset)
-                .background(selected ? BudgieColor.accent : BudgieColor.chipSurface, in: Capsule())
-                .overlay { if !selected { Capsule().strokeBorder(BudgieColor.pillBorder, lineWidth: Metrics.borderThin) } }
-                // The chip draws about 38pt tall; the tap area is 44.
-                .tapArea(vertical: 4)
+                .foregroundStyle(selected ? BudgieColor.selectionText : BudgieColor.textSecondary)
+                .frame(maxWidth: .infinity, minHeight: 40)
+                .background(selected ? BudgieColor.selectionFill : .clear, in: Capsule())
+                .contentShape(Capsule())
+                // The segment draws 40pt tall; the tap area is 44.
+                .tapArea(vertical: 2)
         }
         .buttonStyle(.plain)
         .motion(Motion.segment, value: selected)
