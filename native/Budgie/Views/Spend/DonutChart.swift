@@ -26,9 +26,6 @@ struct DonutChart: View {
     var body: some View {
         let geometry = breakdown.donut
         ZStack {
-            // Flutter's circle BoxShadow is painted under the whole disc, so
-            // it also tints the band inside the ring and the slice gaps.
-            GlowHalo(shape: Circle(), color: BudgieColor.accent, blur: 24, alpha: 0.25)
             DonutRing(geometry: geometry, colors: breakdown.slices.map(\.palette.color), selectedIndex: selectedSlice)
                 // A new month is a new ring: its sweep starts again from 0.
                 .id(breakdown.month)

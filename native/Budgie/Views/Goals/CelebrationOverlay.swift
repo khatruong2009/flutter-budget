@@ -66,7 +66,6 @@ struct CelebrationOverlay: View {
                     .foregroundStyle(BudgieColor.onAccent)
                     .frame(width: 72, height: 72)
                     .background(BudgieColor.income, in: Circle())
-                    .glow(BudgieColor.income, blur: 28, alpha: 0.55)
                 Text("Goal complete")
                     .textStyle(.goalTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
@@ -80,6 +79,5 @@ struct CelebrationOverlay: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .glow(BudgieColor.income, blur: 40, alpha: 0.35)
     }
 }

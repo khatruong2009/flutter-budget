@@ -5,19 +5,19 @@ import XCTest
 
 @testable import Runner
 
-/// The Spend palette slots resolve to the colours the Flutter page paints
-/// (app_colors.dart: rank palette, light `categoryColors` :200-215, dark
-/// chart list :223-238, `getDonutRemainder`). The tables are the ones in
-/// BudgieCoreTests/SpendParityTests.swift.
+/// The Spend palette slots resolve to the redesign's colours (owner-approved
+/// 2026-10-03, PARITY_GAPS "Visual redesign"): the rank palette, the
+/// 14-colour chart palette and the donut remainder, light and dark. The slot
+/// order is still Flutter's (BudgieCoreTests/SpendParityTests.swift).
 final class SpendPaletteTests: XCTestCase {
     private let rank = (
-        light: ["6366f1", "10b981", "ef4444", "f59e0b", "3b82f6", "f0abfc"],
-        dark: ["818cf8", "34d399", "fb7185", "fbbf24", "60a5fa", "f0abfc"])
+        light: ["5b47b8", "1d6646", "a63d24", "7e5300", "1f5f99", "7f3b6b"],
+        dark: ["b3adff", "5ee6b0", "ff8b7b", "ffc861", "7cc8ff", "f7a1d8"])
     private let chart = (
-        light: ["6366f1", "8b5cf6", "10b981", "34d399", "ef4444", "f87171", "f59e0b", "fbbf24", "3b82f6", "60a5fa", "ec4899",
-                "f472b6", "14b8a6", "2dd4bf"],
-        dark: ["818cf8", "a78bfa", "34d399", "6ee7b7", "f87171", "fca5a5", "fbbf24", "fcd34d", "60a5fa", "93c5fd", "f472b6",
-               "f9a8d4", "2dd4bf", "5eead4"])
+        light: ["1d6646", "5b47b8", "a63d24", "7e5300", "1f5f99", "7f3b6b", "176464", "4e8f6f", "8676d1", "c96a50", "a8801f",
+                "4e86bd", "a86394", "3f8c8c"],
+        dark: ["5ee6b0", "b3adff", "ff8b7b", "ffc861", "7cc8ff", "f7a1d8", "4fd1c5", "a3f0d2", "d6d2ff", "ffb8ad", "ffde9c",
+               "b4dfff", "fac8e8", "93e4db"])
 
     @MainActor
     private func hex(_ slot: SpendPaletteSlot, dark: Bool) -> String {
@@ -48,7 +48,7 @@ final class SpendPaletteTests: XCTestCase {
 
     @MainActor
     func testRemainder() {
-        XCTAssertEqual(hex(.remainder, dark: false), "c9c9da")
-        XCTAssertEqual(hex(.remainder, dark: true), "3a3a52")
+        XCTAssertEqual(hex(.remainder, dark: false), "cfc6b4")
+        XCTAssertEqual(hex(.remainder, dark: true), "2a3140")
     }
 }

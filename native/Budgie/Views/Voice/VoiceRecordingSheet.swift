@@ -276,7 +276,6 @@ private struct PulsingMic: View {
             Circle()
                 .fill(BudgieColor.accent)
                 .frame(width: 88, height: 88)
-                .glow(BudgieColor.accent, blur: 32, alpha: 0.55)
             Image(systemName: "mic.fill")
                 .font(.system(size: 42, weight: .medium))
                 .foregroundStyle(BudgieColor.onAccent)

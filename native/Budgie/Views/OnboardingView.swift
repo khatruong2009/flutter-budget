@@ -154,8 +154,6 @@ private struct OnboardingPageView: View {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
                     ZStack {
-                        // Flutter's BoxShadow shows through the translucent fill.
-                        GlowHalo(shape: Circle(), color: BudgieColor.accent, blur: 32, alpha: 0.25)
                         Circle().fill(BudgieColor.accent.opacity(0.14))
                         Image(systemName: page.symbol)
                             .font(.system(size: 40, weight: .regular))

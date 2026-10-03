@@ -23,7 +23,6 @@ struct SettingsBrandCard: View {
                     .resizable().scaledToFill()
                     .frame(width: 52, height: 52)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .glow(BudgieColor.accent, blur: 24, alpha: 0.4)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Budgie")
                         .textStyle(Self.titleText)

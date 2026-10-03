@@ -80,7 +80,7 @@ struct GoalCard: View {
         let tail = complete ? " saved" : " of \(formatter.format(goal.targetAmount, decimalDigits: 0))"
         let note = complete ? SavingsGoalText.fullyFunded(goal) : SavingsGoalText.pace(goal, now: now, calendar: calendar, formatter: formatter)
         return HStack(spacing: 18) {
-            ProgressRing(value: complete ? 1 : goal.progress, size: 84, thickness: 9, color: color, glowAlpha: complete ? 0.45 : 0.4) {
+            ProgressRing(value: complete ? 1 : goal.progress, size: 84, thickness: 9, color: color) {
                 if complete {
                     // Material `check_rounded` 28 / w500 draws an 18.5pt
                     // wide tick; SF `checkmark` medium at 20 is 18.75.

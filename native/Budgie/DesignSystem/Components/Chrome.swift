@@ -128,7 +128,6 @@ private struct DialogShadow: View {
     var body: some View {
         RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
             .fill(BudgieColor.card)
-            .glow(color, blur: 32, alpha: 0.18)
             .shadow(color: .black.opacity(scheme == .dark ? 0.5 : 0.15), radius: 12, y: 12)
             .accessibilityHidden(true)
     }

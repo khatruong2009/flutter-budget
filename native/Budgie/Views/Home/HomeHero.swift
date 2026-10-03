@@ -18,7 +18,6 @@ struct HomeHero: View {
     var body: some View {
         let hero = HomeSummary.hero(income: income, expenses: expenses, formatter: formatter)
         let isNegative = hero.isNegative
-        let glowColor = isNegative ? BudgieColor.danger : BudgieColor.accent
         let amountColor = isNegative ? BudgieColor.danger : BudgieColor.textPrimary
         let amountLabel = hero.amount
 
@@ -35,11 +34,10 @@ struct HomeHero: View {
                         Text(amountLabel)
                             .textStyle(.hero)
                             .foregroundStyle(amountColor)
-                            .textGlow(glowColor)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                     } else {
-                        RollingAmount(text: amountLabel, color: amountColor, glow: glowColor)
+                        RollingAmount(text: amountLabel, color: amountColor)
                     }
                 }
                 .padding(.top, 10)
@@ -71,37 +69,29 @@ struct HomeHero: View {
 /// easeInOut; an unchanged digit stays still. On first appearance every
 /// digit rolls up from 0, and when the label's shape (length or any
 /// non-digit character) changes the cells are rebuilt and roll from 0 while
-/// the row eases to its new width. The
-/// halo is a blurred copy of the whole label underneath, because the cells
-/// clip. Rolls the rounded label (Flutter's widget truncates the fraction,
-/// so its digits can be 0.01 off the halo and semantics). Scales down as a
-/// whole when it is wider than the space. Reduce Motion shows the digits
-/// without rolling. `style`, `glowAlpha` and `alignment` default to Home's
-/// hero; the Worth hero rolls `heroMedium` at alpha .35, leading.
+/// the row eases to its new width. Rolls the rounded label (Flutter's
+/// widget truncates the fraction, so its digits can be 0.01 off the
+/// semantics). Scales down as a whole when it is wider than the space.
+/// Reduce Motion shows the digits without rolling. `style` and `alignment`
+/// default to Home's hero; the Worth hero rolls `heroMedium`, leading.
 struct RollingAmount: View {
     let text: String
     let color: Color
-    let glow: Color
     let style: TextSpec
-    let glowAlpha: Double
     let alignment: Alignment
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.colorScheme) private var scheme
     @ScaledMetric private var fontSize: CGFloat
     @State private var natural: CGSize = .zero
     @State private var available: CGFloat = 0
     @State private var rowWidth: CGFloat?
 
     init(
-        text: String, color: Color, glow: Color, style: TextSpec = .hero, glowAlpha: Double = 0.45,
-        alignment: Alignment = .center
+        text: String, color: Color, style: TextSpec = .hero, alignment: Alignment = .center
     ) {
         self.text = text
         self.color = color
-        self.glow = glow
         self.style = style
-        self.glowAlpha = glowAlpha
         self.alignment = alignment
         _fontSize = ScaledMetric(wrappedValue: style.size, relativeTo: style.relativeTo)
     }
@@ -120,13 +110,6 @@ struct RollingAmount: View {
             // layout gave it: a third of its size at accessibility text sizes.
             Color.clear.frame(height: 0).onGeometryChangeCompat { available = $0.width }
             ZStack {
-                // `textGlow` (blur 48; alpha x0.4 in light) is a shadow, i.e. a
-                // blurred copy of the glyphs in the glow colour; a shadow of
-                // clear text would paint nothing.
-                Text(text)
-                    .textStyle(style)
-                    .foregroundStyle(glow.opacity(scheme == .dark ? glowAlpha : glowAlpha * 0.4))
-                    .perfBlur(radius: 24)
                 HStack(spacing: 0) {
                     ForEach(Self.cells(of: text, skeleton: skeleton), id: \.id) { cell in
                         Group {

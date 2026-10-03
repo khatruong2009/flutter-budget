@@ -200,7 +200,6 @@ private struct SpendGauge: View {
             GlowProgressBar(
                 value: HomeSummary.gaugeFraction(spent: spent, income: income), height: 14, color: BudgieColor.accent,
                 track: BudgieColor.chipSurface,
-                gradient: LinearGradient(colors: [BudgieColor.gaugeFillStart, BudgieColor.accent], startPoint: .leading, endPoint: .trailing),
                 showThumb: true, trackBorder: BudgieColor.hairline, fillInset: 2)
             HStack {
                 label("SPENT  ", labels.spent)
@@ -242,7 +241,6 @@ private struct FlowChip: View {
                     Circle()
                         .fill(dot)
                         .frame(width: 8, height: 8)
-                        .glow(dot, blur: 10, alpha: 0.8)
                     Text(label)
                         .textStyle(Self.labelStyle)
                         .foregroundStyle(BudgieColor.textSecondary)

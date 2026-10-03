@@ -32,7 +32,6 @@ struct AccountsToggle: View {
                 .padding(.vertical, 10 + inset)
                 .background(selected ? BudgieColor.accent : BudgieColor.chipSurface, in: Capsule())
                 .overlay { if !selected { Capsule().strokeBorder(BudgieColor.pillBorder, lineWidth: Metrics.borderThin) } }
-                .glow(selected ? BudgieColor.accent : .clear, blur: 20, alpha: 0.5)
                 // The chip draws about 38pt tall; the tap area is 44.
                 .tapArea(vertical: 4)
         }

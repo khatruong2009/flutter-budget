@@ -91,7 +91,7 @@ private struct ChipShadow: ViewModifier {
 
     func body(content: Content) -> some View {
         if isSelected {
-            content.glow(BudgieColor.primary, blur: 8, alpha: 0.3)
+            content
         } else {
             content.shadow(color: .black.opacity(0.06), radius: 2, y: 1)
         }

@@ -206,7 +206,6 @@ struct AccountEditorDialog: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 48)
                 .background(accent, in: Capsule())
-                .glow(accent, blur: 20, alpha: 0.45)
                 .contentShape(Capsule())
             }
             .buttonStyle(PressScaleStyle(scale: 0.96))
@@ -301,7 +300,6 @@ private struct TypePills: View {
             .frame(height: 48)
             .background(selected ? color : BudgieColor.chipSurface, in: shape)
             .overlay { if !selected { shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin) } }
-            .glow(selected ? color : .clear, blur: 16, alpha: 0.4)
             .contentShape(shape)
         }
         .buttonStyle(.plain)

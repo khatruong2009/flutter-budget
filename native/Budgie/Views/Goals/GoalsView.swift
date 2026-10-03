@@ -283,7 +283,7 @@ struct GoalsSummaryCard: View {
         let saved = formatter.format(summary.totalSaved, decimalDigits: 0)
         GlowCard {
             HStack(spacing: 18) {
-                ProgressRing(value: summary.progress, size: 72, thickness: 8, color: BudgieColor.accent, glowAlpha: 0.35) {
+                ProgressRing(value: summary.progress, size: 72, thickness: 8, color: BudgieColor.accent) {
                     Text(SavingsGoalText.summaryPercent(summary))
                         .textStyle(Self.ringText)
                         .foregroundStyle(BudgieColor.textPrimary)

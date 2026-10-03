@@ -34,11 +34,7 @@ struct AccountHistoryHeroCard: View {
 
     var body: some View {
         let isAsset = type == .asset
-        // The wash and glow keep Flutter's lighter green and red: the text
-        // colour is darker for contrast, and a dark wash would take the
-        // labels' contrast back.
         let wash = isAsset ? BudgieColor.chartIncome : BudgieColor.chartDanger
-        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         let fill = LinearGradient(
             stops: [
                 .init(color: wash.opacity(0.16), location: 0), .init(color: wash.opacity(0.06), location: 0.4),
@@ -90,7 +86,6 @@ struct AccountHistoryHeroCard: View {
                 .padding(.top, 16)
             }
         }
-        .background(GlowHalo(shape: shape, color: wash, blur: 24, alpha: 0.16))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
             ([isAsset ? "Asset balance history" : "Liability balance history", "Current balance \(balance)", lastUpdate]
@@ -538,7 +533,6 @@ struct AccountTimelineRow: View {
                 Circle()
                     .fill(color)
                     .frame(width: 12, height: 12)
-                    .glow(color, blur: 10, alpha: 0.35)
                     .padding(.trailing, 16)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(date)

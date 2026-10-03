@@ -92,7 +92,6 @@ struct DesignGalleryView: View {
                 Text("$3,157").textStyle(.hero).foregroundStyle(BudgieColor.textPrimary)
                 Text(".50").textStyle(.heroDecimals).foregroundStyle(BudgieColor.textSecondary)
             }
-            .textGlow(BudgieColor.accent)
             Text("$3,200 in  ·  $43 out").textStyle(.rowSubtitle).foregroundStyle(BudgieColor.textSecondary)
             Text("SAVED THIS MONTH").textStyle(.monoLink).foregroundStyle(BudgieColor.accent)
             GlowProgressBar(

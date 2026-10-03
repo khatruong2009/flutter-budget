@@ -200,7 +200,6 @@ struct WorthHero: View {
     let formatter: MoneyFormatter
 
     var body: some View {
-        let glow = netWorth >= 0 ? BudgieColor.income : BudgieColor.danger
         let label = formatter.formatSigned(netWorth, decimalDigits: 0)
         VStack(alignment: .leading, spacing: 0) {
             Text(NetWorthText.heroEyebrow(month: month))
@@ -214,12 +213,10 @@ struct WorthHero: View {
                     Text(label)
                         .textStyle(.heroMedium)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .textGlow(glow, alpha: 0.35)
                         .singleLine()
                 } else {
                     RollingAmount(
-                        text: label, color: BudgieColor.textPrimary, glow: glow, style: .heroMedium, glowAlpha: 0.35,
-                        alignment: .leading)
+                        text: label, color: BudgieColor.textPrimary, style: .heroMedium, alignment: .leading)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

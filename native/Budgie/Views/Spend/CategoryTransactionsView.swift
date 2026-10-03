@@ -143,7 +143,6 @@ private struct SummaryCard: View {
                     Text(total)
                         .textStyle(.heroSmall)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .textGlow(color)
                         .lineLimit(1)
                         .minimumScaleFactor(0.3)
                         .padding(.top, 10)
