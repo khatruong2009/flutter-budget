@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Widgets, Dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&amp;family=Spline+Sans+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 260px; position: relative; overflow: hidden; background: #1B2230; font-family: 'Gabarito', -apple-system, 'SF Pro Text', system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="height: 100%; box-sizing: border-box; padding: 40px 24px; background: #1B2230; display: flex; gap: 26px; justify-content: center; align-items: center"><div role="group" aria-label="Quick actions widget" style="width: 158px; height: 158px; box-sizing: border-box; border-radius: 26px; background: #11151C; padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.18)">
+<div style="display: flex; align-items: center; gap: 6px"><img src="../../../Budgie/Resources/Assets.xcassets/logo.imageset/logo@3x.png" alt="" style="width: 18px; height: 18px; object-fit: contain"><span style="margin-left: auto; font-family: 'Spline Sans Mono', ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 600; color: #5EE6B0">$1,787</span></div>
+<a href="#" style="flex: 1 1 0; border-radius: 14px; background: #0E6B4C; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 700"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Income</a>
+<a href="#" style="flex: 1 1 0; border-radius: 14px; background: #A3372A; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 700"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>Expense</a></div><a href="#" aria-label="Voice add widget" style="width: 158px; height: 158px; box-sizing: border-box; border-radius: 26px; background: #11151C; padding: 16px; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 6px 20px rgba(0,0,0,.18)">
+<div style="width: 52px; height: 52px; border-radius: 26px; background: #B3ADFF; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B0B14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg></div>
+<div><div style="font-size: 15px; font-weight: 700; color: #EEF1F5">Speak a transaction</div><div style="font-size: 12px; color: #9AA3B2">Budgie</div></div></a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":260}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
