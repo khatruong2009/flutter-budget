@@ -26,6 +26,9 @@ struct BudgieField: View {
     var style: Style = .labeled
     /// `.amount` only: the text before the figure (the currency symbol).
     var prefix: String? = nil
+    /// The text field's own accessibility identifier (an identifier on the
+    /// whole `BudgieField` lands on its container, not the field).
+    var identifier: String? = nil
 
     @FocusState private var focused: Bool
 
@@ -115,6 +118,7 @@ struct BudgieField: View {
             .focused($focused)
             // A prompt replaces the title as the field's label.
             .accessibilityLabel(title)
+            .accessibilityIdentifier(identifier ?? "")
             .onAppear { if autofocus { focused = true } }
     }
 }

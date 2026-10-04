@@ -237,10 +237,10 @@ private struct BudgetChevron: View {
 // MARK: - Picker sheets
 
 /// The EDIT and Add a budget pickers (`_showBudgetCategorySheet`,
-/// spending_page.dart:221-312): title, subtitle, then the category tiles
-/// with no dividers. Content-sized up to 75% of the screen height; the
-/// system adds the bottom safe area outside the cap, as Flutter's
-/// `SafeArea` does.
+/// spending_page.dart:221-312) in the sheet pattern (REDESIGN_PLAN 4.3): the
+/// title, the blurb, then the categories as list rows in one card.
+/// Content-sized up to 75% of the screen height; the system adds the bottom
+/// safe area outside the cap, as Flutter's `SafeArea` does.
 private struct BudgetPickerSheet: View {
     enum Kind { case edit, add }
 
@@ -254,6 +254,8 @@ private struct BudgetPickerSheet: View {
     @State private var headerHeight: CGFloat = 0
     @State private var listHeight: CGFloat = 0
 
+    private static let blurb = TextSpec(face: .gabaritoRegular, size: 14, height: 1.3, relativeTo: .subheadline)
+
     var body: some View {
         let categories = kind == .edit ? overview.budgeted : overview.unbudgeted
         // `showAddRow: budgeted.length < expenseCategories.length` (EDIT only).
@@ -262,30 +264,37 @@ private struct BudgetPickerSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
-                    .textStyle(.sectionHeader)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .accessibilityAddTraits(.isHeader)
-                    // 12 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 16.
-                    .padding(EdgeInsets(top: 12, leading: 24, bottom: 8, trailing: 24))
                 Text(subtitle(hasBudgets: !categories.isEmpty))
-                    .textStyle(.rowSubtitle)
+                    .textStyle(Self.blurb)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .padding(EdgeInsets(top: 0, leading: 24, bottom: 8, trailing: 24))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            // 12 + the chrome's 19pt handle inset.
+            .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: 16, trailing: Metrics.pageHorizontal))
             .fixedSize(horizontal: false, vertical: true)
             .onGeometryChangeCompat { headerHeight = $0.height }
             ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(categories) { info in
-                        BudgetCategoryTile(
-                            info: info, limit: kind == .edit ? overview.limit(for: info.name) : nil,
-                            formatter: formatter
-                        ) { onPick(info.name) }
+                GlowCard(padding: Metrics.listCardPadding) {
+                    VStack(spacing: 0) {
+                        ForEach(categories) { info in
+                            if info.id != categories.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                            BudgetCategoryTile(
+                                info: info, limit: kind == .edit ? overview.limit(for: info.name) : nil,
+                                formatter: formatter
+                            ) { onPick(info.name) }
+                        }
+                        if showsAddRow {
+                            if !categories.isEmpty { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                            AddBudgetRow(action: onAdd)
+                        }
                     }
-                    if showsAddRow { AddBudgetRow(action: onAdd) }
                 }
-                .padding(EdgeInsets(top: 4, leading: 12, bottom: 12, trailing: 12))
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: 16, trailing: Metrics.pageHorizontal))
                 .onGeometryChangeCompat { listHeight = $0.height }
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -296,12 +305,12 @@ private struct BudgetPickerSheet: View {
     }
 
     /// Handle, header and list, at most 75% of the screen. Until measured,
-    /// the default-size header (12 + title + 8 + subtitle + 8) and 64pt
-    /// tiles (12 + the 40pt tile + 12) inside the list's 4 / 12 stand in, so
-    /// the sheet opens at its final height.
+    /// the default-size header (12 + title + 6 + blurb + 16) and the card
+    /// (8 + 64pt rows with 1pt hairlines + 8, border 2, then 16) stand in,
+    /// so the sheet opens at its final height.
     private func detent(rows: Int) -> PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 12 + 24 + 8 + 15 + 8
-        let list = listHeight > 0 ? listHeight : 4 + CGFloat(rows) * 64 + 12
+        let header = headerHeight > 0 ? headerHeight : 12 + 29 + 6 + 17 + 16
+        let list = listHeight > 0 ? listHeight : 8 + CGFloat(rows) * 64 + CGFloat(max(rows - 1, 0)) + 8 + 2 + 16
         return .height(min(BudgetSheetLayout.handleHeight + header + list, BudgetSheetLayout.screenHeight * 0.75))
     }
 
@@ -318,9 +327,9 @@ private struct BudgetPickerSheet: View {
     }
 }
 
-/// `_EditBudgetCategoryTile` (spending_page.dart:1876-1946): accent tile
-/// and "$X limit" for a budgeted category, a grey tile and no subtitle in
-/// the Add sheet; chevron; light haptic.
+/// `_EditBudgetCategoryTile` (spending_page.dart:1876-1946): the category's
+/// tile and "$X limit" for a budgeted category, no subtitle in the Add sheet;
+/// chevron; light haptic.
 private struct BudgetCategoryTile: View {
     let info: CategoryInfo
     let limit: Double?
@@ -336,9 +345,7 @@ private struct BudgetCategoryTile: View {
             action()
         } label: {
             HStack(spacing: 12) {
-                IconTile(
-                    symbol: CategoryCatalog.symbol(for: info.iconIdentifier),
-                    color: budgeted ? BudgieColor.accent : BudgieColor.textSecondary)
+                IconTile(category: info)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(info.name).textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary).lineLimit(1)
                     if budgeted, let limit {
