@@ -105,7 +105,8 @@ final class TagsRulesUITests: XCTestCase {
         app.textFields["Description"].enterText(description)
     }
 
-    private var wheelValue: String { app.pickerWheels.firstMatch.value as? String ?? "" }
+    /// The form's selected category (the Category row's value).
+    private var wheelValue: String { app.formCategory.value as? String ?? "" }
 
     /// The form's tag chip with this name (a button; the page is not
     /// behind the sheet on another tab).

@@ -161,9 +161,9 @@ struct IconTile: View {
 extension IconTile {
     /// The tile for a category definition (its icon and colour token);
     /// a name without a definition gets the default grid in accent.
-    init(category info: CategoryInfo?, size: CGFloat = 40) {
+    init(category info: CategoryInfo?, size: CGFloat = 40, radius: CGFloat? = nil, iconSize: CGFloat = 20) {
         self.init(
             symbol: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""),
-            color: BudgieColor.category(info?.colorToken ?? "accent"), size: size)
+            color: BudgieColor.category(info?.colorToken ?? "accent"), size: size, radius: radius, iconSize: iconSize)
     }
 }

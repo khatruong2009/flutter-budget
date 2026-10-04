@@ -33,7 +33,6 @@ struct TransactionFormView: View {
 
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @State private var type: TransactionType
     @State private var amountText: String
@@ -48,9 +47,9 @@ struct TransactionFormView: View {
     /// now (add) or the stored date.
     @State private var pickedDate: DartDateTime?
     @State private var amountError: String?
-    /// The picker lists. Rows are identified by index and names compared as
-    /// UTF-16 (Dart), so canonically-equivalent spellings (NFC and NFD
-    /// "Café") stay two rows with their own icons.
+    /// The category menu's lists. Rows are identified by index and names
+    /// compared as UTF-16 (Dart), so canonically-equivalent spellings (NFC
+    /// and NFD "Café") stay two rows with their own icons.
     @State private var options: [TransactionType: [CategoryInfo]] = [:]
     /// The edited record's (or voice draft's) own category info when the list
     /// lacks its name.
@@ -59,13 +58,8 @@ struct TransactionFormView: View {
     @State private var saving = false
     @State private var confirmingDelete = false
     @State private var deleteConfirms = 0
-    @State private var wheelTicks = 0
     @State private var showingDatePicker = false
     @State private var showingRecurring = false
-    @State private var revealedWheel = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private static let wheelID = "categoryWheel"
 
     init(mode: Mode, initialCategory: String? = nil) {
         self.mode = mode
@@ -146,70 +140,37 @@ struct TransactionFormView: View {
         (editing == nil ? "Add " : "Edit ") + (type == .income ? "Income" : "Expense")
     }
 
-    /// The prefix glyph for the base currency (Flutter always shows `$`).
-    private var currencySymbol: String { AmountInput.currencySymbolName(model.moneyFormatter) }
-
     // MARK: - Form
 
     private var form: some View {
         // Flutter's Column(Flexible(scroll), footer): the footer sits below
-        // the scroll area (and above the keyboard) rather than over it, so it
-        // needs no fill of its own and the sheet's side borders run unbroken.
+        // the scroll area (and above the keyboard) rather than over it.
+        // REDESIGN_PLAN 4.1: on an 874pt phone at the default text size
+        // every row fits above the decimal pad, so nothing scrolls; shorter
+        // phones and large text scroll, with a fade cueing more below.
         VStack(spacing: 0) {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(title)
-                            .textStyle(.headingMedium)
-                            .foregroundStyle(BudgieColor.textPrimary)
-                            .frame(maxWidth: .infinity)
-                            .multilineTextAlignment(.center)
-                            .accessibilityAddTraits(.isHeader)
-                        SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 12)
-                            .accessibilityElement(children: .contain)
-                            .accessibilityLabel("Transaction type")
-                        BudgieField(
-                            title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
-                            error: amountError, autofocus: true
-                        )
-                        .padding(.top, Metrics.spacingM)
-                        BudgieField(title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft")
-                            .padding(.top, Metrics.spacingS)
-                        // The wheel carries the "Category" label for VoiceOver.
-                        fieldLabel("Category")
-                            .accessibilityHidden(true)
-                            .padding(.top, Metrics.spacingS)
-                        categoryWheel
-                            .id(Self.wheelID)
-                        if !model.tags.isEmpty {
-                            fieldLabel("Tags")
-                                .accessibilityAddTraits(.isHeader)
-                                .padding(.top, Metrics.spacingM)
-                            tagChips
-                        }
-                        DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
-                            .padding(.top, Metrics.spacingM)
-                        if editing != nil {
-                            PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
-                                .disabled(saving)
-                                .opacity(saving ? Metrics.opacityDisabled : 1)
-                                .padding(.top, Metrics.spacingL)
-                        }
+            FormScrollArea {
+                VStack(alignment: .leading, spacing: Metrics.spacingS) {
+                    FormTitleRow(title: title, type: $type)
+                    BudgieField(
+                        title: "Amount", text: $amountText, prompt: "0.00", keyboard: .decimalPad, error: amountError,
+                        autofocus: true, style: .amount, prefix: AmountInput.currencySymbol(model.moneyFormatter)
+                    )
+                    .padding(.top, Metrics.spacingXS)
+                    BudgieField(
+                        title: "Description", text: $descriptionText, prompt: "What was this for?", symbol: "text.alignleft",
+                        style: .inline)
+                    CategoryMenuRow(rows: categoryRows, category: $category, identifier: "form.category")
+                    DateTile(label: "Date", value: DartDateFormat.MMMddyyyy(resolvedDate())) { showingDatePicker = true }
+                    if !model.tags.isEmpty {
+                        tagsRow
                     }
-                    .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
-                }
-                .scrollDismissesKeyboard(.interactively)
-                // With the keyboard up the scroll area is short enough to cut
-                // the wheel's box off flat; bring all of it into view (once, so
-                // later scrolling is the user's).
-                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
-                    // Not at accessibility sizes: the area is then too short to
-                    // show the wheel without scrolling the focused Amount away.
-                    guard !revealedWheel, !dynamicTypeSize.isAccessibilitySize else { return }
-                    revealedWheel = true
-                    withAnimation(reduceMotion ? nil : Motion.easeOut(Motion.fast)) { proxy.scrollTo(Self.wheelID, anchor: .bottom) }
+                    if editing != nil {
+                        PillButton(title: "Delete Transaction", symbol: "trash", color: BudgieColor.danger) { confirmingDelete = true }
+                            .disabled(saving)
+                            .opacity(saving ? Metrics.opacityDisabled : 1)
+                            .padding(.top, Metrics.spacingS)
+                    }
                 }
             }
             footer
@@ -241,94 +202,41 @@ struct TransactionFormView: View {
         .interactiveDismissDisabled(saving || prefill != nil)
     }
 
-    private var typeIndex: Binding<Int> {
-        Binding(get: { type == .income ? 1 : 0 }, set: { type = $0 == 1 ? .income : .expense })
-    }
-
-    /// Flutter's `caption` w600 ("Category", "Tags").
-    private func fieldLabel(_ text: String) -> some View {
-        Text(text)
-            .textStyle(.captionStrong)
-            .foregroundStyle(BudgieColor.textSecondary)
-            .padding(.leading, 4)
-            .padding(.bottom, 6)
-    }
-
-    // MARK: Category wheel
-
-    private var categoryWheel: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-        return Group {
-            if loaded {
-                let rows = categoryRows
-                Picker("Category", selection: wheelSelection) {
-                    ForEach(rows.indices, id: \.self) { index in
-                        CategoryWheelRow(name: rows[index].name, info: rows[index].info, type: type).tag(index)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .labelsHidden()
-                .accessibilityLabel("Category")
-                .accessibilityValue(category)
-            } else {
-                Color.clear
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 90)
-        .clipShape(shape)
-        .background(BudgieColor.chipSurface, in: shape)
-        .overlay(shape.strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium))
-        .sensoryFeedback(.selection, trigger: wheelTicks)
-    }
-
-    /// The wheel's own changes (a rule's change moves it without a tick).
-    private var wheelSelection: Binding<Int> {
-        Binding(
-            get: { categoryRows.firstIndex { DartString.equal($0.name, category) } ?? 0 },
-            set: {
-                let rows = categoryRows
-                guard rows.indices.contains($0), !DartString.equal(rows[$0].name, category) else { return }
-                category = rows[$0].name
-                wheelTicks += 1
-            })
-    }
-
     // MARK: Tags
 
-    private var tagChips: some View {
-        FlowLayout(spacing: Metrics.spacingS) {
-            // By position: foreign data can repeat a tag id.
-            ForEach(Array(model.tags.enumerated()), id: \.offset) { _, tag in
-                let selected = selectedTagIds.contains(tag.id)
-                Button {
-                    if selected { selectedTagIds.removeAll { $0 == tag.id } } else { selectedTagIds.append(tag.id) }
-                    ruleTagIds.remove(tag.id)
-                } label: {
-                    // One line, truncated when wider than the row (Flutter's
-                    // chip label: maxLines 1).
-                    PillChip(
-                        label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
-                        symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
-                    .singleLine()
-                    // The chip draws about 34pt tall; the tap area is 44.
-                    .tapArea(vertical: 5)
+    /// The Tags row: "Tags" over "Optional" in the label column, then the
+    /// tag chips wrapping inside the row (it grows with them).
+    private var tagsRow: some View {
+        FormRow(label: "Tags", note: "Optional") {
+            FlowLayout(spacing: Metrics.spacingS) {
+                // By position: foreign data can repeat a tag id.
+                ForEach(Array(model.tags.enumerated()), id: \.offset) { _, tag in
+                    let selected = selectedTagIds.contains(tag.id)
+                    Button {
+                        if selected { selectedTagIds.removeAll { $0 == tag.id } } else { selectedTagIds.append(tag.id) }
+                        ruleTagIds.remove(tag.id)
+                    } label: {
+                        TagChip(name: tag.name, selected: selected)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selected ? .isSelected : [])
                 }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(selected ? .isSelected : [])
             }
+            .padding(.vertical, 1)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Tags")
     }
 
     // MARK: Footer
 
     private var footer: some View {
-        VStack(spacing: Metrics.spacingM) {
-            HStack(spacing: Metrics.spacingM) {
+        FormFooter {
+            HStack(spacing: 12) {
                 FormButton(title: "Cancel", fill: nil) { dismiss() }
                 FormButton(
                     title: editing == nil ? "Add" : "Update",
-                    fill: type == .income ? BudgieColor.incomeGradient : BudgieColor.expenseGradient, loading: saving
+                    fill: type == .income ? BudgieColor.incomeFixed : BudgieColor.expenseFixed, loading: saving
                 ) {
                     Task { await save() }
                 }
@@ -340,35 +248,27 @@ struct TransactionFormView: View {
                 } label: {
                     HStack(spacing: Metrics.spacingS) {
                         Image(systemName: "repeat")
-                            .font(.system(size: 17, weight: .medium))
+                            .font(.system(size: 14, weight: .semibold))
                             .accessibilityHidden(true)
-                        Text("Make this recurring").textStyle(.caption)
+                        Text("Make this recurring")
+                            .textStyle(Self.recurringLink)
                             .multilineTextAlignment(.center)
                     }
-                    .foregroundStyle(BudgieColor.textSecondary)
-                    // At accessibility sizes the pill takes the row's width,
-                    // so the label wraps at the words rather than inside a
-                    // narrow pill.
-                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil)
+                    .foregroundStyle(BudgieColor.accent)
                     .padding(.horizontal, Metrics.spacingM)
-                    .padding(.vertical, Metrics.spacingS)
-                    .background(
-                        BudgieColor.card.opacity(0.5), in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-                            .strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium)
-                    )
-                    // The pill draws about 37pt tall; the tap area is 44.
-                    .tapArea(vertical: 4)
+                    .frame(minHeight: 40)
+                    // The link is 40pt tall; the tap area is 44.
+                    .tapArea(vertical: 2)
                 }
                 .buttonStyle(.plain)
+                .frame(maxWidth: .infinity)
                 .disabled(saving)
                 .opacity(saving ? Metrics.opacityDisabled : 1)
             }
         }
-        .padding(Metrics.spacingM)
     }
+
+    private static let recurringLink = TextSpec(face: .gabaritoSemiBold, size: 14, relativeTo: .subheadline)
 
     // MARK: - Actions
 
@@ -556,73 +456,221 @@ struct TransactionFormView: View {
 
 // MARK: - Pieces
 
-/// A wheel row (transaction_form.dart:300-335, recurring_transaction_form.dart
-/// :240-250): a 28pt radius-8 tile in the type's fixed red or green
-/// (`AppColors.expense` / `income`, the same in dark mode) with a white
-/// category symbol, gap 16, the name.
-struct CategoryWheelRow: View {
-    let name: String
-    let info: CategoryInfo?
-    let type: TransactionType
+/// The add forms' scroll area (REDESIGN_PLAN 4.1): content padded 8 / 20
+/// / 16 under the sheet's grab handle; it scrolls only when the content is
+/// taller than the space (`basedOnSize`), and then a 44pt fade from the
+/// sheet's card colour at the bottom cues that more is below (gone once
+/// the end is in view).
+struct FormScrollArea<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    /// The content's bottom edge in the scroll area's own space.
+    @State private var contentBottom: CGFloat = 0
+    @State private var height: CGFloat = 0
+
+    private static var space: String { "formScrollArea" }
 
     var body: some View {
-        HStack(spacing: Metrics.spacingM) {
-            Image(systemName: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""))
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(.white)
-                .frame(width: 28, height: 28)
+        ScrollView {
+            content()
+                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
                 .background(
-                    type == .income ? BudgieColor.incomeFixed : BudgieColor.expenseFixed,
-                    in: RoundedRectangle(cornerRadius: Metrics.radiusS, style: .continuous))
-                .accessibilityHidden(true)
-            Text(name)
-                .textStyle(.bodyMedium)
-                .foregroundStyle(BudgieColor.textPrimary)
-                .singleLine()
+                    GeometryReader { proxy in
+                        let bottom = proxy.frame(in: .named(Self.space)).maxY
+                        Color.clear.onChange(of: bottom, initial: true) { _, value in contentBottom = value }
+                    })
         }
-        .padding(.horizontal, Metrics.spacingM)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .coordinateSpace(.named(Self.space))
+        .scrollBounceBehavior(.basedOnSize)
+        .scrollDismissesKeyboard(.interactively)
+        .onGeometryChangeCompat { height = $0.height }
+        .overlay(alignment: .bottom) {
+            LinearGradient(colors: [BudgieColor.card.opacity(0), BudgieColor.card], startPoint: .top, endPoint: .bottom)
+                .frame(height: 44)
+                .opacity(contentBottom > height + 1 ? 1 : 0)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
     }
 }
 
-/// The footer buttons (`AppButton` medium): 48 high, radius 12; primary is
-/// the type gradient with a white label (and a spinner while saving),
-/// secondary is outlined. Presses to 0.95 with a light haptic; 0.38 opacity
-/// when disabled.
+/// The add forms' title row: the title at 22 ExtraBold on the left and, with
+/// a `type`, the Expense / Income pills on the right. When both do not fit
+/// on one line (a long title, large text) the pills go under the title.
+struct FormTitleRow: View {
+    let title: String
+    /// nil hides the pills (the recurring form when editing).
+    var type: Binding<TransactionType>?
+    var titleIdentifier: String? = nil
+
+    private static let titleText = TextSpec(face: .gabaritoExtraBold, size: 22, tracking: -0.44, relativeTo: .title2)
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                titleLabel
+                Spacer(minLength: 0)
+                pills
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                titleLabel
+                pills
+            }
+        }
+    }
+
+    private var titleLabel: some View {
+        Text(title)
+            .textStyle(Self.titleText)
+            .foregroundStyle(BudgieColor.textPrimary)
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier(titleIdentifier ?? "")
+    }
+
+    @ViewBuilder
+    private var pills: some View {
+        if let type {
+            SegmentedPills(
+                items: ["Expense", "Income"],
+                selection: Binding(get: { type.wrappedValue == .income ? 1 : 0 }, set: { type.wrappedValue = $0 == 1 ? .income : .expense }),
+                fillWidth: true
+            )
+            .frame(width: 176, height: 32)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Transaction type")
+        }
+    }
+}
+
+/// The Category row (REDESIGN_PLAN 4.1): a `FormRow` with the selected
+/// category's tile and name, opening a menu whose inline picker lists
+/// `rows` in order and checks the selection. One accessibility element: a
+/// button named "Category" with the category as its value.
+struct CategoryMenuRow: View {
+    let rows: [(name: String, info: CategoryInfo?)]
+    @Binding var category: String
+    let identifier: String
+
+    @State private var picks = 0
+
+    var body: some View {
+        let selected = rows.first { DartString.equal($0.name, category) }
+        Menu {
+            Picker("Category", selection: selection) {
+                ForEach(rows.indices, id: \.self) { index in
+                    Label(rows[index].name, systemImage: CategoryCatalog.symbol(for: rows[index].info?.iconIdentifier ?? ""))
+                        .tag(index)
+                }
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+        } label: {
+            FormRow(label: "Category", trailingSymbol: "chevron.down") {
+                HStack(spacing: 10) {
+                    IconTile(category: selected?.info, size: 28, radius: 9, iconSize: 15)
+                    Text(category)
+                        .textStyle(.rowTitle)
+                        .foregroundStyle(BudgieColor.textPrimary)
+                        .singleLine()
+                }
+            }
+        }
+        .menuOrder(.fixed)
+        .accessibilityLabel("Category")
+        .accessibilityValue(category)
+        .accessibilityIdentifier(identifier)
+        .sensoryFeedback(.selection, trigger: picks)
+    }
+
+    /// The menu's own picks (a rule's change moves it without a tick); -1
+    /// (no checkmark) while the category is not in the list.
+    private var selection: Binding<Int> {
+        Binding(
+            get: { rows.firstIndex { DartString.equal($0.name, category) } ?? -1 },
+            set: {
+                guard rows.indices.contains($0), !DartString.equal(rows[$0].name, category) else { return }
+                category = rows[$0].name
+                picks += 1
+            })
+    }
+}
+
+/// A tag chip in the form's Tags row: 34pt capsule; selected is accent at
+/// 13% with the name in accent 13 Bold, unselected a 1pt card border with
+/// the name in secondary 13 SemiBold. One line, truncated when wider than
+/// the row (Flutter's chip label: maxLines 1).
+struct TagChip: View {
+    let name: String
+    let selected: Bool
+
+    private static let selectedText = TextSpec(face: .gabaritoBold, size: 13, relativeTo: .footnote)
+    private static let text = TextSpec(face: .gabaritoSemiBold, size: 13, relativeTo: .footnote)
+
+    var body: some View {
+        Text(name)
+            .textStyle(selected ? Self.selectedText : Self.text)
+            .foregroundStyle(selected ? BudgieColor.accent : BudgieColor.textSecondary)
+            .singleLine()
+            .padding(.horizontal, 14)
+            .frame(minHeight: 34)
+            .background(selected ? BudgieColor.accent.opacity(0.13) : Color.clear, in: Capsule())
+            .overlay { if !selected { Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin) } }
+            // The chip draws 34pt tall; the tap area is 44.
+            .tapArea(vertical: 5)
+    }
+}
+
+/// The add forms' footer, pinned under the scroll area (so above the
+/// keyboard): a 1pt hairline on top, padding 10 / 20 / 6, rows 2 apart.
+struct FormFooter<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(spacing: Metrics.spacingXXS) {
+            content()
+        }
+        .padding(EdgeInsets(top: 10, leading: Metrics.pageHorizontal, bottom: 6, trailing: Metrics.pageHorizontal))
+        .overlay(alignment: .top) {
+            BudgieColor.hairline.frame(height: Metrics.borderThin).accessibilityHidden(true)
+        }
+    }
+}
+
+/// The footer buttons: 50pt capsules; primary is filled (the type's fixed
+/// red or green) with a white 16 Bold label and a spinner while saving,
+/// secondary is outlined (1.5pt card border). Presses to 0.95 with a light
+/// haptic; 0.38 opacity when disabled.
 struct FormButton: View {
     let title: String
     /// nil is the outlined secondary button.
-    let fill: LinearGradient?
+    let fill: Color?
     var loading = false
     let action: () -> Void
 
     @Environment(\.isEnabled) private var isEnabled
     @State private var taps = 0
 
+    private static let label = TextSpec(face: .gabaritoBold, size: 16, relativeTo: .body)
+
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
         Button {
             taps += 1
             action()
         } label: {
             HStack(spacing: Metrics.spacingS) {
                 if loading {
+                    // White on `expenseFixed` / `incomeFixed` (their token pairs).
                     ProgressView().tint(.white).accessibilityHidden(true)
                 }
-                Text(title).textStyle(.buttonMedium)
+                Text(title).textStyle(Self.label).multilineTextAlignment(.center)
             }
             .foregroundStyle(fill == nil ? BudgieColor.textPrimary : .white)
+            .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)
-            .frame(minHeight: 48)
-            .background {
-                if let fill {
-                    shape.fill(fill).shadow(color: .black.opacity(isEnabled ? 0.1 : 0), radius: 4, y: 4)
-                }
-            }
-            .overlay {
-                if fill == nil { shape.strokeBorder(BudgieColor.textPrimary.opacity(0.3), lineWidth: Metrics.borderMedium) }
-            }
-            .contentShape(shape)
+            .frame(minHeight: 50)
+            .background { if let fill { Capsule().fill(fill) } }
+            .overlay { if fill == nil { Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderMedium) } }
+            .contentShape(Capsule())
         }
         .buttonStyle(PressScaleStyle(scale: 0.95))
         .opacity(isEnabled ? 1 : Metrics.opacityDisabled)

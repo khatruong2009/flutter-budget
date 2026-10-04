@@ -7,9 +7,10 @@ import SwiftUI
 /// in place for "Make this recurring", so it brings its own chrome.
 ///
 /// Flutter's field order and copy: Amount (focused), Description, the
-/// Category wheel, the Recurrence Pattern wheel, the Day of Month wheel
+/// Category (a menu row, as on the transaction form), the Recurrence
+/// Pattern wheel, the Day of Month wheel
 /// (monthly), the Start Date tile, the "Next 3 Occurrences" preview, then
-/// Cancel and Save / Update in the type gradient. Save validates all three
+/// Cancel and Save / Update in the type's colour. Save validates all three
 /// fields at once (`RecurringForm.validate`) and closes only after the
 /// awaited write.
 ///
@@ -71,8 +72,6 @@ struct RecurringFormView: View {
         (isEditing ? "Edit Recurring " : "Add Recurring ") + (type == .income ? "Income" : "Expense")
     }
 
-    private var currencySymbol: String { AmountInput.currencySymbolName(model.moneyFormatter) }
-
     private var resolvedStart: DartDateTime {
         RecurringForm.resolvedStart(
             picked: pickedStart, stored: template?.startDate, openedAt: openedAt ?? model.now, calendar: model.calendar)
@@ -112,35 +111,22 @@ struct RecurringFormView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
+            FormScrollArea {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(title)
-                        .textStyle(.headingMedium)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                        .accessibilityAddTraits(.isHeader)
-                        .accessibilityIdentifier("recurring.form.title")
-                    if !isEditing {
-                        SegmentedPills(items: ["Expense", "Income"], selection: typeIndex)
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 12)
-                            .accessibilityElement(children: .contain)
-                            .accessibilityLabel("Transaction type")
-                    }
+                    FormTitleRow(title: title, type: isEditing ? nil : $type, titleIdentifier: "recurring.form.title")
                     BudgieField(
-                        title: "Amount", text: $amountText, prompt: "0.00", symbol: currencySymbol, keyboard: .decimalPad,
-                        error: amountError, autofocus: true
+                        title: "Amount", text: $amountText, prompt: "0.00", keyboard: .decimalPad, error: amountError,
+                        autofocus: true, style: .amount, prefix: AmountInput.currencySymbol(model.moneyFormatter)
                     )
-                    .padding(.top, Metrics.spacingM)
+                    .padding(.top, 12)
                     BudgieField(
-                        title: "Description", text: $descriptionText, prompt: "What is this for?", symbol: "doc.text",
-                        error: descriptionError
+                        title: "Description", text: $descriptionText, prompt: "What is this for?", symbol: "text.alignleft",
+                        error: descriptionError, style: .inline
                     )
                     .padding(.top, Metrics.spacingS)
-                    fieldLabel("Category").padding(.top, Metrics.spacingS)
-                    categoryWheel
-                    fieldLabel("Recurrence Pattern").padding(.top, Metrics.spacingS)
+                    CategoryMenuRow(rows: categoryRows, category: $category, identifier: "recurring.form.category")
+                        .padding(.top, Metrics.spacingS)
+                    fieldLabel("Recurrence Pattern").padding(.top, Metrics.spacingM)
                     patternWheel
                     if pattern == .monthly {
                         fieldLabel("Day of Month").padding(.top, Metrics.spacingS)
@@ -149,10 +135,8 @@ struct RecurringFormView: View {
                     startDate.padding(.top, Metrics.spacingM)
                     preview.padding(.top, Metrics.spacingM)
                 }
-                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: Metrics.spacingM, trailing: Metrics.spacingM))
                 .motion(Motion.easeOut(Motion.fast), value: pattern == .monthly)
             }
-            .scrollDismissesKeyboard(.interactively)
             footer
         }
         .budgieSheetChrome()
@@ -170,10 +154,6 @@ struct RecurringFormView: View {
         }
         .sensoryFeedback(.selection, trigger: wheelTicks)
         .interactiveDismissDisabled(saving)
-    }
-
-    private var typeIndex: Binding<Int> {
-        Binding(get: { type == .income ? 1 : 0 }, set: { type = $0 == 1 ? .income : .expense })
     }
 
     /// The field labels (`caption` w600 in Flutter), hidden from VoiceOver
@@ -200,33 +180,6 @@ struct RecurringFormView: View {
         .clipShape(shape)
         .background(BudgieColor.chipSurface, in: shape)
         .overlay(shape.strokeBorder(BudgieColor.border, lineWidth: Metrics.borderMedium))
-    }
-
-    private var categoryWheel: some View {
-        wheelBox {
-            let rows = categoryRows
-            Picker("Category", selection: categorySelection) {
-                ForEach(rows.indices, id: \.self) { index in
-                    CategoryWheelRow(name: rows[index].name, info: rows[index].info, type: type).tag(index)
-                }
-            }
-            .pickerStyle(.wheel)
-            .labelsHidden()
-            .accessibilityLabel("Category")
-            .accessibilityValue(category)
-            .accessibilityIdentifier("recurring.form.category")
-        }
-    }
-
-    private var categorySelection: Binding<Int> {
-        Binding(
-            get: { categoryRows.firstIndex { DartString.equal($0.name, category) } ?? 0 },
-            set: {
-                let rows = categoryRows
-                guard rows.indices.contains($0), !DartString.equal(rows[$0].name, category) else { return }
-                category = rows[$0].name
-                wheelTicks += 1
-            })
     }
 
     private var patternWheel: some View {
@@ -339,18 +292,19 @@ struct RecurringFormView: View {
     // MARK: Footer
 
     private var footer: some View {
-        HStack(spacing: Metrics.spacingM) {
-            FormButton(title: "Cancel", fill: nil) { dismiss() }
-            FormButton(
-                title: isEditing ? "Update" : "Save",
-                fill: type == .income ? BudgieColor.incomeGradient : BudgieColor.expenseGradient, loading: saving
-            ) {
-                Task { await save() }
+        FormFooter {
+            HStack(spacing: 12) {
+                FormButton(title: "Cancel", fill: nil) { dismiss() }
+                FormButton(
+                    title: isEditing ? "Update" : "Save",
+                    fill: type == .income ? BudgieColor.incomeFixed : BudgieColor.expenseFixed, loading: saving
+                ) {
+                    Task { await save() }
+                }
+                .accessibilityIdentifier("recurring.form.save")
             }
-            .accessibilityIdentifier("recurring.form.save")
+            .disabled(saving)
         }
-        .disabled(saving)
-        .padding(Metrics.spacingM)
     }
 
     // MARK: - Actions

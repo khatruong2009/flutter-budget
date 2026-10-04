@@ -192,16 +192,14 @@ final class CategoriesUITests: XCTestCase {
         XCTAssertTrue(waitUntil { self.value(of: self.row(id)) == "" }, "restored")
         showArchived.tapSettled()
 
-        // The transaction form's wheel offers it; add an expense with it.
+        // The transaction form's category menu offers it; add an expense with it.
         homeRoot()
         app.buttons["Add transaction"].tapSettled()
         let amount = app.textFields["Amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 5))
         amount.typeSettled("4.5")
         app.textFields["Description"].enterText(description)
-        let wheel = app.pickerWheels.firstMatch
-        XCTAssertTrue(wheel.waitForExistence(timeout: 5))
-        wheel.adjust(toPickerWheelValue: name)
+        app.chooseCategory(name)
         app.buttons["Add"].tapSettled()
         let transaction = labelled(description)
         XCTAssertTrue(transaction.waitForExistence(timeout: 10))

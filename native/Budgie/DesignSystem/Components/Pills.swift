@@ -111,11 +111,13 @@ struct PillButton: View {
 /// Segmented capsule control (`SegmentedPillControl`): a track with the
 /// active segment in the selection fill (Settings theme), or the mono
 /// variant with no track and an accent-tint active segment (chart range
-/// pills).
+/// pills). `fillWidth` stretches the segments equally across the width the
+/// control is given (the add form's 176pt Expense / Income switch).
 struct SegmentedPills: View {
     let items: [String]
     @Binding var selection: Int
     var mono = false
+    var fillWidth = false
 
     @Namespace private var namespace
 
@@ -135,6 +137,7 @@ struct SegmentedPills: View {
                             selected ? (mono ? BudgieColor.accent : BudgieColor.selectionText) : BudgieColor.dockInactiveIcon)
                         .padding(.horizontal, mono ? 11 : 12)
                         .padding(.vertical, mono ? 5 : 6)
+                        .frame(maxWidth: fillWidth ? .infinity : nil, maxHeight: fillWidth ? .infinity : nil)
                         .background {
                             if selected {
                                 Capsule()

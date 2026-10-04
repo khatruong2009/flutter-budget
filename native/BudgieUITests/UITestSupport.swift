@@ -153,7 +153,7 @@ extension XCUIApplication {
     }
 
     /// Adds a transaction from Home: the FAB's form, switched to Income for
-    /// an income. `category` spins the form's wheel to that name;
+    /// an income. `category` picks that name in the form's Category menu;
     /// `monthsAgo` > 0 dates it on the 15th of that many months back through
     /// the form's date picker (Previous Month, then the day).
     func addTransaction(
@@ -167,11 +167,7 @@ extension XCUIApplication {
         if income { buttons["Income"].firstMatch.tapSettled(file: file, line: line) }
         amountField.enterText(amount)
         textFields["Description"].enterText(description)
-        if let category {
-            let wheel = pickerWheels.firstMatch
-            XCTAssertTrue(wheel.waitForExistence(timeout: 5), file: file, line: line)
-            wheel.adjust(toPickerWheelValue: category)
-        }
+        if let category { chooseCategory(category, file: file, line: line) }
         if monthsAgo > 0 {
             buttons["Date"].tapSettled(file: file, line: line)
             let ok = buttons["datePicker.ok"]
@@ -188,6 +184,26 @@ extension XCUIApplication {
         }
         buttons["Add"].tapSettled(file: file, line: line)
         XCTAssertTrue(amountField.waitForNonExistence(timeout: 10), "the form closed after Add", file: file, line: line)
+    }
+
+    /// The add / edit form's Category row (`form.category`, a button whose
+    /// value is the selected category).
+    var formCategory: XCUIElement { element("form.category").firstMatch }
+
+    /// Picks `name` in the open add / edit form's Category menu: taps the
+    /// row, then the name's button in the menu. The topmost hittable match
+    /// is the menu's (a row behind the sheet can share the name); one
+    /// scrolled out of the menu's view is tapped as the last match, which
+    /// XCTest scrolls into view.
+    func chooseCategory(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
+        let row = formCategory
+        row.tapSettled(file: file, line: line)
+        let matches = buttons.matching(NSPredicate(format: "label == %@", name))
+        XCTAssertTrue(matches.firstMatch.waitForExistence(timeout: 5), "\(name) in the category menu", file: file, line: line)
+        let all = matches.allElementsBoundByIndex
+        guard let item = all.last(where: { $0.isHittable }) ?? all.last else { return }
+        item.tap()
+        XCTAssertTrue(row.waitForValue(name), "the form shows \(name), not \(String(describing: row.value))", file: file, line: line)
     }
 
     /// Shows amounts in US dollars, unmasked, which the money assertions
