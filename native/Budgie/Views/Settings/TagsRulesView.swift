@@ -171,8 +171,8 @@ enum TagsRulesDialog: Identifiable {
     }
 }
 
-/// `_SectionTitle` as a `SectionHeader`: the title (21 w700) and the "ADD"
-/// text link in accent (textLink), baseline aligned, inset 4; the link's tap
+/// `_SectionTitle` as a `SectionHeader`: the title (21 w700) and the "Add"
+/// text link (sentence case, like every section link; Flutter's "ADD") in accent (textLink), baseline aligned, inset 4; the link's tap
 /// area is 44 x 44. No haptic, as Flutter.
 private struct SectionTitle: View {
     let title: String
@@ -188,7 +188,7 @@ private struct SectionTitle: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityAddTraits(.isHeader)
             Button(action: onAdd) {
-                Text("ADD")
+                Text("Add")
                     .textStyle(.textLink)
                     .foregroundStyle(BudgieColor.accent)
                     .tapArea(horizontal: 8, vertical: 13)

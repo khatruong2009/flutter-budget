@@ -207,8 +207,11 @@ struct SettingsThemeRow: View {
     }
 
     private var text: some View {
-        SettingsRowText(title: "Theme", subtitle: "Light, dark, or match device", subtitleLines: nil)
-            .accessibilityElement(children: .combine)
+        // No subtitle (owner's call, 2026-10-04): the pills say it.
+        Text("Theme")
+            .textStyle(.rowTitle)
+            .foregroundStyle(BudgieColor.textPrimary)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// Capped at AX2 so the three pills still fit the card's width.

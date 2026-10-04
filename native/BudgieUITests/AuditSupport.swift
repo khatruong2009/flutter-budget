@@ -242,7 +242,7 @@ enum AuditExclusions {
             types: [.dynamicType], match: .labelPattern("^[0-9]{1,2}$"), screens: ["Date picker"],
             reason: "Day numbers of the system UIDatePicker."),
         AuditExclusion(
-            types: [.dynamicType], match: .labelPattern("^(Theme|Light, dark, or match device|Light|Dark|Auto)$"), screens: ["Settings"],
+            types: [.dynamicType], match: .labelPattern("^(Theme|Light|Dark|Auto)$"), screens: ["Settings"],
             reason: "The theme row is capped at accessibility2 on purpose (dynamicTypeSize(...accessibility2)) so its pills stay on one line."),
         AuditExclusion(types: allTypes, match: .inKeyboard, reason: "The system software keyboard."),
         AuditExclusion(
