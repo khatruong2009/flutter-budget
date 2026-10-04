@@ -3,8 +3,9 @@ import SwiftUI
 // MARK: - Sheet chrome
 
 extension View {
-    /// The redesign's bottom-sheet chrome (Home sheets): card fill, 1pt card
-    /// border along the rounded top, 28pt top radius, a 44x4 grab handle.
+    /// The redesign's bottom-sheet chrome (REDESIGN_PLAN 4.3): card fill, 1pt
+    /// card border along the rounded top, 30pt top radius, a 38 x 5 grab
+    /// handle in `hairline`.
     /// Apply to the root view inside `.sheet`.
     func budgieSheetChrome(radius: CGFloat = Metrics.sheetRadius) -> some View {
         modifier(SheetChrome(radius: radius))
@@ -18,9 +19,9 @@ private struct SheetChrome: ViewModifier {
         content
             .safeAreaInset(edge: .top, spacing: 0) {
                 Capsule()
-                    .fill(BudgieColor.textTertiary.opacity(0.6))
-                    .frame(width: 44, height: 4)
-                    .padding(.top, 10)
+                    .fill(BudgieColor.hairline)
+                    .frame(width: 38, height: 5)
+                    .padding(.top, 8)
                     .padding(.bottom, 6)
                     .frame(maxWidth: .infinity)
                     .accessibilityHidden(true)
@@ -91,13 +92,6 @@ extension View {
     func budgieDialogDismissDisabled(_ disabled: Bool = true) -> some View {
         preference(key: DialogDismissDisabledKey.self, value: disabled)
     }
-
-    /// Gives a `budgieDialog`'s card the Worth editor's shadows: a glow of
-    /// `color` (blur 32, alpha .18) and a black drop shadow (blur 24, 12
-    /// down; alpha .5 dark, .15 light), net_worth_page.dart:2283-2291.
-    func budgieDialogGlow(_ color: Color) -> some View {
-        preference(key: DialogGlowKey.self, value: color)
-    }
 }
 
 /// `SwiftUI.` because BudgieCore has its own `PreferenceKey` (stored prefs).
@@ -109,21 +103,13 @@ private struct DialogDismissDisabledKey: SwiftUI.PreferenceKey {
     }
 }
 
-private struct DialogGlowKey: SwiftUI.PreferenceKey {
-    static let defaultValue: Color? = nil
-
-    static func reduce(value: inout Color?, nextValue: () -> Color?) {
-        value = nextValue() ?? value
-    }
-}
-
-/// The dialog card's shadows, drawn by a card-shaped fill behind it. A
+/// Every dialog card's drop shadow (blur 24, 12 down; black at .5 dark, .15
+/// light), drawn by a card-shaped fill behind it. A
 /// shadow applied to the card itself would shadow every field, label and
 /// button inside it separately (SwiftUI shadows each layer of a view that
 /// is not a compositing group), which haloed the whole form in light mode.
 private struct DialogShadow: View {
     @Environment(\.colorScheme) private var scheme
-    let color: Color
 
     var body: some View {
         RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
@@ -186,7 +172,6 @@ private struct DialogHost<Dialog: View>: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var visible = false
     @State private var dismissDisabled = false
-    @State private var glow: Color?
     /// How far the bottom card has been dragged down.
     @State private var drag: CGFloat = 0
     @State private var cardHeight: CGFloat = 0
@@ -197,7 +182,7 @@ private struct DialogHost<Dialog: View>: View {
 
     var body: some View {
         ZStack(alignment: placement == .bottom ? .bottom : .center) {
-            Color.black.opacity(visible ? 0.54 : 0)
+            BudgieColor.scrim.opacity(visible ? 1 : 0)
                 .ignoresSafeArea()
                 .onTapGesture { if !dismissDisabled && !keyboardMoving { dismiss() } }
                 .accessibilityAddTraits(.isButton)
@@ -207,7 +192,7 @@ private struct DialogHost<Dialog: View>: View {
             // out at its content's size within the space offered, so it can
             // never be stuck at a stale (zero) height.
             GlowCard(padding: padding) { dialog() }
-                .background { if let glow { DialogShadow(color: glow) } }
+                .background { DialogShadow() }
                 .frame(maxWidth: 500)
                 .modifier(Placed(placement: placement, visible: visible, reduceMotion: reduceMotion, drag: drag))
                 .onGeometryChangeCompat { cardHeight = $0.height }
@@ -216,9 +201,6 @@ private struct DialogHost<Dialog: View>: View {
         }
         .onPreferenceChange(DialogDismissDisabledKey.self) { disabled in
             MainActor.assumeIsolated { dismissDisabled = disabled }
-        }
-        .onPreferenceChange(DialogGlowKey.self) { color in
-            MainActor.assumeIsolated { glow = color }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { _ in
             keyboardMoving = true

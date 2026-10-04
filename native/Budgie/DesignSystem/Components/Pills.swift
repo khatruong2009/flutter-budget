@@ -60,9 +60,11 @@ struct PillChip: View {
     }
 }
 
-/// Capsule button (`PillButton`): 52pt tinted outline (colour at 10% with a
-/// 35% border), or 44pt accent-filled with a glow and on-accent label.
-/// Presses to 0.96 with a light haptic.
+/// Capsule button (`PillButton`): 52pt outlined (no fill, a 1.5pt card
+/// border, the label in `color`), or 44pt filled with `color` (accent by
+/// default) and an on-accent label; sheets' full-width primary passes
+/// `height: Metrics.pillButtonHeight` (52). Presses to 0.96 with a light
+/// haptic.
 struct PillButton: View {
     let title: String
     var symbol: String? = nil
@@ -92,12 +94,13 @@ struct PillButton: View {
                     .font(.custom(BudgieFont.gabaritoBold.postScriptName, size: filled ? 14 : 15, relativeTo: .body))
             }
             .foregroundStyle(foreground)
+            .padding(.horizontal, 20)
             .padding(.vertical, minHeight == nil ? 0 : Metrics.spacingS)
             .frame(maxWidth: .infinity)
             .frame(height: minHeight == nil ? height ?? (filled ? Metrics.pillButtonCompactHeight : Metrics.pillButtonHeight) : nil)
             .frame(minHeight: minHeight)
-            .background(filled ? color : color.opacity(0.1), in: Capsule())
-            .overlay { if !filled { Capsule().strokeBorder(color.opacity(0.35), lineWidth: 1) } }
+            .background(filled ? color : Color.clear, in: Capsule())
+            .overlay { if !filled { Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderMedium) } }
             .contentShape(Capsule())
         }
         .buttonStyle(PressScaleStyle(scale: 0.96))

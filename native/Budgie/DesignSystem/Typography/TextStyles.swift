@@ -23,6 +23,8 @@ extension TextSpec {
     static let heroMedium = TextSpec(face: .gabaritoExtraBold, size: 48, tracking: -1.8, height: 1.0, tabular: true, relativeTo: .largeTitle)
     static let heroSmall = TextSpec(face: .gabaritoExtraBold, size: 34, tracking: -1, height: 1.1, tabular: true, relativeTo: .largeTitle)
     static let pageTitle = TextSpec(face: .gabaritoExtraBold, size: 30, tracking: -0.9, relativeTo: .title)
+    /// Sheet and dialog titles.
+    static let sheetTitle = TextSpec(face: .gabaritoExtraBold, size: 24, tracking: -0.5, relativeTo: .title2)
     static let sectionHeader = TextSpec(face: .gabaritoBold, size: 21, tracking: -0.2, relativeTo: .title3)
     /// A section's text link ("See all", "Edit").
     static let textLink = TextSpec(face: .gabaritoSemiBold, size: 15, relativeTo: .subheadline)

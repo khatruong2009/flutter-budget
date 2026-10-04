@@ -74,6 +74,20 @@ final class ColorContrastTests: XCTestCase {
         }
     }
 
+    /// Text in form fields and rows (`BudgieField`, `FormRow`), on `fieldFill`.
+    func testTextTokensPassOnFieldFill() {
+        for dark in [false, true] {
+            let fill = resolve(BudgieColor.fieldFill, dark: dark)
+            let tokens: [(String, Color)] = [
+                ("textPrimary", BudgieColor.textPrimary), ("textSecondary", BudgieColor.textSecondary),
+                ("textTertiary", BudgieColor.textTertiary), ("accent", BudgieColor.accent), ("danger", BudgieColor.danger),
+            ]
+            for (name, color) in tokens {
+                assertAtLeast(aa, resolve(color, dark: dark), fill, "\(dark ? "dark" : "light") \(name) on fieldFill")
+            }
+        }
+    }
+
     /// Coloured text on its own tint (chips and tiles fill a colour at 10-14%).
     func testColouredTextPassesOnItsOwnTint() {
         for dark in [false, true] {
@@ -128,6 +142,7 @@ final class ColorContrastTests: XCTestCase {
             ("cardBorder", BudgieColor.cardBorder), ("hairline", BudgieColor.hairline), ("border", BudgieColor.border),
             ("selectionFill", BudgieColor.selectionFill), ("selectionBorder", BudgieColor.selectionBorder),
             ("featureBorder", BudgieColor.featureBorder), ("featureControl", BudgieColor.featureControl),
+            ("scrim", BudgieColor.scrim),
         ]
         for dark in [false, true] {
             for (name, color) in tokens {

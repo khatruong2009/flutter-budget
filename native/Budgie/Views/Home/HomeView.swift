@@ -275,7 +275,6 @@ private struct SafeToSpendCard: View {
 
     var body: some View {
         let card = HomeSummary.safeToSpendCard(breakdown, formatter: formatter)
-        let shape = RoundedRectangle(cornerRadius: Metrics.statCardRadius, style: .continuous)
         Button {
             taps += 1
             onTap()
@@ -304,10 +303,7 @@ private struct SafeToSpendCard: View {
                     .background(BudgieColor.featureControl, in: Circle())
                     .accessibilityHidden(true)
             }
-            .padding(18)
-            .background(BudgieColor.featureFill, in: shape)
-            .overlay(shape.strokeBorder(BudgieColor.featureBorder, lineWidth: 1))
-            .contentShape(shape)
+            .featureCard()
         }
         .buttonStyle(PressScaleStyle(scale: 0.98))
         .sensoryFeedback(.impact(weight: .light), trigger: taps)

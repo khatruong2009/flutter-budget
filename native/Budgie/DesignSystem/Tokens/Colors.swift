@@ -22,6 +22,10 @@ enum BudgieColor {
     static let track = dynamic(light: 0xE4DDCE, dark: 0x161B24)
     static let trackSecondary = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
     static let donutRemainder = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
+    /// Text fields, form rows and the date tile, on a card or sheet.
+    static let fieldFill = dynamic(light: 0xF3EFE6, dark: 0x0B0E14)
+    /// The dimmed backdrop behind a dialog: ink 38% light, black 55% dark.
+    static let scrim = dynamic(light: 0x611A_1A17, dark: 0x8C00_0000, alpha: true)
 
     // Text
     static let textPrimary = dynamic(light: 0x1A1A17, dark: 0xEEF1F5)
@@ -40,6 +44,8 @@ enum BudgieColor {
     /// Expense, over-limit and errors (`getDanger`).
     static let danger = dynamic(light: 0xA63D24, dark: 0xFF8B7B)
     static let warning = dynamic(light: 0x7E5300, dark: 0xFFC861)
+    /// A `Toggle`'s tint when on.
+    static let switchOn = dynamic(light: 0x1D6646, dark: 0x5EE6B0)
     static let info = dynamic(light: 0x1F5F99, dark: 0x7CC8FF)
     static let purple = dynamic(light: 0x5B47B8, dark: 0xB3ADFF)
     static let pink = dynamic(light: 0x7F3B6B, dark: 0xF7A1D8)

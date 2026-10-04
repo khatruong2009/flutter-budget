@@ -281,37 +281,37 @@ struct GoalsSummaryCard: View {
 
     var body: some View {
         let saved = formatter.format(summary.totalSaved, decimalDigits: 0)
-        GlowCard(fill: AnyShapeStyle(BudgieColor.featureFill), border: BudgieColor.featureBorder) {
-            HStack(spacing: 18) {
-                ProgressRing(
-                    value: summary.progress, size: 72, thickness: 8, color: BudgieColor.featureRing,
-                    track: BudgieColor.featureControl, inner: BudgieColor.featureFill
-                ) {
-                    Text(SavingsGoalText.summaryPercent(summary))
-                        .textStyle(Self.ringText)
-                        .foregroundStyle(BudgieColor.featureText)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .padding(.horizontal, 10)
-                }
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("SAVED SO FAR")
-                        .textStyle(.eyebrowTight)
-                        .foregroundStyle(BudgieColor.featureSecondary)
-                    Text(saved)
-                        .textStyle(Self.amountText)
-                        .foregroundStyle(BudgieColor.featureAmount)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .padding(.top, 6)
-                    Text(SavingsGoalText.summaryCaption(summary, formatter: formatter))
-                        .textStyle(GoalText.caption)
-                        .foregroundStyle(BudgieColor.featureSecondary)
-                        .padding(.top, 2)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: 18) {
+            ProgressRing(
+                value: summary.progress, size: 72, thickness: 8, color: BudgieColor.featureRing,
+                track: BudgieColor.featureControl, inner: BudgieColor.featureFill
+            ) {
+                Text(SavingsGoalText.summaryPercent(summary))
+                    .textStyle(Self.ringText)
+                    .foregroundStyle(BudgieColor.featureText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .padding(.horizontal, 10)
             }
+            VStack(alignment: .leading, spacing: 0) {
+                Text("SAVED SO FAR")
+                    .textStyle(.eyebrowTight)
+                    .foregroundStyle(BudgieColor.featureSecondary)
+                Text(saved)
+                    .textStyle(Self.amountText)
+                    .foregroundStyle(BudgieColor.featureAmount)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .padding(.top, 6)
+                Text(SavingsGoalText.summaryCaption(summary, formatter: formatter))
+                    .textStyle(GoalText.caption)
+                    .foregroundStyle(BudgieColor.featureSecondary)
+                    .padding(.top, 2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        // GlowCard's inset: padding 20 plus the 1pt border.
+        .featureCard(padding: Metrics.cardPadding + Metrics.borderThin)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Saved so far")
         .accessibilityValue(

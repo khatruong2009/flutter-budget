@@ -79,6 +79,22 @@ struct GlowCard<Content: View>: View {
     }
 }
 
+extension View {
+    /// The feature card (one per screen at most: Home's Safe to spend, the
+    /// Goals summary, the Safe to spend sheet's total, the Settings brand
+    /// card): `featureFill` with a 1pt `featureBorder`, radius 22, padding
+    /// 18, full width. Text on it uses the `feature*` tokens.
+    func featureCard(radius: CGFloat = Metrics.cardRadius, padding: CGFloat = 18) -> some View {
+        let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+        return self
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(padding)
+            .background(BudgieColor.featureFill, in: shape)
+            .overlay(shape.strokeBorder(BudgieColor.featureBorder, lineWidth: Metrics.borderThin))
+            .contentShape(shape)
+    }
+}
+
 /// A GlowCard with 8pt padding and 1pt hairlines inset 12 between rows
 /// (`GlowListCard`). `lazy` builds only the rows on screen (inside a scroll
 /// view): for a list that can have hundreds of rows, like an account's

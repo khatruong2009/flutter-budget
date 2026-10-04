@@ -83,7 +83,6 @@ struct AccountEditorDialog: View {
             if let replacement = Self.sanitizedAmount(old: old, new: new, prefill: prefill.text) { amountText = replacement }
         }
         .budgieDialogDismissDisabled(saving)
-        .budgieDialogGlow(accent)
         .sensoryFeedback(.impact(weight: .light), trigger: buttonTaps)
         .sensoryFeedback(.selection, trigger: typeTaps)
         // A container, so the identifier does not replace the fields' own.

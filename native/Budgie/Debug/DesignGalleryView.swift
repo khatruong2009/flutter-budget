@@ -37,6 +37,7 @@ struct DesignGalleryView: View {
                 colours
                 typography
                 cards
+                feature
                 pills
                 progress
                 fields
@@ -52,9 +53,13 @@ struct DesignGalleryView: View {
                 .padding(Metrics.fabInset)
         }
         .sheet(isPresented: $sheet) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Add a budget").textStyle(.cardTitle).foregroundStyle(BudgieColor.textPrimary)
-                Text("Choose a category to set a monthly limit.").textStyle(.rowSubtitle).foregroundStyle(BudgieColor.textSecondary)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Safe to spend").textStyle(.sheetTitle).foregroundStyle(BudgieColor.textPrimary)
+                Text("A forward-looking estimate for the rest of this month.").textStyle(.bodySmall)
+                    .foregroundStyle(BudgieColor.textSecondary)
+                PillButton(title: "Done", filled: true, height: Metrics.pillButtonHeight) { sheet = false }
+                    .padding(.top, 12)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary) { sheet = false }
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -74,7 +79,7 @@ struct DesignGalleryView: View {
         }
         .budgieDialog(isPresented: $dialog) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("New savings goal").textStyle(.cardTitle).foregroundStyle(BudgieColor.textPrimary)
+                Text("New savings goal").textStyle(.sheetTitle).foregroundStyle(BudgieColor.textPrimary)
                 BudgieField(title: "Goal name", text: $text, prompt: "Emergency fund", symbol: "flag")
                 DateTile(label: "Target date", value: "Mar 28, 2027") {}
                 HStack(spacing: 12) {
@@ -83,6 +88,15 @@ struct DesignGalleryView: View {
                 }
             }
         }
+    }
+
+    private var feature: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("Safe to spend").textStyle(.captionStrong).foregroundStyle(BudgieColor.featureSecondary)
+            Text("$239.00").textStyle(.heroSmall).foregroundStyle(BudgieColor.featureAmount)
+            Text("$8/day for 29 days left").textStyle(.caption).foregroundStyle(BudgieColor.featureSecondary)
+        }
+        .featureCard()
     }
 
     private var hero: some View {
@@ -264,10 +278,25 @@ struct DesignGalleryView: View {
     private var fields: some View {
         VStack(alignment: .leading, spacing: 14) {
             SectionHeader(title: "Fields")
-            BudgieField(title: "Description", text: $text, prompt: "What was it for?", symbol: "text.alignleft")
-            BudgieField(title: "Amount", text: $amount, prompt: "0.00", symbol: "dollarsign", keyboard: .decimalPad,
-                        error: "Enter an amount greater than zero")
+            BudgieField(title: "Goal name", text: $text, prompt: "Emergency fund", symbol: "flag")
+            BudgieField(title: "Amount", text: $amount, prompt: "0.00", keyboard: .decimalPad, style: .amount, prefix: "$")
+            BudgieField(title: "Amount", text: $amount, prompt: "0.00", keyboard: .decimalPad,
+                        error: "Enter an amount greater than zero", style: .amount, prefix: "$")
+            BudgieField(title: "Description", text: $text, prompt: "What was this for?", symbol: "text.alignleft", style: .inline)
+            FormRow(label: "Category", trailingSymbol: "chevron.down", action: {}) {
+                HStack(spacing: 12) {
+                    IconTile(symbol: "cart", color: BudgieColor.income, size: 28, radius: 9, iconSize: 15)
+                    Text("Groceries").textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary)
+                }
+            }
             DateTile(label: "Date", value: "Sep 05, 2026") {}
+            DateTile(label: "Start Date", value: "Sep 05, 2026", error: true) {}
+            FormRow(label: "Tags", note: "Optional") {
+                HStack(spacing: 8) {
+                    PillChip(label: "Work", color: BudgieColor.accent, horizontalPadding: 14, verticalPadding: 9)
+                    PillChip(label: "Vacation", color: BudgieColor.textSecondary, outlined: true, horizontalPadding: 14, verticalPadding: 9)
+                }
+            }
         }
     }
 
@@ -292,9 +321,12 @@ struct DesignGalleryView: View {
                 PillButton(title: "Lock") { fullScreen = .lock }
                 PillButton(title: "Cover") { fullScreen = .cover }
             }
-            GlowCard {
-                EmptyStateView(kind: .noResults)
-            }
+            EmptyStateView(
+                symbol: "flag", title: "No savings goals yet",
+                message: "Create a goal, set a target date, and track progress as you set money aside.",
+                actionTitle: "Add goal", horizontalInset: 0
+            ) {}
+            EmptyStateView(kind: .error, horizontalInset: 0)
         }
     }
 }
