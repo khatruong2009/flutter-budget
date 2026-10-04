@@ -242,6 +242,7 @@ struct EmptyStateView: View {
     var message: String? = nil
     var actionTitle: String? = nil
     var actionSymbol: String? = "plus"
+    var actionIdentifier: String? = nil
     var horizontalInset: CGFloat = Metrics.pageHorizontal
     var action: (() -> Void)? = nil
 
@@ -272,6 +273,7 @@ struct EmptyStateView: View {
             if let actionTitle, let action {
                 PillButton(title: actionTitle, symbol: actionSymbol, filled: true, height: 48, action: action)
                     .fixedSize(horizontal: true, vertical: false)
+                    .accessibilityIdentifier(actionIdentifier ?? "")
                     .padding(.top, 8)
             }
         }

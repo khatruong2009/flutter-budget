@@ -114,7 +114,7 @@ struct RecurringView: View {
 
     private func list(_ templates: [RecurringTemplate]) -> some View {
         ScrollView {
-            LazyVStack(spacing: Metrics.spacingS) {
+            LazyVStack(spacing: 12) {
                 ForEach(templates) { template in
                     RecurringCard(
                         template: template,
@@ -123,42 +123,21 @@ struct RecurringView: View {
                         onDelete: { pendingDelete = template })
                 }
             }
-            .padding(Metrics.spacingM)
+            .padding(EdgeInsets(top: Metrics.spacingM, leading: Metrics.pageHorizontal, bottom: Metrics.spacingXL, trailing: Metrics.pageHorizontal))
         }
         .accessibilityIdentifier("recurring.list")
     }
 
-    /// `_buildEmptyState` (:68-108): a 120pt primary-gradient circle with a
-    /// repeat glyph, the title and the two-line message, centred. SF
-    /// `repeat` at 52pt is as tall as Material's 60pt `repeat` (about 49pt;
-    /// SF's is wider, with rounded corners).
+    /// `_buildEmptyState` (:68-108) as the redesign's empty card: the repeat
+    /// glyph, the title and the two-line message, centred.
     private var emptyState: some View {
         GeometryReader { proxy in
             ScrollView {
-                VStack(spacing: 0) {
-                    Image(systemName: "repeat")
-                        .font(.system(size: 52, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 120, height: 120)
-                        .background(BudgieColor.primaryGradient, in: Circle())
-                        .accessibilityHidden(true)
-                    Text("No Recurring Transactions")
-                        .textStyle(.headingLarge)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .accessibilityAddTraits(.isHeader)
-                        .padding(.top, Metrics.spacingL)
-                    Text("Create recurring transactions to automatically\ngenerate expenses and income on a schedule")
-                        .textStyle(.bodyMedium)
-                        .foregroundStyle(BudgieColor.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, Metrics.spacingS)
-                    PillButton(title: "Add Recurring", symbol: "plus", filled: true) { sheet = .add }
-                        .frame(maxWidth: 260)
-                        .padding(.top, Metrics.spacingXL)
-                        .accessibilityIdentifier("recurring.empty.add")
-                }
-                .padding(Metrics.spacingXL)
+                EmptyStateView(
+                    symbol: "repeat", title: "No Recurring Transactions",
+                    message: "Create recurring transactions to automatically\ngenerate expenses and income on a schedule",
+                    actionTitle: "Add Recurring", actionIdentifier: "recurring.empty.add"
+                ) { sheet = .add }
                 .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
             .scrollBounceBehavior(.basedOnSize)

@@ -1,24 +1,50 @@
 import SwiftUI
 
 /// Settings > About > Licences: the SIL OFL texts the bundled fonts require
-/// to travel with them.
+/// to travel with them, one section per font (REDESIGN_PLAN 4.7: a
+/// `SectionHeader` over a card holding the text).
 struct LicencesView: View {
     private let licences: [(title: String, file: String)] = [
         ("Gabarito", "OFL-Gabarito"),
         ("Spline Sans Mono", "OFL-SplineSansMono"),
     ]
 
+    private static let licenceText = TextSpec(face: .monoRegular, size: 12, height: 1.45, relativeTo: .footnote)
+
     var body: some View {
-        List {
-            ForEach(licences, id: \.file) { licence in
-                Section(licence.title) {
-                    Text(Self.text(licence.file))
-                        .font(.footnote.monospaced())
-                        .textSelection(.enabled)
+        ScrollView {
+            VStack(alignment: .leading, spacing: Metrics.sectionGap) {
+                ForEach(licences, id: \.file) { licence in
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: licence.title)
+                        GlowCard(padding: Metrics.spacingM) {
+                            Text(Self.text(licence.file))
+                                .textStyle(Self.licenceText)
+                                .foregroundStyle(BudgieColor.textSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .textSelection(.enabled)
+                        }
+                    }
                 }
             }
+            .padding(EdgeInsets(top: Metrics.spacingM, leading: Metrics.pageHorizontal, bottom: Metrics.spacingXL, trailing: Metrics.pageHorizontal))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(BudgieColor.background)
         .navigationTitle("Licences")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(BudgieColor.background, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Licences")
+                    .textStyle(.cardTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .singleLine()
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
     }
 
     static func text(_ name: String) -> String {

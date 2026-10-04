@@ -94,13 +94,6 @@ enum BudgieColor {
     static let dialogOutlinedFill = overlay(dark: 0.06, light: 0.05)
 
     // Settings
-    /// The brand card's wash: `accent @ 22%` blended over `card`, fading to
-    /// `card` at the bottom right.
-    static let brandCardWash = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 52.64 / 255, green: 54.44 / 255, blue: 77.94 / 255, alpha: 1)
-            : UIColor(red: 202.16 / 255, green: 216.66 / 255, blue: 205.72 / 255, alpha: 1)
-    })
     /// The Version row's icon.
     static let versionIcon = textSecondary
     /// The Version row's tile: white 6% dark, black 6% light.

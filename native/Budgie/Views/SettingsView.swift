@@ -84,7 +84,7 @@ struct SettingsView: View {
     private func content(_ data: FinancialData) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             SettingsBrandCard()
-                .padding(EdgeInsets(top: Metrics.spacingL, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
+                .padding(EdgeInsets(top: 20, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
             section("Appearance", rows: [AnyView(SettingsThemeRow(selection: themeSelection))])
             section("Personalization", rows: personalizationRows(data))
             section("Privacy", rows: privacyRows(data.appSettings))
@@ -156,27 +156,25 @@ struct SettingsView: View {
                 action: { destination = .recurring }
             ).accessibilityIdentifier("settings.recurring")),
             AnyView(SettingsRow(
-                symbol: "arrow.down.to.line", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
-                iconSize: SettingsGlyph.small,
+                symbol: "arrow.down.to.line", color: BudgieColor.income, iconSize: SettingsGlyph.small,
                 title: "Export as CSV", subtitle: "All \(transactionCount) transactions",
                 busy: dataTask == .exportCSV, busyLabel: DataTask.exportCSV.busyLabel,
                 action: unlessBusy(exportCSV)
             ).accessibilityIdentifier("settings.exportCSV")),
             AnyView(SettingsRow(
-                symbol: "arrow.up.to.line", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
-                iconSize: SettingsGlyph.small,
+                symbol: "arrow.up.to.line", color: BudgieColor.info, iconSize: SettingsGlyph.small,
                 title: "Import from CSV", subtitle: "Add transactions from a file",
                 busy: dataTask == .importCSV, busyLabel: DataTask.importCSV.busyLabel,
                 action: unlessBusy { pickFile(.csv) }
             ).accessibilityIdentifier("settings.importCSV")),
             AnyView(SettingsRow(
-                symbol: "icloud.and.arrow.up", color: BudgieColor.income, tile: BudgieColor.income.opacity(0.12),
+                symbol: "icloud.and.arrow.up", color: BudgieColor.income,
                 title: "Export backup", subtitle: "Everything, as a JSON file",
                 busy: dataTask == .exportBackup, busyLabel: DataTask.exportBackup.busyLabel,
                 action: unlessBusy(exportBackup)
             ).accessibilityIdentifier("settings.exportBackup")),
             AnyView(SettingsRow(
-                symbol: "arrow.counterclockwise.circle", color: BudgieColor.accent, tile: BudgieColor.accent.opacity(0.12),
+                symbol: "arrow.counterclockwise.circle", color: BudgieColor.danger,
                 title: "Import backup", subtitle: "Restore everything (replaces current data)",
                 busy: dataTask == .importBackup, busyLabel: DataTask.importBackup.busyLabel,
                 action: unlessBusy { pickFile(.backup) }
@@ -212,12 +210,22 @@ struct SettingsView: View {
         return rows
     }
 
-    /// An eyebrow and its list card (inset 20, 10 below the eyebrow).
+    /// An eyebrow and its card (inset 20, 8 below the eyebrow): the rows
+    /// 16 from the card's sides, a hairline between rows.
     private func section(_ title: String, rows: [AnyView]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             SettingsEyebrow(title: title)
-            GlowListCard(rows: rows)
-                .padding(EdgeInsets(top: 10, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
+            GlowCard(padding: 0) {
+                VStack(spacing: 0) {
+                    ForEach(rows.indices, id: \.self) { index in
+                        if index > 0 { Hairline() }
+                        rows[index]
+                    }
+                }
+                .padding(.horizontal, Metrics.spacingM)
+                .padding(.vertical, Metrics.spacingXXS)
+            }
+            .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
         }
     }
 

@@ -52,7 +52,7 @@ struct CategoryEditorDialog: View {
         let isNew = request.category == nil
         VStack(spacing: 0) {
             Text(isNew ? "New category" : "Edit category")
-                .textStyle(.goalTitle)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -60,7 +60,7 @@ struct CategoryEditorDialog: View {
             DialogScroll { fields }
                 .padding(.top, 20)
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onClose)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onClose)
                     .accessibilityIdentifier("categories.editor.cancel")
                 PillButton(title: isNew ? "Add" : "Save", filled: true, height: 44, action: submit)
                     .accessibilityIdentifier("categories.editor.submit")
@@ -131,12 +131,13 @@ struct CategoryEditorDialog: View {
     /// fit six.
     private static let gridWidth = Metrics.touchTarget * 5 + Metrics.spacingS * 4
 
-    /// "Icon" / "Color" (`AppTypography.caption` in the dialog's
-    /// onSurfaceVariant).
+    /// "Icon" / "Color", as the field's label (caption w600, secondary,
+    /// inset 4).
     private func caption(_ text: String) -> some View {
         Text(text)
-            .textStyle(.caption)
+            .textStyle(.captionStrong)
             .foregroundStyle(BudgieColor.textSecondary)
+            .padding(.leading, 4)
             .accessibilityAddTraits(.isHeader)
     }
 
@@ -225,7 +226,7 @@ struct CategoryEditorDialog: View {
 }
 
 /// `_ChoiceButton` (:341-379): 44pt, radius 12; selected: accent at 18%
-/// with a 1pt accent border, else the surface with the border colour. No
+/// with a 1pt accent border, else the field fill with the card border. No
 /// press animation (Flutter's ink ripple has no SwiftUI counterpart here).
 private struct ChoiceButton<Content: View>: View {
     let selected: Bool
@@ -239,8 +240,8 @@ private struct ChoiceButton<Content: View>: View {
         Button(action: action) {
             content()
                 .frame(width: Metrics.touchTarget, height: Metrics.touchTarget)
-                .background(selected ? BudgieColor.accent.opacity(0.18) : BudgieColor.surface, in: shape)
-                .overlay(shape.strokeBorder(selected ? BudgieColor.accent : BudgieColor.border, lineWidth: Metrics.borderThin))
+                .background(selected ? BudgieColor.accent.opacity(0.18) : BudgieColor.fieldFill, in: shape)
+                .overlay(shape.strokeBorder(selected ? BudgieColor.accent : BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
                 .contentShape(shape)
         }
         .buttonStyle(.plain)

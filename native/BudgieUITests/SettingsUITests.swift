@@ -111,10 +111,10 @@ final class SettingsUITests: XCTestCase {
 
         chooseNumberFormat("German (Germany)")
 
-        // Home's gauge reads "Spent 0 $ of 0 $ income": the symbol follows
-        // the number after a no-break space.
+        // Home's cash-flow legend reads "Spent, 0,00 $, Kept, 0,00 $": the
+        // symbol follows the number after a no-break space.
         app.goToHomeRoot()
-        let gauge = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Spent '")).firstMatch
+        let gauge = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Spent,'")).firstMatch
         XCTAssertTrue(gauge.waitForExistence(timeout: 5))
         XCTAssertTrue(gauge.label.contains("\u{00A0}$"), "German amounts put $ after the number: \(gauge.label)")
 
@@ -136,7 +136,7 @@ final class SettingsUITests: XCTestCase {
         let hero = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Cash flow, '")).firstMatch
         XCTAssertTrue(hero.waitForExistence(timeout: 5))
         XCTAssertTrue(hero.label.contains("$"), "amounts shown: \(hero.label)")
-        let gauge = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Spent '")).firstMatch
+        let gauge = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Spent,'")).firstMatch
         XCTAssertTrue(gauge.label.contains("$"))
 
         unmaskOnTearDown = true
