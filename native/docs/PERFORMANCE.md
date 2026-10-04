@@ -72,6 +72,8 @@ protectedData=<available|unavailable>`, `protected data available after <s>s`
 
 **Glow A/B.** A Debug build started with `BUDGIE_PERF_NO_GLOW=1` (pass
 `TEST_RUNNER_BUDGIE_PERF_NO_GLOW=1`) draws no per-row shadow on Home SEE ALL.
+Since the visual redesign (2026-10) SEE ALL rows have no shadow, so the
+switch changes nothing; removing it is budgie-ou0.21.
 Since the 2026-10-03 redesign the app draws no glows, text glows or hero
 blur at all, so the glow numbers below describe the earlier build. It does
 not remove the FAB's shadow or the `DialogShadow` black layer. Release

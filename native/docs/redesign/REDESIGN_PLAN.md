@@ -31,13 +31,28 @@ Done and committed on the branch (oldest first):
 | `29cf830` | Worth (capsule month chips, segmented toggle, centred hero, split card), Goals (feature summary, goal cards with bars), Spend ("Spending" title), chart glow underlays removed; fixed light borders that rendered transparent. |
 | `2d8b8a5` | Docs: PARITY_GAPS "Visual redesign", UI_SPEC token table, PERFORMANCE glow note. |
 | `15b1eca` | Home: Expense / Income pills removed (the add form has the switch); UI tests moved to the form's Income segment. |
+| `7ddce35` | W0 shared components (budgie-ou0.13). |
+| `3dff5ce` | W5 onboarding, lock, opening, banner, voice (budgie-ou0.17). |
+| `08d7c34` | W1 add / edit form (budgie-ou0.14). |
+| `57cf84f`, `43d6a5d` | W2 Settings (budgie-ou0.15); owner's checkpoint calls ("Add" links, no theme subtitle). |
+| `58106cd` | W3 Home sheets and lists (budgie-ou0.16). |
+| `294b020` | W7 widgets (budgie-ou0.20). |
+| `f5860c5` | W6 tab empty states (budgie-ou0.19). |
+| `928b389` | W4 tab dialogs and pages (budgie-ou0.18). |
+| `5a0541f` | budgie-ou0.12: `RowOrColumn` replaces `ViewThatFits` in the hero legend and the form title row. |
+| `995fe3c` | Unused tokens removed; Licences / Diagnostics audit exclusion dropped. |
 
 Verified on the branch: all 135 BudgieAppTests pass; UI test classes Home,
 MVPFlow, Worth, Goals, SpendFlow, Tabs and Insights pass. Not yet run after
 the last commit: TagsRulesUITests and the accessibility audit (the audit's
 last run failed on `budgie-ou0.12`, which may predate the redesign).
 
-Not started: everything in section 6.
+Sections 4 and 6 are implemented (W0-W7 above); W8 (full suite, audit,
+docs, screenshots) closes it. Decisions taken during the work that differ
+from this plan: the add form keeps the Expense / Income switch when
+editing (it already had it); the unsaved banner uses `expenseFixed` (white
+on dark-mode `danger` fails AA); SEE ALL amounts are signed like Recent
+activity; the launch screen colour follows light / dark.
 
 Mockups in `mockups/` (light and dark of each):
 
@@ -95,8 +110,9 @@ The ones that matter most here:
   "Midnight". Never branch layout on `colorScheme`; branch only colour,
   and only through tokens in `Budgie/DesignSystem/Tokens/Colors.swift`.
 - **No glows.** Cards are flat (fill + 1pt border). The only shadows are
-  the add button's soft drop shadow, the dialog card's shadow, the toast's
-  shadow and the SEE ALL row shadow behind the `BUDGIE_PERF_NO_GLOW` switch.
+  the add button's soft drop shadow, the dialog card's shadow and the
+  toast's shadow. (SEE ALL rows lost theirs in W3, so the
+  `BUDGIE_PERF_NO_GLOW` switch now changes nothing: budgie-ou0.21.)
 - **No hard-coded colours in views.** Add a token if a colour is new. A
   translucent token is `dynamic(light:dark:alpha: true)` with **both**
   values written as `0xAARRGGBB`: an opaque value must carry `0xFF`
