@@ -65,7 +65,7 @@ struct DiagnosticsView: View {
 
     /// The label (15, primary) and the value (mono 14 w600) at the trailing
     /// edge, as the Safe to spend sheet's rows; the value wraps under a long
-    /// label's width when it must.
+    /// label's width when it must. One accessibility element per row.
     private func row(_ label: String, _ value: String) -> AnyView {
         AnyView(
             HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -79,7 +79,13 @@ struct DiagnosticsView: View {
                     .multilineTextAlignment(.trailing)
             }
             .padding(12)
-            .frame(minHeight: Metrics.formRowHeight))
+            .frame(minHeight: Metrics.formRowHeight)
+            // One element, "Transactions" with its count as the value, so
+            // VoiceOver never lands on a bare figure.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(label)
+            .accessibilityValue(value)
+            .accessibilityAddTraits(.isStaticText))
     }
 
     /// A raw report (the backup outcome, the load report) in mono 11.
