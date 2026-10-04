@@ -229,9 +229,6 @@ enum AuditExclusions {
             types: [.hitRegion, .textClipped], match: .identifier("flow.all.search"),
             reason: "The text field's own element is 19pt tall, inside a 56pt field whose whole area focuses it."),
         AuditExclusion(
-            types: [.contrast, .dynamicType], match: .labelPattern(".*"), screens: ["Data diagnostics", "Licences"],
-            reason: "FOLLOW-UP (restyle with design-system colours): system List pages (Section headers and rows in the system's own colours and fonts); not part of the design system."),
-        AuditExclusion(
             types: [.textClipped], match: .labelPrefix("A11y Trip "), screens: ["Goals"],
             reason: "FOLLOW-UP (cap the name at two lines, ring above): a goal name wrapped over three lines beside the progress ring at XXXL (frame 83x145); "
                 + "complete in the XXXL screenshot."),

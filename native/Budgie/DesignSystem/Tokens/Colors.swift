@@ -90,8 +90,6 @@ enum BudgieColor {
     // Worth editor dialog
     /// The 32pt close circle: white 8% dark, black 6% light.
     static let dialogCloseFill = overlay(dark: 0.08, light: 0.06)
-    /// The outlined Cancel button: white 6% dark, black 5% light.
-    static let dialogOutlinedFill = overlay(dark: 0.06, light: 0.05)
 
     // Settings
     /// The Version row's icon.
@@ -105,10 +103,8 @@ enum BudgieColor {
     // Button fills (topLeading to bottomTrailing). They sit behind white
     // labels (the form and sheet buttons), so both stops pass AA against
     // white; the stops are close, so the fills read as flat.
-    static let primaryStops = stops(light: (0x1A1A17, 0x34312B), dark: (0x4A43C4, 0x5A4FD3))
     static let incomeStops = stops(light: (0x1D6646, 0x247755), dark: (0x0E6B4C, 0x127D59))
     static let expenseStops = stops(light: (0xA63D24, 0xB5482D), dark: (0xA3372A, 0xB8432F))
-    static let primaryGradient = gradient(primaryStops)
     static let incomeGradient = gradient(incomeStops)
     static let expenseGradient = gradient(expenseStops)
 
@@ -141,11 +137,6 @@ enum BudgieColor {
         default: accent
         }
     }
-
-    /// `textSecondary` for text on a strongly tinted card (a category colour
-    /// at 22%, or the Worth hero's wash), where the page-level value is too
-    /// faint.
-    static let textSecondaryOnTint = dynamic(light: 0x4A463F, dark: 0xC4CAD4)
 
     /// A category or chart colour as text on its own tint (the colour at up
     /// to 18% over the card): the colour itself when that reaches 4.5:1, else

@@ -185,26 +185,13 @@ final class ColorContrastTests: XCTestCase {
     /// The buttons' white labels on both stops of the form and sheet gradients.
     func testWhiteLabelsOnTheButtonGradients() {
         let gradients: [(String, [Color])] = [
-            ("primary", BudgieColor.primaryStops), ("income", BudgieColor.incomeStops), ("expense", BudgieColor.expenseStops),
+            ("income", BudgieColor.incomeStops), ("expense", BudgieColor.expenseStops),
         ]
         for dark in [false, true] {
             for (name, stops) in gradients {
                 for (index, stop) in stops.enumerated() {
                     assertAtLeast(aa, white, resolve(stop, dark: dark), "\(dark ? "dark" : "light") white on \(name) stop \(index)")
                 }
-            }
-        }
-    }
-
-    /// `textSecondaryOnTint` on a category colour at 22% (the strongest tint
-    /// a card carries).
-    func testSecondaryOnTintOnStrongTints() {
-        for dark in [false, true] {
-            let card = resolve(BudgieColor.card, dark: dark)
-            for tint in [BudgieColor.chartAccent, BudgieColor.chartIncome, BudgieColor.chartDanger] {
-                assertAtLeast(
-                    aa, resolve(BudgieColor.textSecondaryOnTint, dark: dark),
-                    mix(resolve(tint, dark: dark), over: card, alpha: 0.22), "\(dark ? "dark" : "light") textSecondaryOnTint on 22% tint")
             }
         }
     }

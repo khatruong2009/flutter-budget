@@ -46,7 +46,6 @@ enum Metrics {
     static let listCardPadding: CGFloat = 8
     static let hairlineInset: CGFloat = 12
     static let sheetRadius: CGFloat = 30
-    static let flowSheetRadius: CGFloat = 24
     static let logoMark: CGFloat = 36
     static let logoMarkRadius: CGFloat = 12
     static let fabSize: CGFloat = 54
