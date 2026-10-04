@@ -96,7 +96,9 @@ extension AddRoute: Identifiable {
 }
 
 /// Shown while a change is only in memory (Flutter `UnsavedChangesBanner`):
-/// a danger strip with white content, pushing the pages down.
+/// a danger strip with white content, pushing the pages down. The fill is
+/// `expenseFixed` (the strong red behind white labels): `danger` is a pale
+/// salmon in dark mode, 2.3:1 against white.
 struct UnsavedChangesBanner: View {
     @Environment(AppModel.self) private var model
     @State private var retrying = false
@@ -107,20 +109,23 @@ struct UnsavedChangesBanner: View {
             Text("Some changes are not saved to this device yet.")
                 .textStyle(.bodySmall)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button(retrying ? "Retrying…" : "Retry") {
+            Button {
                 retrying = true
                 Task {
                     await model.retrySaves()
                     retrying = false
                 }
+            } label: {
+                Text(retrying ? "Retrying…" : "Retry")
+                    .textStyle(.labelSmall)
+                    .tapArea(horizontal: 8, vertical: 12)
             }
-            .textStyle(.labelSmall)
             .disabled(retrying)
         }
         .foregroundStyle(.white)
         .padding(.horizontal, Metrics.spacingM)
         .padding(.vertical, 10)
-        .background(BudgieColor.danger.ignoresSafeArea(edges: .top))
+        .background(BudgieColor.expenseFixed.ignoresSafeArea(edges: .top))
         .accessibilityElement(children: .combine)
     }
 }

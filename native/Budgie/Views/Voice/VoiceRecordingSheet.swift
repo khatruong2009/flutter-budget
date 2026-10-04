@@ -29,7 +29,6 @@ private struct VoiceSheetBody: View {
 
     @State private var entry: VoiceEntryModel
     @State private var contentHeight: CGFloat = 0
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(model: AppModel, onDraft: @escaping (VoiceDraft) -> Void, onCancel: @escaping () -> Void) {
         self.onCancel = onCancel
@@ -133,7 +132,7 @@ private struct VoiceSheetBody: View {
                 .accessibilityAddTraits(.updatesFrequently)
                 .accessibilityIdentifier("voice.countdown")
             PillButton(
-                title: "Stop", symbol: "stop", filled: true, minHeight: Metrics.pillButtonCompactHeight
+                title: "Stop", symbol: "stop", filled: true, minHeight: Metrics.pillButtonHeight
             ) { entry.stop() }
             .accessibilityIdentifier("voice.stop")
         }
@@ -146,7 +145,7 @@ private struct VoiceSheetBody: View {
                 .frame(width: 120, height: 120)
                 .accessibilityHidden(true)
             Text("Making sense of it...")
-                .textStyle(.rowSubtitle)
+                .textStyle(Self.blurbText)
                 .foregroundStyle(BudgieColor.textSecondary)
         }
     }
@@ -161,7 +160,7 @@ private struct VoiceSheetBody: View {
                 .foregroundStyle(BudgieColor.danger)
                 .accessibilityHidden(true)
             Text(message)
-                .textStyle(.cardTitle)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -169,44 +168,39 @@ private struct VoiceSheetBody: View {
                 .accessibilityIdentifier("voice.message")
             if kind == .parseFailed, let transcript = entry.transcript {
                 Text("\"\(transcript)\"")
-                    .textStyle(.rowSubtitle)
+                    .textStyle(Self.blurbText)
                     .foregroundStyle(BudgieColor.textSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 12)
                     .accessibilityIdentifier("voice.transcript")
             }
-            // At accessibility sizes the labels fill a half-width pill edge
-            // to edge, so the pills stack, the main action on top.
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: 12) {
-                    tryAgainPill
-                    cancelPill
-                }
-                .padding(.top, Metrics.sectionGap)
-            } else {
-                HStack(spacing: 12) {
-                    cancelPill
-                    tryAgainPill
-                }
-                .padding(.top, Metrics.sectionGap)
+            // The sheet pattern: the main action as a full-width filled
+            // pill, the secondary one outlined under it.
+            VStack(spacing: 12) {
+                tryAgainPill
+                cancelPill
             }
+            .padding(.top, Metrics.sectionGap)
         }
     }
 
     private var cancelPill: some View {
         PillButton(
-            title: "Cancel", color: BudgieColor.textSecondary, minHeight: Metrics.pillButtonCompactHeight
+            title: "Cancel", color: BudgieColor.textPrimary, minHeight: Metrics.pillButtonHeight
         ) { onCancel() }
         .accessibilityIdentifier("voice.cancel")
     }
 
     private var tryAgainPill: some View {
         PillButton(
-            title: "Try again", filled: true, minHeight: Metrics.pillButtonCompactHeight
+            title: "Try again", filled: true, minHeight: Metrics.pillButtonHeight
         ) { entry.tryAgain() }
         .accessibilityIdentifier("voice.tryAgain")
     }
+
+    /// The 14pt secondary blurb of the sheet pattern.
+    private static let blurbText = TextSpec(face: .gabaritoRegular, size: 14, relativeTo: .subheadline)
 
     private func eyebrow(_ title: String) -> some View {
         Text(title)
@@ -220,15 +214,15 @@ private struct VoiceSheetBody: View {
     /// The content's height at the default text size, so the sheet opens at
     /// its final height instead of resizing once measured. Every line is
     /// `round(size * height)` (`textStyle`): eyebrow 13, countdown 29, note
-    /// 15, message 21 a line. Recording: 36, 13, 28, the 120 mic, 28, 29,
-    /// 28, Stop 44, the bottom padding. Thinking: 36, 13, 28, 120, 28, 15,
-    /// bottom. Error: 36, the 48 icon, 20, the message, 28, the 44 buttons,
-    /// bottom.
+    /// 17, message 29 a line (about 26 characters). Recording: 36, 13, 28,
+    /// the 120 mic, 28, 29, 28, Stop 52, the bottom padding. Thinking: 36,
+    /// 13, 28, 120, 28, 17, bottom. Error: 36, the 48 icon, 20, the message,
+    /// 28, the two 52 pills 12 apart, bottom.
     private var estimatedHeight: CGFloat {
         switch entry.stage {
-        case .recording: 36 + 13 + 28 + 120 + 28 + 29 + 28 + 44 + Self.bottomPadding
-        case .processing: 36 + 13 + 28 + 120 + 28 + 15 + Self.bottomPadding
-        case .error(_, let message): 36 + 48 + 20 + (message.count > 32 ? 42 : 21) + 28 + 44 + Self.bottomPadding
+        case .recording: 36 + 13 + 28 + 120 + 28 + 29 + 28 + 52 + Self.bottomPadding
+        case .processing: 36 + 13 + 28 + 120 + 28 + 17 + Self.bottomPadding
+        case .error(_, let message): 36 + 48 + 20 + CGFloat((message.count + 25) / 26) * 29 + 28 + 52 + 12 + 52 + Self.bottomPadding
         }
     }
 
@@ -245,9 +239,9 @@ private struct VoiceSheetBody: View {
     }
 }
 
-/// The 88pt accent mic in a 120pt box (`_buildPulsingMic`): glow, and while
-/// recording a 2pt ring that grows to 1.7x and fades over 1.4 s, repeating.
-/// Reduce Motion keeps the mic and its glow and drops the ring.
+/// The 88pt accent mic in a 120pt box (`_buildPulsingMic`) and, while
+/// recording, a 2pt ring that grows to 1.7x and fades over 1.4 s, repeating.
+/// Reduce Motion keeps the mic and drops the ring.
 private struct PulsingMic: View {
     let pulsing: Bool
 

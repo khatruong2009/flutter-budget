@@ -109,10 +109,6 @@ enum BudgieColor {
     /// The segmented pills' unselected label (on the track).
     static let dockInactiveIcon = textSecondary
 
-    /// Opening screen, dark only.
-    static let openingGradient = LinearGradient(
-        colors: [Color(hex: 0x07090D), Color(hex: 0x0B0E14)], startPoint: .top, endPoint: .bottom)
-
     // Button fills (topLeading to bottomTrailing). They sit behind white
     // labels (the form and sheet buttons), so both stops pass AA against
     // white; the stops are close, so the fills read as flat.
