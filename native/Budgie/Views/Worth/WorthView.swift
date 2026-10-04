@@ -77,27 +77,14 @@ struct WorthView: View {
         ScrollView {
             VStack(spacing: 0) {
                 BudgieHeader(title: "Net worth")
-                GlowCard {
-                    VStack(spacing: 0) {
-                        IconTile(symbol: "chart.line.uptrend.xyaxis", color: BudgieColor.accent, size: 56, iconSize: 28)
-                        Text("No net worth accounts yet")
-                            .textStyle(.sectionHeader)
-                            .foregroundStyle(BudgieColor.textPrimary)
-                            .multilineTextAlignment(.center)
-                            .accessibilityAddTraits(.isHeader)
-                            .padding(.top, 20)
-                        Text("Create your first asset or liability to start tracking net worth over time.")
-                            .textStyle(WorthStyle.note)
-                            .foregroundStyle(BudgieColor.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 8)
-                        PillButton(title: "Add account", symbol: "plus", filled: true, height: 48) {
-                            openEditor(entry: nil, type: .asset)
-                        }
-                        .accessibilityIdentifier("worth.empty.add")
-                        .padding(.top, 20)
-                    }
-                    .frame(maxWidth: .infinity)
+                EmptyStateView(
+                    symbol: "chart.line.uptrend.xyaxis",
+                    title: "No net worth accounts yet",
+                    message: "Create your first asset or liability to start tracking net worth over time.",
+                    actionTitle: "Add account", actionIdentifier: "worth.empty.add",
+                    horizontalInset: 0
+                ) {
+                    openEditor(entry: nil, type: .asset)
                 }
                 .padding(EdgeInsets(top: 8 + 48, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
             }

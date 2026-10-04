@@ -75,28 +75,15 @@ struct GoalsView: View {
 
     /// `_buildEmptyState` (savings_goals_page.dart:164-211).
     private var emptyState: some View {
-        GlowCard(padding: 28) {
-            VStack(spacing: 0) {
-                // No piggy bank in SF Symbols (D3).
-                IconTile(symbol: "banknote", color: BudgieColor.accent, size: 56, iconSize: 28)
-                Text("No savings goals yet")
-                    .textStyle(.sectionHeader)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-                    .padding(.top, 20)
-                Text("Create a goal, set a target date, and track progress as you set money aside.")
-                    .textStyle(GoalText.body)
-                    .foregroundStyle(BudgieColor.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 8)
-                PillButton(title: "Add goal", symbol: "plus", filled: true, height: 44) { present(.add) }
-                    .disabled(busy)
-                    .accessibilityIdentifier("goals.empty.add")
-                    .padding(.top, 24)
-            }
-            .frame(maxWidth: .infinity)
-        }
+        // No piggy bank in SF Symbols (D3).
+        EmptyStateView(
+            symbol: "banknote",
+            title: "No savings goals yet",
+            message: "Create a goal, set a target date, and track progress as you set money aside.",
+            actionTitle: "Add goal", actionIdentifier: "goals.empty.add",
+            horizontalInset: 0
+        ) { present(.add) }
+        .disabled(busy)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("goals.empty")
     }

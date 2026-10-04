@@ -327,13 +327,26 @@ private struct RecentActivityCard: View {
 
     var body: some View {
         if rows.isEmpty {
-            GlowCard {
+            // The empty-state pattern (dashed card, accent tile) in a compact
+            // form: a full 72pt tile and padding is too heavy under the hero.
+            let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+            VStack(spacing: 10) {
+                Image(systemName: "tray")
+                    .font(.system(size: 22, weight: .medium))
+                    .foregroundStyle(BudgieColor.accent)
+                    .frame(width: 48, height: 48)
+                    .background(BudgieColor.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .accessibilityHidden(true)
                 Text("No transactions yet.")
                     .textStyle(Self.empty)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .multilineTextAlignment(.center)
             }
+            .padding(.vertical, 24)
+            .padding(.horizontal, 24)
+            .frame(maxWidth: .infinity)
+            .overlay(shape.strokeBorder(BudgieColor.textTertiary.opacity(0.6), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])))
+            .accessibilityElement(children: .combine)
         } else {
             GlowListCard(rows: rows.map { RecentRow(record: $0.record, formatter: formatter) })
         }
