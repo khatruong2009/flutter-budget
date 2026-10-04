@@ -80,6 +80,9 @@ struct RuleEditorDialog: View {
         _maximumText = State(initialValue: maximumPrefill)
     }
 
+    private static let chipText = TextSpec(face: .gabaritoSemiBold, size: 13, relativeTo: .footnote)
+    private static let chipSelectedText = TextSpec(face: .gabaritoBold, size: 13, relativeTo: .footnote)
+
     /// Flutter's `TransactionTyp.values` order, then the Swift-only nil.
     static let types: [TransactionType?] = [.income, .expense, nil]
 
@@ -102,7 +105,7 @@ struct RuleEditorDialog: View {
                     .padding(.top, Metrics.spacingM)
             }
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onClose)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onClose)
                     .accessibilityIdentifier("rules.editor.cancel")
                 PillButton(title: rule == nil ? "Add" : "Save", filled: true, height: 44) { submit(category: selectedCategory) }
                     .disabled(!canSubmit)
@@ -181,12 +184,14 @@ struct RuleEditorDialog: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// The tags as the transaction form's pills (accent with a check when
-    /// selected), under a "Tags" caption.
+    /// The tags as the transaction form's chips (REDESIGN_PLAN 4.1: 34pt
+    /// capsules; selected: accent at 13% with accent 13 w700 text and a
+    /// check; else a 1pt card border with secondary 13 w600 text), under a
+    /// "Tags" caption.
     private var tagChips: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Tags")
-                .textStyle(.caption)
+                .textStyle(.captionStrong)
                 .foregroundStyle(BudgieColor.textSecondary)
                 .padding(.leading, 4)
                 .accessibilityAddTraits(.isHeader)
@@ -197,11 +202,23 @@ struct RuleEditorDialog: View {
                     Button {
                         if selected { tagIds.removeAll { DartString.equal($0, tag.id) } } else { tagIds.append(tag.id) }
                     } label: {
-                        PillChip(
-                            label: tag.name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary,
-                            outlined: !selected, symbol: selected ? "checkmark" : nil, style: .labelSmall,
-                            horizontalPadding: 12, verticalPadding: 8)
-                        .singleLine()
+                        HStack(spacing: 6) {
+                            if selected {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .accessibilityHidden(true)
+                            }
+                            Text(tag.name)
+                                .textStyle(selected ? Self.chipSelectedText : Self.chipText)
+                                .singleLine()
+                        }
+                        .foregroundStyle(selected ? BudgieColor.accent : BudgieColor.textSecondary)
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 34)
+                        .background(selected ? BudgieColor.accent.opacity(0.13) : Color.clear, in: Capsule())
+                        .overlay { if !selected { Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin) } }
+                        // The chip draws 34pt tall; the tap area is 44.
+                        .tapArea(vertical: 5)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(tag.name)
@@ -368,8 +385,9 @@ private struct MoreBelowFade: ViewModifier {
 }
 
 /// A dropdown in the redesign's field style (Material
-/// `DropdownButtonFormField`): the caption above, the chip-surface box
-/// (radius 14, 1pt card border, 52 tall) with the value in rowTitle and an
+/// `DropdownButtonFormField`, REDESIGN_PLAN 4.1): the caption w600 above,
+/// the field box (`fieldFill`, radius 16, 1pt card border, 52 tall) with
+/// the value in rowTitle and an
 /// up-down chevron (footnote-sized, so it scales with Dynamic Type). A tap
 /// opens a popover list anchored to the box, a check on the current
 /// option. With the keyboard up the tap first dismisses it and opens the
@@ -393,10 +411,10 @@ private struct MenuField: View {
 
     var body: some View {
         let value = options.indices.contains(selection) ? options[selection] : ""
-        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .textStyle(.caption)
+                .textStyle(.captionStrong)
                 .foregroundStyle(BudgieColor.textSecondary)
                 .padding(.leading, 4)
                 .accessibilityHidden(true)
@@ -413,8 +431,8 @@ private struct MenuField: View {
                 }
                 .padding(.horizontal, 14)
                 .frame(minHeight: 52)
-                .background(BudgieColor.chipSurface, in: shape)
-                .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
+                .background(BudgieColor.fieldFill, in: shape)
+                .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
                 .contentShape(shape)
             }
             .buttonStyle(.plain)

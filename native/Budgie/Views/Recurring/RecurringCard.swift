@@ -3,8 +3,9 @@ import SwiftUI
 
 /// A template card (`_RecurringTransactionListItem`,
 /// recurring_transactions_page.dart:227-366) in the redesign's card language
-/// (D15): a GlowCard with the category tile, the description with the
-/// recurrence glyph over the category, the amount; a hairline; the
+/// (D15, REDESIGN_PLAN 4.7): a GlowCard whose header is a Recent activity
+/// row (the category's 40pt tile, the description with the recurrence
+/// glyph over the category, the amount); a hairline; the
 /// "Pattern" and "Next Occurrence" columns; then Edit, Pause / Resume
 /// (approved MVP extra, Flutter has none) and Delete. A paused card is
 /// dimmed and badged "Paused", its buttons stay at full strength.
@@ -53,26 +54,26 @@ struct RecurringCard: View {
 
     // MARK: - Pieces
 
-    /// Tile, description over category, amount (Flutter's `headingMedium`
-    /// bold). At accessibility text sizes the description keeps the row's
-    /// width: it wraps freely, and the Paused chip and the amount move
+    /// Tile, description (rowTitle) over category (rowSubtitle), amount
+    /// (amountSmall). At accessibility text sizes the description keeps the
+    /// row's width: it wraps freely, and the Paused chip and the amount move
     /// under it.
     private func header(amount: String) -> some View {
         let isIncome = template.type == .income
         let stacked = dynamicTypeSize.isAccessibilitySize
         let amountText = Text(amount)
-            .textStyle(.numericMediumBold)
+            .textStyle(.amountSmall)
             .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
             .lineLimit(1)
             .minimumScaleFactor(0.6)
         let pausedChip = PillChip(label: "Paused", color: BudgieColor.warning, style: .badgeSmall, horizontalPadding: 8, verticalPadding: 3)
             .fixedSize()
         return HStack(alignment: stacked ? .top : .center, spacing: 12) {
-            IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent, size: 44)
-            VStack(alignment: .leading, spacing: Metrics.spacingXS) {
+            tile
+            VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(template.description)
-                        .textStyle(.cardTitle)
+                        .textStyle(.rowTitle)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .lineLimit(stacked ? nil : 2)
                     RecurrenceGlyph(size: 16).fixedSize()
@@ -80,8 +81,8 @@ struct RecurringCard: View {
                 }
                 if !template.isActive && stacked { pausedChip }
                 Text(template.category)
-                    .textStyle(.caption)
-                    .foregroundStyle(BudgieColor.textTertiary)
+                    .textStyle(.rowSubtitle)
+                    .foregroundStyle(BudgieColor.textSecondary)
                     .lineLimit(stacked ? nil : 1)
                 if stacked { amountText }
             }
@@ -108,37 +109,80 @@ struct RecurringCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// One row of three pills, stacked when they do not fit (large text);
-    /// at least 44pt tall, taller when the text needs it.
+    /// One row of three equal pills with their symbols; without the symbols
+    /// when a label would not fit its third of the row (the outlined pill's
+    /// 20pt insets leave about 64pt on an iPhone 17 Pro); stacked when even
+    /// that does not fit (large text). At least 44pt tall, taller when the
+    /// text needs it.
     private var actions: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(spacing: Metrics.spacingS) { buttons }
-            VStack(spacing: Metrics.spacingS) { buttons }
+            EqualWidthRow { buttons(symbols: true) }
+            EqualWidthRow { buttons(symbols: false) }
+            VStack(spacing: Metrics.spacingS) { buttons(symbols: true) }
         }
     }
 
     @ViewBuilder
-    private var buttons: some View {
-        PillButton(title: "Edit", symbol: "pencil", minHeight: Metrics.pillButtonCompactHeight, action: onEdit)
+    private func buttons(symbols: Bool) -> some View {
+        PillButton(
+            title: "Edit", symbol: symbols ? "pencil" : nil, minHeight: Metrics.pillButtonCompactHeight, action: onEdit)
             .accessibilityIdentifier("recurring.edit")
         PillButton(
-            title: template.isActive ? "Pause" : "Resume", symbol: template.isActive ? "pause.fill" : "play.fill",
+            title: template.isActive ? "Pause" : "Resume",
+            symbol: symbols ? (template.isActive ? "pause.fill" : "play.fill") : nil,
             color: template.isActive ? BudgieColor.warning : BudgieColor.income, minHeight: Metrics.pillButtonCompactHeight,
             action: onToggleActive
         )
         .accessibilityIdentifier("recurring.pause")
         PillButton(
-            title: "Delete", symbol: "trash", color: BudgieColor.danger, minHeight: Metrics.pillButtonCompactHeight, action: onDelete
+            title: "Delete", symbol: symbols ? "trash" : nil, color: BudgieColor.danger,
+            minHeight: Metrics.pillButtonCompactHeight, action: onDelete
         )
         .accessibilityIdentifier("recurring.delete")
     }
 
-    /// The category's icon (found case-insensitively, archived included);
-    /// Flutter's fallbacks otherwise (`shopping_bag`, `attach_money`).
-    private var symbol: String {
+    /// The category's tile (found case-insensitively, archived included);
+    /// Flutter's fallback icons otherwise (`shopping_bag`, `attach_money`),
+    /// in accent or income.
+    @ViewBuilder private var tile: some View {
         if let info = model.categoryInfo(named: template.category, type: template.type) {
-            return CategoryCatalog.symbol(for: info.iconIdentifier)
+            IconTile(category: info)
+        } else if template.type == .income {
+            IconTile(symbol: "dollarsign", color: BudgieColor.income)
+        } else {
+            IconTile(symbol: "bag.fill", color: BudgieColor.accent)
         }
-        return template.type == .income ? "dollarsign" : "bag.fill"
+    }
+}
+
+/// Its subviews in one row of equal widths, 8 apart. Its ideal width is the
+/// widest subview's ideal times the count, so a `ViewThatFits` moves on
+/// when a label would wrap in its equal share.
+private struct EqualWidthRow: Layout {
+    private let spacing = Metrics.spacingS
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard !subviews.isEmpty else { return .zero }
+        let gaps = spacing * CGFloat(subviews.count - 1)
+        let width: CGFloat
+        if let proposed = proposal.width, proposed.isFinite {
+            width = proposed
+        } else {
+            let widest = subviews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
+            width = widest * CGFloat(subviews.count) + gaps
+        }
+        let share = ProposedViewSize(width: (width - gaps) / CGFloat(subviews.count), height: nil)
+        let height = subviews.map { $0.sizeThatFits(share).height }.max() ?? 0
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        guard !subviews.isEmpty else { return }
+        let share = (bounds.width - spacing * CGFloat(subviews.count - 1)) / CGFloat(subviews.count)
+        var x = bounds.minX
+        for subview in subviews {
+            subview.place(at: CGPoint(x: x, y: bounds.minY), proposal: ProposedViewSize(width: share, height: bounds.height))
+            x += share + spacing
+        }
     }
 }

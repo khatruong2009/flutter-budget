@@ -466,9 +466,10 @@ final class AccessibilityAuditUITests: XCTestCase {
 
         step("Add Income form") {
             app.goToHomeRoot()
-            guard press(app.buttons["Income"].firstMatch, "app.buttons[\"Income\"].firstMatch") else { return false }
+            guard press(app.buttons["Add transaction"], "app.buttons[\"Add transaction\"]") else { return false }
             let amount = app.textFields["Amount"]
-            guard expect(amount, "the Add Income form") else { return false }
+            guard expect(amount, "the add form") else { return false }
+            guard press(app.buttons["Income"].firstMatch, "app.buttons[\"Income\"].firstMatch") else { return false }
             runner.audit("Add Income form")
             guard press(app.buttons["Cancel"].firstMatch, "app.buttons[\"Cancel\"].firstMatch") else { return false }
             return amount.waitForNonExistence(timeout: 10)

@@ -171,8 +171,8 @@ private struct GrowthChart: View {
 /// (NW:590-721): no titles or border, so the plot is the whole box; x is
 /// the point index (first spot on the left edge, last on the right), y the
 /// padded scale. In paint order: the hairline grid (multiples of a quarter
-/// of the range counted from 0), the glow line (9pt, green 35%), the area
-/// under the main line (green 35% to 0 over the rect from the topmost spot
+/// of the range counted from 0), the area under the main line (green 18%
+/// to 0 over the rect from the topmost spot
 /// down to the bottom), the main line (3pt green, even when net worth is
 /// negative), then the dots (radius 5 with a 3pt ring outside) on the last
 /// spot and the selected one: #F2F2FA with a green 50% ring on the last
@@ -219,8 +219,6 @@ private struct GrowthPlot: View, Animatable {
             {
                 curve.addCurve(to: spots[index + 1], control1: controls.0, control2: controls.1)
             }
-            context.stroke(curve, with: .color(green.opacity(0.35)), style: StrokeStyle(lineWidth: 9, lineCap: .round))
-
             var area = curve
             area.addLine(to: CGPoint(x: last.x, y: bottom))
             area.addLine(to: CGPoint(x: first.x, y: bottom))
@@ -230,7 +228,7 @@ private struct GrowthPlot: View, Animatable {
             context.fill(
                 area,
                 with: .linearGradient(
-                    Gradient(colors: [green.opacity(0.35), green.opacity(0)]),
+                    Gradient(colors: [green.opacity(0.18), green.opacity(0)]),
                     startPoint: CGPoint(x: first.x, y: top), endPoint: CGPoint(x: first.x, y: bottom)))
             context.stroke(curve, with: .color(green), style: StrokeStyle(lineWidth: 3, lineCap: .round))
 

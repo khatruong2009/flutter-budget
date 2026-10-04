@@ -13,28 +13,38 @@ struct QuickExpenseSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var choices = 0
 
+    /// The sheet blurb (REDESIGN_PLAN 4.3: 14 secondary).
+    private static let blurb = TextSpec(face: .gabaritoRegular, size: 14, height: 1.35, relativeTo: .subheadline)
+
     var body: some View {
         let categories = model.categories(for: .expense)
         VStack(alignment: .leading, spacing: 0) {
             Text("Add expense")
-                .textStyle(.sectionHeader)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-                .padding(EdgeInsets(top: 16, leading: 24, bottom: 4, trailing: 24))
+                .padding(EdgeInsets(top: 8, leading: Metrics.pageHorizontal, bottom: 4, trailing: Metrics.pageHorizontal))
             Text("Choose a category, then enter the amount and description.")
-                .textStyle(.rowSubtitle)
+                .textStyle(Self.blurb)
                 .foregroundStyle(BudgieColor.textSecondary)
-                .padding(EdgeInsets(top: 0, leading: 24, bottom: 12, trailing: 24))
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: 14, trailing: Metrics.pageHorizontal))
             ScrollView {
+                // The rows in one field-style group (`fieldFill`, radius 16,
+                // 1pt card border), hairlines between them.
+                let shape = RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                 LazyVStack(spacing: 0) {
                     ForEach(categories.indices, id: \.self) { index in
                         if index > 0 {
-                            BudgieColor.cardBorder.frame(height: 1).accessibilityHidden(true)
+                            BudgieColor.hairline.frame(height: Metrics.borderThin)
+                                .padding(.leading, 12 + 40 + 12)
+                                .accessibilityHidden(true)
                         }
                         row(categories[index])
                     }
                 }
-                .padding(EdgeInsets(top: 0, leading: 12, bottom: 12, trailing: 12))
+                .background(BudgieColor.fieldFill, in: shape)
+                .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -50,19 +60,19 @@ struct QuickExpenseSheet: View {
             dismiss()
         } label: {
             HStack(spacing: 12) {
-                IconTile(symbol: CategoryCatalog.symbol(for: category.iconIdentifier), color: BudgieColor.danger)
+                IconTile(category: category)
                 Text(category.name)
                     .textStyle(.rowTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .singleLine()
                 Spacer(minLength: 8)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(BudgieColor.textSecondary)
                     .accessibilityHidden(true)
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 14)
+            .padding(.vertical, 10)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

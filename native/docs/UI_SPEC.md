@@ -6,25 +6,31 @@ files. Money is shown with `model.moneyFormatter` (a port of the Flutter
 formatter: same symbols, rounding and "Match device" = en_US), dates with
 `DartDateTime` fields (never `Date` arithmetic for stored values).
 
-Visual language: native SwiftUI (List/Form, NavigationStack, sheets) with the
-Flutter app's accent palette so it feels like the same product, not a
-pixel copy. Tokens live in `Budgie/Views/Theme.swift`:
+Visual language: native SwiftUI (List/Form, NavigationStack, sheets) with
+the owner-approved redesign of 2026-10-03 (PARITY_GAPS "Visual redesign"):
+one layout in both modes, flat cards (no glows), "Paper" colours in light
+mode and "Midnight" colours in dark mode. Tokens live in
+`Budgie/DesignSystem/Tokens/Colors.swift`:
 
-| Token | Light | Dark |
+| Token | Light (Paper) | Dark (Midnight) |
 |---|---|---|
-| accent | `#5453DD` (Flutter `#6366F1`) | `#818CF8` |
-| income | `#07744F` (Flutter `#10B981`) | `#34D399` |
-| expense / danger | `#C60D21` (Flutter `#EF4444`) | `#FB7185` |
-| warning | `#8F5B05` (Flutter `#F59E0B`) | `#FBBF24` |
-| textSecondary | `#626977` (Flutter `#6B7280`) | `#9A9AB5` |
-| textTertiary | `#686F7A` (Flutter `#9CA3AF`) | `#81829F` (Flutter `#5C5C78`) |
-| background | `#F9FAFB` | `#0A0A12` |
-| card | `#FFFFFF` | `#13131F` |
+| background | `#F3EFE6` | `#07090D` |
+| card | `#FBF9F4` | `#11151C` |
+| textPrimary | `#1A1A17` | `#EEF1F5` |
+| textSecondary | `#5C584F` | `#9AA3B2` |
+| accent (links, selection, add button) | `#1D6646` | `#B3ADFF` |
+| income (and money kept) | `#1D6646` | `#5EE6B0` |
+| spent (charts) | `#1A1A17` | `#FF8B7B` |
+| danger | `#A63D24` | `#FF8B7B` |
+| warning | `#7E5300` | `#FFC861` |
+| featureFill (Safe to spend, Goals summary) | `#1A1A17` | `#10231F` |
+| selectionFill (month chips, segments) | `#1A1A17` | lilac 16% |
+| fieldFill (text fields, form rows) | `#F3EFE6` | `#0B0E14` |
+| switchOn (Toggle tint) | `#1D6646` | `#5EE6B0` |
+| scrim (behind dialogs) | ink 38% | black 55% |
 
-The light accent, income, danger, warning, textSecondary and textTertiary
-and the dark textTertiary differ from Flutter so that text reaches WCAG AA
-(4.5:1) on every surface it sits on; see "Accessibility audit" below and
-PARITY_GAPS "Colour tokens meet WCAG AA".
+Every text token reaches WCAG AA (4.5:1) on every surface it sits on
+(`ColorContrastTests`).
 
 Monospaced digits (`.monospacedDigit()`) for amounts. Respect Dynamic Type
 and VoiceOver labels on every control. No third-party packages.
@@ -108,8 +114,9 @@ tap was aimed at the card (e.g. its Add button) and is ignored.
   status colours, EDIT and "Add a budget" pickers, and the limit sheet
   (`setBudgetLimit` / `removeBudgetLimit`, awaited before dismissing).
 - Recent activity: the 3 newest rows across all months (`ledger.recent`),
-  "SEE ALL" pushes Transactions.
-- Expense / Income pills and the FAB open the form; a FAB long-press opens
+  "See all" pushes Transactions.
+- The FAB opens the form (expense, with its Expense / Income switch); a
+  FAB long-press opens
   the quick-expense category sheet. Above the FAB, centred on it and 12pt
   clear of it, a 44pt mic FAB (`GlowFab`, `mic.fill`, VoiceOver "Add by
   voice", identifier `home.voice`) sets `model.pendingAdd = .voice`, so it
@@ -133,8 +140,7 @@ Card-styled sheet. Fields: type toggle (Expense/Income), Amount (validated
 on Add/Update: "Amount is required" / "Please enter a valid number" /
 "Amount must be greater than 0"; Dart `double.tryParse` forms plus the
 locale decimal separator; non-finite rejected), Description (trimmed;
-empty saves "Transaction"), Category wheel, Tags (when any exist), Date
-tile. Date semantics match the Flutter form: a new transaction's date is
+empty saves "Transaction"), Category, Date, Tags (when any exist). Date semantics match the Flutter form: a new transaction's date is
 `model.now` (with time) unless the user picks a day, stored as
 `calendar.date(y, m, d)`; editing keeps the stored date unless a new one is
 picked. Categorisation rules apply on every Amount/Description edit
@@ -150,7 +156,7 @@ draft's amount is above zero (a zero, negative or `-0.0` amount leaves the
 field empty, so Add says "Amount is required"); the date is the draft's
 exact value, time of day included, saved as is unless the user picks a day
 (then midnight of that day). A draft category that is not in the active
-picker list is kept as an extra wheel row and saved, as Flutter keeps and
+picker list is kept as an extra menu row and saved, as Flutter keeps and
 saves a prefill category. The categorisation rules run once as the form
 opens, on the draft's raw amount: the first matching rule whose category is
 active for the type sets the category and replaces the tags (duplicates
@@ -160,11 +166,72 @@ record's). The title stays "Add Expense" / "Add Income", the type toggle
 stays, "Make this recurring" is hidden, and the sheet cannot be swiped away
 (Flutter: `barrierDismissible: false`); Cancel and Add still close it.
 
+Layout (redesign, REDESIGN_PLAN 4.1). Everything through "Make this
+recurring" fits above the decimal pad on a 874pt-tall phone (iPhone 17
+Pro) at the default text size, without scrolling; shorter phones and large
+text scroll, with a 44pt fade at the bottom of the scroll area while more
+is below. Top to bottom: grab handle; title row (`FormTitleRow`: the title
+22 ExtraBold, the 176 x 32 Expense / Income `SegmentedPills` on the right,
+stacked under the title when both do not fit, through `RowOrColumn` so the
+audit and VoiceOver follow them across sizes); Amount (`BudgieField`
+`.amount`: 64pt, "Amount" inside at the top left, the currency symbol and
+the 36pt figure right-aligned, autofocused); Description (`.inline`, 46pt);
+Category (`CategoryMenuRow`: a `FormRow` whose `Menu` holds an inline
+`Picker` over the same categories the wheel had, in the same order, so the
+menu checks the selection; one button "Category", value the name,
+`form.category`); Date (`DateTile`, opens `DayPickerSheet`); Tags
+(`FormRow` with "Optional", 34pt chips: selected accent 13% with bold
+accent text, unselected outlined); Delete Transaction (edit only). The
+footer is pinned above the keyboard: a hairline, Cancel (outlined) and
+Add / Update (50pt capsules, `expenseFixed` / `incomeFixed` with a white
+label, spinner while saving), then "Make this recurring". The recurring
+form uses the same title row, Amount, Description and Category row, and
+keeps its pattern and day wheels.
+
+## Sheets, dialogs and empty states (redesign)
+
+- Sheets: `.budgieSheetChrome()` (card fill, 1pt top border, radius 30, a
+  38 x 5 handle in `hairline`); title in `TextSpec.sheetTitle` (24
+  ExtraBold) with an optional 14pt secondary blurb; content in cards
+  (list rows with hairlines) or the feature card (`.featureCard()`); a
+  full-width filled pill (52pt) for the primary action, an outlined pill
+  for the secondary. Safe to spend shows its total on the feature card
+  above the six breakdown rows (mono values: income in `income`, zeros in
+  `textSecondary`, expenses in `textPrimary`).
+- Dialogs: `budgieDialog` cards over the `scrim` token, one plain drop
+  shadow for every dialog (the glow API is gone); title in `sheetTitle`;
+  fields on `fieldFill`; Cancel outlined in `textPrimary`, the primary
+  filled.
+- Empty states: `EmptyStateView`, a card with a 1.5pt dashed border
+  (`textTertiary` 60%), radius 22, padding 36 / 24: a 72pt tile (accent
+  12%, `danger` for `.error`) with a 32pt symbol, the title 21 ExtraBold,
+  the message 15 secondary (max 280 wide), an optional 48pt filled pill
+  with a plus (`actionIdentifier` names it). Home's Recent activity uses a
+  compact version (48pt tile, the message only). Flow's empty chart
+  messages stay inline in their cards.
+
+## Home screen widgets (BudgetWidgets)
+
+The extension cannot use `BudgieColor`: a private palette in
+`BudgetWidgets.swift` repeats the token values and follows the widget's
+colour scheme; the container background is `card` (`#FBF9F4` /
+`#11151C`). Quick actions (small): the logo (18pt) and the month's cash
+flow in whole units (system monospaced 13 SemiBold; `income`, `danger`
+when negative, bullets when balances are hidden) over two equal buttons
+(radius 14, `incomeFixed` / `expenseFixed`, white 14 Bold "Income" /
+"Expense"), linking to `budgetapp://add-income` / `add-expense`. Voice add
+(small): a 52pt accent circle with the mic in `onAccent`, "Speak a
+transaction" and "Budgie". Kinds, families, timelines and App Group keys
+are unchanged. The extension does not bundle Gabarito or Spline Sans Mono,
+so it uses the system fonts.
+
 ## Transactions (SEE ALL; Flutter `transaction_page.dart`)
 
 Month chip strip (months with data, newest first; page-local selection),
 monthly summary card, rows of the selected month grouped under pinned
-`yMMMd` day headers. Tap to edit (D7), swipe left to delete with a
+`yMMMd` day headers, each day one card of rows like Home's Recent activity
+(the category's tile, the amount signed: + income in `income`, - expenses
+in `textPrimary`). Tap to edit (D7), swipe left to delete with a
 "Delete Transaction" confirmation. Reads `model.ledger` only.
 
 ## Spend (spec full-app/04 section 1.1; Flutter `category_page.dart`)

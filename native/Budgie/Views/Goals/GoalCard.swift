@@ -1,14 +1,14 @@
 import BudgieCore
 import SwiftUI
 
-/// One goal (`_SavingsGoalCard`, savings_goals_page.dart:691-892): the 84pt
-/// ring in the status colour (percent, or a check when complete), the name
-/// and status pill, "{saved} of {target}" (or "{saved} saved"), the pace or
-/// "Fully funded" line, then Add money and the ellipsis (only the ellipsis,
-/// right-aligned, once complete). A completed card is tinted green and
-/// long-presses to its actions, as in Flutter; a tap does nothing.
+/// One goal (`_SavingsGoalCard`, savings_goals_page.dart:691-892): the name
+/// and status pill, "{saved} of {target}" (or "{saved} saved") with the
+/// percent, a 10pt bar in the status colour, the pace or "Fully funded"
+/// line, then Add money and the ellipsis (only the ellipsis, right-aligned,
+/// once complete). A completed card is tinted green and long-presses to its
+/// actions, as in Flutter; a tap does nothing.
 ///
-/// VoiceOver reads the ring and texts as one element with Add money, Edit
+/// VoiceOver reads the texts and bar as one element with Add money, Edit
 /// goal and Delete goal actions; the two buttons stay separate elements.
 struct GoalCard: View {
     let goal: SavingsGoalRecord
@@ -29,12 +29,11 @@ struct GoalCard: View {
             : AnyLayout(HStackLayout(spacing: 8))
     }
 
-    /// `badgeSmall` at 16 / w800.
-    private static let ringText = TextSpec(face: .gabaritoExtraBold, size: 16, relativeTo: .caption)
-    /// `rowTitle` with tabular figures (the saved amount).
-    private static let amountText = TextSpec(face: .gabaritoSemiBold, size: 15, height: 1.25, tabular: true, relativeTo: .body)
-    /// The same at w500 (" of {target}", " saved").
-    private static let amountTail = TextSpec(face: .gabaritoMedium, size: 15, height: 1.25, tabular: true, relativeTo: .body)
+    /// The saved amount.
+    private static let amountText = TextSpec(face: .monoSemiBold, size: 22, tracking: -0.4, height: 1.2, tabular: true, relativeTo: .title2)
+    /// " of {target}", " saved".
+    private static let amountTail = TextSpec(face: .monoRegular, size: 13, height: 1.2, tabular: true, relativeTo: .footnote)
+    private static let percentText = TextSpec(face: .gabaritoBold, size: 14, height: 1.25, tabular: true, relativeTo: .subheadline)
 
     var body: some View {
         let status = goal.status(now: now, calendar: calendar)
@@ -79,48 +78,46 @@ struct GoalCard: View {
         let saved = formatter.format(goal.currentAmount, decimalDigits: 0)
         let tail = complete ? " saved" : " of \(formatter.format(goal.targetAmount, decimalDigits: 0))"
         let note = complete ? SavingsGoalText.fullyFunded(goal) : SavingsGoalText.pace(goal, now: now, calendar: calendar, formatter: formatter)
-        return HStack(spacing: 18) {
-            ProgressRing(value: complete ? 1 : goal.progress, size: 84, thickness: 9, color: color, glowAlpha: complete ? 0.45 : 0.4) {
+        return VStack(alignment: .leading, spacing: 0) {
+            // At accessibility sizes the chip sits under the name, which
+            // then has the column's full width (beside the fixed-size chip
+            // it broke mid-word).
+            titleLayout {
+                Text(goal.name)
+                    .textStyle(.goalTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                    .singleLine()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                PillChip(label: status.label, color: color, style: .badgeSmall)
+                    .fixedSize()
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                (Text(saved).font(Self.amountText.font()).foregroundStyle(BudgieColor.textPrimary)
+                    + Text(tail).font(Self.amountTail.font()).foregroundStyle(BudgieColor.textSecondary))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 if complete {
-                    // Material `check_rounded` 28 / w500 draws an 18.5pt
-                    // wide tick; SF `checkmark` medium at 20 is 18.75.
                     Image(systemName: "checkmark")
-                        .font(.system(size: 20, weight: .medium))
-                        .frame(width: 28, height: 28)
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(BudgieColor.income)
                 } else {
                     Text(SavingsGoalText.percent(goal))
-                        .textStyle(Self.ringText)
+                        .textStyle(Self.percentText)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .padding(.horizontal, 12)
-                }
-            }
-            VStack(alignment: .leading, spacing: 0) {
-                // At accessibility sizes the chip sits under the name, which
-                // then has the column's full width (beside the fixed-size
-                // chip it broke mid-word).
-                titleLayout {
-                    Text(goal.name)
-                        .textStyle(.goalTitle)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .singleLine()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    PillChip(label: status.label, color: color, style: .badgeSmall)
                         .fixedSize()
                 }
-                (Text(saved).font(Self.amountText.font()).foregroundStyle(BudgieColor.textPrimary)
-                    + Text(tail).font(Self.amountTail.font()).foregroundStyle(BudgieColor.textSecondary))
-                    .padding(.top, 6)
-                Text(note)
-                    .textStyle(.rowSubtitle)
-                    .foregroundStyle(complete ? BudgieColor.income : BudgieColor.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 4)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 14)
+            GlowProgressBar(value: complete ? 1 : goal.progress, height: 10, color: color)
+                .padding(.top, 10)
+            Text(note)
+                .textStyle(.rowSubtitle)
+                .foregroundStyle(complete ? BudgieColor.income : BudgieColor.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 10)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(goal.name), \(status.label)")
         .accessibilityValue(

@@ -254,9 +254,9 @@ final class HomeUITests: XCTestCase {
         // The form opens once the sheet has gone, on the chosen category.
         XCTAssertTrue(app.staticTexts["Add Expense"].waitForExistence(timeout: 10), "the expense form")
         XCTAssertFalse(choice.exists, "the category sheet is gone")
-        let wheel = app.pickerWheels.firstMatch
-        XCTAssertTrue(wheel.waitForExistence(timeout: 5))
-        XCTAssertEqual(wheel.value as? String, "Health")
+        let category = app.formCategory
+        XCTAssertTrue(category.waitForExistence(timeout: 5))
+        XCTAssertEqual(category.value as? String, "Health")
         let amount = app.textFields["Amount"]
         amount.enterText("4.56")
         app.textFields["Description"].enterText(description)

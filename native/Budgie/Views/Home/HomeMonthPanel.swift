@@ -28,6 +28,7 @@ struct HomeMonthPanel: View {
         GlowCard(padding: 0) {
             VStack(spacing: 0) {
                 YearStepper()
+                Hairline().padding(.horizontal, Metrics.spacingM)
                 MonthWheel()
             }
             .padding(.vertical, 8)
@@ -81,7 +82,7 @@ private struct YearStepper: View {
 
 /// The month wheel (`CupertinoPicker` with its SDK defaults: itemExtent 34,
 /// diameterRatio 1.07, squeeze 1.45, off-centre rows at 0.447 opacity, a
-/// `tertiarySystemFill` band inset 9 with radius 8) in a 128pt box, so about
+/// `chipSurface` band inset 9 with radius 12) in a 128pt box, so about
 /// five rows show. A snapping scroll view whose rows are laid out 34 apart
 /// and painted where Flutter's `ListWheelViewport` puts them on the drum
 /// (compressed towards the centre and foreshortened, no 3D tilt); rows
@@ -144,10 +145,11 @@ private struct MonthWheel: View {
         .scrollClipDisabled()
         .frame(height: viewport)
         .clipped()
-        .overlay {
-            // `CupertinoPickerDefaultSelectionOverlay`.
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color(uiColor: .tertiarySystemFill))
+        .background {
+            // `CupertinoPickerDefaultSelectionOverlay`, on the chip token,
+            // behind the rows (it is opaque).
+            RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
+                .fill(BudgieColor.chipSurface)
                 .frame(height: extent)
                 .padding(.horizontal, 9)
                 .allowsHitTesting(false)

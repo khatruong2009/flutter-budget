@@ -1,154 +1,142 @@
 import SwiftUI
 import UIKit
 
-/// The redesign palette (`theme/app_colors.dart`), resolved per light/dark
-/// trait so sheets and overridden interface styles pick the right value.
+/// The app palette, resolved per light/dark trait so sheets and overridden
+/// interface styles pick the right value: "Paper" in light mode (warm paper,
+/// ink, deep green, terracotta) and "Midnight" in dark mode (near-black,
+/// mint, coral, lilac). This is the owner-approved redesign of 2026-10-03
+/// (PARITY_GAPS "Visual redesign"), not Flutter's palette. Every text token
+/// reaches WCAG AA (4.5:1) on every surface it sits on (ColorContrastTests).
 /// Values are 0xRRGGBB, or 0xAARRGGBB where a token is translucent.
 enum BudgieColor {
     // Surfaces
-    static let background = dynamic(light: 0xF9FAFB, dark: 0x0A0A12)
-    static let card = dynamic(light: 0xFFFFFF, dark: 0x13131F)
-    static let surface = dynamic(light: 0xFFFFFF, dark: 0x15151F)
-    static let chipSurface = dynamic(light: 0xF1F1F7, dark: 0x15151F)
+    static let background = dynamic(light: 0xF3EFE6, dark: 0x07090D)
+    static let card = dynamic(light: 0xFBF9F4, dark: 0x11151C)
+    static let surface = dynamic(light: 0xFBF9F4, dark: 0x11151C)
+    static let chipSurface = dynamic(light: 0xEAE4D7, dark: 0x161B24)
     /// `MonthPill`'s border: white 8% dark, black 8% light (not `cardBorder`).
     static let pillBorder = overlay(dark: 0.08, light: 0.08)
-    static let cardBorder = dynamic(light: 0x1410_1020, dark: 0x12FF_FFFF, alpha: true)
-    static let hairline = dynamic(light: 0x1010_1020, dark: 0x0FFF_FFFF, alpha: true)
-    static let border = dynamic(light: 0xFFE5_E7EB, dark: 0x12FF_FFFF, alpha: true)
-    static let track = dynamic(light: 0xE9E9F1, dark: 0x1B1B2C)
-    static let trackSecondary = dynamic(light: 0xD9D9E6, dark: 0x2A2A3E)
-    static let donutRemainder = dynamic(light: 0xC9C9DA, dark: 0x3A3A52)
+    static let cardBorder = dynamic(light: 0xFFDC_D4C4, dark: 0x12FF_FFFF, alpha: true)
+    static let hairline = dynamic(light: 0xFFE6_DFD1, dark: 0x0FFF_FFFF, alpha: true)
+    static let border = dynamic(light: 0xFFDC_D4C4, dark: 0x12FF_FFFF, alpha: true)
+    static let track = dynamic(light: 0xE4DDCE, dark: 0x161B24)
+    static let trackSecondary = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
+    static let donutRemainder = dynamic(light: 0xCFC6B4, dark: 0x2A3140)
+    /// Text fields, form rows and the date tile, on a card or sheet.
+    static let fieldFill = dynamic(light: 0xF3EFE6, dark: 0x0B0E14)
+    /// The dimmed backdrop behind a dialog: ink 38% light, black 55% dark.
+    static let scrim = dynamic(light: 0x611A_1A17, dark: 0x8C00_0000, alpha: true)
 
     // Text
-    static let textPrimary = dynamic(light: 0x111827, dark: 0xF2F2FA)
-    // WCAG AA (4.5:1) on every surface the text sits on (owner-approved
-    // 2026-09-30, PARITY_GAPS "Colour tokens"): Flutter's light #6B7280 /
-    // #9CA3AF and dark #5C5C78 fell short, so these are the nearest values
-    // with the same hue that pass.
-    static let textSecondary = dynamic(light: 0x626977, dark: 0x9A9AB5)
-    static let textTertiary = dynamic(light: 0x686F7A, dark: 0x81829F)
-    static let onAccent = dynamic(light: 0xFFFFFF, dark: 0x0A0A12)
+    static let textPrimary = dynamic(light: 0x1A1A17, dark: 0xEEF1F5)
+    static let textSecondary = dynamic(light: 0x5C584F, dark: 0x9AA3B2)
+    static let textTertiary = dynamic(light: 0x625E56, dark: 0x8C95A5)
+    static let onAccent = dynamic(light: 0xFFFFFF, dark: 0x0B0B14)
 
     // Semantic
-    // Light values are darkened to pass WCAG AA both as text on the light
-    // surfaces and tints, and behind a white label (Flutter: #6366F1,
-    // #10B981, #EF4444, #F59E0B). Dark values are unchanged.
-    static let accent = dynamic(light: 0x5453DD, dark: 0x818CF8)
-    static let income = dynamic(light: 0x07744F, dark: 0x34D399)
+    /// Links, selection and the add button: deep green in light mode, lilac
+    /// in dark mode.
+    static let accent = dynamic(light: 0x1D6646, dark: 0xB3ADFF)
+    /// Income, money kept and good changes.
+    static let income = dynamic(light: 0x1D6646, dark: 0x5EE6B0)
+    /// Money spent on charts: ink in light mode, coral in dark mode.
+    static let spent = dynamic(light: 0x1A1A17, dark: 0xFF8B7B)
     /// Expense, over-limit and errors (`getDanger`).
-    static let danger = dynamic(light: 0xC60D21, dark: 0xFB7185)
-    static let warning = dynamic(light: 0x8F5B05, dark: 0xFBBF24)
-    static let info = dynamic(light: 0x3B82F6, dark: 0x60A5FA)
-    static let pink = Color(hex: 0xF0ABFC)
-    static let cyan = Color(hex: 0x22D3EE)
-    /// `AppColors.primary`: the same indigo in both modes (unlike `accent`);
-    /// darkened from #6366F1 so the white month chip label passes AA.
-    static let primary = Color(hex: 0x5453DD)
-    static let primaryDark = Color(hex: 0x4F46E5)
-    static let primaryLight = Color(hex: 0x818CF8)
-    /// `AppColors.expense` / `AppColors.income`: the same red and green in
-    /// both modes (unlike `danger` / `income`), as the forms' category
-    /// wheel tiles use them.
-    static let expenseFixed = Color(hex: 0xEF4444)
-    static let incomeFixed = Color(hex: 0x10B981)
-    /// The Home spend gauge's fill start (spending_page.dart:1388-1461):
-    /// `accent @ 55%` alpha-blended over `background`, unrounded.
-    static let gaugeFillStart = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 75.45 / 255, green: 81.5 / 255, blue: 144.5 / 255, alpha: 1)
-            : UIColor(red: 166.5 / 255, green: 168.6 / 255, blue: 245.5 / 255, alpha: 1)
-    })
+    static let danger = dynamic(light: 0xA63D24, dark: 0xFF8B7B)
+    static let warning = dynamic(light: 0x7E5300, dark: 0xFFC861)
+    /// A `Toggle`'s tint when on.
+    static let switchOn = dynamic(light: 0x1D6646, dark: 0x5EE6B0)
+    static let info = dynamic(light: 0x1F5F99, dark: 0x7CC8FF)
+    static let purple = dynamic(light: 0x5B47B8, dark: 0xB3ADFF)
+    static let pink = dynamic(light: 0x7F3B6B, dark: 0xF7A1D8)
+    static let cyan = dynamic(light: 0x176464, dark: 0x4FD1C5)
+    /// The strong fill behind a white label (the month chip, the sheet
+    /// buttons): ink in light mode, a deep lilac in dark mode.
+    static let primary = dynamic(light: 0x1A1A17, dark: 0x4A43C4)
+    /// The forms' category wheel tiles, behind a white symbol: the first stop
+    /// of the income and expense button fills.
+    static let expenseFixed = dynamic(light: 0xA63D24, dark: 0xA3372A)
+    static let incomeFixed = dynamic(light: 0x1D6646, dark: 0x0E6B4C)
 
-    // Flow charts (history_page.dart)
+    // Selection (month chips, segmented toggles): an ink chip with a paper
+    // label in light mode, a lilac tint with a lilac label in dark mode.
+    static let selectionFill = dynamic(light: 0xFF1A_1A17, dark: 0x29B3_ADFF, alpha: true)
+    static let selectionText = dynamic(light: 0xF3EFE6, dark: 0xB3ADFF)
+    static let selectionBorder = dynamic(light: 0xFF1A_1A17, dark: 0x66B3_ADFF, alpha: true)
+
+    // The feature card (Home's Safe to spend, the Goals summary): an ink
+    // block in light mode, a mint-tinted tile in dark mode.
+    static let featureFill = dynamic(light: 0x1A1A17, dark: 0x10231F)
+    static let featureBorder = dynamic(light: 0xFF1A_1A17, dark: 0x475E_E6B0, alpha: true)
+    static let featureText = dynamic(light: 0xF3EFE6, dark: 0xEEF1F5)
+    static let featureSecondary = dynamic(light: 0xC2BBAA, dark: 0x9AA3B2)
+    /// The feature card's figure: paper on ink, mint on the dark tile.
+    static let featureAmount = dynamic(light: 0xF3EFE6, dark: 0x5EE6B0)
+    /// A shortfall on the feature card.
+    static let featureDanger = dynamic(light: 0xF0A08C, dark: 0xFF8B7B)
+    /// The feature card's chevron circle and ring track.
+    static let featureControl = dynamic(light: 0x1FF3_EFE6, dark: 0x0FFF_FFFF, alpha: true)
+    /// The feature card's progress ring.
+    static let featureRing = dynamic(light: 0x8ED0AA, dark: 0x5EE6B0)
+
+    // Flow charts
     /// The net cash flow bars' zero baseline: white 12% dark, black 12% light.
     static let chartBaseline = overlay(dark: 0.12, light: 0.12)
     /// The trend's dashed zero line: white 8% dark, black 12% light.
     static let chartZeroLine = overlay(dark: 0.08, light: 0.12)
-    /// The trend's end dot: #F2F2FA in both modes, no stroke (Flutter's
-    /// `FlDotCirclePainter`), so it is faint on the light card.
-    static let trendDot = Color(hex: 0xF2F2FA)
+    /// The end dot on the trend and growth lines.
+    static let trendDot = textPrimary
 
-    // Worth editor dialog (net_worth_page.dart)
+    // Worth editor dialog
     /// The 32pt close circle: white 8% dark, black 6% light.
     static let dialogCloseFill = overlay(dark: 0.08, light: 0.06)
-    /// The outlined Cancel button: white 6% dark, black 5% light.
-    static let dialogOutlinedFill = overlay(dark: 0.06, light: 0.05)
 
-    // Settings (settings_page.dart)
-    /// The brand card's wash (`_BrandCard`): `accent @ 22%` alpha-blended
-    /// over `card`, unrounded, fading to `card` at the bottom right.
-    static let brandCardWash = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 43.2 / 255, green: 45.62 / 255, blue: 78.74 / 255, alpha: 1)
-            : UIColor(red: 220.68 / 255, green: 221.34 / 255, blue: 251.92 / 255, alpha: 1)
-    })
-    /// The Version row's icon: `AppColors.dockInactiveIcon`, #8A8AA8 in both
-    /// modes (unlike the dynamic `dockInactiveIcon` below).
-    static let versionIcon = Color(hex: 0x8A8AA8)
+    // Settings
+    /// The Version row's icon.
+    static let versionIcon = textSecondary
     /// The Version row's tile: white 6% dark, black 6% light.
     static let versionTile = overlay(dark: 0.06, light: 0.06)
 
-    // Dock (unused by the native tab bar; kept for custom chrome)
-    /// The segmented pills' unselected label too (on the 0xE9E9F1 track); light
-    /// darkened from #6B7280 to pass AA there.
-    static let dockInactiveIcon = dynamic(light: 0x636A78, dark: 0x8A8AA8)
+    /// The segmented pills' unselected label (on the track).
+    static let dockInactiveIcon = textSecondary
 
-    /// The split bar's assets segment (`glow_progress_bar.dart`).
-    static let splitBarGradient = LinearGradient(
-        colors: [Color(hex: 0x2AB98A), Color(hex: 0x34D399)], startPoint: .leading, endPoint: .trailing)
-
-    /// Opening screen, dark only (`main.dart`).
-    static let openingGradient = LinearGradient(
-        colors: [Color(hex: 0x0A0A12), Color(hex: 0x0F0F18)], startPoint: .top, endPoint: .bottom)
-
-    // 135-degree gradients (topLeading to bottomTrailing)
-    // The gradients sit behind white labels (the form and sheet buttons), so
-    // both stops of each pass AA against white; the stops keep their lightness
-    // gap. Flutter: primary (#6366F1, #8B5CF6), income (#10B981, #34D399) /
-    // (#059669, #10B981), expense (#EF4444, #F87171) / (#DC2626, #EF4444).
-    static let primaryStops = stops(light: (0x5F61EC, 0x8757F1), dark: (0x4F46E5, 0x7C3AED))
-    static let incomeStops = stops(light: (0x006E4B, 0x05875E), dark: (0x056647, 0x04875D))
-    static let expenseStops = stops(light: (0xC2021D, 0xCC4A4D), dark: (0xCC0716, 0xDF3337))
-    static let primaryGradient = gradient(primaryStops)
+    // Button fills (topLeading to bottomTrailing). They sit behind white
+    // labels (the form and sheet buttons), so both stops pass AA against
+    // white; the stops are close, so the fills read as flat.
+    static let incomeStops = stops(light: (0x1D6646, 0x247755), dark: (0x0E6B4C, 0x127D59))
+    static let expenseStops = stops(light: (0xA63D24, 0xB5482D), dark: (0xA3372A, 0xB8432F))
     static let incomeGradient = gradient(incomeStops)
     static let expenseGradient = gradient(expenseStops)
-    static let amberGradient = gradient(light: (0xF59E0B, 0xF97316), dark: (0xFBBF24, 0xFB923C))
-    static let blueGradient = gradient(light: (0x3B82F6, 0x60A5FA), dark: (0x2563EB, 0x3B82F6))
 
-    /// The 14-colour chart and category palette (`getChartColors`).
+    /// The 14-colour chart and category palette: the seven category hues,
+    /// then a lighter (light mode) or paler (dark mode) set of the same.
     static let chartPalette: [Color] = zip(
-        [0x6366F1, 0x8B5CF6, 0x10B981, 0x34D399, 0xEF4444, 0xF87171, 0xF59E0B, 0xFBBF24, 0x3B82F6, 0x60A5FA, 0xEC4899,
-         0xF472B6, 0x14B8A6, 0x2DD4BF],
-        [0x818CF8, 0xA78BFA, 0x34D399, 0x6EE7B7, 0xF87171, 0xFCA5A5, 0xFBBF24, 0xFCD34D, 0x60A5FA, 0x93C5FD, 0xF472B6,
-         0xF9A8D4, 0x2DD4BF, 0x5EEAD4]
+        [0x1D6646, 0x5B47B8, 0xA63D24, 0x7E5300, 0x1F5F99, 0x7F3B6B, 0x176464, 0x4E8F6F, 0x8676D1, 0xC96A50, 0xA8801F,
+         0x4E86BD, 0xA86394, 0x3F8C8C],
+        [0x5EE6B0, 0xB3ADFF, 0xFF8B7B, 0xFFC861, 0x7CC8FF, 0xF7A1D8, 0x4FD1C5, 0xA3F0D2, 0xD6D2FF, 0xFFB8AD, 0xFFDE9C,
+         0xB4DFFF, 0xFAC8E8, 0x93E4DB]
     ).map { dynamic(light: $0, dark: $1) }
 
-    // The Spend donut's rank palette keeps Flutter's values (the chart
-    // palette is unchanged): the slices are graphics, not text.
-    static let chartAccent = dynamic(light: 0x6366F1, dark: 0x818CF8)
-    static let chartIncome = dynamic(light: 0x10B981, dark: 0x34D399)
-    static let chartDanger = dynamic(light: 0xEF4444, dark: 0xFB7185)
-    static let chartWarning = dynamic(light: 0xF59E0B, dark: 0xFBBF24)
+    // The Spend donut's rank palette: the slices are graphics, not text.
+    static let chartAccent = purple
+    static let chartIncome = income
+    static let chartDanger = danger
+    static let chartWarning = warning
 
     /// A category `colorToken` (`category_settings_page.dart` `_tokenColor`);
-    /// unknown tokens use the accent. Purple is 818CF8 in both modes.
+    /// unknown tokens use the accent.
     static func category(_ token: String) -> Color {
         switch token {
         case "green": income
         case "blue": info
         case "orange": warning
         case "red": danger
-        case "purple": Color(hex: 0x818CF8)
+        case "purple": purple
         case "pink": pink
         case "cyan": cyan
         default: accent
         }
     }
-
-    /// `textSecondary` for text on a strongly tinted card (a category colour
-    /// at 22%, or the Worth hero's wash and glow), where the page-level value
-    /// reaches only 3.3-4.4:1.
-    static let textSecondaryOnTint = dynamic(light: 0x4B5563, dark: 0xBEBED2)
 
     /// A category or chart colour as text on its own tint (the colour at up
     /// to 18% over the card): the colour itself when that reaches 4.5:1, else

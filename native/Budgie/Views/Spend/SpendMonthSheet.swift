@@ -1,13 +1,13 @@
 import BudgieCore
 import SwiftUI
 
-/// The Spend month picker (`_showMonthPicker`, category_page.dart:500-588):
-/// card-coloured sheet, 26pt top corners with the card border along the
-/// top edge only, a 40x4 grabber, "Select month", then one row per month
-/// with transactions (newest first, `yMMMM`), at most 320pt tall before it
-/// scrolls. The selected month is accent with a check. Picking a month
-/// closes the sheet at once. Sized to the content; the system adds the
-/// bottom safe area (Flutter's `SafeArea`).
+/// The Spend month picker (`_showMonthPicker`, category_page.dart:500-588)
+/// in the sheet pattern (REDESIGN_PLAN 4.3): "Select month" in the sheet
+/// title style, then one row per month with transactions (newest first,
+/// `yMMMM`) in a card with hairlines between them, the card at most 320pt
+/// tall before it scrolls. The selected month has an accent check. Picking
+/// a month closes the sheet at once. Sized to the content; the system adds
+/// the bottom safe area (Flutter's `SafeArea`).
 struct SpendMonthSheet: View {
     let months: [DartDateTime]
     let selected: DartDateTime?
@@ -17,86 +17,78 @@ struct SpendMonthSheet: View {
     @State private var listHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
 
-    private static let radius: CGFloat = 26
-    /// `rowTitle` at 16 (the ListTile title).
-    private static let rowText = TextSpec(face: .gabaritoSemiBold, size: 16, height: 1.25, relativeTo: .body)
+    private static let maxListHeight: CGFloat = 320
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Capsule()
-                .fill(BudgieColor.textTertiary)
-                .frame(width: 40, height: 4)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 10)
-                .accessibilityHidden(true)
             Text("Select month")
-                .textStyle(.sectionHeader)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(months, id: \.self) { month in row(month) }
+                .padding(.horizontal, Metrics.pageHorizontal)
+                .padding(.top, 12)
+            GlowCard(padding: 0) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(months.indices, id: \.self) { index in
+                            if index > 0 { Hairline() }
+                            row(months[index])
+                        }
+                    }
+                    .padding(.horizontal, Metrics.spacingM)
+                    .padding(.vertical, Metrics.spacingXXS)
+                    .onGeometryChangeCompat { listHeight = $0.height }
                 }
-                .padding(.horizontal, 12)
-                .onGeometryChangeCompat { listHeight = $0.height }
+                // The default-size rows until measured, so the sheet never
+                // measures an empty list.
+                .frame(height: min(listHeight > 0 ? listHeight : estimatedListHeight, Self.maxListHeight))
+                .scrollBounceBehavior(.basedOnSize)
             }
-            // 56pt rows until measured, so the sheet never measures an
-            // empty list.
-            .frame(height: min(listHeight > 0 ? listHeight : CGFloat(months.count) * 56, 320))
-            .scrollBounceBehavior(.basedOnSize)
-            .padding(.vertical, 8)
+            .padding(EdgeInsets(top: Metrics.spacingM, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
         }
         .fixedSize(horizontal: false, vertical: true)
         .onGeometryChangeCompat { contentHeight = $0.height }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .presentationDetents([.height(contentHeight > 0 ? contentHeight : estimatedHeight)])
-        .presentationDragIndicator(.hidden)
-        .presentationCornerRadius(Self.radius)
-        .presentationBackground {
-            BudgieColor.card
-                .overlay(alignment: .top) {
-                    // Flutter's `Border(top:)` follows the rounded corners
-                    // down to where the sides start.
-                    UnevenRoundedRectangle(topLeadingRadius: Self.radius, topTrailingRadius: Self.radius, style: .continuous)
-                        .strokeBorder(BudgieColor.cardBorder, lineWidth: 1)
-                        .mask(alignment: .top) { Rectangle().frame(height: Self.radius) }
-                }
-                .ignoresSafeArea()
-        }
+        .budgieSheetChrome()
+        .presentationDetents([.height(BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : estimatedHeight))])
         .accessibilityIdentifier("spend.monthSheet")
     }
 
-    /// The content's height at the default text size (10, grabber, 16,
-    /// title, 8, list, 8), so the sheet opens at its final height instead of
-    /// resizing once measured.
-    private var estimatedHeight: CGFloat {
-        10 + 4 + 16 + 24 + 8 + min(CGFloat(months.count) * 56, 320) + 8
+    /// The rows at the default text size: 48pt each, 1pt hairlines, 2 + 2.
+    private var estimatedListHeight: CGFloat {
+        CGFloat(months.count) * 48 + CGFloat(max(months.count - 1, 0)) + 4
     }
 
-    /// A Material ListTile: 56pt minimum, 16pt insets, 20pt check.
+    /// The content's height at the default text size (12, the title, 16,
+    /// the list card and its border, 16), so the sheet opens at its final height instead
+    /// of resizing once measured.
+    private var estimatedHeight: CGFloat {
+        12 + 29 + 16 + min(estimatedListHeight, Self.maxListHeight) + 2 + 16
+    }
+
+    /// A row: the month (15 w600) and the accent check on the selected one,
+    /// at least 48 tall.
     private func row(_ month: DartDateTime) -> some View {
         let isSelected = selected.map { $0.year == month.year && $0.month == month.month } ?? false
-        let color = isSelected ? BudgieColor.accent : BudgieColor.textPrimary
         return Button {
             onPick(month)
             dismiss()
         } label: {
-            HStack(spacing: 16) {
+            HStack(spacing: 14) {
                 Text(DartDateFormat.yMMMM(month))
-                    .textStyle(Self.rowText)
-                    .foregroundStyle(color)
+                    .textStyle(.rowTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if isSelected {
                     Image(systemName: "checkmark")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(BudgieColor.accent)
+                        .frame(width: 24, height: 24)
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.horizontal, 16)
-            .frame(minHeight: 56)
+            .padding(.vertical, 12)
+            .frame(minHeight: Metrics.formRowHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

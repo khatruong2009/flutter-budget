@@ -56,56 +56,89 @@ struct RootView: View {
 }
 
 struct StatusScreen: View {
+    var kind: EmptyStateView.Kind = .noData
     let symbol: String
     let title: String
     let message: String
 
     var body: some View {
-        EmptyStateView(symbol: symbol, title: title, message: message)
+        EmptyStateView(kind: kind, symbol: symbol, title: title, message: message)
     }
 }
 
+/// The phases that stop the app from opening the store: the dashed status
+/// card, then a filled "Try Again" pill and, for unreadable data, an
+/// outlined danger pill for the empty budget. Scrolls at large text sizes.
 struct BlockedView: View {
     @Environment(AppModel.self) private var model
     @State private var confirmsEmptyBudget = false
     let blocker: AppModel.Blocker
 
     var body: some View {
-        switch blocker {
-        case .backupFailed(let reason):
-            VStack(spacing: 16) {
-                StatusScreen(
-                    symbol: "externaldrive.badge.exclamationmark", title: "Couldn't prepare your data",
-                    message: "Budgie makes a safety copy of your data before opening it and couldn't this time. Nothing was changed. Free up some storage and try again.")
-                Text(reason).font(.caption2).foregroundStyle(.secondary).padding(.horizontal)
-                Button("Try Again") { Task { await model.retryStart() } }.buttonStyle(.borderedProminent)
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                content
+                    .padding(.vertical, Metrics.spacingL)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
-        case .readFailed(let reason):
-            VStack(spacing: 16) {
-                StatusScreen(
-                    symbol: "exclamationmark.triangle", title: "Couldn't read your data",
-                    message: "Your data is still on this iPhone. Nothing was changed.")
-                Text(reason).font(.caption2).foregroundStyle(.secondary).padding(.horizontal)
-                Button("Try Again") { Task { await model.retryStart() } }.buttonStyle(.borderedProminent)
-            }
-        case .dataUnreadable(let files):
-            VStack(spacing: 16) {
-                StatusScreen(
-                    symbol: "exclamationmark.octagon", title: "Your data couldn't be read",
-                    message: "Your saved budget data could not be read. The original files and a safety copy have been kept on this iPhone.")
-                Button("Try Again") { Task { await model.retryStart() } }.buttonStyle(.borderedProminent)
-                Button("Start with an Empty Budget", role: .destructive) {
-                    confirmsEmptyBudget = true
-                }
-            }
-            .confirmationDialog("Start with an Empty Budget?", isPresented: $confirmsEmptyBudget, titleVisibility: .visible) {
-                Button("Start with an Empty Budget", role: .destructive) {
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .confirmationDialog("Start with an Empty Budget?", isPresented: $confirmsEmptyBudget, titleVisibility: .visible) {
+            Button("Start with an Empty Budget", role: .destructive) {
+                if case .dataUnreadable(let files) = blocker {
                     Task { await model.startFresh(acknowledging: files) }
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This will open a budget without recovering your saved data. Your original files and safety copy will remain on this iPhone.")
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will open a budget without recovering your saved data. Your original files and safety copy will remain on this iPhone.")
+        }
+    }
+
+    @ViewBuilder private var content: some View {
+        switch blocker {
+        case .backupFailed(let reason):
+            VStack(spacing: Metrics.spacingM) {
+                StatusScreen(
+                    kind: .error, symbol: "externaldrive.badge.exclamationmark", title: "Couldn't prepare your data",
+                    message: "Budgie makes a safety copy of your data before opening it and couldn't this time. Nothing was changed. Free up some storage and try again.")
+                reasonText(reason)
+                tryAgain
+            }
+        case .readFailed(let reason):
+            VStack(spacing: Metrics.spacingM) {
+                StatusScreen(
+                    kind: .error, symbol: "exclamationmark.triangle", title: "Couldn't read your data",
+                    message: "Your data is still on this iPhone. Nothing was changed.")
+                reasonText(reason)
+                tryAgain
+            }
+        case .dataUnreadable:
+            VStack(spacing: Metrics.spacingM) {
+                StatusScreen(
+                    kind: .error, symbol: "exclamationmark.octagon", title: "Your data couldn't be read",
+                    message: "Your saved budget data could not be read. The original files and a safety copy have been kept on this iPhone.")
+                tryAgain
+                PillButton(title: "Start with an Empty Budget", color: BudgieColor.danger, minHeight: Metrics.pillButtonHeight) {
+                    confirmsEmptyBudget = true
+                }
+                .padding(.horizontal, Metrics.pageHorizontal)
             }
         }
+    }
+
+    private func reasonText(_ reason: String) -> some View {
+        Text(reason)
+            .textStyle(.rowSubtitle)
+            .foregroundStyle(BudgieColor.textSecondary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, Metrics.pageHorizontal)
+    }
+
+    private var tryAgain: some View {
+        PillButton(title: "Try Again", filled: true, minHeight: Metrics.pillButtonHeight) {
+            Task { await model.retryStart() }
+        }
+        .padding(.horizontal, Metrics.pageHorizontal)
     }
 }

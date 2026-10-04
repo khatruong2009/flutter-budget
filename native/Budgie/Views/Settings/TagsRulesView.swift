@@ -22,9 +22,6 @@ struct TagsRulesView: View {
     /// Rules whose switch write is in flight (their switch is inert).
     @State private var switching: Set<String> = []
 
-    /// M3 `TextButton` label (`labelLarge`: 14 / w500, tracking 0.1, 1.43).
-    static let addText = TextSpec(face: .gabaritoMedium, size: 14, tracking: 0.1, height: 1.43, relativeTo: .subheadline)
-
     var body: some View {
         let tags = model.tags
         let rules = model.rules
@@ -41,11 +38,11 @@ struct TagsRulesView: View {
                         })
                     }
                 }
-                .padding(.top, Metrics.spacingS)
+                .padding(.top, 12)
                 SectionTitle(title: "Merchant rules", addLabel: "Add merchant rule", identifier: "rules.add") {
                     dialog = .newRule
                 }
-                .padding(.top, Metrics.spacingXL)
+                .padding(.top, Metrics.sectionGap)
                 Group {
                     if rules.isEmpty {
                         EmptyCard(message: "Rules can automatically choose a category and tags from a merchant name.")
@@ -62,10 +59,9 @@ struct TagsRulesView: View {
                         })
                     }
                 }
-                .padding(.top, Metrics.spacingS)
+                .padding(.top, 12)
             }
-            // Flutter's ListView padding (`spacingM` all round).
-            .padding(Metrics.spacingM)
+            .padding(EdgeInsets(top: Metrics.spacingM, leading: Metrics.pageHorizontal, bottom: Metrics.spacingXL, trailing: Metrics.pageHorizontal))
         }
         .accessibilityIdentifier("tagsRules.list")
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -175,9 +171,9 @@ enum TagsRulesDialog: Identifiable {
     }
 }
 
-/// `_SectionTitle`: the title in headingMedium and a Material `TextButton`
-/// "ADD" in accent (min 64 wide, 12 side padding, 48 tall with its tap
-/// target). No haptic, as Flutter.
+/// `_SectionTitle` as a `SectionHeader`: the title (21 w700) and the "Add"
+/// text link (sentence case, like every section link; Flutter's "ADD") in accent (textLink), baseline aligned, inset 4; the link's tap
+/// area is 44 x 44. No haptic, as Flutter.
 private struct SectionTitle: View {
     let title: String
     let addLabel: String
@@ -185,24 +181,23 @@ private struct SectionTitle: View {
     let onAdd: () -> Void
 
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(alignment: .firstTextBaseline) {
             Text(title)
-                .textStyle(.headingMedium)
+                .textStyle(.sectionHeader)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityAddTraits(.isHeader)
             Button(action: onAdd) {
-                Text("ADD")
-                    .textStyle(TagsRulesView.addText)
+                Text("Add")
+                    .textStyle(.textLink)
                     .foregroundStyle(BudgieColor.accent)
-                    .padding(.horizontal, 12)
-                    .frame(minWidth: 64, minHeight: 48)
-                    .contentShape(Rectangle())
+                    .tapArea(horizontal: 8, vertical: 13)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(addLabel)
             .accessibilityIdentifier(identifier)
         }
+        .padding(.horizontal, 4)
     }
 }
 
@@ -220,8 +215,8 @@ private struct EmptyCard: View {
     }
 }
 
-/// The 48pt trailing delete button (Material `delete_rounded` in an
-/// `IconButton`, 20pt symbol like the other ported 24pt icons).
+/// The 44pt trailing delete button (Material `delete_rounded` in an
+/// `IconButton`, 18pt symbol).
 private struct DeleteButton: View {
     let label: String
     let identifier: String
@@ -230,9 +225,9 @@ private struct DeleteButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: "trash")
-                .font(.system(size: Metrics.iconS, weight: .medium))
+                .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(BudgieColor.textSecondary)
-                .frame(width: 48, height: 48)
+                .frame(width: Metrics.touchTarget, height: Metrics.touchTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -241,8 +236,8 @@ private struct DeleteButton: View {
     }
 }
 
-/// A tag (one-line M3 `ListTile`, 56 tall, padding 16 / 24, 16 gaps): the
-/// `tag` tile in accent, the name, the delete button ("Delete {name}",
+/// A tag, as Home's Recent activity rows (padding 12, 12 gaps): the 40pt
+/// `tag` tile in accent, the name (rowTitle), the delete button ("Delete {name}",
 /// Flutter's tooltip), which asks first. VoiceOver: the name is one
 /// element with Delete as an action, then the button.
 private struct TagRow: View {
@@ -251,12 +246,12 @@ private struct TagRow: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(spacing: Metrics.spacingM) {
+        HStack(spacing: 12) {
             IconTile(symbol: "tag", color: BudgieColor.accent)
             Text(tag.name)
                 .textStyle(.rowTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
-                // 18pt of text in a 56pt row; the element is 44pt tall.
+                // 19pt of text in a 64pt row; the element is 44pt tall.
                 .frame(maxWidth: .infinity, minHeight: Metrics.touchTarget, alignment: .leading)
                 .contentShape(Rectangle())
                 // One element for the whole 44pt strip, not just the text.
@@ -266,13 +261,13 @@ private struct TagRow: View {
                 .accessibilityIdentifier("tags.row.\(key)")
             DeleteButton(label: "Delete \(tag.name)", identifier: "tags.row.delete.\(key)", action: onDelete)
         }
-        .padding(.leading, Metrics.spacingM)
-        .padding(.trailing, Metrics.spacingL)
-        .frame(minHeight: 56)
+        .padding(.vertical, 12)
+        .padding(.leading, 12)
+        .padding(.trailing, 2)
     }
 }
 
-/// A rule (two-line M3 `ListTile`, 72 tall): the `sparkles` tile in info
+/// A rule, as Home's Recent activity rows: the 40pt `sparkles` tile in info
 /// (Settings' Tags & rules tint), the merchant text over the subtitle
 /// (`ruleSubtitle`), then the Swift-only enable switch and the delete
 /// button (instant, as Flutter). Swift-only: the tile and text open the
@@ -291,11 +286,11 @@ private struct RuleRow: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(spacing: Metrics.spacingM) {
+        HStack(spacing: 8) {
             Button(action: onEdit) {
-                HStack(spacing: Metrics.spacingM) {
+                HStack(spacing: 12) {
                     IconTile(symbol: "sparkles", color: BudgieColor.info)
-                    VStack(alignment: .leading, spacing: 0) {
+                    VStack(alignment: .leading, spacing: 2) {
                         Text(rule.merchantPattern)
                             .textStyle(.rowTitle)
                             .foregroundStyle(BudgieColor.textPrimary)
@@ -314,20 +309,19 @@ private struct RuleRow: View {
             .accessibilityAction(named: "Edit") { onEdit() }
             .accessibilityAction(named: "Delete") { onDelete() }
             .accessibilityIdentifier("rules.row.\(key)")
-            // The delete button's 48pt frame already spaces its icon from
+            // The delete button's 44pt frame already spaces its icon from
             // the switch.
             HStack(spacing: 0) {
-                // The app's switch colour (Settings rows, Show archived).
                 Toggle("Enable rule \(rule.merchantPattern)", isOn: Binding(get: { rule.isEnabled }, set: onToggle))
                     .labelsHidden()
-                    .tint(.green)
+                    .tint(BudgieColor.switchOn)
                     .disabled(switching)
                     .accessibilityIdentifier("rules.row.enabled.\(key)")
                 DeleteButton(label: "Delete rule \(rule.merchantPattern)", identifier: "rules.row.delete.\(key)", action: onDelete)
             }
         }
-        .padding(.leading, Metrics.spacingM)
-        .padding(.trailing, Metrics.spacingL)
-        .frame(minHeight: 72)
+        .padding(.vertical, 12)
+        .padding(.leading, 12)
+        .padding(.trailing, 2)
     }
 }

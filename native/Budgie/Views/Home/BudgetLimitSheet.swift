@@ -2,9 +2,10 @@ import BudgieCore
 import SwiftUI
 
 /// Sets or removes a category's monthly limit (`_BudgetLimitSheet`,
-/// spending_page.dart:811-999): danger-tinted header, the limit field
-/// (autofocused, decimal pad), then Remove (only with a limit) and Save.
-/// Content-sized; it rides up with the keyboard.
+/// spending_page.dart:811-999) in the redesign's sheet pattern (REDESIGN_PLAN
+/// 4.3): the category as the title with its tile, the limit field
+/// (autofocused, decimal pad), then a full-width Save pill and, with a limit
+/// set, an outlined Remove pill. Content-sized; it rides up with the keyboard.
 struct BudgetLimitSheet: View {
     let category: String
     let currentLimit: Double?
@@ -22,9 +23,9 @@ struct BudgetLimitSheet: View {
     /// plus the slack it was measured with).
     @State private var untrimmedHeight: CGFloat = 0
     @State private var keyboardSlack: CGFloat = 0
-    @FocusState private var focused: Bool
 
     private static let helper = "Set a positive amount for this category."
+    private static let blurb = TextSpec(face: .gabaritoRegular, size: 14, height: 1.3, relativeTo: .subheadline)
 
     init(category: String, currentLimit: Double?, formatter: MoneyFormatter) {
         self.category = category
@@ -47,20 +48,31 @@ struct BudgetLimitSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             header
             field.padding(.top, 24)
-            HStack(spacing: 16) {
+            VStack(spacing: 12) {
+                PillButton(title: "Save", filled: true, height: Metrics.pillButtonHeight, action: save)
+                    .disabled(!canSave)
+                    .overlay {
+                        if saving {
+                            Capsule().fill(BudgieColor.accent)
+                            ProgressView().tint(BudgieColor.onAccent)
+                        }
+                    }
+                    .opacity(canSave ? 1 : Metrics.opacityDisabled)
+                    .accessibilityIdentifier("budgets.limit.save")
                 if currentLimit != nil {
-                    LimitSheetButton(
-                        title: "Remove", symbol: "trash", primary: false, enabled: !saving, identifier: "budgets.limit.remove",
-                        action: remove)
+                    PillButton(
+                        title: "Remove", symbol: "trash", color: BudgieColor.danger, height: Metrics.pillButtonHeight,
+                        action: remove
+                    )
+                    .disabled(saving)
+                    .opacity(saving ? Metrics.opacityDisabled : 1)
+                    .accessibilityIdentifier("budgets.limit.remove")
                 }
-                LimitSheetButton(
-                    title: "Save", symbol: "checkmark.circle.fill", primary: true, loading: saving, enabled: canSave,
-                    identifier: "budgets.limit.save", action: save)
             }
             .padding(.top, 24)
         }
-        // 16 + the chrome's 20pt handle inset = Flutter's 16 + 4 + 16.
-        .padding(16)
+        // 12 + the chrome's 19pt handle inset.
+        .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: 16, trailing: Metrics.pageHorizontal))
         .fixedSize(horizontal: false, vertical: true)
         .onGeometryChangeCompat {
             contentHeight = $0.height
@@ -74,17 +86,18 @@ struct BudgetLimitSheet: View {
         .budgieSheetChrome()
         .presentationDetents([
             .height(
-                BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : Self.estimatedHeight) - keyboardSlack)
+                BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : estimatedHeight) - keyboardSlack)
         ])
         .interactiveDismissDisabled(saving)
-        .onAppear { focused = true }
     }
 
     /// The content's height at the default text size, so the sheet opens at
-    /// its final height instead of resizing once measured: 16, the 40pt
-    /// header tile, 24, the 56pt field, 6, the helper, 24, the 48pt buttons,
-    /// 16.
-    private static let estimatedHeight: CGFloat = 16 + 40 + 24 + 56 + 6 + 15 + 24 + 48 + 16
+    /// its final height instead of resizing once measured: 12, the header
+    /// (the 40pt tile), 24, the 64pt field, 6, the helper, 24, the 52pt Save
+    /// pill (and 12 and the Remove pill), 16.
+    private var estimatedHeight: CGFloat {
+        12 + 52 + 24 + 64 + 6 + 15 + 24 + 52 + (currentLimit != nil ? 12 + 52 : 0) + 16
+    }
 
     /// The room left below the content, trimmed off the detent. With the
     /// keyboard up the system keeps the sheet's home-indicator allowance
@@ -98,18 +111,19 @@ struct BudgetLimitSheet: View {
         if abs(slack - keyboardSlack) >= 0.5 { keyboardSlack = slack }
     }
 
+    /// The category's tile, its name as the sheet title and the kind of limit
+    /// as the blurb.
     private var header: some View {
-        HStack(spacing: 16) {
-            IconTile(
-                symbol: CategoryCatalog.symbol(for: model.categoryInfo(named: category, type: .expense)?.iconIdentifier ?? ""),
-                color: BudgieColor.danger)
+        HStack(spacing: 14) {
+            IconTile(category: model.categoryInfo(named: category, type: .expense), size: 44)
             VStack(alignment: .leading, spacing: 2) {
                 Text(category)
-                    .textStyle(.cardTitle)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 Text("Monthly spending limit")
-                    .textStyle(.rowSubtitle)
+                    .textStyle(Self.blurb)
                     .foregroundStyle(BudgieColor.textSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -118,69 +132,21 @@ struct BudgetLimitSheet: View {
         .accessibilityAddTraits(.isHeader)
     }
 
-    /// The outlined Material field: floating "Limit" label notched into the
-    /// border (accent and 2pt while focused), currency prefix, "0.00" hint,
-    /// helper text below. The fill behind the text field focuses it when the
-    /// padding, prefix or label is tapped; the text field keeps its own
-    /// touches (caret, selection menu).
+    /// The amount field (`BudgieField` `.amount`): "Limit" inside the box,
+    /// the currency prefix, "0.00" hint, autofocused with the decimal pad;
+    /// the helper text below. Only a hardware keyboard can submit; the
+    /// decimal pad has no return key.
     private var field: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-        return VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 2) {
-                Text(AmountInput.currencySymbol(formatter))
-                    .textStyle(.numericMedium)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .accessibilityHidden(true)
-                TextField("Limit", text: $text, prompt: Text("0.00").foregroundStyle(BudgieColor.textTertiary))
-                    .textStyle(.numericMedium)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .keyboardType(.decimalPad)
-                    .autocorrectionDisabled()
-                    .submitLabel(.done)
-                    .focused($focused)
-                    // Only a hardware keyboard can submit; the decimal pad has no return key.
-                    .onSubmit(save)
-                    // The prompt replaces the title as the field's label.
-                    .accessibilityLabel("Limit")
-                    .accessibilityHint(Self.helper)
-                    .accessibilityIdentifier("budgets.limit.field")
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .frame(minHeight: 56)
-            .background(
-                shape.fill(BudgieColor.chipSurface)
-                    .contentShape(shape)
-                    .onTapGesture { focused = true }
-                    .accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: 6) {
+            BudgieField(
+                title: "Limit", text: $text, prompt: "0.00", keyboard: .decimalPad, autofocus: true, style: .amount,
+                prefix: AmountInput.currencySymbol(formatter), identifier: "budgets.limit.field"
             )
-            .overlay(
-                shape.strokeBorder(
-                    focused ? BudgieColor.accent : BudgieColor.textTertiary, lineWidth: focused ? 2 : 1)
-                    .allowsHitTesting(false))
-            .overlay(alignment: .topLeading) {
-                Text("Limit")
-                    .textStyle(.rowSubtitle)
-                    .foregroundStyle(focused ? BudgieColor.accent : BudgieColor.textSecondary)
-                    .padding(.horizontal, 4)
-                    .background(
-                        LinearGradient(
-                            stops: [
-                                .init(color: BudgieColor.card, location: 0.5),
-                                .init(color: BudgieColor.chipSurface, location: 0.5),
-                            ], startPoint: .top, endPoint: .bottom)
-                    )
-                    .contentShape(Rectangle())
-                    .onTapGesture { focused = true }
-                    .padding(.leading, 12)
-                    .alignmentGuide(.top) { $0.height / 2 }
-                    .accessibilityHidden(true)
-            }
+            .onSubmit(save)
             Text(Self.helper)
                 .textStyle(.rowSubtitle)
                 .foregroundStyle(BudgieColor.textSecondary)
-                .padding(.horizontal, 16)
-                .accessibilityHidden(true)
+                .padding(.horizontal, 4)
         }
     }
 
@@ -216,62 +182,5 @@ struct BudgetLimitSheet: View {
     nonisolated static func limit(text: String, prefill: String, currentLimit: Double?, formatter: MoneyFormatter) -> Double? {
         if let currentLimit, text == prefill { return currentLimit }
         return AmountInput.parse(text, formatter: formatter).flatMap { $0 > 0 ? $0 : nil }
-    }
-}
-
-/// `AppButton` medium (design_system.dart:386-760): 48pt, radius 12,
-/// primary gradient with a white label and a soft shadow, or a 1.5pt
-/// outline in the text colour at 30%. 0.38 opacity when disabled; a 24pt
-/// spinner replaces the icon while loading.
-private struct LimitSheetButton: View {
-    let title: String
-    let symbol: String
-    let primary: Bool
-    var loading = false
-    let enabled: Bool
-    let identifier: String
-    let action: () -> Void
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous)
-        let foreground: Color = primary ? .white : BudgieColor.textPrimary
-        Button(action: action) {
-            HStack(spacing: 8) {
-                if loading {
-                    ProgressView().tint(foreground).frame(width: 24, height: 24)
-                } else {
-                    Image(systemName: symbol).font(.system(size: 20)).frame(width: 24, height: 24)
-                        .accessibilityHidden(true)
-                }
-                Text(title).textStyle(.buttonMedium).lineLimit(1)
-            }
-            .foregroundStyle(foreground)
-            .padding(.horizontal, 24)
-            .frame(maxWidth: .infinity, minHeight: 48)
-            .background {
-                if primary {
-                    shape.fill(BudgieColor.primaryGradient)
-                        .shadow(color: .black.opacity(enabled ? 0.1 : 0), radius: 4, y: 4)
-                } else {
-                    shape.strokeBorder(BudgieColor.textPrimary.opacity(0.3), lineWidth: Metrics.borderMedium)
-                }
-            }
-            .opacity(enabled ? 1 : Metrics.opacityDisabled)
-            .contentShape(shape)
-        }
-        .buttonStyle(LimitSheetButtonStyle())
-        .disabled(!enabled)
-        .accessibilityIdentifier(identifier)
-    }
-}
-
-/// Scales to 0.95 over 100ms and fires the light haptic on touch-down, as
-/// `AppButton` does.
-private struct LimitSheetButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .motion(Motion.easeOut(0.1), value: configuration.isPressed)
-            .sensoryFeedback(.impact(weight: .light), trigger: configuration.isPressed) { _, pressed in pressed }
     }
 }

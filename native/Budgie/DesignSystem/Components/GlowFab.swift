@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// The 54pt accent FAB (`glow_fab.dart`): accent circle with glow and a drop
+/// The 54pt accent FAB (`glow_fab.dart`): accent circle with a soft drop
 /// shadow; scales in on appear (300ms easeOutBack), presses to 0.95, and a
 /// tap fires a 500ms burst (a ping ring expanding to 1.7x and fading, the
-/// glow flaring with sin(pi t), the icon popping by up to 22%). Reduce Motion
+/// icon popping by up to 22% with sin(pi t)). Reduce Motion
 /// skips the entry and the burst.
 struct GlowFab: View {
     var symbol = "plus"
@@ -85,8 +85,7 @@ private struct FabFace: View {
             Circle()
                 .fill(accent)
                 .frame(width: size, height: size)
-                .glow(accent, blur: 32 + 14 * flare, alpha: 0.55 + 0.25 * flare)
-                .shadow(color: .black.opacity(0.5), radius: 14, y: 12)
+                .shadow(color: .black.opacity(0.18), radius: 12, y: 6)
             // Flutter draws `add_rounded` at 0.48 x size / w500, but that glyph
             // fills only about 56% of its box, where SF "plus" fills about
             // 81%: 0.36 x size at regular weight draws the same plus.

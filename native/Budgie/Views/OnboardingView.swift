@@ -2,8 +2,8 @@ import SwiftUI
 import UIKit
 
 /// The first-launch tour (`onboarding_tutorial.dart`): three swipeable pages,
-/// Skip at the top right, page dots and a full-width Continue / Start
-/// budgeting button. Shown once, as `MainView`'s content inside the lock gate
+/// left-aligned (redesign 4.4), Skip at the top right, page dots and a
+/// full-width Continue / Start budgeting button. Shown once, as `MainView`'s content inside the lock gate
 /// (Flutter's `AppPrivacyGate(OnboardingTutorialGate(...))`); Skip and the
 /// last page's button call `model.completeOnboarding()`, which writes the
 /// flag, swaps in the tabs and lets a queued quick action or link open.
@@ -43,9 +43,8 @@ struct OnboardingView: View {
             body: "Worth tracks accounts, Goals keeps savings in view, and Spend, Flow, and Settings (behind the gear on Home) help you understand and manage your budget."),
     ]
 
-    /// Material 3 `labelLarge` (14 / w500 / +0.1) in Gabarito: the default
-    /// `TextButton` and `FilledButton` label, which Flutter's tour keeps.
-    private static let buttonText = TextSpec(face: .gabaritoMedium, size: 14, tracking: 0.1, height: 1.43, relativeTo: .body)
+    /// The Continue / Start budgeting label: 17 Bold.
+    private static let buttonText = TextSpec(face: .gabaritoBold, size: 17, relativeTo: .body)
 
     private var isLast: Bool { page == Self.pages.count - 1 }
 
@@ -53,15 +52,15 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             HStack {
                 Spacer(minLength: 0)
-                // Material `TextButton`: 64x40 minimum in a 48pt tap target.
+                // 15 SemiBold secondary in a 44pt target.
                 Button { model.completeOnboarding() } label: {
                     Text("Skip")
-                        .textStyle(Self.buttonText)
+                        .textStyle(.textLink)
+                        .foregroundStyle(BudgieColor.textSecondary)
                         .padding(.horizontal, 12)
-                        .frame(minWidth: 64, minHeight: 48)
+                        .frame(minWidth: Metrics.touchTarget, minHeight: Metrics.touchTarget)
                         .contentShape(Rectangle())
                 }
-                .tint(BudgieColor.accent)
                 .accessibilityIdentifier("onboarding.skip")
             }
             TabView(selection: $page) {
@@ -73,7 +72,7 @@ struct OnboardingView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             dots
-            Spacer().frame(height: Metrics.spacingL)
+            Spacer().frame(height: 20)
             Button(action: next) {
                 Text(isLast ? "Start budgeting" : "Continue")
                     .textStyle(Self.buttonText)
@@ -81,29 +80,29 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
                     .padding(.vertical, Metrics.spacingS)
                     .frame(maxWidth: .infinity, minHeight: 56)
-                    .background(BudgieColor.accent, in: RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous))
-                    .contentShape(RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous))
+                    .background(BudgieColor.accent, in: Capsule())
+                    .contentShape(Capsule())
             }
+            .buttonStyle(PressScaleStyle(scale: 0.98))
             .accessibilityIdentifier("onboarding.next")
         }
-        .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingL, bottom: Metrics.spacingL, trailing: Metrics.spacingL))
+        .padding(EdgeInsets(top: Metrics.spacingXS, leading: Metrics.spacingL, bottom: Metrics.spacingL, trailing: Metrics.spacingL))
         .background(BudgieColor.background.ignoresSafeArea())
     }
 
-    /// Active 22x8 accent, the others 8x8 in the border colour, 4pt margins,
-    /// resized over 150ms linear (`AnimatedContainer`'s default curve).
+    /// Active 22x8 accent, the others 8x8 on the track colour, 6pt apart,
+    /// left-aligned, resized over 150ms linear.
     /// VoiceOver: one adjustable element, "Tutorial page, n of 3".
     private var dots: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 6) {
             ForEach(Self.pages.indices, id: \.self) { index in
                 Capsule()
-                    .fill(index == page ? BudgieColor.accent : BudgieColor.border)
+                    .fill(index == page ? BudgieColor.accent : BudgieColor.track)
                     .frame(width: index == page ? 22 : 8, height: 8)
-                    .padding(.horizontal, 4)
             }
         }
         .motion(.linear(duration: Motion.fast), value: page)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Tutorial page")
         .accessibilityValue("\(page + 1) of \(Self.pages.count)")
@@ -140,51 +139,50 @@ struct OnboardingView: View {
     }
 }
 
-/// One page (`_TutorialPage`): the glowing 116pt circle with the symbol,
-/// then eyebrow, title and body, centred. Scrolls when large text makes it
-/// taller than the pager.
+/// One page (`_TutorialPage`): the 116pt feature-card block with the
+/// symbol, then eyebrow, title and body, left-aligned and centred as a group
+/// in the pager. Scrolls when large text makes it taller than the pager.
 private struct OnboardingPageView: View {
     let page: OnboardingView.Page
 
-    /// `bodyLarge` with Flutter's `height: 1.45` override.
-    private static let bodyText = TextSpec(face: .gabaritoRegular, size: 17, tracking: -0.4, height: 1.45, relativeTo: .body)
+    /// Mono 11, +0.18em, secondary.
+    private static let eyebrowText = TextSpec(face: .monoMedium, size: 11, tracking: 1.98, uppercase: true, relativeTo: .caption2)
+    /// 40 ExtraBold, -0.035em, line height 1.05.
+    private static let titleText = TextSpec(face: .gabaritoExtraBold, size: 40, tracking: -1.4, height: 1.05, relativeTo: .largeTitle)
+    /// 16, line height 1.5.
+    private static let bodyText = TextSpec(face: .gabaritoRegular, size: 16, height: 1.5, relativeTo: .body)
 
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    ZStack {
-                        // Flutter's BoxShadow shows through the translucent fill.
-                        GlowHalo(shape: Circle(), color: BudgieColor.accent, blur: 32, alpha: 0.25)
-                        Circle().fill(BudgieColor.accent.opacity(0.14))
-                        Image(systemName: page.symbol)
-                            .font(.system(size: 40, weight: .regular))
-                            .foregroundStyle(BudgieColor.accent)
-                    }
-                    .frame(width: 116, height: 116)
-                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 0) {
+                    let block = RoundedRectangle(cornerRadius: 34, style: .continuous)
+                    Image(systemName: page.symbol)
+                        .font(.system(size: 50, weight: .regular))
+                        .foregroundStyle(BudgieColor.featureAmount)
+                        .frame(width: 116, height: 116)
+                        .background(BudgieColor.featureFill, in: block)
+                        .overlay(block.strokeBorder(BudgieColor.featureBorder, lineWidth: Metrics.borderThin))
+                        .accessibilityHidden(true)
                     Text(page.eyebrow)
-                        .textStyle(.eyebrow)
-                        .foregroundStyle(BudgieColor.accent)
-                        .padding(.top, Metrics.spacingXXL)
+                        .textStyle(Self.eyebrowText)
+                        .foregroundStyle(BudgieColor.textSecondary)
+                        .padding(.top, 34)
                     Text(page.title)
-                        .textStyle(.displayMedium)
+                        .textStyle(Self.titleText)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .accessibilityAddTraits(.isHeader)
                         .padding(.top, Metrics.spacingM)
                     Text(page.body)
                         .textStyle(Self.bodyText)
                         .foregroundStyle(BudgieColor.textSecondary)
-                        .frame(maxWidth: 390)
                         .padding(.top, Metrics.spacingM)
                 }
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, Metrics.spacingS)
-                // Room for the halo when the page scrolls; no change while
-                // the content fits and is centred.
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, Metrics.spacingM)
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                .frame(minHeight: geometry.size.height)
             }
             .scrollBounceBehavior(.basedOnSize)
             .scrollIndicators(.hidden)

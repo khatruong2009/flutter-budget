@@ -60,9 +60,11 @@ struct PillChip: View {
     }
 }
 
-/// Capsule button (`PillButton`): 52pt tinted outline (colour at 10% with a
-/// 35% border), or 44pt accent-filled with a glow and on-accent label.
-/// Presses to 0.96 with a light haptic.
+/// Capsule button (`PillButton`): 52pt outlined (no fill, a 1.5pt card
+/// border, the label in `color`), or 44pt filled with `color` (accent by
+/// default) and an on-accent label; sheets' full-width primary passes
+/// `height: Metrics.pillButtonHeight` (52). Presses to 0.96 with a light
+/// haptic.
 struct PillButton: View {
     let title: String
     var symbol: String? = nil
@@ -92,13 +94,13 @@ struct PillButton: View {
                     .font(.custom(BudgieFont.gabaritoBold.postScriptName, size: filled ? 14 : 15, relativeTo: .body))
             }
             .foregroundStyle(foreground)
+            .padding(.horizontal, 20)
             .padding(.vertical, minHeight == nil ? 0 : Metrics.spacingS)
             .frame(maxWidth: .infinity)
             .frame(height: minHeight == nil ? height ?? (filled ? Metrics.pillButtonCompactHeight : Metrics.pillButtonHeight) : nil)
             .frame(minHeight: minHeight)
-            .background(filled ? color : color.opacity(0.1), in: Capsule())
-            .overlay { if !filled { Capsule().strokeBorder(color.opacity(0.35), lineWidth: 1) } }
-            .modifier(OptionalGlow(color: color, enabled: filled))
+            .background(filled ? color : Color.clear, in: Capsule())
+            .overlay { if !filled { Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderMedium) } }
             .contentShape(Capsule())
         }
         .buttonStyle(PressScaleStyle(scale: 0.96))
@@ -106,26 +108,16 @@ struct PillButton: View {
     }
 }
 
-/// The filled pill's glow, cast by the pill as one layer: a SwiftUI shadow
-/// on a group shadows each layer, so the label also cast a soft halo onto
-/// the fill (a faint ellipse behind the title). Flutter's `BoxShadow`
-/// belongs to the decoration only.
-private struct OptionalGlow: ViewModifier {
-    let color: Color
-    let enabled: Bool
-
-    func body(content: Content) -> some View {
-        if enabled { content.compositingGroup().glow(color, blur: 20, alpha: 0.45) } else { content }
-    }
-}
-
-/// Segmented capsule control (`SegmentedPillControl`): a track with an
-/// accent-filled active segment (Settings theme), or the mono variant with
-/// no track and an accent-tint active segment (chart range pills).
+/// Segmented capsule control (`SegmentedPillControl`): a track with the
+/// active segment in the selection fill (Settings theme), or the mono
+/// variant with no track and an accent-tint active segment (chart range
+/// pills). `fillWidth` stretches the segments equally across the width the
+/// control is given (the add form's 176pt Expense / Income switch).
 struct SegmentedPills: View {
     let items: [String]
     @Binding var selection: Int
     var mono = false
+    var fillWidth = false
 
     @Namespace private var namespace
 
@@ -142,13 +134,14 @@ struct SegmentedPills: View {
                         .minimumScaleFactor(0.5)
                         .tracking(0)
                         .foregroundStyle(
-                            selected ? (mono ? BudgieColor.accent : BudgieColor.onAccent) : BudgieColor.dockInactiveIcon)
+                            selected ? (mono ? BudgieColor.accent : BudgieColor.selectionText) : BudgieColor.dockInactiveIcon)
                         .padding(.horizontal, mono ? 11 : 12)
                         .padding(.vertical, mono ? 5 : 6)
+                        .frame(maxWidth: fillWidth ? .infinity : nil, maxHeight: fillWidth ? .infinity : nil)
                         .background {
                             if selected {
                                 Capsule()
-                                    .fill(mono ? BudgieColor.accent.opacity(0.18) : BudgieColor.accent)
+                                    .fill(mono ? BudgieColor.accent.opacity(0.18) : BudgieColor.selectionFill)
                                     .matchedGeometryEffect(id: "active", in: namespace)
                             }
                         }

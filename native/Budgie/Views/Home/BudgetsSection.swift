@@ -3,10 +3,13 @@ import SwiftUI
 import UIKit
 
 /// Home's Budgets section (spending_page.dart:597-627): the section header
-/// with its EDIT link, then the budgets card (`_BudgetsCard`). Owns the
-/// budget sheets: the EDIT and Add pickers and the limit sheet.
+/// with its Edit link, then a tile per budget in two columns (one at
+/// accessibility text sizes) and, while a category has no budget, the
+/// dashed Add button. Owns the budget sheets: the Edit and Add pickers and
+/// the limit sheet.
 struct BudgetsSection: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var sheet: BudgetSheet?
     /// Opens once `sheet` has finished dismissing: Flutter awaits the
     /// picker's pop, then pushes the next sheet (never stacked).
@@ -20,8 +23,24 @@ struct BudgetsSection: View {
         // budgeted expense categories, so this holds iff one is unbudgeted.
         let showsAddRow = !overview.unbudgeted.isEmpty
         VStack(alignment: .leading, spacing: 12) {
-            SectionHeader(title: "Budgets", link: "EDIT") { sheet = .edit }
-            GlowListCard(rows: cardRows(overview, showsAddRow: showsAddRow))
+            SectionHeader(title: "Budgets", link: "Edit") { sheet = .edit }
+            let columns = Array(
+                repeating: GridItem(.flexible(), spacing: 12, alignment: .top),
+                count: dynamicTypeSize.isAccessibilitySize ? 1 : 2)
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(overview.progress, id: \.category) { item in
+                    BudgetTile(
+                        item: item, info: model.categoryInfo(named: item.category, type: .expense),
+                        formatter: model.moneyFormatter
+                    ) {
+                        sheet = .limit(category: item.category, current: model.budgetLimit(for: item.category))
+                    }
+                }
+            }
+            if showsAddRow {
+                AddBudgetButton(hint: HomeSummary.addBudgetSubtitle(hasBudgets: !overview.progress.isEmpty)) { sheet = .add }
+                    .accessibilityIdentifier("home.budgets.add")
+            }
         }
         .padding(.horizontal, Metrics.pageHorizontal)
         .sheet(item: $sheet, onDismiss: presentNextSheet) { item in
@@ -34,22 +53,6 @@ struct BudgetsSection: View {
                 BudgetLimitSheet(category: category, currentLimit: current, formatter: model.moneyFormatter)
             }
         }
-    }
-
-    private func cardRows(_ overview: FinancialData.BudgetOverview, showsAddRow: Bool) -> [BudgetCardRow] {
-        let formatter = model.moneyFormatter
-        var rows = overview.progress.map { item in
-            BudgetCardRow(
-                kind: .budget(item, model.categoryInfo(named: item.category, type: .expense)), formatter: formatter
-            ) {
-                sheet = .limit(category: item.category, current: model.budgetLimit(for: item.category))
-            }
-        }
-        if showsAddRow {
-            let subtitle = HomeSummary.addBudgetSubtitle(hasBudgets: !overview.progress.isEmpty)
-            rows.append(BudgetCardRow(kind: .add(subtitle: subtitle), formatter: formatter) { sheet = .add })
-        }
-        return rows
     }
 
     /// A picker's category pick: close the picker, then the limit sheet.
@@ -84,31 +87,13 @@ private enum BudgetSheet: Identifiable {
 }
 
 
-// MARK: - Card rows
+// MARK: - Tiles
 
-/// One child of the budgets card: a budget row or the Add row.
-private struct BudgetCardRow: View {
-    enum Kind {
-        case budget(BudgetProgress, CategoryInfo?)
-        case add(subtitle: String)
-    }
-
-    let kind: Kind
-    let formatter: MoneyFormatter
-    let action: () -> Void
-
-    var body: some View {
-        switch kind {
-        case .budget(let item, let info): BudgetRow(item: item, info: info, formatter: formatter, action: action)
-        case .add(let subtitle): AddBudgetRow(subtitle: subtitle, action: action).accessibilityIdentifier("home.budgets.add")
-        }
-    }
-}
-
-/// `_BudgetRow` (spending_page.dart:1587-1701): status-tinted icon tile,
-/// name over "spent of limit", the left/over chip, then an 8pt bar. Tap
-/// opens the limit sheet with a light haptic; no press scale.
-private struct BudgetRow: View {
+/// One budget (`_BudgetRow`, spending_page.dart:1587-1701): a status-coloured
+/// ring around the category symbol with the share used, then the name, the
+/// left/over amount and "spent of limit". Tap opens the limit sheet with a
+/// light haptic; no press scale.
+private struct BudgetTile: View {
     let item: BudgetProgress
     let info: CategoryInfo?
     let formatter: MoneyFormatter
@@ -116,41 +101,58 @@ private struct BudgetRow: View {
 
     @State private var taps = 0
 
+    private static let percentText = TextSpec(face: .monoMedium, size: 12, tabular: true, relativeTo: .caption)
+    private static let chipText = TextSpec(face: .monoSemiBold, size: 13, tabular: true, relativeTo: .footnote)
+    private static let subtitleText = TextSpec(face: .monoRegular, size: 11, tabular: true, relativeTo: .caption)
+
     var body: some View {
         let color = statusColor
         let (subtitle, chip) = HomeSummary.budgetRow(item, formatter: formatter)
+        let shape = RoundedRectangle(cornerRadius: Metrics.statCardRadius, style: .continuous)
         Button {
             taps += 1
             action()
         } label: {
-            VStack(spacing: 10) {
-                HStack(spacing: 0) {
-                    IconTile(symbol: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""), color: color)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(item.category)
-                            .textStyle(.rowTitle)
-                            .foregroundStyle(BudgieColor.textPrimary)
-                            .singleLine()
-                        Text(subtitle)
-                            .textStyle(.rowSubtitle)
-                            .foregroundStyle(BudgieColor.textSecondary)
-                            .singleLine()
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    ProgressRing(value: item.progress, size: 46, thickness: 5, color: color) {
+                        Image(systemName: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""))
+                            .font(.system(size: 17, weight: .medium))
+                            .foregroundStyle(color)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 12)
-                    .padding(.trailing, 8)
-                    PillChip(label: chip, color: color).fixedSize()
-                }
-                GlowProgressBar(value: item.progress, height: 8, color: color)
                     .accessibilityHidden(true)
+                    Spacer(minLength: 8)
+                    Text("\(Int((item.progress * 100).rounded()))%")
+                        .textStyle(Self.percentText)
+                        .foregroundStyle(BudgieColor.textSecondary)
+                        .singleLine()
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(item.category)
+                        .textStyle(.rowTitle)
+                        .foregroundStyle(BudgieColor.textPrimary)
+                        .singleLine()
+                    Text(chip)
+                        .textStyle(Self.chipText)
+                        .foregroundStyle(item.status == .over ? BudgieColor.danger : BudgieColor.textPrimary)
+                        .singleLine()
+                    Text(subtitle)
+                        .textStyle(Self.subtitleText)
+                        .foregroundStyle(BudgieColor.textSecondary)
+                        .singleLine()
+                }
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 12)
-            .contentShape(Rectangle())
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(BudgieColor.card, in: shape)
+            .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
+            .contentShape(shape)
         }
         .buttonStyle(PressScaleStyle(scale: 1))
         .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(item.category), \(subtitle), \(chip)")
+        .accessibilityAddTraits(.isButton)
         .accessibilityHint("Opens the monthly limit")
         .accessibilityIdentifier("home.budgets.row.\(item.category)")
     }
@@ -165,10 +167,37 @@ private struct BudgetRow: View {
     }
 }
 
-/// `_AddBudgetRow` (spending_page.dart:1819-1873): accent plus tile,
-/// "Add a budget", an optional subtitle (card only) and a chevron.
+/// The dashed "Add a budget" button under the tiles; `hint` is the
+/// subtitle Flutter shows under the row.
+private struct AddBudgetButton: View {
+    let hint: String
+    let action: () -> Void
+
+    @State private var taps = 0
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+        Button {
+            taps += 1
+            action()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "plus").font(.system(size: 15, weight: .semibold)).foregroundStyle(BudgieColor.accent)
+                Text("Add a budget").textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .overlay(shape.strokeBorder(BudgieColor.textTertiary.opacity(0.6), style: StrokeStyle(lineWidth: 1.5, dash: [5, 4])))
+            .contentShape(shape)
+        }
+        .buttonStyle(PressScaleStyle(scale: 0.98))
+        .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .accessibilityHint(hint)
+    }
+}
+
+/// `_AddBudgetRow` (spending_page.dart:1819-1873) in the Edit picker:
+/// accent plus tile, "Add a budget" and a chevron.
 private struct AddBudgetRow: View {
-    var subtitle: String? = nil
     let action: () -> Void
 
     @State private var taps = 0
@@ -180,13 +209,10 @@ private struct AddBudgetRow: View {
         } label: {
             HStack(spacing: 12) {
                 IconTile(symbol: "plus", color: BudgieColor.accent)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Add a budget").textStyle(.rowTitle).foregroundStyle(BudgieColor.accent)
-                    if let subtitle {
-                        Text(subtitle).textStyle(.rowSubtitle).foregroundStyle(BudgieColor.textSecondary)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Text("Add a budget")
+                    .textStyle(.rowTitle)
+                    .foregroundStyle(BudgieColor.accent)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 BudgetChevron()
             }
             .padding(12)
@@ -211,10 +237,10 @@ private struct BudgetChevron: View {
 // MARK: - Picker sheets
 
 /// The EDIT and Add a budget pickers (`_showBudgetCategorySheet`,
-/// spending_page.dart:221-312): title, subtitle, then the category tiles
-/// with no dividers. Content-sized up to 75% of the screen height; the
-/// system adds the bottom safe area outside the cap, as Flutter's
-/// `SafeArea` does.
+/// spending_page.dart:221-312) in the sheet pattern (REDESIGN_PLAN 4.3): the
+/// title, the blurb, then the categories as list rows in one card.
+/// Content-sized up to 75% of the screen height; the system adds the bottom
+/// safe area outside the cap, as Flutter's `SafeArea` does.
 private struct BudgetPickerSheet: View {
     enum Kind { case edit, add }
 
@@ -228,6 +254,8 @@ private struct BudgetPickerSheet: View {
     @State private var headerHeight: CGFloat = 0
     @State private var listHeight: CGFloat = 0
 
+    private static let blurb = TextSpec(face: .gabaritoRegular, size: 14, height: 1.3, relativeTo: .subheadline)
+
     var body: some View {
         let categories = kind == .edit ? overview.budgeted : overview.unbudgeted
         // `showAddRow: budgeted.length < expenseCategories.length` (EDIT only).
@@ -236,30 +264,37 @@ private struct BudgetPickerSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
-                    .textStyle(.sectionHeader)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .accessibilityAddTraits(.isHeader)
-                    // 12 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 16.
-                    .padding(EdgeInsets(top: 12, leading: 24, bottom: 8, trailing: 24))
                 Text(subtitle(hasBudgets: !categories.isEmpty))
-                    .textStyle(.rowSubtitle)
+                    .textStyle(Self.blurb)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .padding(EdgeInsets(top: 0, leading: 24, bottom: 8, trailing: 24))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            // 12 + the chrome's 19pt handle inset.
+            .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: 16, trailing: Metrics.pageHorizontal))
             .fixedSize(horizontal: false, vertical: true)
             .onGeometryChangeCompat { headerHeight = $0.height }
             ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(categories) { info in
-                        BudgetCategoryTile(
-                            info: info, limit: kind == .edit ? overview.limit(for: info.name) : nil,
-                            formatter: formatter
-                        ) { onPick(info.name) }
+                GlowCard(padding: Metrics.listCardPadding) {
+                    VStack(spacing: 0) {
+                        ForEach(categories) { info in
+                            if info.id != categories.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                            BudgetCategoryTile(
+                                info: info, limit: kind == .edit ? overview.limit(for: info.name) : nil,
+                                formatter: formatter
+                            ) { onPick(info.name) }
+                        }
+                        if showsAddRow {
+                            if !categories.isEmpty { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                            AddBudgetRow(action: onAdd)
+                        }
                     }
-                    if showsAddRow { AddBudgetRow(action: onAdd) }
                 }
-                .padding(EdgeInsets(top: 4, leading: 12, bottom: 12, trailing: 12))
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: 16, trailing: Metrics.pageHorizontal))
                 .onGeometryChangeCompat { listHeight = $0.height }
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -270,12 +305,12 @@ private struct BudgetPickerSheet: View {
     }
 
     /// Handle, header and list, at most 75% of the screen. Until measured,
-    /// the default-size header (12 + title + 8 + subtitle + 8) and 64pt
-    /// tiles (12 + the 40pt tile + 12) inside the list's 4 / 12 stand in, so
-    /// the sheet opens at its final height.
+    /// the default-size header (12 + title + 6 + blurb + 16) and the card
+    /// (8 + 64pt rows with 1pt hairlines + 8, border 2, then 16) stand in,
+    /// so the sheet opens at its final height.
     private func detent(rows: Int) -> PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 12 + 24 + 8 + 15 + 8
-        let list = listHeight > 0 ? listHeight : 4 + CGFloat(rows) * 64 + 12
+        let header = headerHeight > 0 ? headerHeight : 12 + 29 + 6 + 17 + 16
+        let list = listHeight > 0 ? listHeight : 8 + CGFloat(rows) * 64 + CGFloat(max(rows - 1, 0)) + 8 + 2 + 16
         return .height(min(BudgetSheetLayout.handleHeight + header + list, BudgetSheetLayout.screenHeight * 0.75))
     }
 
@@ -292,9 +327,9 @@ private struct BudgetPickerSheet: View {
     }
 }
 
-/// `_EditBudgetCategoryTile` (spending_page.dart:1876-1946): accent tile
-/// and "$X limit" for a budgeted category, a grey tile and no subtitle in
-/// the Add sheet; chevron; light haptic.
+/// `_EditBudgetCategoryTile` (spending_page.dart:1876-1946): the category's
+/// tile and "$X limit" for a budgeted category, no subtitle in the Add sheet;
+/// chevron; light haptic.
 private struct BudgetCategoryTile: View {
     let info: CategoryInfo
     let limit: Double?
@@ -310,9 +345,7 @@ private struct BudgetCategoryTile: View {
             action()
         } label: {
             HStack(spacing: 12) {
-                IconTile(
-                    symbol: CategoryCatalog.symbol(for: info.iconIdentifier),
-                    color: budgeted ? BudgieColor.accent : BudgieColor.textSecondary)
+                IconTile(category: info)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(info.name).textStyle(.rowTitle).foregroundStyle(BudgieColor.textPrimary).lineLimit(1)
                     if budgeted, let limit {

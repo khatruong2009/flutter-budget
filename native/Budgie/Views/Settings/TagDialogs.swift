@@ -34,7 +34,7 @@ struct NewTagDialog: View {
             .accessibilityIdentifier("tags.editor.name")
             .padding(.top, 20)
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onClose)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onClose)
                     .accessibilityIdentifier("tags.editor.cancel")
                 PillButton(title: "Add", filled: true, height: 44, action: submit)
                     .accessibilityIdentifier("tags.editor.submit")
@@ -112,7 +112,7 @@ struct DeleteTagDialog: View {
             }
             .padding(.top, 12)
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onClose)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onClose)
                     .accessibilityIdentifier("tags.delete.cancel")
                 PillButton(title: "Delete", color: BudgieColor.danger, filled: true, height: 44, action: delete)
                     .accessibilityIdentifier("tags.delete.confirm")
@@ -135,13 +135,13 @@ struct DeleteTagDialog: View {
     }
 }
 
-/// A dialog's centred title (goalTitle, as the category editor).
+/// A dialog's centred title (`sheetTitle`, as the category editor).
 struct TagsRulesDialogTitle: View {
     let text: String
 
     var body: some View {
         Text(text)
-            .textStyle(.goalTitle)
+            .textStyle(.sheetTitle)
             .foregroundStyle(BudgieColor.textPrimary)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)

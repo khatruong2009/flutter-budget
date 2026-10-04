@@ -14,11 +14,10 @@ enum AccountHistoryText {
 
 // MARK: - Hero
 
-/// `_AccountHistoryHeroCard` (NW:1577-1762): a GlowCard (padding 24) with a
-/// top-to-bottom gradient of the account colour at 16% and 6% into the card
-/// colour (stops 0, .4, 1; the translucent top shows the page through, as
-/// in Flutter), a 1pt border at 18% and a glow (blur 24, alpha .16) drawn as
-/// a halo so it shows through the translucent top like Flutter's BoxShadow.
+/// `_AccountHistoryHeroCard` (NW:1577-1762) as a plain card (padding 24;
+/// Flutter washes it with the account colour, REDESIGN_PLAN 4.7): the
+/// type's tinted arrow tile, "Balance history" over the last update, the
+/// type badge, CURRENT BALANCE, the signed balance and the meta chips.
 struct AccountHistoryHeroCard: View {
     let type: NetWorthEntryType
     let color: Color
@@ -34,22 +33,11 @@ struct AccountHistoryHeroCard: View {
 
     var body: some View {
         let isAsset = type == .asset
-        // The wash and glow keep Flutter's lighter green and red: the text
-        // colour is darker for contrast, and a dark wash would take the
-        // labels' contrast back.
-        let wash = isAsset ? BudgieColor.chartIncome : BudgieColor.chartDanger
-        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-        let fill = LinearGradient(
-            stops: [
-                .init(color: wash.opacity(0.16), location: 0), .init(color: wash.opacity(0.06), location: 0.4),
-                .init(color: BudgieColor.card, location: 1),
-            ],
-            startPoint: .top, endPoint: .bottom)
         let balance = formatter.formatSigned(history.latestAmount)
         let lastUpdate = NetWorthText.lastUpdate(history.latest?.recordedAt)
         let chips = metaChips
 
-        GlowCard(padding: 24, fill: AnyShapeStyle(fill), border: wash.opacity(0.18)) {
+        GlowCard(padding: 24) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 0) {
                     IconTile(symbol: isAsset ? "arrow.up.right" : "arrow.down.left", color: color, size: 48, iconSize: 24)
@@ -60,16 +48,16 @@ struct AccountHistoryHeroCard: View {
                             .foregroundStyle(BudgieColor.textPrimary)
                         Text(lastUpdate)
                             .textStyle(.rowSubtitle)
-                            .foregroundStyle(BudgieColor.textSecondaryOnTint)
+                            .foregroundStyle(BudgieColor.textSecondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     PillChip(
-                        label: isAsset ? "Asset" : "Liability", color: color, textColor: BudgieColor.legible(color, tint: 0.35),
+                        label: isAsset ? "Asset" : "Liability", color: color, textColor: BudgieColor.legible(color),
                         style: .badgeSmall)
                 }
                 Text("CURRENT BALANCE")
                     .textStyle(.eyebrow)
-                    .foregroundStyle(BudgieColor.textSecondaryOnTint)
+                    .foregroundStyle(BudgieColor.textSecondary)
                     .padding(.top, 24)
                 // `FittedBox(scaleDown)`: one line, shrunk to fit.
                 Text(balance)
@@ -90,7 +78,6 @@ struct AccountHistoryHeroCard: View {
                 .padding(.top, 16)
             }
         }
-        .background(GlowHalo(shape: shape, color: wash, blur: 24, alpha: 0.16))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
             ([isAsset ? "Asset balance history" : "Liability balance history", "Current balance \(balance)", lastUpdate]
@@ -221,8 +208,8 @@ struct AccountTrendChart: View {
 /// plot (200 minus the 24pt reserved for the bottom titles) with x = index
 /// (0...max(1, n - 1); one snapshot is drawn twice, at 0 and 1), the padded
 /// `NetWorthChartScale.account` y range, and in paint order the hairline
-/// grid, the glow line (9pt, 35%), the area (35% to 0 from the highest spot
-/// down), the main line (3pt), and the last spot's dot (#F2F2FA, radius 5,
+/// grid, the area (18% to 0 from the highest spot down), the main line
+/// (3pt), and the last spot's dot (`trendDot`, radius 5,
 /// ring 3pt at 50% outside it). Lines have round caps and are curved with
 /// fl_chart's cubic (smoothness 0.28) only when there are more than two
 /// snapshots.
@@ -304,7 +291,6 @@ struct AccountTrendPlot: View {
                 }
             }
             .stroke(BudgieColor.hairline, lineWidth: 1)
-            line.stroke(color.opacity(0.35), style: lineStyle(9))
             // `generateBelowBarPath`: the line, down to the bottom at the last
             // spot, back along the bottom, up to the first spot. The gradient
             // spans the highest spot to the bottom (`drawBelowBar`).
@@ -318,7 +304,7 @@ struct AccountTrendPlot: View {
                 }
             }
             .fill(LinearGradient(
-                colors: [color.opacity(0.35), color.opacity(0)],
+                colors: [color.opacity(0.18), color.opacity(0)],
                 startPoint: UnitPoint(x: 0.5, y: topY / plot.height), endPoint: UnitPoint(x: 0.5, y: 1)))
             line.stroke(color, style: lineStyle(3))
             if let last = points.last {
@@ -330,15 +316,14 @@ struct AccountTrendPlot: View {
                     .fill(BudgieColor.trendDot)
             }
             if let touched {
-                indicator(at: points[touched], plotHeight: plot.height, dotRadius: 10, color: color.opacity(0.35))
                 indicator(at: points[touched], plotHeight: plot.height, dotRadius: 7.2, color: color)
             }
         }
     }
 
     /// `defaultTouchedIndicators`: a 4pt butt-capped line from the bottom
-    /// up to the dot's lower edge, then the dot (radius 10 for the glow line,
-    /// which has no dots; 7.2 for the main line), in the line's colour.
+    /// up to the dot's lower edge, then the dot (radius 7.2), in the line's
+    /// colour.
     private func indicator(at point: CGPoint, plotHeight: CGFloat, dotRadius: CGFloat, color: Color) -> some View {
         ZStack(alignment: .topLeading) {
             Path { path in
@@ -510,11 +495,12 @@ private struct TooltipLayout: Layout {
 
 // MARK: - Timeline row
 
-/// `_AccountHistoryTimelineRow` (NW:1802-1902): padding 12, a 12pt dot with
-/// a glow (blur 10, alpha .35), 16, the `yMMMd` date over the `jm` time, 8,
-/// the signed amount over the compact change from the next older update
-/// (green when good for the type), 4, then the 48pt trash button, disabled
-/// (tertiary) while it is the only update.
+/// `_AccountHistoryTimelineRow` (NW:1802-1902) as a list row (REDESIGN_PLAN
+/// 4.7): padding 12, a 40pt calendar tile in the account colour (Flutter: a
+/// 12pt dot), 12, the `yMMMd` date over the `jm` time, 8, the signed amount
+/// over the compact change from the next older update (green when good for
+/// the type), 4, then the 48pt trash button, disabled (tertiary) while it
+/// is the only update.
 struct AccountTimelineRow: View {
     let snapshot: NetWorthSnapshotRecord
     let delta: Double?
@@ -535,11 +521,8 @@ struct AccountTimelineRow: View {
 
         HStack(spacing: 0) {
             HStack(spacing: 0) {
-                Circle()
-                    .fill(color)
-                    .frame(width: 12, height: 12)
-                    .glow(color, blur: 10, alpha: 0.35)
-                    .padding(.trailing, 16)
+                IconTile(symbol: "calendar", color: color)
+                    .padding(.trailing, 12)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(date)
                         .textStyle(.rowTitle)
@@ -551,7 +534,7 @@ struct AccountTimelineRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(amount)
-                        .textStyle(.amount)
+                        .textStyle(.amountSmall)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)

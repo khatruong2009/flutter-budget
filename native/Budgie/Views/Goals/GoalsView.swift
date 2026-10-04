@@ -75,28 +75,15 @@ struct GoalsView: View {
 
     /// `_buildEmptyState` (savings_goals_page.dart:164-211).
     private var emptyState: some View {
-        GlowCard(padding: 28) {
-            VStack(spacing: 0) {
-                // No piggy bank in SF Symbols (D3).
-                IconTile(symbol: "banknote", color: BudgieColor.accent, size: 56, iconSize: 28)
-                Text("No savings goals yet")
-                    .textStyle(.sectionHeader)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-                    .padding(.top, 20)
-                Text("Create a goal, set a target date, and track progress as you set money aside.")
-                    .textStyle(GoalText.body)
-                    .foregroundStyle(BudgieColor.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 8)
-                PillButton(title: "Add goal", symbol: "plus", filled: true, height: 44) { present(.add) }
-                    .disabled(busy)
-                    .accessibilityIdentifier("goals.empty.add")
-                    .padding(.top, 24)
-            }
-            .frame(maxWidth: .infinity)
-        }
+        // No piggy bank in SF Symbols (D3).
+        EmptyStateView(
+            symbol: "banknote",
+            title: "No savings goals yet",
+            message: "Create a goal, set a target date, and track progress as you set money aside.",
+            actionTitle: "Add goal", actionIdentifier: "goals.empty.add",
+            horizontalInset: 0
+        ) { present(.add) }
+        .disabled(busy)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("goals.empty")
     }
@@ -266,9 +253,9 @@ enum GoalText {
 
 // MARK: - Summary
 
-/// `_SavingsGoalsSummary` (savings_goals_page.dart:608-687): the 72pt
-/// accent ring with the overall percent, SAVED SO FAR, the saved total and
-/// "of {target} · {n} of {count} complete".
+/// `_SavingsGoalsSummary` (savings_goals_page.dart:608-687), the page's
+/// feature card: the 72pt ring with the overall percent, SAVED SO FAR, the
+/// saved total and "of {target} · {n} of {count} complete".
 struct GoalsSummaryCard: View {
     let summary: SavingsGoalsSummary
     let formatter: MoneyFormatter
@@ -281,34 +268,37 @@ struct GoalsSummaryCard: View {
 
     var body: some View {
         let saved = formatter.format(summary.totalSaved, decimalDigits: 0)
-        GlowCard {
-            HStack(spacing: 18) {
-                ProgressRing(value: summary.progress, size: 72, thickness: 8, color: BudgieColor.accent, glowAlpha: 0.35) {
-                    Text(SavingsGoalText.summaryPercent(summary))
-                        .textStyle(Self.ringText)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .padding(.horizontal, 10)
-                }
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("SAVED SO FAR")
-                        .textStyle(.eyebrowTight)
-                        .foregroundStyle(BudgieColor.textSecondary)
-                    Text(saved)
-                        .textStyle(Self.amountText)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .padding(.top, 6)
-                    Text(SavingsGoalText.summaryCaption(summary, formatter: formatter))
-                        .textStyle(GoalText.caption)
-                        .foregroundStyle(BudgieColor.textSecondary)
-                        .padding(.top, 2)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: 18) {
+            ProgressRing(
+                value: summary.progress, size: 72, thickness: 8, color: BudgieColor.featureRing,
+                track: BudgieColor.featureControl, inner: BudgieColor.featureFill
+            ) {
+                Text(SavingsGoalText.summaryPercent(summary))
+                    .textStyle(Self.ringText)
+                    .foregroundStyle(BudgieColor.featureText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .padding(.horizontal, 10)
             }
+            VStack(alignment: .leading, spacing: 0) {
+                Text("SAVED SO FAR")
+                    .textStyle(.eyebrowTight)
+                    .foregroundStyle(BudgieColor.featureSecondary)
+                Text(saved)
+                    .textStyle(Self.amountText)
+                    .foregroundStyle(BudgieColor.featureAmount)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .padding(.top, 6)
+                Text(SavingsGoalText.summaryCaption(summary, formatter: formatter))
+                    .textStyle(GoalText.caption)
+                    .foregroundStyle(BudgieColor.featureSecondary)
+                    .padding(.top, 2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        // GlowCard's inset: padding 20 plus the 1pt border.
+        .featureCard(padding: Metrics.cardPadding + Metrics.borderThin)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Saved so far")
         .accessibilityValue(

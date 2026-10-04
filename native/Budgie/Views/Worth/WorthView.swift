@@ -77,27 +77,14 @@ struct WorthView: View {
         ScrollView {
             VStack(spacing: 0) {
                 BudgieHeader(title: "Net worth")
-                GlowCard {
-                    VStack(spacing: 0) {
-                        IconTile(symbol: "chart.line.uptrend.xyaxis", color: BudgieColor.accent, size: 56, iconSize: 28)
-                        Text("No net worth accounts yet")
-                            .textStyle(.sectionHeader)
-                            .foregroundStyle(BudgieColor.textPrimary)
-                            .multilineTextAlignment(.center)
-                            .accessibilityAddTraits(.isHeader)
-                            .padding(.top, 20)
-                        Text("Create your first asset or liability to start tracking net worth over time.")
-                            .textStyle(WorthStyle.note)
-                            .foregroundStyle(BudgieColor.textSecondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 8)
-                        PillButton(title: "Add account", symbol: "plus", filled: true, height: 48) {
-                            openEditor(entry: nil, type: .asset)
-                        }
-                        .accessibilityIdentifier("worth.empty.add")
-                        .padding(.top, 20)
-                    }
-                    .frame(maxWidth: .infinity)
+                EmptyStateView(
+                    symbol: "chart.line.uptrend.xyaxis",
+                    title: "No net worth accounts yet",
+                    message: "Create your first asset or liability to start tracking net worth over time.",
+                    actionTitle: "Add account", actionIdentifier: "worth.empty.add",
+                    horizontalInset: 0
+                ) {
+                    openEditor(entry: nil, type: .asset)
                 }
                 .padding(EdgeInsets(top: 8 + 48, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
             }
@@ -187,9 +174,9 @@ enum WorthStyle {
 
 // MARK: - Hero
 
-/// `_NetWorthHero` (NW:255-320): the `TOTAL · MONTH YEAR` eyebrow, the net
-/// worth as a rolling odometer in heroMedium with a green (>= 0) or rose
-/// text glow, and the delta pill when the month has a change. The odometer
+/// `_NetWorthHero` (NW:255-320), centred: the `TOTAL · MONTH YEAR` eyebrow,
+/// the net worth as a rolling odometer in heroMedium, and the delta pill
+/// when the month has a change. The odometer
 /// rolls the rounded whole-unit amount in the base currency, with a leading
 /// "-" when negative; Flutter's widget truncates the fraction and
 /// hard-codes "$" (D6). Hide balances shows dots, as Home's hero does.
@@ -200,12 +187,12 @@ struct WorthHero: View {
     let formatter: MoneyFormatter
 
     var body: some View {
-        let glow = netWorth >= 0 ? BudgieColor.income : BudgieColor.danger
         let label = formatter.formatSigned(netWorth, decimalDigits: 0)
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(spacing: 0) {
             Text(NetWorthText.heroEyebrow(month: month))
                 .textStyle(.eyebrow)
                 .foregroundStyle(BudgieColor.textSecondary)
+                .multilineTextAlignment(.center)
                 .wrapsWords()
                 .accessibilityAddTraits(.isHeader)
             Group {
@@ -214,15 +201,12 @@ struct WorthHero: View {
                     Text(label)
                         .textStyle(.heroMedium)
                         .foregroundStyle(BudgieColor.textPrimary)
-                        .textGlow(glow, alpha: 0.35)
                         .singleLine()
                 } else {
-                    RollingAmount(
-                        text: label, color: BudgieColor.textPrimary, glow: glow, style: .heroMedium, glowAlpha: 0.35,
-                        alignment: .leading)
+                    RollingAmount(text: label, color: BudgieColor.textPrimary, style: .heroMedium)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity)
             .padding(.top, 10)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(NetWorthText.heroAccessibilityLabel(netWorth: netWorth, formatter: formatter))
@@ -232,12 +216,12 @@ struct WorthHero: View {
                     .padding(.top, 12)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 }
 
-/// `_DeltaPill` (NW:324-382): tinted capsule with a 35% border, trend
-/// symbol and `+$4,120 · +2.3% this month` on one line.
+/// `_DeltaPill` (NW:324-382): tinted capsule, trend symbol and
+/// `+$4,120 · +2.3% this month` on one line.
 private struct DeltaPill: View {
     let change: Double
     let previousNetWorth: Double
@@ -261,11 +245,9 @@ private struct DeltaPill: View {
                 .truncationMode(.tail)
         }
         .foregroundStyle(color)
-        // Flutter adds the 1pt border to the padding.
-        .padding(.horizontal, 14 + Metrics.borderThin)
-        .padding(.vertical, 7 + Metrics.borderThin)
-        .background(color.opacity(0.1), in: Capsule())
-        .overlay(Capsule().strokeBorder(color.opacity(0.35), lineWidth: Metrics.borderThin))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(color.opacity(0.12), in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label.replacingOccurrences(of: " \u{00B7} ", with: ", "))
         .accessibilityIdentifier("worth.delta")
@@ -274,27 +256,27 @@ private struct DeltaPill: View {
 
 // MARK: - Assets vs liabilities (NW:840-934)
 
-/// The split bar (green share of assets + liabilities, all green when both
-/// are 0) over a two-column legend of whole-unit totals.
+/// A two-column legend of whole-unit totals over the split bar (the assets'
+/// share of assets + liabilities, all assets when both are 0).
 struct WorthSplitCard: View {
     let assets: Double
     let liabilities: Double
     let formatter: MoneyFormatter
 
-    /// `rowTitle` at 20, w700, -0.4 tracking, tabular.
-    private static let amountText = TextSpec(
-        face: .gabaritoBold, size: 20, tracking: -0.4, height: 1.25, tabular: true, relativeTo: .title3)
+    private static let amountText = TextSpec(face: .monoSemiBold, size: 17, height: 1.25, tabular: true, relativeTo: .body)
 
     var body: some View {
         let assetsText = formatter.formatSigned(assets, decimalDigits: 0)
         let liabilitiesText = formatter.formatSigned(liabilities, decimalDigits: 0)
         GlowCard {
             VStack(alignment: .leading, spacing: 0) {
-                SplitGlowBar(assetsFraction: NetWorthPresentation.splitFraction(assets: assets, liabilities: liabilities))
                 HStack(alignment: .top, spacing: 0) {
                     legend("Assets", assetsText, dot: BudgieColor.income, alignment: .leading)
                     legend("Liabilities", liabilitiesText, dot: BudgieColor.danger, alignment: .trailing)
                 }
+                SplitGlowBar(
+                    assetsFraction: NetWorthPresentation.splitFraction(assets: assets, liabilities: liabilities), height: 12
+                )
                 .padding(.top, 14)
             }
         }

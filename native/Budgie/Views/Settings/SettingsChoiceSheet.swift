@@ -1,17 +1,14 @@
 import BudgieCore
 import SwiftUI
 
-/// Material 3 `ListTile` title (`bodyLarge`: 16 / w400, height 1.5,
-/// tracking 0.5) in Gabarito.
-private let choiceRowText = TextSpec(face: .gabaritoRegular, size: 16, tracking: 0.5, height: 1.5, relativeTo: .body)
-
 /// A Settings choice sheet (`_showChoiceSheet`, settings_page.dart:985-1035)
-/// in the redesign chrome: the title in `headingMedium`, then one row per
-/// choice with an accent check on the current value (none when the stored
-/// value is not listed), and 8pt below. Content-sized up to 75% of the
-/// screen, where the list scrolls. No search and no haptics, as in Flutter.
-/// Picking a row (the current one included, as Flutter re-fires the setter)
-/// awaits the setter, then closes the sheet.
+/// in the sheet pattern (REDESIGN_PLAN 4.3): the title in `sheetTitle` at
+/// the leading edge, then the choices as rows in a card (hairlines between
+/// them) with an accent check on the current value (none when the stored
+/// value is not listed). Content-sized up to 75% of the screen, where the
+/// list scrolls. No search and no haptics, as in Flutter. Picking a row (the
+/// current one included, as Flutter re-fires the setter) awaits the setter,
+/// then closes the sheet.
 struct SettingsChoiceSheet<Value: Hashable & Sendable>: View {
     let title: String
     let choices: [SettingsChoice<Value>]
@@ -26,18 +23,25 @@ struct SettingsChoiceSheet<Value: Hashable & Sendable>: View {
     var body: some View {
         VStack(spacing: 0) {
             Text(title)
-                .textStyle(.headingMedium)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-                .padding(Metrics.spacingM)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChangeCompat { headerHeight = $0.height }
             ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(choices, id: \.value) { choice in row(choice) }
+                GlowCard(padding: 0) {
+                    VStack(spacing: 0) {
+                        ForEach(choices.indices, id: \.self) { index in
+                            if index > 0 { Hairline() }
+                            row(choices[index])
+                        }
+                    }
+                    .padding(.horizontal, Metrics.spacingM)
+                    .padding(.vertical, Metrics.spacingXXS)
                 }
-                .padding(.bottom, Metrics.spacingS)
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
                 .onGeometryChangeCompat { listHeight = $0.height }
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -49,15 +53,15 @@ struct SettingsChoiceSheet<Value: Hashable & Sendable>: View {
 
     /// Handle, title and list, at most 75% of the screen; the system adds
     /// the bottom safe area (Flutter's `SafeArea`). Until measured, the
-    /// default-size title (16 + 29 + 16) and 56pt rows stand in, so the
+    /// default-size title (12 + 29 + 16) and 48pt rows stand in, so the
     /// sheet opens at its final height.
     private var detent: PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 16 + 29 + 16
-        let list = listHeight > 0 ? listHeight : CGFloat(choices.count) * 56 + Metrics.spacingS
+        let header = headerHeight > 0 ? headerHeight : 12 + 29 + 16
+        let list = listHeight > 0 ? listHeight : CGFloat(choices.count) * 49 + 6 + Metrics.spacingM
         return .height(min(BudgetSheetLayout.handleHeight + header + list, BudgetSheetLayout.screenHeight * 0.75))
     }
 
-    /// A Material `ListTile`: 56pt minimum, insets 16 / 24, 24pt check box.
+    /// A row: the label (15 w600) and the 24pt check box, at least 48 tall.
     private func row(_ choice: SettingsChoice<Value>) -> some View {
         let isCurrent = choice.value == current
         return Button {
@@ -68,22 +72,21 @@ struct SettingsChoiceSheet<Value: Hashable & Sendable>: View {
                 dismiss()
             }
         } label: {
-            HStack(spacing: 16) {
+            HStack(spacing: 14) {
                 Text(choice.label)
-                    .textStyle(choiceRowText)
+                    .textStyle(.rowTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if isCurrent {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(BudgieColor.accent)
                         .frame(width: 24, height: 24)
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 24)
-            .frame(minHeight: 56)
+            .padding(.vertical, 12)
+            .frame(minHeight: Metrics.formRowHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -1323,6 +1323,121 @@ Ratios are WCAG 2 contrast; "text on chip" is the chip surface `#F1F1F7` /
 `#15151F`. Not every token pair is listed (see `ColorContrastTests` for the
 complete set, including each colour on its own tint).
 
+### Visual redesign (owner-approved 2026-10-03)
+
+The owner approved a new look for the whole app on 2026-10-03, designed on
+the canvas https://claude.ai/artifact/9v74CfEWe7LQAy5oenMvij. It changes
+only presentation: data, calculations and copy still match Flutter, except
+the copy changes listed here.
+
+- **Palette.** Every colour token changed (see UI_SPEC's table): "Paper" in
+  light mode (warm paper, ink, deep green, terracotta), "Midnight" in dark
+  mode (near-black, mint, coral, lilac). The values in "Colour tokens meet
+  WCAG AA" above are superseded; the AA rule still holds and
+  `ColorContrastTests` checks the new values. The chart and Spend rank
+  palettes are new too (`SpendPaletteTests`), in Flutter's slot order.
+- **No glows.** Glows, text glows, halos, the hero blur and the glow
+  underlay on chart lines are gone; cards are flat with a 1pt border and a
+  22pt radius. The add button keeps a soft drop shadow.
+- **Home.** The hero is a ring of the month's income split into spent and
+  kept, with the cash flow in whole units in the middle (still never a sign;
+  danger when negative), "34% kept" / "Short this month" / "Breaking even"
+  under it, and a legend with the exact spent and kept amounts. Flutter's
+  spend gauge and the "$X in · $Y out" subline are gone. The income and
+  expense tiles add a six-month sparkline and colour the change by whether
+  it is good (income up, expenses down) instead of by type. Safe to spend is
+  the feature card (ink block in light mode, mint tile in dark mode).
+  Budgets are two-column ring tiles (one column at accessibility sizes) with
+  the share used, and a dashed "Add a budget" button; the add row's
+  subtitle is now its VoiceOver hint. Recent rows tint the icon with the
+  category's colour. Home's Expense / Income pills are gone: the add
+  button's form switches between expense and income, as it already did.
+- **Shared.** Section links read "See all" / "Edit" in sentence case (were
+  mono "SEE ALL" / "EDIT"); page titles are 30pt, section titles 21pt. Month
+  chips (Worth and SEE ALL) are single-line capsules ("Sep 2026"), selected
+  in the selection fill. The Assets / Liabilities toggle is a segmented
+  track.
+- **Worth.** The hero is centred; the change pill has no border; the split
+  card puts its legend above a 12pt bar.
+- **Goals.** The summary is the feature card. A goal card shows the name and
+  status pill, "{saved} of {target}" with the percent, a 10pt bar in the
+  status colour and the pace line (Flutter's 84pt ring is gone).
+- **Spend.** The page title is "Spending" (Flutter: "Categories"), matching
+  the tab.
+- **Add / edit transaction form.** Laid out to fit above the decimal pad
+  on an iPhone 17 Pro without scrolling: the title and the Expense / Income
+  switch share a row; the amount is a 64pt field with "Amount" inside it
+  and the figure right-aligned; then Description, then one-line rows for
+  Category, Date and Tags ("Optional"). The category wheel is replaced by a
+  Category row that opens a menu of the same categories, in the same order,
+  with a checkmark on the selection. Tag chips show selection by fill and
+  weight, without a checkmark. Shorter screens and large text scroll, with
+  a fade cueing more below. The recurring form uses the same fields (its
+  pattern and day wheels stay); the quick expense sheet tints each tile in
+  its category's colour (Flutter: red).
+- **Fields, rows and buttons.** Text fields sit on a field fill with a
+  16pt radius and a 2pt accent border while focused. Date tiles are
+  one-line rows (label column, value, trailing calendar). Outlined buttons
+  have no tint: a 1.5pt card-coloured border around a label in the
+  button's colour.
+- **Sheets and dialogs.** Sheet titles are 24pt ExtraBold; sheets have a
+  30pt radius and a slimmer grab handle. Every dialog has the same plain
+  drop shadow over a palette scrim (Flutter: the Worth editor's coloured
+  glow, black 54% elsewhere). The Safe to spend sheet shows its total in
+  the feature card above the six breakdown rows (Flutter: a total row
+  under them). The budget limit sheet leads with the category's tile and
+  name; budget pickers tint each tile in its category's colour.
+- **Empty states.** One pattern everywhere: a dashed card with a tinted
+  72pt tile, the title, the message and, where there is one, a filled
+  button (Flutter: a bare icon and text; Recurring's 120pt gradient
+  circle).
+- **SEE ALL.** Each day is one card of rows like Home's Recent activity:
+  the category's tile (Flutter: a solid income / expense tile), and the
+  amount signed and coloured like Recent activity (+ income in green,
+  - expenses in the text colour; Flutter: unsigned, in the type's colour).
+  The month wheel's selection band uses the chip colour.
+- **Settings.** The brand card is the feature card (no wash). Rows have
+  38pt tiles; switches use the income green (mint in dark mode). The theme
+  row drops its subtitle "Light, dark, or match device"; the Tags & rules
+  section links read "Add" (Flutter: "ADD"); Import from CSV and Import
+  backup tiles are blue and red. Licences and Data diagnostics are card
+  pages instead of grouped lists.
+- **Onboarding, lock and launch.** Onboarding is left-aligned with the
+  page's symbol in a feature-card block, a 40pt title and a full-width
+  56pt button. The lock screen and privacy cover show the logo (Flutter:
+  a lock glyph) on the page background and follow light / dark mode; so do
+  the launch and opening screens (Flutter: always dark), and the opening
+  screen has no accent washes or shadow.
+- **Unsaved-changes banner.** A deeper red behind its white text in dark
+  mode (the dark palette's red fails AA under white).
+- **Voice sheet.** The error message is a 24pt title, with full-width
+  Try again and Cancel stacked.
+- **Goals and Worth dialogs.** Sheet titles and outlined Cancel buttons;
+  the account editor's banner is a flat tint of the type colour (Flutter:
+  a gradient and a coloured glow); its type and month choices sit on the
+  field fill, the selected month in the selection colours. The goal
+  celebration's scrim is the palette scrim (a little darker in dark mode).
+- **Account history.** The hero card has no colour wash (a tinted tile
+  instead); timeline rows show a calendar tile instead of a dot.
+- **Spend.** The month sheet lists months as rows in a card. The category
+  drill-in's summary card has no tint, and its rows sit in one card with
+  hairlines (Flutter: separate cards); amounts stay unsigned, as every row
+  there has the same type. Category rows indent their bars under the text.
+- **Flow.** The month detail sheet puts the net on the feature card, with
+  Income and Expenses as rows in a card under it (Flutter: coloured tiles
+  with arrows; expenses are in the text colour). Flow SEE ALL and the
+  preview card use the category's tile (Flutter: income green or accent;
+  uncategorised rows keep Flutter's fallback); its search and filters sit
+  on the field fill with selection-coloured tag chips, and an empty result
+  is the dashed empty card with a title ("No Results Found" with filters,
+  else "No Transactions Yet"; Flutter: the message alone). The range,
+  category and month sheets keep their mono headings ("CHART RANGE",
+  "SELECT CATEGORY", "SELECT MONTH") over rows in a card.
+- **Home screen widgets.** Follow light / dark mode on the card colour
+  (Flutter: a fixed dark gradient). Quick actions: the logo and the cash
+  flow over two flat Income / Expense buttons; the voice widget has no
+  cash flow. System fonts (the extension does not bundle the app's).
+
 ## Deliberate differences (not yet approved)
 
 None.

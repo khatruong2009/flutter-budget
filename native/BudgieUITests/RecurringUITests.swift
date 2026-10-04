@@ -152,7 +152,8 @@ final class RecurringUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Add Recurring Income"].waitForExistence(timeout: 5))
         replaceText(in: app.textFields["Amount"], with: "50")
         replaceText(in: app.textFields["Description"], with: salary)
-        wheel("recurring.form.pattern", index: 1).adjust(toPickerWheelValue: "Weekly")
+        // The pattern wheel is the form's first (the category is a menu row).
+        wheel("recurring.form.pattern", index: 0).adjust(toPickerWheelValue: "Weekly")
         XCTAssertTrue(element("recurring.form.day").waitForNonExistence(timeout: 5), "no Day of Month for weekly")
         for date in weeklyDates {
             let line = Self.format(date, "EEEE, MMM dd, yyyy")

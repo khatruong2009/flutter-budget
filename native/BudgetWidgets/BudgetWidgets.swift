@@ -41,44 +41,76 @@ enum CashFlowStore {
   }
 }
 
-/// Logo + cash flow strip shown at the top of every Budgie widget.
+/// The widget target cannot use `BudgieColor` (it lives in the app target), so
+/// this repeats the values the widgets need from
+/// native/Budgie/DesignSystem/Tokens/Colors.swift, resolved by the widget's
+/// colour scheme: "Paper" in light mode, "Midnight" in dark mode.
+struct WidgetPalette {
+  let colorScheme: ColorScheme
+
+  private func pick(light: UInt32, dark: UInt32) -> Color {
+    Color(hex: colorScheme == .dark ? dark : light)
+  }
+
+  /// `BudgieColor.card`.
+  var background: Color { pick(light: 0xFBF9F4, dark: 0x11151C) }
+  var textPrimary: Color { pick(light: 0x1A1A17, dark: 0xEEF1F5) }
+  var textSecondary: Color { pick(light: 0x5C584F, dark: 0x9AA3B2) }
+  var accent: Color { pick(light: 0x1D6646, dark: 0xB3ADFF) }
+  var onAccent: Color { pick(light: 0xFFFFFF, dark: 0x0B0B14) }
+  var income: Color { pick(light: 0x1D6646, dark: 0x5EE6B0) }
+  var danger: Color { pick(light: 0xA63D24, dark: 0xFF8B7B) }
+  /// Fills behind a white label (4.5:1 or better on both).
+  var incomeFixed: Color { pick(light: 0x1D6646, dark: 0x0E6B4C) }
+  var expenseFixed: Color { pick(light: 0xA63D24, dark: 0xA3372A) }
+}
+
+private extension Color {
+  /// `hex` is 0xRRGGBB.
+  init(hex: UInt32) {
+    self.init(
+      red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255,
+      blue: Double(hex & 0xFF) / 255)
+  }
+}
+
+/// Logo + cash flow strip shown at the top of the Quick Add widget.
 struct BudgieWidgetHeader: View {
   let cashFlow: Double?
   var hidesBalances = false
 
+  @Environment(\.colorScheme) private var colorScheme
+
   /// MoneyFormatter's masked amount.
   static let hiddenAmount = "\u{2022}\u{2022}\u{2022}\u{2022}"
 
+  private var palette: WidgetPalette { WidgetPalette(colorScheme: colorScheme) }
+
   var body: some View {
-    HStack(spacing: 5) {
+    HStack(spacing: 6) {
       Image("BudgieLogo")
         .resizable()
         .scaledToFit()
-        .frame(width: 16, height: 16)
+        .frame(width: 18, height: 18)
+        .accessibilityHidden(true)
+      Spacer(minLength: 4)
       if cashFlow != nil, hidesBalances {
-        // Neutral colour: red/green would still tell the sign.
-        Spacer(minLength: 4)
+        // Neutral colour: income/danger would still tell the sign.
         Text(Self.hiddenAmount)
-          .font(.system(size: 12, weight: .bold, design: .rounded))
-          .foregroundColor(.white.opacity(0.75))
+          .font(.system(size: 13, weight: .semibold, design: .monospaced))
+          .foregroundColor(palette.textSecondary)
           .lineLimit(1)
           .accessibilityLabel("Balance hidden")
       } else if let amount = cashFlow {
-        Spacer(minLength: 4)
         Text(Self.formattedAmount(amount))
-          .font(.system(size: 12, weight: .bold, design: .rounded))
-          .foregroundColor(
-            amount < 0
-              ? Color(red: 0.95, green: 0.55, blue: 0.50)
-              : Color(red: 0.55, green: 0.85, blue: 0.62)
-          )
+          .font(.system(size: 13, weight: .semibold, design: .monospaced))
+          .foregroundColor(amount < 0 ? palette.danger : palette.income)
           .lineLimit(1)
           .minimumScaleFactor(0.6)
       } else {
         Text("Budgie")
-          .font(.system(size: 11, weight: .semibold))
-          .foregroundColor(.white.opacity(0.75))
-        Spacer(minLength: 0)
+          .font(.system(size: 13, weight: .semibold, design: .monospaced))
+          .foregroundColor(palette.textSecondary)
       }
     }
   }
@@ -117,48 +149,40 @@ struct BudgetQuickActionsProvider: TimelineProvider {
 struct BudgetQuickActionsEntryView: View {
   var entry: BudgetQuickActionsProvider.Entry
 
+  @Environment(\.colorScheme) private var colorScheme
+
   private let incomeURL = URL(string: "budgetapp://add-income")!
   private let expenseURL = URL(string: "budgetapp://add-expense")!
+
+  private var palette: WidgetPalette { WidgetPalette(colorScheme: colorScheme) }
 
   var body: some View {
     VStack(spacing: 8) {
       BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
       actionButton(
-        title: "Income",
-        icon: "plus.circle.fill",
-        // Darkened from (0.33, 0.74, 0.47) so the white label passes WCAG AA (4.5:1).
-        color: Color(red: 0.047, green: 0.533, blue: 0.278),
-        destination: incomeURL
-      )
+        title: "Income", symbol: "plus", color: palette.incomeFixed, destination: incomeURL)
       actionButton(
-        title: "Expense",
-        icon: "minus.circle.fill",
-        // Darkened from (0.90, 0.40, 0.35), as above.
-        color: Color(red: 0.792, green: 0.302, blue: 0.259),
-        destination: expenseURL
-      )
+        title: "Expense", symbol: "chevron.down", color: palette.expenseFixed,
+        destination: expenseURL)
     }
-    .padding(6)
-    .modifier(BackgroundForVersion())
+    .widgetBackground(palette.background)
   }
 
-  private func actionButton(title: String, icon: String, color: Color, destination: URL) -> some View {
+  private func actionButton(title: String, symbol: String, color: Color, destination: URL)
+    -> some View
+  {
     Link(destination: destination) {
       HStack(spacing: 6) {
-        Image(systemName: icon)
-          .font(.system(size: 18))
+        Image(systemName: symbol)
+          .font(.system(size: 13, weight: .heavy))
         Text(title)
-          .fontWeight(.semibold)
-          .font(.system(size: 13))
+          .font(.system(size: 14, weight: .bold))
           .lineLimit(1)
           .minimumScaleFactor(0.8)
-        Spacer(minLength: 0)
       }
-      .padding(.vertical, 9)
-      .padding(.horizontal, 10)
-      .frame(maxWidth: .infinity)
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
       .background(
-        RoundedRectangle(cornerRadius: 16, style: .continuous)
+        RoundedRectangle(cornerRadius: 14, style: .continuous)
           .fill(color)
       )
       .foregroundColor(.white)
@@ -205,25 +229,30 @@ struct BudgetVoiceAddProvider: TimelineProvider {
 struct BudgetVoiceAddEntryView: View {
   var entry: BudgetVoiceAddProvider.Entry
 
-  // Nudged from (0.51, 0.55, 0.97): the white mic glyph needs 3:1 against it.
-  private let accentColor = Color(red: 0.506, green: 0.545, blue: 0.965)
+  @Environment(\.colorScheme) private var colorScheme
+
+  private var palette: WidgetPalette { WidgetPalette(colorScheme: colorScheme) }
 
   var body: some View {
-    VStack(spacing: 0) {
-      BudgieWidgetHeader(cashFlow: entry.cashFlow, hidesBalances: entry.hidesBalances)
-      Spacer(minLength: 0)
+    VStack(alignment: .leading, spacing: 0) {
       Image(systemName: "mic.fill")
-        .font(.system(size: 26))
-        .foregroundColor(.white)
+        .font(.system(size: 24))
+        .foregroundColor(palette.onAccent)
         .frame(width: 52, height: 52)
-        .background(
-          Circle()
-            .fill(accentColor)
-        )
+        .background(Circle().fill(palette.accent))
+        .accessibilityHidden(true)
       Spacer(minLength: 0)
+      Text("Speak a transaction")
+        .font(.system(size: 15, weight: .bold))
+        .foregroundColor(palette.textPrimary)
+        .lineLimit(2)
+        .minimumScaleFactor(0.8)
+      Text("Budgie")
+        .font(.system(size: 12))
+        .foregroundColor(palette.textSecondary)
     }
-    .padding(6)
-    .modifier(BackgroundForVersion())
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .widgetBackground(palette.background)
   }
 }
 
@@ -241,30 +270,9 @@ struct BudgetVoiceAddWidget: Widget {
   }
 }
 
-struct BackgroundForVersion: ViewModifier {
-  func body(content: Content) -> some View {
-    if #available(iOS 17.0, *) {
-      content.containerBackground(for: .widget) {
-        LinearGradient(
-          colors: [
-            Color(red: 0.10, green: 0.12, blue: 0.25),
-            Color(red: 0.07, green: 0.09, blue: 0.20)
-          ],
-          startPoint: .topLeading,
-          endPoint: .bottomTrailing
-        )
-      }
-    } else {
-      content.background(
-        LinearGradient(
-          colors: [
-            Color(red: 0.10, green: 0.12, blue: 0.25),
-            Color(red: 0.07, green: 0.09, blue: 0.20)
-          ],
-          startPoint: .topLeading,
-          endPoint: .bottomTrailing
-        )
-      )
-    }
+extension View {
+  /// The widget's flat Paper / Midnight background.
+  func widgetBackground(_ color: Color) -> some View {
+    containerBackground(for: .widget) { color }
   }
 }

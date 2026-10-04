@@ -3,12 +3,13 @@ import SwiftUI
 
 /// The add / edit account dialog (`_NetWorthEditorDialog`, NW:2140-2513),
 /// hosted by `budgieDialog` with no padding so the header banner runs to
-/// the border. Banner: a gradient of the type colour (green for an asset,
-/// rose for a liability) behind the type's arrow tile, "Add account" /
-/// "Edit account", the balance month and a close button. Body: the Asset /
-/// Liability pills, the balance month (an inline month grid, 1970 to this
-/// month, instead of Material's date picker), the account name and the
-/// balance, then Cancel and Add / Save.
+/// the border. Banner: the type colour (green for an asset, rose for a
+/// liability) at 8% behind the type's arrow tile, "Add account" / "Edit
+/// account" in the sheet title style, the balance month and a close
+/// button. Body: the Asset / Liability pills, the balance month (an inline
+/// month grid, 1970 to this month, instead of Material's date picker), the
+/// account name and the balance, then the outlined Cancel and the Add /
+/// Save pill filled in the type colour.
 ///
 /// The balance field formats as Flutter's `_CurrencyInputFormatter`
 /// (`NetWorthAmountInput.sanitize`: digits, one ".", two decimals, commas
@@ -34,7 +35,6 @@ struct AccountEditorDialog: View {
     @State private var pickingMonth = false
     /// The prefilled balance text and the stored value it rounds.
     @State private var prefill: (text: String, amount: Double?)
-    @State private var buttonTaps = 0
     @State private var typeTaps = 0
 
     init(request: AccountEditorRequest, dismiss: @escaping () -> Void) {
@@ -53,15 +53,14 @@ struct AccountEditorDialog: View {
 
     private var isEditing: Bool { request.entry != nil }
     private var accent: Color { type == .asset ? BudgieColor.income : BudgieColor.danger }
-    private var wash: Color { type == .asset ? BudgieColor.chartIncome : BudgieColor.chartDanger }
 
     var body: some View {
         VStack(spacing: 0) {
             banner
             // The banner and the buttons stay put; the fields scroll when the
             // keyboard or a large text size leaves too little room. The
-            // insets are inside the scroll view so the pills' glow is not
-            // clipped by it.
+            // insets are inside the scroll view so the focused field's 2pt
+            // ring is not clipped by it.
             DialogScroll {
                 VStack(spacing: 16) {
                     TypePills(type: $type) { typeTaps += 1 }
@@ -83,8 +82,6 @@ struct AccountEditorDialog: View {
             if let replacement = Self.sanitizedAmount(old: old, new: new, prefill: prefill.text) { amountText = replacement }
         }
         .budgieDialogDismissDisabled(saving)
-        .budgieDialogGlow(accent)
-        .sensoryFeedback(.impact(weight: .light), trigger: buttonTaps)
         .sensoryFeedback(.selection, trigger: typeTaps)
         // A container, so the identifier does not replace the fields' own.
         .accessibilityElement(children: .contain)
@@ -113,7 +110,7 @@ struct AccountEditorDialog: View {
             IconTile(symbol: type == .asset ? "arrow.up.right" : "arrow.down.left", color: accent, size: 48, iconSize: 24)
             VStack(alignment: .leading, spacing: 2) {
                 Text(isEditing ? "Edit account" : "Add account")
-                    .textStyle(.cardTitle)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .accessibilityAddTraits(.isHeader)
                 Text(DartDateFormat.yMMMM(entryMonth))
@@ -137,14 +134,14 @@ struct AccountEditorDialog: View {
             .accessibilityIdentifier("worth.editor.close")
         }
         .padding(EdgeInsets(top: 24, leading: 24, bottom: 16, trailing: 24))
-        .background(
-            // Flutter's lighter green and red wash: the accent text colour is
-            // darker for contrast.
-            LinearGradient(
-                colors: [wash.opacity(0.22), wash.opacity(0.10)], startPoint: .topLeading, endPoint: .bottomTrailing)
+        // A flat tint of the type colour (Flutter: a green or red gradient).
+        .background(accent.opacity(0.08))
+        // Inside the dialog card's 1pt border.
+        .clipShape(
+            UnevenRoundedRectangle(
+                topLeadingRadius: Metrics.cardRadius - Metrics.borderThin,
+                topTrailingRadius: Metrics.cardRadius - Metrics.borderThin, style: .continuous)
         )
-        // Inside the dialog card's 1pt border (radius 26).
-        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 25, topTrailingRadius: 25, style: .continuous))
         .motion(Motion.easeInOut(0.26), value: type)
     }
 
@@ -176,42 +173,24 @@ struct AccountEditorDialog: View {
 
     // MARK: - Buttons
 
+    /// The dialog pair (REDESIGN_PLAN 4.7): outlined Cancel, and Add / Save
+    /// filled in the type colour, spinning while the write is awaited. Both
+    /// play the pill's light impact.
     private var buttons: some View {
         HStack(spacing: 12) {
-            Button {
-                buttonTaps += 1
-                dismiss()
-            } label: {
-                Text("Cancel")
-                    .textStyle(WorthStyle.buttonText)
-                    .foregroundStyle(BudgieColor.textPrimary)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 48)
-                    .background(BudgieColor.dialogOutlinedFill, in: Capsule())
-                    .overlay(Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
-                    .contentShape(Capsule())
-            }
-            .buttonStyle(PressScaleStyle(scale: 0.96))
-            .disabled(saving)
-            .accessibilityIdentifier("worth.editor.cancel")
-            Button {
+            PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: dismiss)
+                .disabled(saving)
+                .accessibilityIdentifier("worth.editor.cancel")
+            PillButton(title: isEditing ? "Save" : "Add", color: accent, filled: true, height: 44) {
                 Task { await save() }
-            } label: {
-                ZStack {
-                    Text(isEditing ? "Save" : "Add").opacity(saving ? 0 : 1)
-                    if saving { ProgressView().tint(BudgieColor.onAccent) }
-                }
-                .textStyle(WorthStyle.buttonText)
-                .foregroundStyle(BudgieColor.onAccent)
-                .frame(maxWidth: .infinity)
-                .frame(height: 48)
-                .background(accent, in: Capsule())
-                .glow(accent, blur: 20, alpha: 0.45)
-                .contentShape(Capsule())
             }
-            .buttonStyle(PressScaleStyle(scale: 0.96))
+            .overlay {
+                if saving {
+                    Capsule().fill(accent)
+                    ProgressView().tint(BudgieColor.onAccent)
+                }
+            }
             .disabled(saving)
-            .accessibilityLabel(isEditing ? "Save" : "Add")
             .accessibilityIdentifier("worth.editor.save")
         }
     }
@@ -220,7 +199,6 @@ struct AccountEditorDialog: View {
 
     private func save() async {
         guard !saving else { return }
-        buttonTaps += 1
         nameError = nil
         amountError = nil
         let trimmed = DartString.trim(name)
@@ -263,17 +241,12 @@ struct AccountEditorDialog: View {
     }
 }
 
-extension WorthStyle {
-    /// `rowTitle` at 15, w700 (the dialog buttons).
-    static let buttonText = TextSpec(face: .gabaritoBold, size: 15, height: 1.25, relativeTo: .body)
-}
-
 // MARK: - Type pills
 
 /// `_TypeToggle`: two 48pt pills (radius 14), "Asset" (green, north-east
 /// arrow) and "Liability" (rose, south-west arrow). The selected one fills
-/// with its colour and a glow, content on-accent; the other sits on the chip
-/// surface with a card border. Every tap ticks, as Flutter.
+/// with its colour, content on-accent; the other sits on the field fill
+/// with a card border. Every tap ticks, as Flutter.
 private struct TypePills: View {
     @Binding var type: NetWorthEntryType
     let onTap: () -> Void
@@ -299,9 +272,8 @@ private struct TypePills: View {
             .foregroundStyle(selected ? BudgieColor.onAccent : BudgieColor.textSecondary)
             .frame(maxWidth: .infinity)
             .frame(height: 48)
-            .background(selected ? color : BudgieColor.chipSurface, in: shape)
+            .background(selected ? color : BudgieColor.fieldFill, in: shape)
             .overlay { if !selected { shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin) } }
-            .glow(selected ? color : .clear, blur: 16, alpha: 0.4)
             .contentShape(shape)
         }
         .buttonStyle(.plain)
@@ -315,8 +287,9 @@ private struct TypePills: View {
 
 /// The balance month picker: a year stepper (1970 to this year) over the
 /// twelve months; months after this one are disabled, as Flutter's picker
-/// ends on the last day of this month. Built from integers and
-/// `DartCalendar`, never `Date` or `DatePicker`.
+/// ends on the last day of this month. On the field fill; the selected
+/// month in the selection fill. Built from integers and `DartCalendar`,
+/// never `Date` or `DatePicker`.
 private struct BalanceMonthGrid: View {
     let selected: DartDateTime
     let now: DartDateTime
@@ -353,7 +326,7 @@ private struct BalanceMonthGrid: View {
             }
         }
         .padding(10)
-        .background(BudgieColor.chipSurface, in: shape)
+        .background(BudgieColor.fieldFill, in: shape)
         .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: Metrics.borderThin))
     }
 
@@ -367,9 +340,9 @@ private struct BalanceMonthGrid: View {
             Text(DartDateFormat.MMM(month))
                 .textStyle(isSelected ? WorthStyle.chipBold : WorthStyle.chip)
                 .foregroundStyle(
-                    isSelected ? BudgieColor.onAccent : enabled ? BudgieColor.textPrimary : BudgieColor.textTertiary)
+                    isSelected ? BudgieColor.selectionText : enabled ? BudgieColor.textPrimary : BudgieColor.textTertiary)
                 .frame(maxWidth: .infinity, minHeight: 36)
-                .background(isSelected ? BudgieColor.accent : Color.clear, in: shape)
+                .background(isSelected ? BudgieColor.selectionFill : Color.clear, in: shape)
                 // The cell draws 36pt tall; the tap area is 44.
                 .tapArea(vertical: 4)
         }

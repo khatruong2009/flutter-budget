@@ -3,8 +3,9 @@ import SwiftUI
 
 /// The "SEE ALL" page pushed from Home (`transaction_page.dart`): a strip of
 /// month chips, that month's summary card, and its transactions grouped by
-/// day under pinned date headers. Rows open the edit form and swipe to
-/// delete behind a confirmation.
+/// day under pinned date headers, each day's rows in one card with hairlines
+/// between them. Rows open the edit form and swipe to delete behind a
+/// confirmation.
 ///
 /// The selected month is local to the page (it does not follow
 /// `model.selectedMonth`). Everything is read from `model.ledger`, which is
@@ -38,7 +39,7 @@ struct TransactionsView: View {
                         chosenMonth = picked
                     }
                     SummaryCard(summary: ledger.summary(forMonth: month), formatter: formatter)
-                        .padding(.horizontal, Metrics.spacingM)
+                        .padding(.horizontal, Metrics.pageHorizontal)
                     monthContent(rows: ledger.newestFirst(inMonth: month), formatter: formatter)
                         .padding(.top, Metrics.spacingM)
                 }
@@ -122,18 +123,9 @@ struct TransactionsView: View {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                     ForEach(MonthListCopy.dayGroups(from: rows)) { group in
                         Section {
-                            ForEach(group.rows) { row in
-                                SwipeToDeleteRow {
-                                    pendingDelete = row.record
-                                } content: {
-                                    TransactionRow(record: row.record, formatter: formatter) {
-                                        rowTaps += 1
-                                        editing = row.record
-                                    }
-                                }
-                                .padding(.horizontal, Metrics.spacingM)
+                            dayCard(group, formatter: formatter)
+                                .padding(.horizontal, Metrics.pageHorizontal)
                                 .padding(.bottom, Metrics.spacingS)
-                            }
                         } header: {
                             DateHeader(title: group.title)
                         }
@@ -144,6 +136,33 @@ struct TransactionsView: View {
                 .padding(.bottom, Metrics.spacingS)
             }
         }
+    }
+
+    /// One day's rows in a card, a hairline between them. The swipe slides a
+    /// row (on the card fill) over the delete background; the card clips it
+    /// at its edge.
+    private func dayCard(_ group: MonthListCopy.DayGroup, formatter: MoneyFormatter) -> some View {
+        GlowCard(padding: Metrics.listCardPadding) {
+            LazyVStack(spacing: 0) {
+                ForEach(group.rows) { row in
+                    // One child per record lets the lazy stack defer offscreen rows,
+                    // including each row's optional divider.
+                    VStack(spacing: 0) {
+                        if row.id != group.rows.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                        SwipeToDeleteRow {
+                            pendingDelete = row.record
+                        } content: {
+                            TransactionRow(record: row.record, formatter: formatter) {
+                                rowTaps += 1
+                                editing = row.record
+                            }
+                            .background(BudgieColor.card)
+                        }
+                    }
+                }
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
     }
 }
 
@@ -217,7 +236,7 @@ private struct DateHeader: View {
             .padding(.vertical, Metrics.spacingXS)
             .background(BudgieColor.chipSurface, in: Capsule())
             .overlay(Capsule().strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
-            .padding(.horizontal, Metrics.spacingM)
+            .padding(.horizontal, Metrics.pageHorizontal)
             .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
             .background(BudgieColor.background)
             .accessibilityAddTraits(.isHeader)
@@ -226,61 +245,49 @@ private struct DateHeader: View {
 
 // MARK: - Row
 
-/// The older Flutter row (`ModernTransactionListItem`) on the redesign
-/// tokens: a solid type-coloured tile with the white category symbol, title
-/// with an inline recurrence glyph, "Category • Mon d", and the unsigned
-/// amount in the type colour.
+/// A row like Home's Recent activity: the category's 40pt tile, the title
+/// with an inline recurrence glyph, "Category • Mon d" and the signed amount
+/// (income in `income`, expenses in `textPrimary`).
 private struct TransactionRow: View {
     @Environment(AppModel.self) private var model
     let record: TransactionRecord
     let formatter: MoneyFormatter
     let onTap: () -> Void
 
-    /// Flutter `headingMedium` forced bold.
-    private static let amountText = TextSpec(face: .gabaritoBold, size: 22, tracking: -0.2, height: 1.3, relativeTo: .title2)
-
     var body: some View {
         let isIncome = record.type == .income
-        let color = isIncome ? BudgieColor.income : BudgieColor.danger
         let info = model.categoryInfo(named: record.category, type: record.type)
         let amount = MonthListCopy.rowAmount(record, formatter: formatter)
-        let card = RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous)
+        let signed = formatter.formatSigned(isIncome ? record.amount : -record.amount, plusForPositive: true)
 
         Button(action: onTap) {
-            HStack(spacing: Metrics.spacingM) {
-                Image(systemName: CategoryCatalog.symbol(for: info?.iconIdentifier ?? ""))
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundStyle(.white)
-                    .frame(width: 48, height: 48)
-                    .background(color, in: RoundedRectangle(cornerRadius: Metrics.radiusM, style: .continuous))
-                VStack(alignment: .leading, spacing: Metrics.spacingXS) {
+            HStack(spacing: 12) {
+                IconTile(category: info)
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         Text(record.description)
-                            .textStyle(.labelLarge)
+                            .textStyle(.rowTitle)
                             .foregroundStyle(BudgieColor.textPrimary)
                             .multilineTextAlignment(.leading)
                         if record.isRecurring { RecurrenceGlyph(size: 16).fixedSize() }
                     }
                     Text(MonthListCopy.rowSubtitle(record))
-                        .textStyle(.caption)
-                        .foregroundStyle(BudgieColor.textTertiary)
+                        .textStyle(.rowSubtitle)
+                        .foregroundStyle(BudgieColor.textSecondary)
                         .singleLine()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                // Its own width first (Flutter's amount is not flexible), so
-                // the title and subtitle get the rest of the row.
-                Text(amount)
-                    .textStyle(Self.amountText)
-                    .foregroundStyle(color)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                // Its own width first, so the title and subtitle get the
+                // rest of the row.
+                Text(signed)
+                    .textStyle(.amountSmall)
+                    .foregroundStyle(isIncome ? BudgieColor.income : BudgieColor.textPrimary)
+                    .singleLine()
                     .layoutPriority(1)
             }
-            .padding(Metrics.spacingM)
+            .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(BudgieColor.card, in: card)
-            .perfShadow(color: .black.opacity(0.10), radius: 3, y: 1)
-            .contentShape(card)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         // On the Button itself, so VoiceOver keeps its activation.

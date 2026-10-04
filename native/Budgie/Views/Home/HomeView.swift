@@ -2,10 +2,10 @@ import BudgieCore
 import SwiftUI
 
 /// The Home tab (`SpendingPage`, spending_page.dart:448-686): header with
-/// the month pill and its wheel panel, the cash-flow hero, the spend gauge,
-/// the income/expense chips, safe to spend, budgets, recent activity and
-/// the Expense/Income pills, with the add button floating bottom-trailing
-/// under the smaller voice button.
+/// the month pill and its wheel panel, the cash-flow ring, the income and
+/// expense tiles, safe to spend, budgets and recent activity, with the add
+/// button (whose form switches between expense and income) floating
+/// bottom-trailing under the smaller voice button.
 /// Everything is read from `model.ledger` except safe to spend, whose Core
 /// calculation takes the transactions.
 struct HomeView: View {
@@ -114,24 +114,23 @@ struct HomeView: View {
                 savingsGoals: data.savingsGoals, month: month, asOf: model.now, wallClock: model.now, calendar: calendar)
         }
 
-        HomeHero(income: totals.income, expenses: totals.expenses, formatter: formatter)
+        // The six months ending at the selected one, oldest first.
+        let trend = (0..<6).map { model.ledger.summary(forMonth: calendar.date(month.fields.year, month.fields.month - 5 + $0)) }
 
-        SpendGauge(spent: totals.expenses, income: totals.income, formatter: formatter)
-            .padding(.horizontal, 24)
-            .padding(.top, 20)
+        HomeHero(income: totals.income, expenses: totals.expenses, formatter: formatter)
 
         HStack(spacing: 12) {
             FlowChip(
-                label: "Income", amount: totals.income, dot: BudgieColor.income,
+                label: "Income", amount: totals.income, trend: trend.map(\.income), line: BudgieColor.income,
                 delta: HomeSummary.percentDelta(current: totals.income, previous: previousTotals.income),
-                deltaColor: BudgieColor.income, previousMonthName: previousName, formatter: formatter)
+                goodWhenUp: true, previousMonthName: previousName, formatter: formatter)
             FlowChip(
-                label: "Expenses", amount: totals.expenses, dot: BudgieColor.danger,
+                label: "Expenses", amount: totals.expenses, trend: trend.map(\.expenses), line: BudgieColor.spent,
                 delta: HomeSummary.percentDelta(current: totals.expenses, previous: previousTotals.expenses),
-                deltaColor: BudgieColor.danger, previousMonthName: previousName, formatter: formatter)
+                goodWhenUp: false, previousMonthName: previousName, formatter: formatter)
         }
         .padding(.horizontal, Metrics.pageHorizontal)
-        .padding(.top, 20)
+        .padding(.top, 26)
 
         SafeToSpendCard(breakdown: breakdown, formatter: formatter) { sheet = .breakdown(breakdown) }
             .padding(.horizontal, Metrics.pageHorizontal)
@@ -142,20 +141,13 @@ struct HomeView: View {
             .padding(.top, Metrics.sectionGap)
 
         VStack(alignment: .leading, spacing: 12) {
-            SectionHeader(title: "Recent activity", link: "SEE ALL", linkAccessibilityLabel: "See all transactions") {
+            SectionHeader(title: "Recent activity", link: "See all", linkAccessibilityLabel: "See all transactions") {
                 page = .transactions
             }
             RecentActivityCard(rows: model.ledger.recent(3), formatter: formatter)
         }
         .padding(.horizontal, Metrics.pageHorizontal)
         .padding(.top, Metrics.sectionGap)
-
-        HStack(spacing: 12) {
-            PillButton(title: "Expense", symbol: "minus", color: BudgieColor.danger) { sheet = .add(.expense) }
-            PillButton(title: "Income", symbol: "plus", color: BudgieColor.income) { sheet = .add(.income) }
-        }
-        .padding(.horizontal, Metrics.pageHorizontal)
-        .padding(.top, 24)
     }
 }
 
@@ -185,138 +177,139 @@ enum HomeSheet: Identifiable {
     }
 }
 
-// MARK: - Spend gauge
-
-/// Spent against income (spending_page.dart:1388-1461): the 14pt gauge,
-/// then "SPENT  $43" and "INCOME  $3,200" (whole units).
-private struct SpendGauge: View {
-    let spent: Double
-    let income: Double
-    let formatter: MoneyFormatter
-
-    var body: some View {
-        let labels = HomeSummary.gaugeLabels(spent: spent, income: income, formatter: formatter)
-        VStack(spacing: 10) {
-            GlowProgressBar(
-                value: HomeSummary.gaugeFraction(spent: spent, income: income), height: 14, color: BudgieColor.accent,
-                track: BudgieColor.chipSurface,
-                gradient: LinearGradient(colors: [BudgieColor.gaugeFillStart, BudgieColor.accent], startPoint: .leading, endPoint: .trailing),
-                showThumb: true, trackBorder: BudgieColor.hairline, fillInset: 2)
-            HStack {
-                label("SPENT  ", labels.spent)
-                Spacer(minLength: 8)
-                label("INCOME  ", labels.income)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Spent \(labels.spent) of \(labels.income) income")
-    }
-
-    private func label(_ prefix: String, _ value: String) -> some View {
-        (Text(prefix).foregroundStyle(BudgieColor.textTertiary) + Text(value).foregroundStyle(BudgieColor.textPrimary))
-            .textStyle(.monoLabel)
-            .singleLine()
-    }
-}
-
 // MARK: - Flow chips
 
-/// One of the two month-over-month chips (`_FlowChip`,
-/// spending_page.dart:1465-1550). Not tappable.
+/// One of the two month-over-month tiles (`_FlowChip`,
+/// spending_page.dart:1465-1550): the label, the month's amount in whole
+/// units, the change from the month before (good changes in the income
+/// colour, bad ones in danger) and a six-month sparkline. Not tappable.
 private struct FlowChip: View {
     let label: String
     let amount: Double
-    let dot: Color
+    /// The six months ending at this one, oldest first.
+    let trend: [Double]
+    let line: Color
     let delta: Double?
-    let deltaColor: Color
+    /// Income: a rise is good. Expenses: a fall is good.
+    let goodWhenUp: Bool
     let previousMonthName: String
     let formatter: MoneyFormatter
 
     /// `rowSubtitle` at 13, w600.
     private static let labelStyle = TextSpec(face: .gabaritoSemiBold, size: 13, height: 1.25, relativeTo: .footnote)
 
+    private var deltaColor: Color {
+        guard let delta else { return BudgieColor.textTertiary }
+        if delta == 0 { return BudgieColor.textSecondary }
+        return (delta > 0) == goodWhenUp ? BudgieColor.income : BudgieColor.danger
+    }
+
     var body: some View {
         GlowCard(padding: 16, radius: Metrics.statCardRadius) {
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(dot)
-                        .frame(width: 8, height: 8)
-                        .glow(dot, blur: 10, alpha: 0.8)
-                    Text(label)
-                        .textStyle(Self.labelStyle)
-                        .foregroundStyle(BudgieColor.textSecondary)
-                        .singleLine()
-                }
+                Text(label)
+                    .textStyle(Self.labelStyle)
+                    .foregroundStyle(BudgieColor.textSecondary)
+                    .singleLine()
                 Text(HomeSummary.chipAmount(amount, formatter: formatter))
                     .textStyle(.chipAmount)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.3)
-                    .padding(.top, 10)
+                    .padding(.top, 8)
                 Text(HomeSummary.deltaLabel(delta: delta, previousMonthName: previousMonthName))
                     .textStyle(.rowSubtitle)
-                    .foregroundStyle(delta == nil ? BudgieColor.textTertiary : deltaColor)
+                    .foregroundStyle(deltaColor)
                     .singleLine()
                     .padding(.top, 2)
+                Sparkline(values: trend, color: line)
+                    .frame(height: 28)
+                    .padding(.top, 10)
+                    .accessibilityHidden(true)
             }
         }
         .accessibilityElement(children: .combine)
     }
 }
 
+/// A line through `values`, scaled to their range (flat and centred when
+/// they are all equal).
+private struct Sparkline: View {
+    let values: [Double]
+    let color: Color
+
+    var body: some View {
+        Canvas { context, size in
+            guard values.count > 1, let low = values.min(), let high = values.max() else { return }
+            let span = high - low
+            let inset: CGFloat = 2
+            var path = Path()
+            for (index, value) in values.enumerated() {
+                let x = size.width * CGFloat(index) / CGFloat(values.count - 1)
+                let share = span > 0 ? (value - low) / span : 0.5
+                let y = inset + (size.height - inset * 2) * (1 - share)
+                if index == 0 { path.move(to: CGPoint(x: x, y: y)) } else { path.addLine(to: CGPoint(x: x, y: y)) }
+            }
+            context.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+        }
+    }
+}
+
 // MARK: - Safe to spend
 
-/// The safe-to-spend row (`_SafeToSpendCard`, spending_page.dart:1222-1328):
-/// tap opens the breakdown. An over-committed month reads "Projected
-/// shortfall" with the positive shortfall.
+/// The safe-to-spend card (`_SafeToSpendCard`, spending_page.dart:1222-1328),
+/// Home's feature card: the title, the amount and the daily allowance on
+/// the feature fill, with a chevron; tap opens the breakdown. An
+/// over-committed month reads "Projected shortfall" with the positive
+/// shortfall in danger.
 private struct SafeToSpendCard: View {
     let breakdown: SafeToSpendBreakdown
     let formatter: MoneyFormatter
     let onTap: () -> Void
 
-    /// `captionSmall` with w700.
-    private static let details = TextSpec(face: .gabaritoBold, size: 11, height: 1.3, relativeTo: .caption2)
+    @State private var taps = 0
+
+    private static let titleText = TextSpec(face: .gabaritoSemiBold, size: 13, height: 1.25, relativeTo: .footnote)
+    static let amountText = TextSpec(face: .gabaritoExtraBold, size: 32, tracking: -1, height: 1.05, tabular: true, relativeTo: .title)
+    private static let subtitleText = TextSpec(face: .gabaritoRegular, size: 13, height: 1.25, relativeTo: .footnote)
 
     var body: some View {
         let card = HomeSummary.safeToSpendCard(breakdown, formatter: formatter)
-        let isOver = card.isOver
-        let tint = isOver ? BudgieColor.danger : BudgieColor.accent
-
-        GlowCard(padding: 16, radius: Metrics.statCardRadius, onTap: onTap) {
-            HStack(spacing: 0) {
-                IconTile(symbol: isOver ? "exclamationmark.triangle" : "shield", color: tint)
-                    .padding(.trailing, 12)
-                VStack(alignment: .leading, spacing: 2) {
+        Button {
+            taps += 1
+            onTap()
+        } label: {
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(card.title)
-                        .textStyle(.rowTitle)
-                        .foregroundStyle(BudgieColor.textPrimary)
+                        .textStyle(Self.titleText)
+                        .foregroundStyle(BudgieColor.featureSecondary)
                         .singleLine()
-                    Text(card.subtitle)
-                        .textStyle(.rowSubtitle)
-                        .foregroundStyle(BudgieColor.textSecondary)
-                        .singleLine()
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                VStack(alignment: .trailing, spacing: 2) {
                     Text(card.amount)
-                        .textStyle(.chipAmount)
-                        .foregroundStyle(tint)
+                        .textStyle(Self.amountText)
+                        .foregroundStyle(card.isOver ? BudgieColor.featureDanger : BudgieColor.featureAmount)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
-                    HStack(spacing: 2) {
-                        Text("DETAILS").textStyle(Self.details)
-                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold))
-                    }
-                    .foregroundStyle(BudgieColor.textTertiary)
-                    .fixedSize()
+                    Text(card.subtitle)
+                        .textStyle(Self.subtitleText)
+                        .foregroundStyle(BudgieColor.featureSecondary)
+                        .wrapsWords()
                 }
-                .padding(.leading, 8)
-                .layoutPriority(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(BudgieColor.featureText)
+                    .frame(width: 38, height: 38)
+                    .background(BudgieColor.featureControl, in: Circle())
+                    .accessibilityHidden(true)
             }
-            .accessibilityElement(children: .ignore)
+            .featureCard()
         }
+        .buttonStyle(PressScaleStyle(scale: 0.98))
+        .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(card.accessibilityLabel)
+        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("home.safeToSpend")
     }
 }
@@ -334,13 +327,26 @@ private struct RecentActivityCard: View {
 
     var body: some View {
         if rows.isEmpty {
-            GlowCard {
+            // The empty-state pattern (dashed card, accent tile) in a compact
+            // form: a full 72pt tile and padding is too heavy under the hero.
+            let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+            VStack(spacing: 10) {
+                Image(systemName: "tray")
+                    .font(.system(size: 22, weight: .medium))
+                    .foregroundStyle(BudgieColor.accent)
+                    .frame(width: 48, height: 48)
+                    .background(BudgieColor.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .accessibilityHidden(true)
                 Text("No transactions yet.")
                     .textStyle(Self.empty)
                     .foregroundStyle(BudgieColor.textSecondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .multilineTextAlignment(.center)
             }
+            .padding(.vertical, 24)
+            .padding(.horizontal, 24)
+            .frame(maxWidth: .infinity)
+            .overlay(shape.strokeBorder(BudgieColor.textTertiary.opacity(0.6), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])))
+            .accessibilityElement(children: .combine)
         } else {
             GlowListCard(rows: rows.map { RecentRow(record: $0.record, formatter: formatter) })
         }
@@ -361,10 +367,7 @@ private struct RecentRow: View {
             if isIncome {
                 IconTile(symbol: "arrow.down.left", color: BudgieColor.income)
             } else {
-                IconTile(
-                    symbol: CategoryCatalog.symbol(
-                        for: model.categoryInfo(named: record.category, type: .expense)?.iconIdentifier ?? ""),
-                    color: BudgieColor.accent)
+                IconTile(category: model.categoryInfo(named: record.category, type: .expense))
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {

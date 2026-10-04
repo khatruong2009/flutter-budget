@@ -2,8 +2,9 @@ import SwiftUI
 
 /// The completion celebration (`_CompletionCelebration` and
 /// `_CelebrationPainter`, savings_goals_page.dart:1547-1692), 1600ms linear:
-/// a black scrim at 34%, 18 dots flying out from the centre (44 to 224pt,
-/// radii 3 / 4.5 / 6, success and accent alternating, fading as they go)
+/// the dialog scrim (Flutter: black at 34%), 18 dots flying out from the
+/// centre (44 to 224pt, radii 3 / 4.5 / 6, success and accent alternating,
+/// fading as they go)
 /// under a "Goal complete" card that scales 0.7 to 1 with Flutter's
 /// `easeOutBack` over the first 80%; everything fades out over the last
 /// 25%. It never takes touches. The page skips it under Reduce Motion.
@@ -23,7 +24,7 @@ struct CelebrationOverlay: View {
             let v = min(max(context.date.timeIntervalSince(start) / Self.duration, 0), 1)
             let fade = v < 0.75 ? 1 : min(max(1 - (v - 0.75) / 0.25, 0), 1)
             ZStack {
-                Color.black.opacity(0.34 * fade).ignoresSafeArea()
+                BudgieColor.scrim.opacity(fade).ignoresSafeArea()
                 Canvas { canvas, size in
                     let center = CGPoint(x: size.width / 2, y: size.height / 2)
                     let distance = 44 + 180 * v
@@ -66,9 +67,8 @@ struct CelebrationOverlay: View {
                     .foregroundStyle(BudgieColor.onAccent)
                     .frame(width: 72, height: 72)
                     .background(BudgieColor.income, in: Circle())
-                    .glow(BudgieColor.income, blur: 28, alpha: 0.55)
                 Text("Goal complete")
-                    .textStyle(.goalTitle)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .multilineTextAlignment(.center)
                     .padding(.top, 16)
@@ -80,6 +80,5 @@ struct CelebrationOverlay: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .glow(BudgieColor.income, blur: 40, alpha: 0.35)
     }
 }

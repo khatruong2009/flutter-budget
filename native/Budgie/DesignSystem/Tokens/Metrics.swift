@@ -41,12 +41,11 @@ enum Metrics {
     static let pageHorizontal: CGFloat = 20
     static let sectionGap: CGFloat = 28
     static let cardPadding: CGFloat = 20
-    static let cardRadius: CGFloat = 26
+    static let cardRadius: CGFloat = 22
     static let statCardRadius: CGFloat = 22
     static let listCardPadding: CGFloat = 8
     static let hairlineInset: CGFloat = 12
-    static let sheetRadius: CGFloat = 28
-    static let flowSheetRadius: CGFloat = 24
+    static let sheetRadius: CGFloat = 30
     static let logoMark: CGFloat = 36
     static let logoMarkRadius: CGFloat = 12
     static let fabSize: CGFloat = 54
@@ -54,5 +53,9 @@ enum Metrics {
     static let fabInset: CGFloat = 20
     static let pillButtonHeight: CGFloat = 52
     static let pillButtonCompactHeight: CGFloat = 44
+    static let fieldRadius: CGFloat = 16
+    static let formRowHeight: CGFloat = 48
+    /// A form row's label column (`FormRow`).
+    static let formLabelWidth: CGFloat = 64
     static let maxContentWidth: CGFloat = 600
 }

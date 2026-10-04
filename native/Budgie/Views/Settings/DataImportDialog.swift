@@ -45,7 +45,7 @@ struct DataImportDialog: View {
                 .padding(.top, 12)
             }
             HStack(spacing: 12) {
-                PillButton(title: CSVImport.cancelButtonTitle, color: BudgieColor.textSecondary, height: 44, action: onCancel)
+                PillButton(title: CSVImport.cancelButtonTitle, color: BudgieColor.textPrimary, height: 44, action: onCancel)
                     .disabled(busy)
                     .opacity(busy ? 0.4 : 1)
                     .accessibilityIdentifier("\(identifier).cancel")

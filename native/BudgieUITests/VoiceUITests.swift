@@ -94,7 +94,8 @@ final class VoiceUITests: XCTestCase {
         XCTAssertTrue(app.textFields["Amount"].waitForExistence(timeout: 5), file: file, line: line)
     }
 
-    private var categoryWheel: String { app.pickerWheels.firstMatch.value as? String ?? "" }
+    /// The form's selected category (the Category row's value).
+    private var categoryWheel: String { app.formCategory.value as? String ?? "" }
 
     /// Drags the sheet (grabbed at `element`) to the bottom of the screen.
     private func dragSheetDown(from element: XCUIElement) {

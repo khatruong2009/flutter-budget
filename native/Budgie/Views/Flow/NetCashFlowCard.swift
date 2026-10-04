@@ -135,17 +135,11 @@ private struct NetCashFlowBarColumn: View {
         return bar.isPositive ? BudgieColor.income.opacity(0.45) : BudgieColor.danger.opacity(0.6)
     }
 
-    @ViewBuilder
     private func barShape(_ color: Color) -> some View {
         // Flutter's `BorderRadius.circular(10)`; SwiftUI clamps the radius
         // on short bars as Flutter does.
-        let shape = RoundedRectangle(cornerRadius: CashFlowMath.barCornerRadius, style: .circular)
+        RoundedRectangle(cornerRadius: CashFlowMath.barCornerRadius, style: .circular)
             .fill(color)
             .frame(width: barWidth, height: CGFloat(bar.height))
-        if bar.isCurrent {
-            shape.glow(color, blur: 20, alpha: 0.6)
-        } else {
-            shape
-        }
     }
 }

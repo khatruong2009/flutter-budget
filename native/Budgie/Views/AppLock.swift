@@ -123,8 +123,7 @@ final class AppLockWindow {
         // While locked, VoiceOver reaches only the lock screen: the whole
         // app window (tabs, tour, any sheet or over-full-screen host) is out.
         mainWindow.accessibilityElementsHidden = locked
-        window.rootViewController?.view.backgroundColor =
-            locked ? UIColor(BudgieColor.background) : UIColor(red: 0x0A / 255, green: 0x0A / 255, blue: 0x12 / 255, alpha: 1)
+        window.rootViewController?.view.backgroundColor = UIColor(BudgieColor.background)
         window.isHidden = !(locked || showsPrivacyCover)
         guard !window.isHidden else { return }
         // Committed before the callback returns, so the snapshot has it.
@@ -167,21 +166,22 @@ private struct AppLockWindowRoot: View {
     }
 }
 
-/// The app-switcher cover (`_AppSwitcherPrivacyCover`): opaque #0A0A12 in
-/// both themes, 72pt mark, "Budgie", "App preview hidden".
+/// The app-switcher cover (`_AppSwitcherPrivacyCover`): opaque, on the page
+/// background of the current palette, 72pt mark, "Budgie", "App preview
+/// hidden".
 struct PrivacyCover: View {
     var body: some View {
         ZStack {
-            Color(hex: 0x0A0A12).ignoresSafeArea()
+            BudgieColor.background.ignoresSafeArea()
             VStack(spacing: 0) {
                 Image("logo").resizable().scaledToFit().frame(width: 72, height: 72)
                 Text("Budgie")
-                    .textStyle(.headingLarge)
-                    .foregroundStyle(Color(hex: 0xF2F2FA))
+                    .textStyle(.pageTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
                     .padding(.top, Metrics.spacingM)
                 Text("App preview hidden")
                     .textStyle(.bodyMedium)
-                    .foregroundStyle(Color(hex: 0x9A9AB5))
+                    .foregroundStyle(BudgieColor.textSecondary)
                     .padding(.top, Metrics.spacingXS)
             }
         }
@@ -189,8 +189,9 @@ struct PrivacyCover: View {
     }
 }
 
-/// The lock screen (`_LockScreen`), in the redesign tokens: lock symbol,
-/// "Budgie is locked", the reason or the last error, and an Unlock button.
+/// The lock screen (`_LockScreen`), in the redesign tokens: the mark,
+/// "Budgie is locked", the reason or the last error, and a filled accent
+/// Unlock pill.
 struct LockScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     let onUnlock: () -> Void
@@ -203,12 +204,10 @@ struct LockScreen: View {
         ZStack {
             BudgieColor.background.ignoresSafeArea()
             VStack(spacing: 0) {
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 48, weight: .semibold))
-                    .foregroundStyle(BudgieColor.accent)
+                Image("logo").resizable().scaledToFit().frame(width: 72, height: 72)
                     .accessibilityHidden(true)
                 Text("Budgie is locked")
-                    .textStyle(.headingLarge)
+                    .textStyle(.pageTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .padding(.top, Metrics.spacingL)
                     .accessibilityAddTraits(.isHeader)

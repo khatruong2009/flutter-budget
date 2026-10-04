@@ -5,7 +5,8 @@ import SwiftUI
 /// category_settings_page.dart:26-181), pushed from Settings >
 /// PERSONALIZATION > Categories: the Expenses | Income pills, "Show
 /// archived", then one card per definition of the selected type in sort
-/// order (archived ones interleaved, only while the switch is on). The bar's
+/// order (archived ones interleaved, only while the switch is on), as rows
+/// in one card with hairlines between them (REDESIGN_PLAN 4.7). The bar's
 /// "+" opens the editor for the selected type; each row's menu offers Edit,
 /// Move up, Move down and Archive / Restore.
 ///
@@ -24,9 +25,6 @@ struct CategoriesView: View {
     @State private var showArchived = false
     @State private var editor: CategoryEditorRequest?
 
-    /// `SwitchListTile`'s title: M3 `bodyLarge` (16 / 1.5, tracking 0.5).
-    private static let switchTitle = TextSpec(face: .gabaritoRegular, size: 16, tracking: 0.5, height: 1.5, relativeTo: .body)
-
     private var type: TransactionType { typeIndex == 0 ? .expense : .income }
 
     var body: some View {
@@ -37,19 +35,17 @@ struct CategoriesView: View {
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Category type")
                 .accessibilityIdentifier("categories.type")
-                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.spacingM, bottom: 0, trailing: Metrics.spacingM))
+                .padding(EdgeInsets(top: Metrics.spacingS, leading: Metrics.pageHorizontal, bottom: 0, trailing: Metrics.pageHorizontal))
             archivedSwitch
             ScrollView {
-                LazyVStack(spacing: Metrics.spacingS) {
-                    ForEach(Self.keyed(categories), id: \.key) { item in
-                        CategoryRow(
-                            category: item.category,
-                            actions: CategoryRowAction.menu(
-                                index: item.index, count: categories.count, isArchived: item.category.isArchived)
-                        ) { perform($0, on: item.category) }
-                    }
-                }
-                .padding(EdgeInsets(top: 0, leading: Metrics.spacingM, bottom: Metrics.spacingXL, trailing: Metrics.spacingM))
+                GlowListCard(lazy: true, rows: Self.keyed(categories).map { item in
+                    CategoryRow(
+                        category: item.category,
+                        actions: CategoryRowAction.menu(
+                            index: item.index, count: categories.count, isArchived: item.category.isArchived)
+                    ) { perform($0, on: item.category) }
+                })
+                .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: Metrics.spacingXL, trailing: Metrics.pageHorizontal))
             }
             // A new list per type, starting at the top: the kept offset of a
             // scrolled Expenses list left the shorter Income list above the
@@ -87,16 +83,17 @@ struct CategoriesView: View {
         }
     }
 
-    /// `SwitchListTile.adaptive` (padding 24 horizontal, 56 tall): the
-    /// systemGreen switch, and the title also toggles it (the whole tile
-    /// is Flutter's tap target). VoiceOver reads the switch by the title.
+    /// `SwitchListTile.adaptive` (56 tall, inset 24 like an eyebrow):
+    /// the `switchOn` switch, and the title (rowTitle) also toggles it (the
+    /// whole tile is Flutter's tap target). VoiceOver reads the switch by
+    /// the title.
     /// The title's tap and the switch do not overlap: a zero-length
     /// synthetic tap (Simulator tooling) misses every system switch in the
     /// app, Settings' included, while a real touch toggles it once.
     private var archivedSwitch: some View {
         HStack(spacing: Metrics.spacingM) {
             Text("Show archived")
-                .textStyle(Self.switchTitle)
+                .textStyle(.rowTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
@@ -104,13 +101,10 @@ struct CategoriesView: View {
                 .accessibilityHidden(true)
             Toggle("Show archived", isOn: $showArchived)
                 .labelsHidden()
-                .tint(.green)
+                .tint(BudgieColor.switchOn)
                 .accessibilityIdentifier("categories.showArchived")
         }
-        .padding(.leading, Metrics.spacingL)
-        // CupertinoSwitch keeps its own margin inside the tile: its track
-        // ends about 30pt from the edge.
-        .padding(.trailing, Metrics.spacingL + Metrics.spacingS)
+        .padding(.horizontal, Metrics.pageHorizontal + Metrics.spacingXS)
         .frame(minHeight: 56)
     }
 
@@ -199,19 +193,17 @@ enum CategoryRowAction: Hashable {
 }
 
 extension Metrics {
-    /// Categories' glyphs (row tiles, the editor's icon grid, the row
-    /// menu): SF Symbols draw about 18% larger than Flutter's Cupertino and
-    /// Material glyphs at the same size, so 17 renders like Flutter's 20
-    /// (tile and grid, measured) and its 24pt `more_horiz`.
+    /// Categories' glyphs (the editor's icon grid, the row menu): SF
+    /// Symbols draw about 18% larger than Flutter's Cupertino and Material
+    /// glyphs at the same size, so 17 renders like Flutter's 20 (grid,
+    /// measured) and its 24pt `more_horiz`.
     static let categoryGlyph: CGFloat = 17
 }
 
-/// One definition (`GlowCard(padding: 8)` around a two-line M3 `ListTile`,
-/// :90-141): content padding 16 / 24, the 40pt tile in the category colour,
-/// 16 apart, the name over the subtitle 4 apart as the M3 two-line layout
-/// places them (an empty subtitle still takes its line, as Flutter's empty
-/// `Text`), the 48pt "Category actions" menu; 72 tall. No row tap (as
-/// Flutter).
+/// One definition, as Home's Recent activity rows: the category's 40pt
+/// tile, 12 apart, the name (rowTitle) over the subtitle (rowSubtitle,
+/// secondary; "Built in", "Archived", or nothing), then the 44pt "Category
+/// actions" menu. No row tap (as Flutter).
 ///
 /// VoiceOver: the text is one element ("Groceries", "Built in") offering
 /// the menu's items as actions; the menu button follows it, valued with the
@@ -221,59 +213,50 @@ private struct CategoryRow: View {
     let actions: [CategoryRowAction]
     let onAction: (CategoryRowAction) -> Void
 
-    /// `rowTitle` / `rowSubtitle` as `ListTile` renders them: they set no
-    /// letter spacing, so M3's `bodyLarge` (0.5) and `bodyMedium` (0.25)
-    /// tracking carries over.
-    private static let title = TextSpec(face: .gabaritoSemiBold, size: 15, tracking: 0.5, height: 1.25, relativeTo: .body)
-    private static let subtitle = TextSpec(
-        face: .gabaritoRegular, size: 12, tracking: 0.25, height: 1.25, relativeTo: .caption)
-
     var body: some View {
         let subtitle = CategoryRowAction.subtitle(for: category)
-        GlowCard(padding: Metrics.spacingS) {
-            HStack(spacing: Metrics.spacingM) {
-                IconTile(
-                    symbol: CategoryCatalog.symbol(for: category.iconIdentifier),
-                    color: BudgieColor.category(category.colorToken), iconSize: Metrics.categoryGlyph)
-                VStack(alignment: .leading, spacing: Metrics.spacingXS) {
-                    Text(category.name)
-                        .textStyle(Self.title)
-                        .foregroundStyle(BudgieColor.textPrimary)
-                    Text(subtitle.isEmpty ? " " : subtitle)
-                        .textStyle(Self.subtitle)
+        HStack(spacing: 12) {
+            IconTile(category: category)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(category.name)
+                    .textStyle(.rowTitle)
+                    .foregroundStyle(BudgieColor.textPrimary)
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .textStyle(.rowSubtitle)
                         .foregroundStyle(BudgieColor.textSecondary)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(category.name)
-                .accessibilityValue(subtitle)
-                .accessibilityActions {
-                    ForEach(actions, id: \.self) { action in
-                        Button(action.title) { onAction(action) }
-                    }
-                }
-                .accessibilityIdentifier("categories.row.\(category.id)")
-                Menu {
-                    ForEach(actions, id: \.self) { action in
-                        Button(action.title) { onAction(action) }
-                    }
-                } label: {
-                    // Material `more_horiz` (24) in a 48pt IconButton; bold
-                    // gives its larger dots.
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: Metrics.categoryGlyph, weight: .bold))
-                        .foregroundStyle(BudgieColor.textSecondary)
-                        .frame(width: 48, height: 48)
-                        .contentShape(Rectangle())
-                }
-                .menuOrder(.fixed)
-                .accessibilityLabel("Category actions")
-                .accessibilityValue(category.name)
-                .accessibilityIdentifier("categories.row.menu.\(category.id)")
             }
-            .padding(.leading, Metrics.spacingM)
-            .padding(.trailing, Metrics.spacingL)
-            .frame(minHeight: 72)
+            .frame(maxWidth: .infinity, minHeight: Metrics.touchTarget, alignment: .leading)
+            .contentShape(Rectangle())
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(category.name)
+            .accessibilityValue(subtitle)
+            .accessibilityActions {
+                ForEach(actions, id: \.self) { action in
+                    Button(action.title) { onAction(action) }
+                }
+            }
+            .accessibilityIdentifier("categories.row.\(category.id)")
+            Menu {
+                ForEach(actions, id: \.self) { action in
+                    Button(action.title) { onAction(action) }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: Metrics.categoryGlyph, weight: .bold))
+                    .foregroundStyle(BudgieColor.textSecondary)
+                    .frame(width: Metrics.touchTarget, height: Metrics.touchTarget)
+                    .contentShape(Rectangle())
+            }
+            .menuOrder(.fixed)
+            .accessibilityLabel("Category actions")
+            .accessibilityValue(category.name)
+            .accessibilityIdentifier("categories.row.menu.\(category.id)")
         }
+        .padding(.vertical, 12)
+        .padding(.leading, 12)
+        // The menu's 44pt box already insets its dots.
+        .padding(.trailing, 2)
     }
 }

@@ -22,10 +22,11 @@ struct TransactionsPreviewCard: View {
     }
 }
 
-/// `_TransactionRow` (hp:1057-1135): padding 12; the category's icon on an
-/// income (or, for expenses, accent) tile; description over "category ·
-/// MMM d"; the signed amount, green for income and primary text for
-/// expenses. No press scale; a light haptic on tap.
+/// `_TransactionRow` (hp:1057-1135) as a SEE ALL row: padding 12; the
+/// category's tile (its icon and colour; Flutter tints every tile income
+/// green or accent); description over "category · MMM d"; the signed
+/// amount, green for income and primary text for expenses. No press scale;
+/// a light haptic on tap.
 private struct FlowTransactionRow: View {
     let record: TransactionRecord
     let formatter: MoneyFormatter
@@ -37,13 +38,14 @@ private struct FlowTransactionRow: View {
     var body: some View {
         let isIncome = record.type == .income
         let day = DartDateFormat.MMMd(record.date)
+        let info = model.categoryInfo(named: record.category, type: record.type)
         Button {
             taps += 1
             action()
         } label: {
             HStack(spacing: 12) {
-                IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent)
-                VStack(alignment: .leading, spacing: 3) {
+                FlowCategoryTile(info: info, isIncome: isIncome)
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         // Flutter shows a blank line for an empty description.
                         Text(record.description.isEmpty ? " " : record.description)
@@ -77,13 +79,21 @@ private struct FlowTransactionRow: View {
         .accessibilityHint("Opens all transactions")
         .accessibilityIdentifier("flow.preview.row")
     }
+}
 
-    /// The category's icon, else Flutter's fallback (`money_dollar` for
-    /// income, `square_grid_2x2` for expenses, hp:1131-1135).
-    private var symbol: String {
-        if let info = model.categoryInfo(named: record.category, type: record.type) {
-            return CategoryCatalog.symbol(for: info.iconIdentifier)
+/// A Flow row's 40pt tile: the category's (`IconTile(category:)`), else
+/// Flutter's fallback icon (`money_dollar` for income, `square_grid_2x2` for
+/// expenses, hp:1131-1135) in income green or accent.
+struct FlowCategoryTile: View {
+    let info: CategoryInfo?
+    let isIncome: Bool
+
+    var body: some View {
+        if let info {
+            IconTile(category: info)
+        } else {
+            IconTile(
+                symbol: isIncome ? "dollarsign" : "square.grid.2x2", color: isIncome ? BudgieColor.income : BudgieColor.accent)
         }
-        return record.type == .income ? "dollarsign" : "square.grid.2x2"
     }
 }
