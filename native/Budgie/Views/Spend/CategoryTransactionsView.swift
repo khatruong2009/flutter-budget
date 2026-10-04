@@ -2,10 +2,11 @@ import BudgieCore
 import SwiftUI
 
 /// A category's expenses in one month (`CategoryTransactionsPage`,
-/// category_transactions_page.dart), pushed from a Spend row: the tinted
-/// "TOTAL SPENT" card, then the rows newest first. Rows open the edit form
-/// and swipe to delete behind the confirmation (a superset of Flutter's
-/// read-only, swipe-only rows, like D7).
+/// category_transactions_page.dart), pushed from a Spend row: the "TOTAL
+/// SPENT" card, then the rows newest first in one card, as SEE ALL's day
+/// cards. Rows open the edit form and swipe to delete behind the
+/// confirmation (a superset of Flutter's read-only, swipe-only rows, like
+/// D7).
 ///
 /// Live: the rows come from `model.ledger` on every change, and the colour
 /// and icon follow the category's current rank in the month (Flutter keeps
@@ -17,6 +18,7 @@ struct CategoryTransactionsView: View {
     @Environment(AppModel.self) private var model
     @State private var editing: TransactionRecord?
     @State private var pendingDelete: TransactionRecord?
+    @State private var rowTaps = 0
     @State private var deleteConfirms = 0
 
     var body: some View {
@@ -46,18 +48,26 @@ struct CategoryTransactionsView: View {
                     .accessibilityAddTraits(.isHeader)
                     .padding(EdgeInsets(top: 28, leading: 24, bottom: 0, trailing: 24))
                 ScrollView {
-                    LazyVStack(spacing: 10) {
-                        ForEach(rows) { row in
-                            SwipeToDeleteRow {
-                                pendingDelete = row.record
-                            } content: {
-                                ExpenseRow(record: row.record, color: color, symbol: symbol, formatter: formatter) {
-                                    editing = row.record
+                    // One card, a hairline between rows (SEE ALL's day
+                    // cards). The swipe slides a row (on the card fill) over
+                    // the delete background; the card clips it at its edge.
+                    GlowCard(padding: Metrics.listCardPadding) {
+                        LazyVStack(spacing: 0) {
+                            ForEach(rows) { row in
+                                if row.id != rows.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                                SwipeToDeleteRow {
+                                    pendingDelete = row.record
+                                } content: {
+                                    ExpenseRow(record: row.record, color: color, symbol: symbol, formatter: formatter) {
+                                        rowTaps += 1
+                                        editing = row.record
+                                    }
+                                    .background(BudgieColor.card)
                                 }
                             }
-                            .clipShape(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
                         }
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
                     .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: Metrics.pageHorizontal, trailing: Metrics.pageHorizontal))
                 }
             }
@@ -95,6 +105,7 @@ struct CategoryTransactionsView: View {
         } message: { _ in
             Text("Are you sure you want to delete this transaction?")
         }
+        .sensoryFeedback(.impact(weight: .light), trigger: rowTaps)
         .sensoryFeedback(.impact(weight: .heavy), trigger: deleteConfirms)
     }
 
@@ -117,10 +128,9 @@ struct CategoryTransactionsView: View {
     }
 }
 
-/// `_buildSummaryCard` (:159-235): a card tinted from the category colour
-/// at 22% (top-leading) to the plain card, a 30% border, "TOTAL SPENT", the
-/// total with two decimals and the colour's text glow, the month and count
-/// pills, and the 56pt tile.
+/// `_buildSummaryCard` (:159-235) as a plain card (Flutter tints it with the
+/// category colour): "TOTAL SPENT", the total with two decimals, the month
+/// and count pills in the category colour, and the 56pt tile.
 private struct SummaryCard: View {
     let total: String
     let month: DartDateTime
@@ -130,16 +140,12 @@ private struct SummaryCard: View {
 
     var body: some View {
         let (monthText, countText) = MonthListCopy.drillInPills(month: month, count: count)
-        GlowCard(
-            fill: AnyShapeStyle(LinearGradient(
-                colors: [color.opacity(0.22), color.opacity(0)], startPoint: .topLeading, endPoint: .bottomTrailing)),
-            border: color.opacity(0.3)
-        ) {
+        GlowCard {
             HStack(spacing: 14) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("TOTAL SPENT")
                         .textStyle(.eyebrow)
-                        .foregroundStyle(BudgieColor.textSecondaryOnTint)
+                        .foregroundStyle(BudgieColor.textSecondary)
                     Text(total)
                         .textStyle(.heroSmall)
                         .foregroundStyle(BudgieColor.textPrimary)
@@ -156,8 +162,6 @@ private struct SummaryCard: View {
                 IconTile(symbol: symbol, color: color, size: 56, radius: 18, iconSize: 28)
             }
         }
-        // The gradient is drawn over the plain card (Flutter alpha-blends it in).
-        .background(BudgieColor.card, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Total spent \(total), \(monthText), \(countText)")
         .accessibilityIdentifier("spend.drillIn.summary")
@@ -165,14 +169,15 @@ private struct SummaryCard: View {
 
     @ViewBuilder
     private func pills(_ month: String, _ count: String) -> some View {
-        PillChip(label: month, color: color, textColor: BudgieColor.legible(color, tint: 0.35))
-        PillChip(label: count, color: color, textColor: BudgieColor.legible(color, tint: 0.35))
+        PillChip(label: month, color: color, textColor: BudgieColor.legible(color))
+        PillChip(label: count, color: color, textColor: BudgieColor.legible(color))
     }
 }
 
-/// `_TransactionRow` (:236-330): a card (padding 12/14) with the category
-/// tile, the description (and the recurrence glyph), the `MMMd` date, and
-/// the unsigned two-decimal amount.
+/// `_TransactionRow` (:236-330) as a SEE ALL row (padding 12): the category
+/// tile in its Spend colour, the description (and the recurrence glyph),
+/// the `MMMd` date, and the unsigned two-decimal amount (Flutter's; the
+/// page lists only expenses).
 private struct ExpenseRow: View {
     let record: TransactionRecord
     let color: Color
@@ -182,7 +187,7 @@ private struct ExpenseRow: View {
 
     var body: some View {
         let amount = formatter.format(record.amount)
-        GlowCard(padding: 0, onTap: onTap) {
+        Button(action: onTap) {
             HStack(spacing: 12) {
                 IconTile(symbol: symbol, color: color)
                 VStack(alignment: .leading, spacing: 2) {
@@ -195,7 +200,7 @@ private struct ExpenseRow: View {
                     }
                     Text(DartDateFormat.MMMd(record.date))
                         .textStyle(.rowSubtitle)
-                        .foregroundStyle(BudgieColor.textTertiary)
+                        .foregroundStyle(BudgieColor.textSecondary)
                 }
                 .frame(minWidth: 56, maxWidth: .infinity, alignment: .leading)
                 // First pick of the row's width; truncates rather than
@@ -206,15 +211,15 @@ private struct ExpenseRow: View {
                     .lineLimit(1)
                     .layoutPriority(1)
             }
-            .padding(.vertical, 12)
-            .padding(.horizontal, 14)
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
-        .accessibilityElement(children: .ignore)
+        .buttonStyle(.plain)
+        // On the Button itself, so VoiceOver keeps its activation.
         .accessibilityLabel(
             "\(record.description), \(amount), on \(DartDateFormat.yMMMMd(record.date))\(record.isRecurring ? ", recurring" : "")")
         .accessibilityHint("Double tap to edit, swipe left to delete")
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction { onTap() }
         .accessibilityIdentifier("spend.drillIn.row")
     }
 }

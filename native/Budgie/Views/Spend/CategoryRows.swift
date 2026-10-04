@@ -40,18 +40,17 @@ struct SpendListRow: View {
     }
 }
 
-/// `_buildCategoryRow` (category_page.dart:286-387): tile in the rank
-/// colour, name over "N transactions · P%" (plus the limit note), the
-/// whole-unit amount, then a 6pt bar against the largest category. The
-/// selected slice's row (ranks 0...5) takes its colour at 14% (8% light),
+/// `_buildCategoryRow` (category_page.dart:286-387) as a list row
+/// (REDESIGN_PLAN 4.7): tile in the rank colour, name over "N transactions
+/// · P%" (plus the limit note), the whole-unit amount, then a 6pt bar
+/// against the largest category, under the text. The selected slice's row
+/// (ranks 0...5) takes its colour at 10% (Flutter: 14% dark, 8% light),
 /// fading in over 200 ms.
 private struct CategoryRow: View {
     let record: CategoryBreakdown.Record
     let symbol: String
     let highlighted: Bool
     let formatter: MoneyFormatter
-
-    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         let color = record.palette.color
@@ -61,12 +60,13 @@ private struct CategoryRow: View {
             SpendRowLine(
                 tile: IconTile(symbol: symbol, color: color), title: record.name, subtitle: subtitle, amount: amount)
             GlowProgressBar(value: record.barFraction, height: 6, color: color)
+                .padding(.leading, SpendRowLine.textInset)
                 .accessibilityHidden(true)
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 10)
         .background(
-            highlighted ? color.opacity(scheme == .dark ? 0.14 : 0.08) : .clear,
+            highlighted ? color.opacity(0.1) : .clear,
             in: RoundedRectangle(cornerRadius: 18, style: .continuous)
         )
         .motion(Motion.easeOut(0.2), value: highlighted)
@@ -80,7 +80,8 @@ private struct CategoryRow: View {
 }
 
 /// `_buildTailRow` (:389-463): a neutral "more" tile, "N more categories"
-/// over the names, their total, and a bar in the remainder colour.
+/// over the names, their total, and a bar in the remainder colour under the
+/// text.
 private struct TailRow: View {
     let tail: CategoryBreakdown.Tail
     let formatter: MoneyFormatter
@@ -92,6 +93,7 @@ private struct TailRow: View {
                 tile: IconTile(symbol: "ellipsis", color: BudgieColor.textSecondary, background: BudgieColor.hairline),
                 title: tail.title, subtitle: tail.subtitle, amount: amount)
             GlowProgressBar(value: tail.barFraction, height: 6, color: BudgieColor.donutRemainder)
+                .padding(.leading, SpendRowLine.textInset)
                 .accessibilityHidden(true)
         }
         .padding(.vertical, 14)
@@ -120,13 +122,18 @@ private struct CollapseRow: View {
     }
 }
 
-/// The shared top line: tile, 12, title over subtitle (one line each),
-/// 8, the amount at its full width.
+/// The shared top line (Home's Recent activity rows): the 40pt tile, 12,
+/// title over subtitle (one line each), 8, the amount at its full width in
+/// `amountSmall`.
 private struct SpendRowLine: View {
     let tile: IconTile
     let title: String
     let subtitle: String
     let amount: String
+
+    /// Where the text starts: the tile and its gap (the bars line up with
+    /// it, as in the Spend mockup).
+    static let textInset: CGFloat = 40 + 12
 
     var body: some View {
         HStack(spacing: 0) {
@@ -148,7 +155,7 @@ private struct SpendRowLine: View {
             // cut; one wider than the row truncates instead of widening the
             // page (Flutter overflows the screen there).
             Text(amount)
-                .textStyle(.amount)
+                .textStyle(.amountSmall)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .lineLimit(1)
                 .layoutPriority(1)

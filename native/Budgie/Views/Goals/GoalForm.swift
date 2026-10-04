@@ -68,7 +68,7 @@ struct GoalFormDialog: View {
         let amountSymbol = AmountInput.currencySymbolName(formatter)
         VStack(spacing: 0) {
             Text(goal == nil ? "Add savings goal" : "Edit savings goal")
-                .textStyle(.goalTitle)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -76,7 +76,7 @@ struct GoalFormDialog: View {
             DialogScroll { fields(amountSymbol: amountSymbol) }
                 .padding(.top, 20)
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onCancel)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onCancel)
                     .accessibilityIdentifier("goals.form.cancel")
                 PillButton(
                     title: goal == nil ? "Add" : "Update", symbol: goal == nil ? "plus" : "checkmark", filled: true, height: 44,

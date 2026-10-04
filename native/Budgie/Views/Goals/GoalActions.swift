@@ -2,10 +2,11 @@ import BudgieCore
 import SwiftUI
 
 /// The ellipsis sheet's content (`_showGoalActions`,
-/// savings_goals_page.dart:371-428): the goal's name, "Edit goal" and
-/// "Delete goal", shown by the page's `budgieDialog` at the bottom
-/// placement (one floating GlowCard with vertical padding 8, 20pt from the
-/// edges, over the scrim, as Flutter's transparent modal sheet). A tile
+/// savings_goals_page.dart:371-428) in the sheet pattern (REDESIGN_PLAN
+/// 4.3): the goal's name as the title, then "Edit goal" and "Delete goal"
+/// as list rows with a hairline between them, shown by the page's
+/// `budgieDialog` at the bottom placement (one floating card 20pt from the
+/// edges, over the scrim, as Flutter's transparent modal sheet). A row
 /// fires a light haptic; the page then swaps the sheet for that dialog.
 struct GoalActionsSheet: View {
     let goal: SavingsGoalRecord
@@ -15,24 +16,26 @@ struct GoalActionsSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(goal.name)
-                .textStyle(.goalTitle)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .singleLine()
                 .accessibilityAddTraits(.isHeader)
                 .padding(EdgeInsets(top: 12, leading: 12, bottom: 8, trailing: 12))
             GoalActionTile(title: "Edit goal", symbol: "pencil", color: BudgieColor.textPrimary, action: onEdit)
                 .accessibilityIdentifier("goals.actions.edit")
+            Hairline().padding(.horizontal, Metrics.hairlineInset)
             GoalActionTile(title: "Delete goal", symbol: "trash", color: BudgieColor.danger, action: onDelete)
                 .accessibilityIdentifier("goals.actions.delete")
         }
-        .padding(.vertical, 8)
+        .padding(8)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("goals.actions")
     }
 }
 
 /// `_GoalActionTile` (savings_goals_page.dart:962-1001): 40pt tile tinted
-/// like the label, 14pt gap, rowTitle; the whole row taps.
+/// like the label, 14pt gap, rowTitle, at least 48pt tall; the whole row
+/// taps.
 private struct GoalActionTile: View {
     let title: String
     let symbol: String
@@ -71,7 +74,7 @@ struct DeleteGoalDialog: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("Delete savings goal?")
-                .textStyle(.goalTitle)
+                .textStyle(.sheetTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -86,7 +89,7 @@ struct DeleteGoalDialog: View {
             }
             .padding(.top, 12)
             HStack(spacing: 12) {
-                PillButton(title: "Cancel", color: BudgieColor.textSecondary, height: 44, action: onCancel)
+                PillButton(title: "Cancel", color: BudgieColor.textPrimary, height: 44, action: onCancel)
                     .accessibilityIdentifier("goals.delete.cancel")
                 PillButton(title: "Delete", color: BudgieColor.danger, filled: true, height: 44, action: onDelete)
                     .accessibilityIdentifier("goals.delete.confirm")

@@ -33,7 +33,7 @@ struct FlowTransactionsView: View {
     @State private var selections = 0
     @State private var deleteConfirms = 0
 
-    /// `rowSubtitle` at 13 (empty message, "Showing ... matches").
+    /// `rowSubtitle` at 13 ("Showing ... matches").
     private static let smallText = TextSpec(face: .gabaritoRegular, size: 13, height: 1.25, relativeTo: .footnote)
     /// Material `TextButton` label (14/w500).
     private static let loadMoreText = TextSpec(face: .gabaritoMedium, size: 14, relativeTo: .subheadline)
@@ -213,18 +213,22 @@ struct FlowTransactionsView: View {
 
     /// The matches as one list card built lazily (each row draws its slice
     /// of the card), or the empty card, then 'Load more' while more match.
+    /// The empty card is the shared dashed one (REDESIGN_PLAN 4.5) with
+    /// Flutter's message: "No Results Found" while a filter is active, else
+    /// "No Transactions Yet" (Flutter shows only the message).
     @ViewBuilder
     private func resultRows(_ results: FilterResults, formatter: MoneyFormatter) -> some View {
         let count = results.rows.count
         if count == 0 {
-            GlowCard {
-                Text(filter.emptyMessage)
-                    .textStyle(Self.smallText)
-                    .foregroundStyle(BudgieColor.textSecondary)
-                    .padding(12)
-                    .accessibilityIdentifier("flow.all.empty")
+            Group {
+                if filter.isActive {
+                    EmptyStateView(kind: .noResults, message: filter.emptyMessage)
+                } else {
+                    EmptyStateView(
+                        kind: .noData, symbol: "tray", title: MonthListCopy.noTransactionsTitle, message: filter.emptyMessage)
+                }
             }
-            .padding(.horizontal, Metrics.pageHorizontal)
+            .accessibilityIdentifier("flow.all.empty")
             .padding(.top, Metrics.spacingM)
         } else {
             let visible = Array(results.rows.prefix(pagination.visible(of: count)))
@@ -236,7 +240,7 @@ struct FlowTransactionsView: View {
                 let isFirst = row.id == visible[0].id
                 ResultCell(
                     row: row, isFirst: isFirst, isLast: row.id == lastID, formatter: formatter,
-                    symbol: symbol(for: row.record)
+                    info: model.categoryInfo(named: row.record.category, type: row.record.type)
                 ) {
                     rowTaps += 1
                     editing = row.record
@@ -264,15 +268,6 @@ struct FlowTransactionsView: View {
                 .padding(.top, 12)
             }
         }
-    }
-
-    /// `_categoryIcon` (`hp:1131-1135`): the category's icon, else the
-    /// dollar (income) or the grid (expense).
-    private func symbol(for record: TransactionRecord) -> String {
-        if let info = model.categoryInfo(named: record.category, type: record.type) {
-            return CategoryCatalog.symbol(for: info.iconIdentifier)
-        }
-        return record.type == .income ? "dollarsign" : "square.grid.2x2"
     }
 }
 
@@ -409,13 +404,23 @@ private struct FiltersCard: View {
         }
     }
 
+    /// A filter chip (REDESIGN_PLAN 4.7): selected in the selection fill
+    /// with a check, otherwise outlined in the card border.
     private func tagChip(_ name: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            PillChip(
-                label: name, color: selected ? BudgieColor.accent : BudgieColor.textSecondary, outlined: !selected,
-                symbol: selected ? "checkmark" : nil, style: .labelSmall, horizontalPadding: 12, verticalPadding: 8)
-                // The chip draws about 34pt tall; the tap area is 44.
-                .tapArea(vertical: 5)
+            HStack(spacing: 6) {
+                if selected {
+                    Image(systemName: "checkmark").font(.system(size: 13, weight: .medium)).accessibilityHidden(true)
+                }
+                Text(name).textStyle(.labelSmall)
+            }
+            .foregroundStyle(selected ? BudgieColor.selectionText : BudgieColor.textSecondary)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(selected ? BudgieColor.selectionFill : Color.clear, in: Capsule())
+            .overlay(Capsule().strokeBorder(selected ? BudgieColor.selectionBorder : BudgieColor.cardBorder, lineWidth: 1))
+            // The chip draws about 34pt tall; the tap area is 44.
+            .tapArea(vertical: 5)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(name)
@@ -423,9 +428,10 @@ private struct FiltersCard: View {
     }
 }
 
-/// The search field (`hp:1654-1695`): chip surface, radius 16, 1pt card
-/// border (1.5pt accent while focused), the grid glyph Flutter uses as its
-/// prefix, and a minus button that clears it while the query is non-blank.
+/// The search field (`hp:1654-1695`) in the field style (REDESIGN_PLAN
+/// 4.1): field fill, radius 16, 1pt card border (2pt accent while focused),
+/// the grid glyph Flutter uses as its prefix, and a minus button that
+/// clears it while the query is non-blank.
 private struct SearchField: View {
     @Binding var text: String
     let showsClear: Bool
@@ -477,7 +483,10 @@ private struct SearchField: View {
         // The rest of the field focuses it; the text field keeps its own
         // touches (caret, selection menu).
         .background(FocusArea(shape: shape) { focused = true })
-        .overlay(shape.strokeBorder(focused ? BudgieColor.accent : BudgieColor.cardBorder, lineWidth: focused ? 1.5 : 1))
+        .overlay(
+            shape.strokeBorder(
+                focused ? BudgieColor.accent : BudgieColor.cardBorder,
+                lineWidth: focused ? Metrics.borderThick : Metrics.borderThin))
     }
 }
 
@@ -489,14 +498,14 @@ private struct FocusArea<S: Shape>: View {
     let focus: () -> Void
 
     var body: some View {
-        shape.fill(BudgieColor.chipSurface)
+        shape.fill(BudgieColor.fieldFill)
             .contentShape(shape)
             .onTapGesture(perform: focus)
             .accessibilityHidden(true)
     }
 }
 
-/// `_buildFilterButton` (`hp:1749-1812`): min height 56, chip surface,
+/// `_buildFilterButton` (`hp:1749-1812`): min height 56, field fill,
 /// radius 16, leading glyph, small label over the value, trailing chevron.
 /// Light haptic.
 private struct FilterButton: View {
@@ -539,7 +548,7 @@ private struct FilterButton: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity, minHeight: 56)
-            .background(BudgieColor.chipSurface, in: shape)
+            .background(BudgieColor.fieldFill, in: shape)
             .overlay(shape.strokeBorder(BudgieColor.cardBorder, lineWidth: 1))
             .contentShape(shape)
         }
@@ -589,8 +598,10 @@ private struct AmountField: View {
                 }
                 TextField(
                     label, text: $text,
+                    // Floated, no hint: a nil prompt would show the label
+                    // again inside the field, beside the currency prefix.
                     prompt: floated
-                        ? nil : Text(label).font(Self.restingLabel.font()).foregroundStyle(BudgieColor.textSecondary)
+                        ? Text("") : Text(label).font(Self.restingLabel.font()).foregroundStyle(BudgieColor.textSecondary)
                 )
                 .textStyle(.rowTitle)
                 .foregroundStyle(BudgieColor.textPrimary)
@@ -605,7 +616,10 @@ private struct AmountField: View {
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
         .background(FocusArea(shape: shape) { focused = true })
-        .overlay(shape.strokeBorder(focused ? BudgieColor.accent : BudgieColor.cardBorder, lineWidth: focused ? 1.5 : 1))
+        .overlay(
+            shape.strokeBorder(
+                focused ? BudgieColor.accent : BudgieColor.cardBorder,
+                lineWidth: focused ? Metrics.borderThick : Metrics.borderThin))
         .motion(Motion.easeOut(Motion.fast), value: floated)
     }
 }
@@ -622,7 +636,7 @@ private struct ResultCell: View {
     let isFirst: Bool
     let isLast: Bool
     let formatter: MoneyFormatter
-    let symbol: String
+    let info: CategoryInfo?
     let onTap: () -> Void
     let onDelete: () -> Void
 
@@ -632,7 +646,7 @@ private struct ResultCell: View {
         VStack(spacing: 0) {
             if !isFirst { Hairline().padding(.horizontal, Metrics.hairlineInset) }
             SwipeToDeleteRow(onDelete: onDelete) {
-                ResultRow(row: row, formatter: formatter, symbol: symbol, action: onTap)
+                ResultRow(row: row, formatter: formatter, info: info, action: onTap)
             }
             .clipShape(RoundedRectangle(cornerRadius: Metrics.radiusL, style: .continuous))
         }
@@ -644,7 +658,7 @@ private struct ResultCell: View {
     }
 }
 
-/// The part of a `GlowListCard` (radius 26, card fill, 1pt border) behind
+/// The part of a `GlowListCard` (radius 22, card fill, 1pt border) behind
 /// one row: the whole card shape stretched past the row's open edges and
 /// clipped to it, so the slices join into one card. It takes no touches:
 /// the clip does not limit hit testing, so the stretched shape would
@@ -668,13 +682,14 @@ private struct CardSlice: View {
     }
 }
 
-/// `_TransactionRow` (`hp:1057-1129`): tile (income green, expense accent),
-/// description over "{category} · {MMM d}", the signed amount (income
-/// green, expense in the text colour). Tapping opens the edit form (D7).
+/// `_TransactionRow` (`hp:1057-1129`) as a SEE ALL row: the category's tile
+/// (`FlowCategoryTile`), description over "{category} · {MMM d}", the
+/// signed amount (income green, expense in the text colour). Tapping opens
+/// the edit form (D7).
 private struct ResultRow: View {
     let row: LedgerRow
     let formatter: MoneyFormatter
-    let symbol: String
+    let info: CategoryInfo?
     let action: () -> Void
 
     var body: some View {
@@ -683,8 +698,8 @@ private struct ResultRow: View {
         let amount = row.flowAmountText(formatter)
         Button(action: action) {
             HStack(spacing: 12) {
-                IconTile(symbol: symbol, color: isIncome ? BudgieColor.income : BudgieColor.accent)
-                VStack(alignment: .leading, spacing: 3) {
+                FlowCategoryTile(info: info, isIncome: isIncome)
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         // A blank description keeps its line, as in Flutter.
                         Text(record.description.isEmpty ? " " : record.description)
@@ -728,10 +743,12 @@ private struct PickerOption {
     let selected: Bool
 }
 
-/// The 'SELECT CATEGORY' / 'SELECT MONTH' sheets (`hp:1847-2017`): eyebrow,
-/// then one row per option (selected: accent, bold, check). A pick calls
-/// `onPick` and closes the sheet. Sized to its content, at most 9/16 of the
-/// screen (Material's default); `maxListHeight` caps the list (months: 320).
+/// The 'SELECT CATEGORY' / 'SELECT MONTH' sheets (`hp:1847-2017`) in the
+/// sheet pattern (REDESIGN_PLAN 4.3): the eyebrow, then the options as rows
+/// in a card with hairlines between them (selected: bold, accent check). A
+/// pick calls `onPick` and closes the sheet. Sized to its content, at most
+/// 9/16 of the screen (Material's default); `maxListHeight` caps the list
+/// (months: 320).
 private struct PickerSheet: View {
     let title: String
     let options: [PickerOption]
@@ -749,62 +766,66 @@ private struct PickerSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
                 .textStyle(.eyebrow)
-                .foregroundStyle(BudgieColor.textTertiary)
+                .foregroundStyle(BudgieColor.textSecondary)
                 .accessibilityAddTraits(.isHeader)
-                // 12 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 16.
-                .padding(EdgeInsets(top: 12, leading: 20, bottom: 8, trailing: 20))
+                .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal + 4, bottom: 12, trailing: Metrics.pageHorizontal))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChangeCompat { headerHeight = $0.height }
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(options.indices, id: \.self) { index in
-                        optionRow(options[index]) {
-                            onPick(index)
-                            dismiss()
+            GlowCard(padding: 0) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(options.indices, id: \.self) { index in
+                            if index > 0 { Hairline() }
+                            optionRow(options[index]) {
+                                onPick(index)
+                                dismiss()
+                            }
                         }
                     }
+                    .padding(.horizontal, Metrics.spacingM)
+                    .padding(.vertical, Metrics.spacingXXS)
+                    .onGeometryChangeCompat { listHeight = $0.height }
                 }
-                .onGeometryChangeCompat { listHeight = $0.height }
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(maxHeight: maxListHeight)
             }
-            .scrollBounceBehavior(.basedOnSize)
-            .frame(maxHeight: maxListHeight)
-            .padding(.bottom, 8)
+            .padding(EdgeInsets(top: 0, leading: Metrics.pageHorizontal, bottom: Metrics.spacingM, trailing: Metrics.pageHorizontal))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .budgieSheetChrome(radius: Metrics.flowSheetRadius)
+        .budgieSheetChrome()
         .presentationDetents([detent])
     }
 
-    /// Handle, header, list and 8, at most 9/16 of the screen; the system
-    /// adds the bottom safe area. Until measured, the default-size header
-    /// (12 + eyebrow + 8) and 56pt rows stand in, so the sheet opens at its
-    /// final height.
+    /// Handle, header, the card (list plus its border) and 16, at most 9/16
+    /// of the screen; the system adds the bottom safe area. Until measured,
+    /// the default-size header (12 + eyebrow + 12) and the rows (48pt, 1pt
+    /// hairlines, 2 + 2) stand in, so the sheet opens at its final height.
     private var detent: PresentationDetent {
-        let header = headerHeight > 0 ? headerHeight : 12 + 13 + 8
-        let rows = listHeight > 0 ? listHeight : CGFloat(options.count) * 56
-        let natural = BudgetSheetLayout.handleHeight + header + min(rows, maxListHeight ?? .infinity) + 8
+        let header = headerHeight > 0 ? headerHeight : 12 + 14 + 12
+        let rows = listHeight > 0 ? listHeight : CGFloat(options.count) * 49 - 1 + 4
+        let natural = BudgetSheetLayout.handleHeight + header + min(rows, maxListHeight ?? .infinity) + 2 + Metrics.spacingM
         return .height(min(natural, BudgetSheetLayout.screenHeight * 9 / 16))
     }
 
-    /// A Material `ListTile`: min height 56, insets 16 / 24.
+    /// A row: the option (15 w600; w700 when selected) and the accent check,
+    /// at least 48 tall.
     private func optionRow(_ option: PickerOption, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 16) {
+            HStack(spacing: 14) {
                 Text(option.title)
                     .textStyle(option.selected ? Self.selectedText : .rowTitle)
-                    .foregroundStyle(option.selected ? BudgieColor.accent : BudgieColor.textPrimary)
+                    .foregroundStyle(BudgieColor.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if option.selected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(BudgieColor.accent)
+                        .frame(width: 24, height: 24)
                 }
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 24)
-            .padding(.vertical, 8)
-            .frame(maxWidth: .infinity, minHeight: 56)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: Metrics.formRowHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

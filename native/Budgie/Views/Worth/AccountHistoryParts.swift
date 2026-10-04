@@ -14,10 +14,10 @@ enum AccountHistoryText {
 
 // MARK: - Hero
 
-/// `_AccountHistoryHeroCard` (NW:1577-1762): a GlowCard (padding 24) with a
-/// top-to-bottom gradient of the account colour at 16% and 6% into the card
-/// colour (stops 0, .4, 1; the translucent top shows the page through, as
-/// in Flutter) and a 1pt border at 18%.
+/// `_AccountHistoryHeroCard` (NW:1577-1762) as a plain card (padding 24;
+/// Flutter washes it with the account colour, REDESIGN_PLAN 4.7): the
+/// type's tinted arrow tile, "Balance history" over the last update, the
+/// type badge, CURRENT BALANCE, the signed balance and the meta chips.
 struct AccountHistoryHeroCard: View {
     let type: NetWorthEntryType
     let color: Color
@@ -33,18 +33,11 @@ struct AccountHistoryHeroCard: View {
 
     var body: some View {
         let isAsset = type == .asset
-        let wash = isAsset ? BudgieColor.chartIncome : BudgieColor.chartDanger
-        let fill = LinearGradient(
-            stops: [
-                .init(color: wash.opacity(0.16), location: 0), .init(color: wash.opacity(0.06), location: 0.4),
-                .init(color: BudgieColor.card, location: 1),
-            ],
-            startPoint: .top, endPoint: .bottom)
         let balance = formatter.formatSigned(history.latestAmount)
         let lastUpdate = NetWorthText.lastUpdate(history.latest?.recordedAt)
         let chips = metaChips
 
-        GlowCard(padding: 24, fill: AnyShapeStyle(fill), border: wash.opacity(0.18)) {
+        GlowCard(padding: 24) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 0) {
                     IconTile(symbol: isAsset ? "arrow.up.right" : "arrow.down.left", color: color, size: 48, iconSize: 24)
@@ -55,16 +48,16 @@ struct AccountHistoryHeroCard: View {
                             .foregroundStyle(BudgieColor.textPrimary)
                         Text(lastUpdate)
                             .textStyle(.rowSubtitle)
-                            .foregroundStyle(BudgieColor.textSecondaryOnTint)
+                            .foregroundStyle(BudgieColor.textSecondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     PillChip(
-                        label: isAsset ? "Asset" : "Liability", color: color, textColor: BudgieColor.legible(color, tint: 0.35),
+                        label: isAsset ? "Asset" : "Liability", color: color, textColor: BudgieColor.legible(color),
                         style: .badgeSmall)
                 }
                 Text("CURRENT BALANCE")
                     .textStyle(.eyebrow)
-                    .foregroundStyle(BudgieColor.textSecondaryOnTint)
+                    .foregroundStyle(BudgieColor.textSecondary)
                     .padding(.top, 24)
                 // `FittedBox(scaleDown)`: one line, shrunk to fit.
                 Text(balance)
@@ -502,10 +495,12 @@ private struct TooltipLayout: Layout {
 
 // MARK: - Timeline row
 
-/// `_AccountHistoryTimelineRow` (NW:1802-1902): padding 12, a 12pt dot, 16, the `yMMMd` date over the `jm` time, 8,
-/// the signed amount over the compact change from the next older update
-/// (green when good for the type), 4, then the 48pt trash button, disabled
-/// (tertiary) while it is the only update.
+/// `_AccountHistoryTimelineRow` (NW:1802-1902) as a list row (REDESIGN_PLAN
+/// 4.7): padding 12, a 40pt calendar tile in the account colour (Flutter: a
+/// 12pt dot), 12, the `yMMMd` date over the `jm` time, 8, the signed amount
+/// over the compact change from the next older update (green when good for
+/// the type), 4, then the 48pt trash button, disabled (tertiary) while it
+/// is the only update.
 struct AccountTimelineRow: View {
     let snapshot: NetWorthSnapshotRecord
     let delta: Double?
@@ -526,10 +521,8 @@ struct AccountTimelineRow: View {
 
         HStack(spacing: 0) {
             HStack(spacing: 0) {
-                Circle()
-                    .fill(color)
-                    .frame(width: 12, height: 12)
-                    .padding(.trailing, 16)
+                IconTile(symbol: "calendar", color: color)
+                    .padding(.trailing, 12)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(date)
                         .textStyle(.rowTitle)
@@ -541,7 +534,7 @@ struct AccountTimelineRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(amount)
-                        .textStyle(.amount)
+                        .textStyle(.amountSmall)
                         .foregroundStyle(BudgieColor.textPrimary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)

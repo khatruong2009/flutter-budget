@@ -3,37 +3,49 @@ import SwiftUI
 
 // MARK: - Range sheet
 
-/// 'CHART RANGE' (`_showRangePicker`, hp:439-496, tiles hp:1188-1220): the
-/// eyebrow and one row per option (3, 6, 12 months); the selected row is
-/// accent, bold, with a check. Picking reports the choice; the caller gives
+/// 'CHART RANGE' (`_showRangePicker`, hp:439-496, tiles hp:1188-1220) in the
+/// sheet pattern (REDESIGN_PLAN 4.3): the eyebrow, then one row per option
+/// (3, 6, 12 months) in a card with hairlines between them; the selected
+/// row has an accent check. Picking reports the choice; the caller gives
 /// the selection haptic and closes the sheet.
 struct RangeSheet: View {
     let selected: Int
     let onPick: (Int) -> Void
 
     var body: some View {
+        let options = CashFlowMath.rangeOptions
         VStack(alignment: .leading, spacing: 0) {
             Text("CHART RANGE")
                 .textStyle(.eyebrow)
-                .foregroundStyle(BudgieColor.textTertiary)
+                .foregroundStyle(BudgieColor.textSecondary)
                 .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, 20)
-                // 12 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 16.
-                .padding(.top, 12)
-                .padding(.bottom, 8)
-            ForEach(CashFlowMath.rangeOptions, id: \.self) { months in
-                RangeOptionRow(months: months, selected: months == selected) { onPick(months) }
+                .padding(.horizontal, 4)
+            GlowCard(padding: 0) {
+                VStack(spacing: 0) {
+                    ForEach(options.indices, id: \.self) { index in
+                        if index > 0 { Hairline() }
+                        RangeOptionRow(months: options[index], selected: options[index] == selected) {
+                            onPick(options[index])
+                        }
+                    }
+                }
+                .padding(.horizontal, Metrics.spacingM)
+                .padding(.vertical, Metrics.spacingXXS)
             }
+            .padding(.top, 12)
         }
-        .padding(.bottom, 12)
+        .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: Metrics.spacingL, trailing: Metrics.pageHorizontal))
         .frame(maxWidth: .infinity, alignment: .leading)
-        // 12 + the eyebrow line + 8, the tiles, 12.
-        .modifier(FlowSheetFit(estimate: 12 + 13 + 8 + CGFloat(CashFlowMath.rangeOptions.count) * 56 + 12))
+        // 12, the eyebrow line, 12, the card (2, 48pt rows with 1pt
+        // hairlines, 2, the border), 24.
+        .modifier(
+            FlowSheetFit(
+                estimate: 12 + 14 + 12 + (4 + CGFloat(options.count) * 49 - 1 + 2) + Metrics.spacingL))
     }
 }
 
-/// A Material `ListTile` row: min height 56, content inset 16 / 24, title
-/// in rowTitle (w700 accent when selected, w600 text otherwise), check.
+/// A row: the option (15 w600; w700 when selected) and the accent check,
+/// at least 48 tall.
 private struct RangeOptionRow: View {
     let months: Int
     let selected: Bool
@@ -44,21 +56,21 @@ private struct RangeOptionRow: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 16) {
+            HStack(spacing: 14) {
                 Text(CashFlowMath.rangeLabel(months))
                     .textStyle(selected ? Self.selectedStyle : .rowTitle)
-                    .foregroundStyle(selected ? BudgieColor.accent : BudgieColor.textPrimary)
+                    .foregroundStyle(BudgieColor.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if selected {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(BudgieColor.accent)
+                        .frame(width: 24, height: 24)
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 24)
-            .frame(minHeight: 56)
+            .padding(.vertical, 12)
+            .frame(minHeight: Metrics.formRowHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -69,122 +81,111 @@ private struct RangeOptionRow: View {
 
 // MARK: - Month detail sheet
 
-/// A tapped bar's month (`_showMonthDetailsBottomSheet`, hp:498-620): the
-/// bar-chart tile in the net colour and the `yMMMM` title, the Income and
-/// Expenses tiles, and the net row. A snapshot of the tapped entry; no
-/// actions.
+/// A tapped bar's month (`_showMonthDetailsBottomSheet`, hp:498-620) in the
+/// sheet pattern (REDESIGN_PLAN 4.3): the bar-chart tile in the net colour
+/// beside the `yMMMM` title, the net on the feature card, then the Income
+/// and Expenses rows in a card. A snapshot of the tapped entry; no actions.
 struct MonthDetailSheet: View {
     let detail: CashFlowMath.MonthDetail
     let formatter: MoneyFormatter
 
+    private static let featureLabel = TextSpec(face: .gabaritoSemiBold, size: 13, height: 1.3, relativeTo: .footnote)
+    private static let featureTotal = TextSpec(
+        face: .gabaritoExtraBold, size: 40, tracking: -1.2, height: 1.1, tabular: true, relativeTo: .largeTitle)
+
     var body: some View {
         let netColor = detail.netIsPositive ? BudgieColor.income : BudgieColor.danger
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 14) {
                 IconTile(symbol: "chart.bar.fill", color: netColor, size: 44)
                 Text(detail.title)
-                    .textStyle(.sectionHeader)
+                    .textStyle(.sheetTitle)
                     .foregroundStyle(BudgieColor.textPrimary)
                     .accessibilityAddTraits(.isHeader)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            HStack(spacing: 12) {
-                MonthDetailTile(
-                    label: "Income", amount: detail.incomeText(formatter), color: BudgieColor.income, symbol: "arrow.down.left")
-                MonthDetailTile(
-                    label: "Expenses", amount: detail.expensesText(formatter), color: BudgieColor.danger, symbol: "arrow.up.right")
+            net.padding(.top, 18)
+            GlowCard(padding: 0) {
+                VStack(spacing: 0) {
+                    MonthDetailRow(label: "Income", amount: detail.incomeText(formatter), color: BudgieColor.income)
+                    Hairline()
+                    MonthDetailRow(label: "Expenses", amount: detail.expensesText(formatter), color: BudgieColor.textPrimary)
+                }
+                .padding(.horizontal, Metrics.spacingM)
+                .padding(.vertical, Metrics.spacingXXS)
             }
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.top, 20)
-            netRow(color: netColor)
-                .padding(.top, 12)
+            .padding(.top, Metrics.spacingM)
         }
-        // Top: 16 + the chrome's 20pt handle inset = Flutter's 12 + 4 + 20.
-        .padding(EdgeInsets(top: 16, leading: 20, bottom: 24, trailing: 20))
-        // A container: the identifier must not replace the tiles' elements.
+        // Top: 12 + the chrome's handle inset, as the other sheets.
+        .padding(EdgeInsets(top: 12, leading: Metrics.pageHorizontal, bottom: Metrics.spacingL, trailing: Metrics.pageHorizontal))
+        // A container: the identifier must not replace the rows' elements.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("flow.monthDetail")
-        // 16, the 44pt tile, 20, the tiles (14 + 16 + 6 + amount + 14), 12,
-        // the net row (14 + chipAmount + 14), 24.
-        .modifier(FlowSheetFit(estimate: 16 + 44 + 20 + (14 + 16 + 6 + 19 + 14) + 12 + (14 + 28 + 14) + 24))
+        // 12, the 44pt tile, 18, the feature card (18 + 17 + 44 + 18 + 2),
+        // 16, the rows card (2 + two 48pt rows + 1 + 2 + 2), 24.
+        .modifier(FlowSheetFit(estimate: 12 + 44 + 18 + (18 + 17 + 44 + 18 + 2) + 16 + (2 + 96 + 1 + 2 + 2) + 24))
     }
 
-    /// Net row: padding 16 x 14, radius 16, net colour at 10% with a 30%
-    /// border; check, or a down trend when negative (Flutter shows `trending_up`, D6), and
-    /// 'Net cash flow'; `formatSigned(net)` in chipAmount.
-    private func netRow(color: Color) -> some View {
-        let net = detail.netText(formatter)
-        return HStack(spacing: 12) {
-            HStack(spacing: 8) {
-                Image(systemName: detail.netIsPositive ? "checkmark" : "chart.line.downtrend.xyaxis")
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundStyle(color)
-                    .frame(width: 20, height: 20)
-                Text("Net cash flow")
-                    .textStyle(.rowTitle)
-                    .foregroundStyle(BudgieColor.textPrimary)
-            }
-            Spacer(minLength: 0)
-            Text(net)
-                .textStyle(.chipAmount)
+    /// The net on the feature card: "Net cash flow" and `formatSigned(net)`,
+    /// `featureAmount` (or `featureDanger` when negative). One element,
+    /// "Net cash flow" with the amount as its value.
+    private var net: some View {
+        let text = detail.netText(formatter)
+        return VStack(alignment: .leading, spacing: 0) {
+            Text("Net cash flow")
+                .textStyle(Self.featureLabel)
+                .foregroundStyle(BudgieColor.featureSecondary)
+            Text(text)
+                .textStyle(Self.featureTotal)
+                .foregroundStyle(detail.netIsPositive ? BudgieColor.featureAmount : BudgieColor.featureDanger)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+        }
+        .featureCard()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Net cash flow")
+        .accessibilityValue(text)
+    }
+}
+
+/// `_MonthDetailTile` (hp:1137-1186) as a row: the label (15) and the
+/// amount (mono 14 w600, income in `income`, expenses in the text colour),
+/// at least 48 tall. One element, the label with the amount as its value.
+private struct MonthDetailRow: View {
+    let label: String
+    let amount: String
+    let color: Color
+
+    private static let labelText = TextSpec(face: .gabaritoRegular, size: 15, height: 1.3, relativeTo: .subheadline)
+    private static let valueText = TextSpec(face: .monoSemiBold, size: 14, height: 1.3, tabular: true, relativeTo: .footnote)
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Text(label)
+                .textStyle(Self.labelText)
+                .foregroundStyle(BudgieColor.textPrimary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(amount)
+                .textStyle(Self.valueText)
                 .foregroundStyle(color)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 16, style: .circular))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .circular).strokeBorder(color.opacity(0.3), lineWidth: 1))
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Net cash flow")
-        .accessibilityValue(net)
-    }
-}
-
-/// `_MonthDetailTile` (hp:1137-1186): padding 14, radius 16, colour at 10%
-/// with a 30% border; 16pt arrow and the label, 6, the amount.
-private struct MonthDetailTile: View {
-    let label: String
-    let amount: String
-    let color: Color
-    let symbol: String
-
-    /// `rowSubtitle` w600.
-    private static let labelStyle = TextSpec(face: .gabaritoSemiBold, size: 12, height: 1.25, relativeTo: .caption)
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: symbol)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(color)
-                    .frame(width: 16, height: 16)
-                    .accessibilityHidden(true)
-                Text(label)
-                    .textStyle(Self.labelStyle)
-                    .foregroundStyle(BudgieColor.textSecondary)
-            }
-            Text(amount)
-                .textStyle(.amount)
-                .foregroundStyle(color)
-        }
-        .padding(14)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 16, style: .circular))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .circular).strokeBorder(color.opacity(0.3), lineWidth: 1))
+        .padding(.vertical, 12)
+        .frame(minHeight: Metrics.formRowHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(amount)
+        .accessibilityAddTraits(.isStaticText)
     }
 }
 
 // MARK: - Sheet sizing
 
 /// Sizes a Flow sheet to its content (Flutter's modal sheet wraps a
-/// `mainAxisSize.min` column) and applies the redesign chrome with the Flow
-/// sheets' 24pt top radius. The detent is the grab handle's inset plus the
-/// content: the system adds the bottom safe area (Flutter's `SafeArea`)
-/// itself. Until the content is measured it uses `estimate`, the content's
+/// `mainAxisSize.min` column) and applies the redesign's sheet chrome. The
+/// detent is the grab handle's inset plus the content: the system adds the
+/// bottom safe area (Flutter's `SafeArea`) itself. Until the content is measured it uses `estimate`, the content's
 /// height at the default text size, so the sheet opens at its final height
 /// instead of resizing from `.medium`.
 private struct FlowSheetFit: ViewModifier {
@@ -196,7 +197,7 @@ private struct FlowSheetFit: ViewModifier {
             content.onGeometryChangeCompat { contentHeight = $0.height }
         }
         .scrollBounceBehavior(.basedOnSize)
-        .budgieSheetChrome(radius: Metrics.flowSheetRadius)
+        .budgieSheetChrome()
         .presentationDetents([.height(BudgetSheetLayout.handleHeight + (contentHeight > 0 ? contentHeight : estimate))])
     }
 }
