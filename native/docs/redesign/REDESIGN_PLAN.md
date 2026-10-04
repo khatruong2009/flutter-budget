@@ -10,7 +10,11 @@ verify it. Read it fully before starting.
   (open it with the Artifact tool, `action: "read"`; it belongs to the
   owner's account). Offline copies of every board you need are in
   [`mockups/`](mockups) (open them in a browser; they are static HTML).
-  Screenshots of the current build are in [`screens/`](screens).
+  Screenshots are in [`screens/`](screens): `after-<tab>-<mode>` for the
+  five tabs, and `before-` / `after-` pairs (the pre-redesign `main` build
+  2f5eb88 against the finished branch, demo store, iPhone 17 Pro size) for
+  the add form with the number pad up, Settings, the Safe to spend sheet
+  and onboarding, light and dark.
 - **Branch:** `claude/native-redesign`, in the worktree
   `/Users/khatruong/Documents/GitHub/flutter-budget/.claude/worktrees/swiftui-mvp-migration-71aa05`.
   It branches from `main` after PR 2 (the SwiftUI app) merged.
