@@ -506,16 +506,9 @@ struct FormTitleRow: View {
     private static let titleText = TextSpec(face: .gabaritoExtraBold, size: 22, tracking: -0.44, relativeTo: .title2)
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
-                titleLabel
-                Spacer(minLength: 0)
-                pills
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                titleLabel
-                pills
-            }
+        RowOrColumn(rowSpacing: 12, columnSpacing: 12, spreads: true) {
+            titleLabel
+            pills
         }
     }
 

@@ -290,6 +290,64 @@ private struct FitToContent: Layout {
     }
 }
 
+// MARK: - Row or column
+
+/// Its subviews in a row (vertically centred) when their ideal widths fit
+/// the width offered, else in a leading-aligned column as wide as its
+/// widest subview. `spreads` puts the row's leftover width between the
+/// subviews (a title on the left, a control on the right). Unlike
+/// `ViewThatFits` the same subviews are kept when it switches, so
+/// VoiceOver and the accessibility audit follow them across Dynamic Type
+/// sizes (ViewThatFits swaps in a new copy, which the audit reported as
+/// "Dynamic Type partially unsupported", budgie-ou0.12).
+struct RowOrColumn: Layout {
+    var rowSpacing: CGFloat = 8
+    var columnSpacing: CGFloat = 8
+    var spreads = false
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let ideals = subviews.map { $0.sizeThatFits(.unspecified) }
+        let rowWidth = rowWidth(ideals)
+        if fitsInRow(rowWidth, width: proposal.width) {
+            let width = spreads ? max(proposal.width ?? rowWidth, rowWidth) : rowWidth
+            return CGSize(width: width, height: ideals.map(\.height).max() ?? 0)
+        }
+        let sizes = subviews.map { $0.sizeThatFits(ProposedViewSize(width: proposal.width, height: nil)) }
+        let height = sizes.map(\.height).reduce(0, +) + columnSpacing * CGFloat(max(sizes.count - 1, 0))
+        let widest = sizes.map(\.width).max() ?? 0
+        return CGSize(width: min(widest, proposal.width ?? widest), height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let ideals = subviews.map { $0.sizeThatFits(.unspecified) }
+        let rowWidth = rowWidth(ideals)
+        if fitsInRow(rowWidth, width: bounds.width) {
+            let gap = rowSpacing + (spreads && ideals.count > 1 ? (bounds.width - rowWidth) / CGFloat(ideals.count - 1) : 0)
+            var x = bounds.minX
+            for (subview, size) in zip(subviews, ideals) {
+                subview.place(at: CGPoint(x: x, y: bounds.midY - size.height / 2), proposal: ProposedViewSize(size))
+                x += size.width + gap
+            }
+        } else {
+            var y = bounds.minY
+            for subview in subviews {
+                let size = subview.sizeThatFits(ProposedViewSize(width: bounds.width, height: nil))
+                subview.place(at: CGPoint(x: bounds.minX, y: y), proposal: ProposedViewSize(width: bounds.width, height: size.height))
+                y += size.height + columnSpacing
+            }
+        }
+    }
+
+    private func rowWidth(_ ideals: [CGSize]) -> CGFloat {
+        ideals.map(\.width).reduce(0, +) + rowSpacing * CGFloat(max(ideals.count - 1, 0))
+    }
+
+    private func fitsInRow(_ rowWidth: CGFloat, width: CGFloat?) -> Bool {
+        guard let width else { return true }
+        return rowWidth <= width + 0.5
+    }
+}
+
 // MARK: - Recurrence glyph
 
 /// The recurring-transaction mark (`RecurrenceIndicator`): two arcs with

@@ -63,9 +63,8 @@ struct HomeHero: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(hero.accessibilityLabel)
 
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 18) { legend(spent: spent, kept: kept, isNegative: isNegative) }
-                VStack(alignment: .leading, spacing: 6) { legend(spent: spent, kept: kept, isNegative: isNegative) }
+            RowOrColumn(rowSpacing: 18, columnSpacing: 6) {
+                legend(spent: spent, kept: kept, isNegative: isNegative)
             }
             .accessibilityElement(children: .combine)
         }
