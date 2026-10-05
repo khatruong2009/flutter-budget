@@ -155,7 +155,7 @@ Everything below already exists unless marked **new**.
 | `accent` | `#1D6646` | `#B3ADFF` | links, add button, focus ring, filled pill |
 | `onAccent` | `#FFFFFF` | `#0B0B14` | label on accent |
 | `income` | `#1D6646` | `#5EE6B0` | income, money kept, good change |
-| `spent` | `#1A1A17` | `#FF8B7B` | money spent in charts |
+| `spent` | `#A63D24` | `#FF8B7B` | money spent in charts |
 | `danger` | `#A63D24` | `#FF8B7B` | expense, over limit, errors |
 | `warning` | `#7E5300` | `#FFC861` | |
 | `info` / `purple` / `pink` / `cyan` | `#1F5F99` / `#5B47B8` / `#7F3B6B` / `#176464` | `#7CC8FF` / `#B3ADFF` / `#F7A1D8` / `#4FD1C5` | category hues |

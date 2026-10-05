@@ -39,8 +39,10 @@ enum BudgieColor {
     static let accent = dynamic(light: 0x1D6646, dark: 0xB3ADFF)
     /// Income, money kept and good changes.
     static let income = dynamic(light: 0x1D6646, dark: 0x5EE6B0)
-    /// Money spent on charts: ink in light mode, coral in dark mode.
-    static let spent = dynamic(light: 0x1A1A17, dark: 0xFF8B7B)
+    /// Money spent on charts (Home's ring, legend and Expenses sparkline):
+    /// terracotta in light mode (owner's call 2026-10-04; was ink), coral
+    /// in dark mode.
+    static let spent = dynamic(light: 0xA63D24, dark: 0xFF8B7B)
     /// Expense, over-limit and errors (`getDanger`).
     static let danger = dynamic(light: 0xA63D24, dark: 0xFF8B7B)
     static let warning = dynamic(light: 0x7E5300, dark: 0xFFC861)
