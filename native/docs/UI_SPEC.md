@@ -20,7 +20,7 @@ mode and "Midnight" colours in dark mode. Tokens live in
 | textSecondary | `#5C584F` | `#9AA3B2` |
 | accent (links, selection, add button) | `#1D6646` | `#B3ADFF` |
 | income (and money kept) | `#1D6646` | `#5EE6B0` |
-| spent (charts) | `#1A1A17` | `#FF8B7B` |
+| spent (charts) | `#A63D24` | `#FF8B7B` |
 | danger | `#A63D24` | `#FF8B7B` |
 | warning | `#7E5300` | `#FFC861` |
 | featureFill (Safe to spend, Goals summary) | `#1A1A17` | `#10231F` |
