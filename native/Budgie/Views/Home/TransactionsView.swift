@@ -143,17 +143,21 @@ struct TransactionsView: View {
     /// at its edge.
     private func dayCard(_ group: MonthListCopy.DayGroup, formatter: MoneyFormatter) -> some View {
         GlowCard(padding: Metrics.listCardPadding) {
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(group.rows) { row in
-                    if row.id != group.rows.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
-                    SwipeToDeleteRow {
-                        pendingDelete = row.record
-                    } content: {
-                        TransactionRow(record: row.record, formatter: formatter) {
-                            rowTaps += 1
-                            editing = row.record
+                    // One child per record lets the lazy stack defer offscreen rows,
+                    // including each row's optional divider.
+                    VStack(spacing: 0) {
+                        if row.id != group.rows.first?.id { Hairline().padding(.horizontal, Metrics.hairlineInset) }
+                        SwipeToDeleteRow {
+                            pendingDelete = row.record
+                        } content: {
+                            TransactionRow(record: row.record, formatter: formatter) {
+                                rowTaps += 1
+                                editing = row.record
+                            }
+                            .background(BudgieColor.card)
                         }
-                        .background(BudgieColor.card)
                     }
                 }
             }

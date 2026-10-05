@@ -86,10 +86,11 @@ struct BudgieField: View {
             Text(title)
                 .textStyle(Self.amountLabel)
                 .foregroundStyle(error != nil ? BudgieColor.danger : BudgieColor.textSecondary)
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(.top, 8)
                 .accessibilityHidden(true)
             Spacer(minLength: 0)
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
+            AmountValueLayout(spacing: prefix == nil ? 0 : 6) {
                 if let prefix {
                     Text(prefix)
                         .textStyle(Self.amountPrefix)
@@ -99,7 +100,6 @@ struct BudgieField: View {
                 input
                     .textStyle(Self.amountValue)
                     .multilineTextAlignment(.trailing)
-                    .fixedSize(horizontal: true, vertical: false)
             }
             .lineLimit(1)
             .frame(minHeight: 64)
@@ -120,6 +120,42 @@ struct BudgieField: View {
             .accessibilityLabel(title)
             .accessibilityIdentifier(identifier ?? "")
             .onAppear { if autofocus { focused = true } }
+    }
+}
+
+/// Hugs short amounts, but reserves the currency symbol's full width when
+/// a long amount or Dynamic Type fills the field. Only the input compresses;
+/// TextField then scrolls its value without squeezing the label or prefix.
+private struct AmountValueLayout: Layout {
+    let spacing: CGFloat
+
+    private func dimensions(_ proposal: ProposedViewSize, _ subviews: Subviews) -> [ViewDimensions] {
+        guard let input = subviews.last else { return [] }
+        let prefix = subviews.count > 1 ? subviews[0].dimensions(in: .unspecified) : nil
+        let reserved = prefix.map { $0.width + spacing } ?? 0
+        let idealWidth = input.sizeThatFits(.unspecified).width
+        let width = min(idealWidth, max(0, (proposal.width ?? (reserved + idealWidth)) - reserved))
+        let value = input.dimensions(in: ProposedViewSize(width: width, height: proposal.height))
+        return prefix.map { [$0, value] } ?? [value]
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let sizes = dimensions(proposal, subviews)
+        let baseline = sizes.map { $0[.firstTextBaseline] }.max() ?? 0
+        let descent = sizes.map { $0.height - $0[.firstTextBaseline] }.max() ?? 0
+        return CGSize(width: sizes.reduce(0) { $0 + $1.width } + (sizes.count > 1 ? spacing : 0),
+                      height: baseline + descent)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let sizes = dimensions(ProposedViewSize(width: bounds.width, height: bounds.height), subviews)
+        let baseline = sizes.map { $0[.firstTextBaseline] }.max() ?? 0
+        var x = bounds.minX
+        for (view, size) in zip(subviews, sizes) {
+            view.place(at: CGPoint(x: x, y: bounds.minY + baseline - size[.firstTextBaseline]),
+                       anchor: .topLeading, proposal: ProposedViewSize(width: size.width, height: size.height))
+            x += size.width + spacing
+        }
     }
 }
 
