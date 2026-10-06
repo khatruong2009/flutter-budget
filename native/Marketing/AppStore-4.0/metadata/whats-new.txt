@@ -1,0 +1,11 @@
+Meet Budgie 4.0 — a fresh start for the app, with your financial history coming along.
+
+• A rebuilt native iPhone experience with redesigned navigation, cards, and charts.
+• Two fresh looks: warm Paper and dark Midnight themes.
+• Refreshed views for your dashboard, spending, savings goals, net worth, and cash flow.
+• Home Screen widgets updated to match the new design.
+• Improved VoiceOver support and layouts that adapt to larger text.
+• More flexible categorization rules, including editing existing rules and setting amount ranges.
+• Improved saving reliability and clearer feedback when a change needs to be retried.
+
+Your existing transactions, budgets, goals, and net worth history carry over automatically. Open Budgie and pick up where you left off.

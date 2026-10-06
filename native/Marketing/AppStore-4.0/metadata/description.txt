@@ -1,0 +1,28 @@
+Your money. A little clearer.
+
+Budgie brings your everyday spending and bigger plans into one calm, clear view. Know where your money goes, make room for what matters, and watch your progress over time.
+
+SEE YOUR MONTH AT A GLANCE
+Track income and expenses, check your cash flow, and see an estimate of what’s safe to spend. Set category budgets to give everyday decisions a little more direction.
+
+KNOW WHERE YOUR MONEY GOES
+Explore spending by category with clear charts and transaction details. Create your own categories, organize entries with tags, and use rules to help categorize transactions.
+
+SAVE FOR YOUR NEXT CHAPTER
+An emergency fund. A new laptop. That trip you keep thinking about. Set savings goals, choose target dates, and track each contribution as you get closer.
+
+SEE THE BIGGER PICTURE
+Keep track of assets and debts, update account balances, and follow your net worth over time. Explore cash-flow trends and insights drawn from your own entries.
+
+MAKE TRACKING PART OF YOUR DAY
+Add transactions by hand or speak an entry and review the details before saving. Set up recurring income and expenses, and use Home Screen widgets and app shortcuts for quick access.
+
+KEEP YOUR RECORDS IN YOUR HANDS
+Your financial records are stored on your device. No account or bank connection is required. Protect access with app lock, import and export transactions as CSV, and create backups you can restore.
+
+CHOOSE YOUR KIND OF CALM
+Enjoy warm Paper and dark Midnight themes, with an interface built for iPhone.
+
+Core tracking works offline. Optional voice entry requires an internet connection and sends your recording and transcript to OpenAI for processing.
+
+Start with today’s spending. Make room for tomorrow’s plans.

@@ -1,0 +1,14 @@
+{
+  "promotional-text": {
+    "characters": 157,
+    "limit": 170
+  },
+  "description": {
+    "characters": 1730,
+    "limit": 4000
+  },
+  "whats-new": {
+    "characters": 760,
+    "limit": 4000
+  }
+}
