@@ -94,19 +94,8 @@ struct BudgieWidgetHeader: View {
         .frame(width: 18, height: 18)
         .accessibilityHidden(true)
       Spacer(minLength: 4)
-      if cashFlow != nil, hidesBalances {
-        // Neutral colour: income/danger would still tell the sign.
-        Text(Self.hiddenAmount)
-          .font(.system(size: 13, weight: .semibold, design: .monospaced))
-          .foregroundColor(palette.textSecondary)
-          .lineLimit(1)
-          .accessibilityLabel("Balance hidden")
-      } else if let amount = cashFlow {
-        Text(Self.formattedAmount(amount))
-          .font(.system(size: 13, weight: .semibold, design: .monospaced))
-          .foregroundColor(amount < 0 ? palette.danger : palette.income)
-          .lineLimit(1)
-          .minimumScaleFactor(0.6)
+      if let amount = cashFlow {
+        WidgetCashFlowText(amount: amount, hidesBalances: hidesBalances)
       } else {
         Text("Budgie")
           .font(.system(size: 13, weight: .semibold, design: .monospaced))
@@ -121,6 +110,33 @@ struct BudgieWidgetHeader: View {
     formatter.locale = Locale(identifier: "en_US")
     formatter.maximumFractionDigits = 0
     return formatter.string(from: NSNumber(value: amount)) ?? "$0"
+  }
+}
+
+/// The month's cash flow in whole units, or bullets when balances are hidden.
+struct WidgetCashFlowText: View {
+  let amount: Double
+  let hidesBalances: Bool
+
+  @Environment(\.colorScheme) private var colorScheme
+
+  private var palette: WidgetPalette { WidgetPalette(colorScheme: colorScheme) }
+
+  var body: some View {
+    if hidesBalances {
+      // Neutral colour: income/danger would still tell the sign.
+      Text(BudgieWidgetHeader.hiddenAmount)
+        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+        .foregroundColor(palette.textSecondary)
+        .lineLimit(1)
+        .accessibilityLabel("Balance hidden")
+    } else {
+      Text(BudgieWidgetHeader.formattedAmount(amount))
+        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+        .foregroundColor(amount < 0 ? palette.danger : palette.income)
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+    }
   }
 }
 
@@ -235,12 +251,18 @@ struct BudgetVoiceAddEntryView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      Image(systemName: "mic.fill")
-        .font(.system(size: 24))
-        .foregroundColor(palette.onAccent)
-        .frame(width: 52, height: 52)
-        .background(Circle().fill(palette.accent))
-        .accessibilityHidden(true)
+      HStack(alignment: .top, spacing: 0) {
+        Image(systemName: "mic.fill")
+          .font(.system(size: 24))
+          .foregroundColor(palette.onAccent)
+          .frame(width: 52, height: 52)
+          .background(Circle().fill(palette.accent))
+          .accessibilityHidden(true)
+        Spacer(minLength: 4)
+        if let amount = entry.cashFlow {
+          WidgetCashFlowText(amount: amount, hidesBalances: entry.hidesBalances)
+        }
+      }
       Spacer(minLength: 0)
       Text("Speak a transaction")
         .font(.system(size: 15, weight: .bold))

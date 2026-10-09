@@ -220,7 +220,8 @@ flow in whole units (system monospaced 13 SemiBold; `income`, `danger`
 when negative, bullets when balances are hidden) over two equal buttons
 (radius 14, `incomeFixed` / `expenseFixed`, white 14 Bold "Income" /
 "Expense"), linking to `budgetapp://add-income` / `add-expense`. Voice add
-(small): a 52pt accent circle with the mic in `onAccent`, "Speak a
+(small): a 52pt accent circle with the mic in `onAccent`, the same cash
+flow text top-trailing (omitted when none is stored), "Speak a
 transaction" and "Budgie". Kinds, families, timelines and App Group keys
 are unchanged. The extension does not bundle Gabarito or Spline Sans Mono,
 so it uses the system fonts.

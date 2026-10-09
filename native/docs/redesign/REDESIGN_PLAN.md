@@ -389,8 +389,9 @@ values):
   14, `incomeFixed` / `expenseFixed` fills, white 14 Bold "Income" /
   "Expense" with symbols. Deep links unchanged (`budgetapp://add-income`,
   `budgetapp://add-expense`).
-- Voice add (small): 52pt accent circle with the mic (`onAccent`), "Speak a
-  transaction" 15 Bold, "Budgie" 12 secondary; link unchanged.
+- Voice add (small): 52pt accent circle with the mic (`onAccent`), the
+  quick actions' cash flow text top-trailing, "Speak a transaction" 15
+  Bold, "Budgie" 12 secondary; link unchanged.
 - Keep widget `kind`s, families and timelines.
 - The white labels must keep 4.5:1 on the fills (they do with the fixed
   fills).
