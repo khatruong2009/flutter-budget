@@ -60,8 +60,16 @@ sending new users straight to Add Expense would skip onboarding.
 
 ## How these were made
 
-Raw screens: native Debug build on an iPhone 17 Pro Max simulator (iOS 27.0),
-demo store from `redesign-tools/demo_store.py`, status bar overridden to 9:41,
-captured light and dark by a throwaway XCUITest (`XCUIScreen.main.screenshot()`).
+Refreshed October 10, 2026 with the approved blue bird logo from version
+4.0.0 build 4. Raw screens: native Debug build on an isolated iPhone 17 Pro
+Max simulator (iOS 27.0), using the fictional demo store retained in
+`native/Marketing/AppStore-4.0/source/demo-store/`, status bar overridden to
+9:41. Light and dark screens were captured by the isolated XCUITest in
+`source/CustomPageCaptureUITests.swift`; the recording screen uses the
+existing Debug audio stub, with no real microphone or network requests.
+
 Frames: HTML rendered with headless Chrome using the app's Gabarito and
-Spline Sans Mono fonts and the Paper / Midnight palettes.
+Spline Sans Mono fonts and Paper / Midnight palettes. Original captures
+are in `raw/`; `source/render-assets.cjs` regenerates the final images,
+self-contained HTML layouts and `overview.jpg`. Run it with Node from
+the repository root. Size, opacity and hashes are in `validation.json`.

@@ -1,0 +1,81 @@
+{
+  "verified": true,
+  "verifiedAt": "2026-10-10",
+  "appVersion": "4.0.0",
+  "build": "4",
+  "branding": "Approved blue bird Savings Pal",
+  "assets": [
+    {
+      "file": "01-home.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 513951,
+      "sha256": "50abbe64c162747aba1323007d5be2f2a01874cf9cb08a72ecd066a725e13b05"
+    },
+    {
+      "file": "02-voice.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 497546,
+      "sha256": "d1b7b327455849c895fc3a3f3626032c413dd6105c7415abcfe0f56211848aa1"
+    },
+    {
+      "file": "03-safe-to-spend.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 505364,
+      "sha256": "cf3c986e0df60e592b30135756eaae37365e5e614725322969ed0a35a4d8b6b2"
+    },
+    {
+      "file": "04-net-worth.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 552935,
+      "sha256": "3f090e57fb22185b9ad835853b44c30eeb00a6d0dba5e34e4df1a2eb3b5ace3a"
+    },
+    {
+      "file": "05-spending.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 456347,
+      "sha256": "8998d0c0a7475b829a77593a1a311606c337e9224f3795b03603e8a9477a0521"
+    },
+    {
+      "file": "06-goals.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 586593,
+      "sha256": "af2fd9aad80e85db63661edea34fd120801e9c52e71b1481be26d21b4b6b5754"
+    },
+    {
+      "file": "07-insights.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 474058,
+      "sha256": "c257842ee1f7d1ce340a4b3a3aa77bf2c719fc0ea2adf0907d293f47c5e0ff36"
+    },
+    {
+      "file": "08-private.png",
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "colorSpace": "srgb",
+      "bytes": 600055,
+      "sha256": "1a26ac83a5def8394927aae5fb955ebf58411945df9524817ff10c86801ac88b"
+    }
+  ]
+}

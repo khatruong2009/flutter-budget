@@ -10,11 +10,11 @@ verify it. Read it fully before starting.
   (open it with the Artifact tool, `action: "read"`; it belongs to the
   owner's account). Offline copies of every board you need are in
   [`mockups/`](mockups) (open them in a browser; they are static HTML).
-  Screenshots are in [`screens/`](screens): `after-<tab>-<mode>` for the
-  five tabs, and `before-` / `after-` pairs (the pre-redesign `main` build
-  2f5eb88 against the finished branch, demo store, iPhone 17 Pro size) for
-  the add form with the number pad up, Settings, the Safe to spend sheet
-  and onboarding, light and dark.
+  Retained screenshots are in [`screens/`](screens): Flow, Goals, Spend
+  and Worth, plus `before-` / `after-` pairs for the add form and
+  onboarding, light and dark. Current Home branding and the Safe to
+  spend sheet are captured in `native/Marketing/AppStore-4.0/` and
+  `native/docs/appstore/custom-product-page-4.0/`.
 - **Branch:** `claude/native-redesign`, in the worktree
   `/Users/khatruong/Documents/GitHub/flutter-budget/.claude/worktrees/swiftui-mvp-migration-71aa05`.
   It branches from `main` after PR 2 (the SwiftUI app) merged.

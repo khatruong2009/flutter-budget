@@ -7,7 +7,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 479098
+      "bytes": 474170,
+      "sha256": "a40a25ecedb1ced21f812229f71e1ab0879817b80395f6b1bafb9387b30fd77b"
     },
     {
       "file": "screenshots/02-spending-dark.png",
@@ -15,7 +16,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 422538
+      "bytes": 421558,
+      "sha256": "4aab6832b4233760395e2f197a49948ffd848267f46e7133b2969f81c2a1742b"
     },
     {
       "file": "screenshots/03-goals-dark.png",
@@ -23,7 +25,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 459145
+      "bytes": 458083,
+      "sha256": "16964065a8530c5e6dc70ff8e4b64ab70a1ffc76caee2b0db4691fd51ce4b551"
     },
     {
       "file": "screenshots/04-worth-dark.png",
@@ -31,7 +34,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 420765
+      "bytes": 419764,
+      "sha256": "7b598bccc84c07185e4f8ab7d5e8e26aacd237c5fe107adcc9f2cfdeb3bbbc72"
     },
     {
       "file": "screenshots/05-flow-dark.png",
@@ -39,7 +43,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 438690
+      "bytes": 438271,
+      "sha256": "1de9a43eb11010a6332fbd067d75dad1bac727a0ee3700547e3b824a322ca9c3"
     },
     {
       "file": "screenshots/06-home-light.png",
@@ -47,7 +52,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 527756
+      "bytes": 522799,
+      "sha256": "e947ab83b24492998962e68b6d2baf651f6183ec2fc7b6a91a3df1aa1ebf5413"
     },
     {
       "file": "screenshots/07-recurring-dark.png",
@@ -55,7 +61,8 @@
       "height": 2622,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 452435
+      "bytes": 435153,
+      "sha256": "cea6ef3b2828cf1513e5b4c4640c2575e446b2328a7c5096670df5748ff8968d"
     },
     {
       "file": "creative/header-3840x1646.png",
@@ -63,7 +70,8 @@
       "height": 1646,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 1964853
+      "bytes": 596560,
+      "sha256": "3c131273fb806b45f38cbaf4240fd491b6478384ce8cbd048c88b689da2a3030"
     },
     {
       "file": "creative/search-results-3840x2560.png",
@@ -71,7 +79,8 @@
       "height": 2560,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 939776
+      "bytes": 527770,
+      "sha256": "b126a8310667393d4ec2fef86b5249b14069306dbe6a2567aaf1ad5a06ecbecf"
     },
     {
       "file": "creative/search-results-goals-3840x2560.png",
@@ -79,7 +88,13 @@
       "height": 2560,
       "colorSpace": "srgb",
       "hasAlpha": false,
-      "bytes": 913518
+      "bytes": 508669,
+      "sha256": "8f4cc6c0625c5dc36814820b98923c31ad27f083f2f0a1ccb23c82faff11139b"
     }
-  ]
+  ],
+  "verifiedAt": "2026-10-10",
+  "appVersion": "4.0.0",
+  "build": "4",
+  "branding": "Approved blue bird Savings Pal",
+  "creativeDesign": "Approved blue bird mascot and real app captures"
 }

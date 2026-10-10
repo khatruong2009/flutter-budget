@@ -35,6 +35,7 @@ native/**/DerivedData/
 native/**/*.xcuserstate
 native/**/xcuserdata/
 native/**/__pycache__/
+native/Release/
 
 # OpenAI key for voice entry (native/docs/FULL_APP_PLAN.md section 6)
 native/Config/Secrets.xcconfig

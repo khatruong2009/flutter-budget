@@ -421,20 +421,20 @@ Captured on a new simulator "Budgie-UI-Research" (iPhone 17 Pro, iOS 27.0, UDID 
 
 Folder: `native/docs/research/screenshots/`
 
+The table lists the retained research captures. Current Home and Settings
+branding is shown in `design/branding/` and `native/Marketing/AppStore-4.0/`.
+
 | File | Shows |
 |---|---|
 | `01_onboarding_1_light.png`, `02_...2_light.png`, `03_...3_light.png` | Onboarding pages 1-3 (light) |
-| `04_home_empty_light.png` | Home tab, empty month |
-| `05_home_data_light.png`, `05_home_data_dark.png` | Home with data (hero, chips, safe-to-spend, budgets, dock, FABs) |
 | `05b_home_scrolled_light.png` | Home scrolled: budgets, recent activity, pill buttons |
 | `06_worth_empty_light.png`, `06_worth_empty_dark.png` | Net worth empty state |
 | `07_goals_empty_light.png`, `07_goals_empty_dark.png` | Goals empty state |
 | `08_spend_empty_light.png`, `08_spend_data_light.png` | Categories tab (empty and with donut) |
 | `09_flow_empty_light.png`, `09_flow_data_light.png`, `09_flow_data_dark.png` | Cash flow tab |
-| `10_more_light.png`, `10_more_dark.png`, `10b_more_scrolled_dark.png` | Settings top and lower part |
+| `10b_more_scrolled_dark.png` | Settings lower part |
 | `11_add_expense_form_light.png` | Add Expense dialog with numeric keyboard |
-| `12_add_budget_picker_light.png`, `12_add_budget_picker_dark.png` | "Add a budget" category sheet |
-| `13_budget_limit_sheet_light.png` | Budget limit sheet with keyboard |
+| `12_add_budget_picker_dark.png` | "Add a budget" category sheet |
 | `14_safe_to_spend_sheet_light.png` | Safe-to-spend breakdown (shows the same-day exclusion quirk) |
 | `15_recurring_empty_dark.png` | Recurring transactions empty page (legacy gradient app bar) |
 | `16_transactions_dark.png` | Transactions list pushed from SEE ALL (legacy row style, dock still visible) |
